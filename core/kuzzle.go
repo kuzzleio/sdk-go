@@ -1,14 +1,13 @@
 package core
 
 import (
-	"github.com/kuzzleio/sdk-core/wrappers"
-	"github.com/kuzzleio/sdk-core/types"
+	"github.com/kuzzleio/sdk-go/wrappers"
+	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
 	"github.com/satori/go.uuid"
-	"github.com/kuzzleio/sdk-core/event"
-	"errors"
+	"github.com/kuzzleio/sdk-go/event"
 	"sync"
-	"github.com/kuzzleio/sdk-core/state"
+	"github.com/kuzzleio/sdk-go/state"
 )
 
 type IKuzzle interface {
@@ -50,36 +49,9 @@ func (k *Kuzzle) AddListener(event int, channel chan <- interface{}) {
 
 // Emit an event to all registered listeners
 func (k *Kuzzle) emitEvent(event int, arg interface{}) {
-	k.eventListeners[event] <- arg
-}
-
-// Checks the validity of a JSON Web Token.
-type TokenValidity struct {
-	Valid bool `json:"valid"`
-	State string `json:"state"`
-	ExpiresAt int `json:"expiresAt"`
-}
-func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
-	if token == "" {
-		return nil, errors.New("Kuzzle.CheckToken: token required")
+	if k.eventListeners[event] != nil {
+		k.eventListeners[event] <- arg
 	}
-
-	result := make(chan types.KuzzleResponse)
-
-	type body struct {
-		Token string `json:"token"`
-	}
-	k.Query(MakeQuery("auth", "checkToken", "", "", &body{token}), result, nil)
-
-	res := <- result
-
-	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
-	}
-	tokenValidity := &TokenValidity{}
-	json.Unmarshal(res.Result, &tokenValidity)
-
-	return tokenValidity, nil
 }
 
 // Connects to a Kuzzle instance using the provided host and port.
@@ -101,22 +73,23 @@ func (k *Kuzzle) Connect() error {
 			k.emitEvent(event.Reconnected, nil)
 			k.state = state.Connected
 			if k.jwtToken != "" {
-				go func() {
-					res, err := k.CheckToken(k.jwtToken)
-
-					if err != nil {
-						k.jwtToken = ""
-						k.emitEvent(event.JwtTokenExpired, nil)
-						k.Reconnect()
-						return
-					}
-
-					if !res.Valid {
-						k.jwtToken = ""
-						k.emitEvent(event.JwtTokenExpired, nil)
-					}
-					k.Reconnect()
-				}()
+				// todo avoid import cycle
+				//go func() {
+				//	res, err := kuzzle.CheckToken(k, k.jwtToken)
+        //
+				//	if err != nil {
+				//		k.jwtToken = ""
+				//		k.emitEvent(event.JwtTokenExpired, nil)
+				//		k.Reconnect()
+				//		return
+				//	}
+        //
+				//	if !res.Valid {
+				//		k.jwtToken = ""
+				//		k.emitEvent(event.JwtTokenExpired, nil)
+				//	}
+				//	k.Reconnect()
+				//}()
 			}
 		} else {
 			k.emitEvent(event.Connected, nil)

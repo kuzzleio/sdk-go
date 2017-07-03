@@ -1,6 +1,6 @@
 package core
 
-import ("github.com/kuzzleio/sdk-core/types"
+import ("github.com/kuzzleio/sdk-go/types"
   "encoding/json"
 )
 
