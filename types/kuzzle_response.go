@@ -36,3 +36,8 @@ type KuzzleResponse struct {
   RoomId string `json:"room"`
   Error MessageError `json:"error"`
 }
+
+type AckResponse struct {
+  Acknowledged bool
+  ShardsAcknowledged bool
+}

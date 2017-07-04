@@ -10,7 +10,7 @@ type MockedKuzzle struct {
   MockQuery func() types.KuzzleResponse
 }
 
-func (k *MockedKuzzle) Query(query types.KuzzleRequest, res chan<- types.KuzzleResponse, subscription chan<- types.KuzzleNotification) {
+func (k *MockedKuzzle) Query(query types.KuzzleRequest, res chan<- types.KuzzleResponse, options *types.Options) {
   if k.MockQuery != nil {
     res <- k.MockQuery()
   }

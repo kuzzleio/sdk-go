@@ -38,17 +38,17 @@ func (dc *Collection) Count(filters interface{}, resultChan chan<- int) {
   resultChan <- count.Count
 }
 
-func (dc *Collection) Subscribe(filters interface{}, subChan chan<- types.KuzzleNotification, result chan<- types.KuzzleResponse) {
-  MyDocument := types.KuzzleRequest{
-    Controller: "realtime",
-    Action: "subscribe",
-    Index: dc.index,
-    Collection: dc.Collection,
-    Body: filters,
-  }
-
-  dc.kuzzle.Query(MyDocument, result, subChan)
-}
+//func (dc *Collection) Subscribe(filters interface{}, subChan chan<- types.KuzzleNotification, result chan<- types.KuzzleResponse) {
+//  MyDocument := types.KuzzleRequest{
+//    Controller: "realtime",
+//    Action: "subscribe",
+//    Index: dc.index,
+//    Collection: dc.Collection,
+//    Body: filters,
+//  }
+//
+//  dc.kuzzle.Query(MyDocument, result, subChan)
+//}
 
 func (dc *Collection) makeQuery(controller string, action string, body interface{}) types.KuzzleRequest {
   return types.KuzzleRequest{

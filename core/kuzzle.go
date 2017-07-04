@@ -11,7 +11,7 @@ import (
 )
 
 type IKuzzle interface {
-	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, chan<- types.KuzzleNotification)
+	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
 }
 
 type Kuzzle struct {
@@ -155,18 +155,19 @@ func (k *Kuzzle) Collection(collection, index string) *Collection {
 }
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, res chan<- types.KuzzleResponse, subscription chan<- types.KuzzleNotification) {
+func (k *Kuzzle) Query(query types.KuzzleRequest, res chan<- types.KuzzleResponse, options *types.Options) {
 	requestId := uuid.NewV4().String()
 
 	query.RequestId = requestId
 	k.mu.Lock()
 	k.channelsResult[requestId] = res
 	k.mu.Unlock()
-	if subscription != nil {
-		k.mu.Lock()
-		k.subscriptions[requestId] = subscription
-		k.mu.Unlock()
-	}
+	// todo write room feature for subscribe
+	//if subscription != nil {
+	//	k.mu.Lock()
+	//	k.subscriptions[requestId] = subscription
+	//	k.mu.Unlock()
+	//}
 
 	type body struct {}
 	if query.Body == nil {
