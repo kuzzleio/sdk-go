@@ -26,7 +26,7 @@ func CheckToken(ik core.IKuzzle, token string) (*TokenValidity, error) {
     Token string `json:"token"`
   }
 
-  ik.Query(utils.MakeQuery("auth", "checkToken", "", "", &body{token}), result, nil)
+  go ik.Query(utils.MakeQuery("auth", "checkToken", "", "", &body{token}), result, nil)
 
   res := <- result
 

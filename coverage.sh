@@ -4,7 +4,7 @@ set -e
 workdir=.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(core event kuzzle wrappers)
+dirs=(core kuzzle wrappers)
 
 generate_cover_data() {
     rm -rf "$workdir"
