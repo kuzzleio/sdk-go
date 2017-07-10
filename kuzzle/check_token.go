@@ -21,13 +21,12 @@ func CheckToken(ik core.IKuzzle, token string) (*TokenValidity, error) {
   }
 
   result := make(chan types.KuzzleResponse)
-  defer close(result)
 
   type body struct {
     Token string `json:"token"`
   }
 
-  go ik.Query(utils.MakeQuery("auth", "checkToken", "", "", &body{token}), result, nil)
+  ik.Query(utils.MakeQuery("auth", "checkToken", "", "", &body{token}), result, nil)
 
   res := <- result
 
