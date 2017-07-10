@@ -15,11 +15,7 @@ func CreateIndex(ik core.IKuzzle, index string, options *types.Options) (*types.
 
   result := make(chan types.KuzzleResponse)
 
-  type body struct {
-     Index string `json:"index"`
-  }
-
-  go ik.Query(utils.MakeQuery("index", "create", "", "", &body{index}), result, options)
+  go ik.Query(utils.MakeQuery("index", "create", index, "", nil), result, options)
 
   res := <-result
 

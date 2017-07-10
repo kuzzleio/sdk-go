@@ -91,12 +91,6 @@ func (k *Kuzzle) Connect() error {
   return err
 }
 
-func (k Kuzzle) Reconnect() {
-  // todo auto resubscribe
-
-  //todo auto replay
-}
-
 // Instantiates a new Collection object.
 func (k *Kuzzle) Collection(collection, index string) *Collection {
   return NewCollection(k, collection, index)
@@ -126,6 +120,9 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, responseChannel chan<- types.K
   }
 }
 
+
+// Disconnect from Kuzzle and invalidate this instance.
+// Does not fire a disconnected event.
 func (k *Kuzzle) Disconnect() error {
   err := k.socket.Close()
 
