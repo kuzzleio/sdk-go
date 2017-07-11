@@ -2,11 +2,11 @@ package state
 
 const (
 	Connecting = iota
-	Disconnected = iota
-	Connected = iota
-	Initializing = iota
-	Ready = iota
-	Logged_out = iota
-	Error = iota
-	Offline = iota
+	Disconnected
+	Connected
+	Initializing
+	Ready
+	Logged_out
+	Error
+	Offline
 )

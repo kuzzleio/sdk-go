@@ -350,7 +350,7 @@ func (ws *WebSocket) dequeue() error {
       return err
     }
   }
-
+  // Example from sdk where we have a good use of _
   if len(ws.offlineQueue) > 0 {
     for _, query := range ws.offlineQueue {
       ws.emitRequest(query)
