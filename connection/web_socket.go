@@ -18,12 +18,6 @@ const (
   EVENT_TIMEOUT    = 20
 )
 
-type Connection interface {
-  Connect() (bool, error)
-  Send([]byte, *types.Options, chan<- types.KuzzleResponse, string) error
-  Close() error
-}
-
 type WebSocket struct {
   ws      *websocket.Conn
   mu      *sync.Mutex
