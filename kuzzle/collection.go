@@ -1,61 +1,49 @@
 package kuzzle
 
-import ("github.com/kuzzleio/sdk-go/types"
+import (
+  "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
+  "errors"
 )
 
 type Collection struct {
-  kuzzle *Kuzzle
-  index, Collection string
+  kuzzle            *Kuzzle
+  index, collection string
   subscribeCallback interface{}
 }
 
 func NewCollection(kuzzle *Kuzzle, collection, index string) *Collection {
   return &Collection{
-    index: index,
-    Collection: collection,
-    kuzzle: kuzzle,
+    index:      index,
+    collection: collection,
+    kuzzle:     kuzzle,
   }
 }
 
-func (dc *Collection) Count(filters interface{}, resultChan chan<- int) {
+/*
+  Returns the number of documents matching the provided set of filters.
+
+  There is a small delay between documents creation and their existence in our advanced search layer,
+  usually a couple of seconds.
+  That means that a document that was just been created won’t be returned by this function
+
+*/
+func (dc *Collection) Count(filters interface{}) (*int, error) {
   type countResult struct {
     Count int `json:"count"`
   }
 
-  type body struct {
-    Filters []byte
+  ch := make(chan types.KuzzleResponse)
+
+  go dc.kuzzle.Query(makeQuery(dc.collection, dc.index, "document", "count", filters), ch, nil)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return nil, errors.New(res.Error.Message)
   }
+  result := &countResult{}
+  json.Unmarshal(res.Result, result)
 
-  result := make(chan types.KuzzleResponse)
-
-  dc.kuzzle.Query(dc.makeQuery("document", "count", filters), result, nil)
-
-  res := <-result
-
-  count := countResult{}
-  json.Unmarshal(res.Result, &count)
-  resultChan <- count.Count
-}
-
-//func (dc *Collection) Subscribe(filters interface{}, subChan chan<- types.KuzzleNotification, result chan<- types.KuzzleResponse) {
-//  MyDocument := types.KuzzleRequest{
-//    Controller: "realtime",
-//    Action: "subscribe",
-//    Index: dc.index,
-//    Collection: dc.Collection,
-//    Body: filters,
-//  }
-//
-//  dc.kuzzle.Query(MyDocument, result, subChan)
-//}
-
-func (dc *Collection) makeQuery(controller string, action string, body interface{}) types.KuzzleRequest {
-  return types.KuzzleRequest{
-    Controller: controller,
-    Action: action,
-    Index: dc.index,
-    Collection: dc.Collection,
-    Body: body,
-  }
+  return &result.Count, nil
 }

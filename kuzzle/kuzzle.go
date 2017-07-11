@@ -85,7 +85,7 @@ func (k *Kuzzle) Connect() error {
   return err
 }
 
-// Instantiates a new Collection object.
+// Instantiates a new collection object.
 func (k *Kuzzle) Collection(collection, index string) *Collection {
   return NewCollection(k, collection, index)
 }
@@ -125,4 +125,14 @@ func (k *Kuzzle) Disconnect() error {
   k.wasConnected = false
 
   return nil
+}
+
+func makeQuery(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
+  return types.KuzzleRequest{
+    Controller: controller,
+    Action:     action,
+    Index:      index,
+    Collection: collection,
+    Body:       body,
+  }
 }
