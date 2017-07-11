@@ -5,13 +5,29 @@ import (
   "github.com/kuzzleio/sdk-go/types"
 )
 
-type MockedKuzzle struct {
+type MockedConnection struct {
   mock.Mock
-  MockQuery func() types.KuzzleResponse
+  MockSend func() types.KuzzleResponse
 }
 
-func (k *MockedKuzzle) Query(query types.KuzzleRequest, res chan<- types.KuzzleResponse, options *types.Options) {
-  if k.MockQuery != nil {
-    res <- k.MockQuery()
+type Connection interface {
+  Connect() (bool, error)
+  Send([]byte, *types.Options, chan<- types.KuzzleResponse, string) error
+  Close() error
+}
+
+func (c *MockedConnection) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
+  if c.MockSend != nil {
+    responseChannel <- c.MockSend()
   }
+
+  return nil
+}
+
+func (c *MockedConnection) Connect() (bool, error) {
+  return false, nil
+}
+
+func (c *MockedConnection) Close() error {
+  return nil
 }

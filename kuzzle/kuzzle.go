@@ -51,10 +51,6 @@ func AddListener(k Kuzzle, event int, channel chan<- interface{}) {
 
 // Connects to a Kuzzle instance using the provided host and port.
 func (k *Kuzzle) Connect() error {
-  if !k.isValidState() {
-    return nil
-  }
-
   wasConnected, err := k.socket.Connect()
   if err == nil {
     //if k.lastUrl != k.Host {
@@ -129,12 +125,4 @@ func (k *Kuzzle) Disconnect() error {
   k.wasConnected = false
 
   return nil
-}
-
-func (k Kuzzle) isValidState() bool {
-  //switch k.socket.State {
-  //case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
-  //  return true
-  //}
-  return false
 }

@@ -120,6 +120,10 @@ func NewWebSocket(host string, options *types.Options) Connection {
 }
 
 func (ws *WebSocket) Connect() (bool, error) {
+  if !ws.isValidState() {
+    return false, nil
+  }
+
   addr := flag.String("addr", ws.host, "http service address")
   u := url.URL{Scheme: "ws", Host: *addr}
   resChan := make(chan []byte)
@@ -406,4 +410,12 @@ func (ws *WebSocket) Close() error {
   ws.stopRetryingToConnect = true
   ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
   return ws.ws.Close()
+}
+
+func (ws *WebSocket) isValidState() bool {
+  switch ws.State {
+  case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
+    return true
+  }
+  return false
 }
