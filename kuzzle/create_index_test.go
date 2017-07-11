@@ -3,10 +3,10 @@ package kuzzle_test
 import (
   "testing"
   "github.com/stretchr/testify/assert"
-  "github.com/kuzzleio/sdk-go/kuzzle"
   "github.com/kuzzleio/sdk-go/internal"
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
+  "github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func TestCreateIndexNull(t *testing.T) {

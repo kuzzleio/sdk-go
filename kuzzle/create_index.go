@@ -1,14 +1,13 @@
 package kuzzle
 
 import (
-  "github.com/kuzzleio/sdk-go/core"
+  "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
   "errors"
-  "encoding/json"
   "github.com/kuzzleio/sdk-go/utils"
 )
 
-func CreateIndex(ik core.IKuzzle, index string, options *types.Options) (*types.AckResponse, error) {
+func CreateIndex(ik IKuzzle, index string, options *types.Options) (*types.AckResponse, error) {
   if index == "" {
     return nil, errors.New("Kuzzle.createIndex: index required")
   }

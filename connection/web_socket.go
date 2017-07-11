@@ -1,4 +1,4 @@
-package wrappers
+package connection
 
 import (
   "github.com/gorilla/websocket"
@@ -17,6 +17,12 @@ const (
   MAX_EMIT_TIMEOUT = 10
   EVENT_TIMEOUT    = 20
 )
+
+type Connection interface {
+  Connect() (bool, error)
+  Send([]byte, *types.Options, chan<- types.KuzzleResponse, string) error
+  Close() error
+}
 
 type WebSocket struct {
   ws      *websocket.Conn
@@ -74,7 +80,7 @@ func (ws *WebSocket) SetQueueFilter(queueFilter QueueFilter) {
   ws.queueFilter = queueFilter
 }
 
-func NewWebSocket(options *types.Options) *WebSocket {
+func NewWebSocket(host string, options *types.Options) Connection {
   var opts *types.Options
 
   if options == nil {
@@ -102,6 +108,7 @@ func NewWebSocket(options *types.Options) *WebSocket {
     stopRetryingToConnect: false,
     queueFilter:           &defaultQueueFilter{},
   }
+  ws.host = host
 
   if opts.OfflineMode == types.Auto {
     ws.autoReconnect = true
@@ -112,8 +119,8 @@ func NewWebSocket(options *types.Options) *WebSocket {
   return ws
 }
 
-func (ws *WebSocket) Connect(connectUrl string) (bool, error) {
-  addr := flag.String("addr", connectUrl, "http service address")
+func (ws *WebSocket) Connect() (bool, error) {
+  addr := flag.String("addr", ws.host, "http service address")
   u := url.URL{Scheme: "ws", Host: *addr}
   resChan := make(chan []byte)
 
@@ -134,7 +141,7 @@ func (ws *WebSocket) Connect(connectUrl string) (bool, error) {
 
   if ws.lastUrl != ws.host {
     ws.wasConnected = false
-    ws.lastUrl = connectUrl
+    ws.lastUrl = ws.host
   }
 
   if ws.wasConnected {

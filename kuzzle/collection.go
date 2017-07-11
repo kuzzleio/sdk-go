@@ -1,4 +1,4 @@
-package core
+package kuzzle
 
 import ("github.com/kuzzleio/sdk-go/types"
   "encoding/json"

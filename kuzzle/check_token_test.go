@@ -1,4 +1,4 @@
-package kuzzle_test
+package kuzzle
 
 import (
   "github.com/kuzzleio/sdk-go/internal"

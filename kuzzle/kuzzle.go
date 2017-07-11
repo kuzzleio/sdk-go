@@ -1,12 +1,11 @@
-package core
+package kuzzle
 
 import (
-  "github.com/kuzzleio/sdk-go/wrappers"
+  "github.com/kuzzleio/sdk-go/connection"
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
   "github.com/satori/go.uuid"
   "sync"
-  "github.com/kuzzleio/sdk-go/state"
 )
 
 type IKuzzle interface {
@@ -15,7 +14,7 @@ type IKuzzle interface {
 
 type Kuzzle struct {
   Host   string
-  socket *wrappers.WebSocket
+  socket connection.Connection
   State  *int
 
   wasConnected bool
@@ -26,7 +25,7 @@ type Kuzzle struct {
 }
 
 // Kuzzle constructor
-func NewKuzzle(host string, options *types.Options) (*Kuzzle, error) {
+func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
   var err error
 
   if options == nil {
@@ -34,11 +33,10 @@ func NewKuzzle(host string, options *types.Options) (*Kuzzle, error) {
   }
 
   k := &Kuzzle{
-    Host:   host,
     mu:     &sync.Mutex{},
-    socket: wrappers.NewWebSocket(options),
+    socket: c,
   }
-  k.State = &k.socket.State
+  // k.State = &k.socket.State
   if options.Connect == types.Auto {
     err = k.Connect()
   }
@@ -47,8 +45,8 @@ func NewKuzzle(host string, options *types.Options) (*Kuzzle, error) {
 }
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
-func (k *Kuzzle) AddListener(event int, channel chan<- interface{}) {
-  k.socket.AddListener(event, channel)
+func AddListener(k Kuzzle, event int, channel chan<- interface{}) {
+  // k.socket.AddListener(event, channel)
 }
 
 // Connects to a Kuzzle instance using the provided host and port.
@@ -57,12 +55,12 @@ func (k *Kuzzle) Connect() error {
     return nil
   }
 
-  wasConnected, err := k.socket.Connect(k.Host)
+  wasConnected, err := k.socket.Connect()
   if err == nil {
-    if k.lastUrl != k.Host {
-      k.wasConnected = false
-      k.lastUrl = k.Host
-    }
+    //if k.lastUrl != k.Host {
+    //  k.wasConnected = false
+    //  k.lastUrl = k.Host
+    //}
 
     if wasConnected {
       if k.jwtToken != "" {
@@ -120,7 +118,6 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, responseChannel chan<- types.K
   }
 }
 
-
 // Disconnect from Kuzzle and invalidate this instance.
 // Does not fire a disconnected event.
 func (k *Kuzzle) Disconnect() error {
@@ -135,9 +132,9 @@ func (k *Kuzzle) Disconnect() error {
 }
 
 func (k Kuzzle) isValidState() bool {
-  switch k.socket.State {
-  case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
-    return true
-  }
+  //switch k.socket.State {
+  //case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
+  //  return true
+  //}
   return false
 }
