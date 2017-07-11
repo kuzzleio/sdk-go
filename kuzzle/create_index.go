@@ -7,14 +7,14 @@ import (
   "github.com/kuzzleio/sdk-go/utils"
 )
 
-func CreateIndex(ik IKuzzle, index string, options *types.Options) (*types.AckResponse, error) {
+func (k *Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckResponse, error) {
   if index == "" {
     return nil, errors.New("Kuzzle.createIndex: index required")
   }
 
   result := make(chan types.KuzzleResponse)
 
-  go ik.Query(utils.MakeQuery("index", "create", index, "", nil), result, options)
+  go k.Query(utils.MakeQuery("index", "create", index, "", nil), result, options)
 
   res := <-result
 
