@@ -27,14 +27,14 @@ func NewCollection(kuzzle *Kuzzle, collection, index string) *Collection {
   usually a couple of seconds.
   That means that a document that was just been created won’t be returned by this function
 */
-func (dc *Collection) Count(filters interface{}) (*int, error) {
+func (dc *Collection) Count(filters interface{}, options *types.Options) (*int, error) {
   type countResult struct {
     Count int `json:"count"`
   }
 
   ch := make(chan types.KuzzleResponse)
 
-  go dc.kuzzle.Query(buildQueryArgs(dc.collection, dc.index, "document", "count", filters), ch, nil)
+  go dc.kuzzle.Query(buildQuery(dc.collection, dc.index, "document", "count", filters), options, ch)
 
   res := <-ch
 

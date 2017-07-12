@@ -91,7 +91,7 @@ func (k *Kuzzle) Collection(collection, index string) *Collection {
 }
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, responseChannel chan<- types.KuzzleResponse, options *types.Options) {
+func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
   requestId := uuid.NewV4().String()
 
   query.RequestId = requestId
@@ -101,13 +101,13 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, responseChannel chan<- types.K
     query.Body = &body{}
   }
 
-  json, err := json.Marshal(query)
+  jsonRequest, err := json.Marshal(query)
   if err != nil {
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
     return
   }
 
-  err = k.socket.Send(json, options, responseChannel, requestId)
+  err = k.socket.Send(jsonRequest, options, responseChannel, requestId)
   if err != nil {
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
     return
@@ -127,7 +127,7 @@ func (k *Kuzzle) Disconnect() error {
   return nil
 }
 
-func buildQueryArgs(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
+func buildQuery(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
   return types.KuzzleRequest{
     Controller: controller,
     Action:     action,

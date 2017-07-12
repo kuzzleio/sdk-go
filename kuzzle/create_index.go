@@ -4,7 +4,6 @@ import (
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
   "errors"
-  "github.com/kuzzleio/sdk-go/utils"
 )
 
 func (k *Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckResponse, error) {
@@ -14,7 +13,7 @@ func (k *Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckRe
 
   result := make(chan types.KuzzleResponse)
 
-  go k.Query(utils.MakeQuery("index", "create", index, "", nil), result, options)
+  go k.Query(buildQuery("index", "create", index, "", nil), options, result)
 
   res := <-result
 
