@@ -127,7 +127,7 @@ func (k *Kuzzle) Disconnect() error {
   return nil
 }
 
-func makeQuery(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
+func buildQueryArgs(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
   return types.KuzzleRequest{
     Controller: controller,
     Action:     action,

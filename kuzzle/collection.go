@@ -26,7 +26,6 @@ func NewCollection(kuzzle *Kuzzle, collection, index string) *Collection {
   There is a small delay between documents creation and their existence in our advanced search layer,
   usually a couple of seconds.
   That means that a document that was just been created won’t be returned by this function
-
 */
 func (dc *Collection) Count(filters interface{}) (*int, error) {
   type countResult struct {
@@ -35,7 +34,7 @@ func (dc *Collection) Count(filters interface{}) (*int, error) {
 
   ch := make(chan types.KuzzleResponse)
 
-  go dc.kuzzle.Query(makeQuery(dc.collection, dc.index, "document", "count", filters), ch, nil)
+  go dc.kuzzle.Query(buildQueryArgs(dc.collection, dc.index, "document", "count", filters), ch, nil)
 
   res := <-ch
 
