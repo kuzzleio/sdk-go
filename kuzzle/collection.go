@@ -47,9 +47,9 @@ func (dc *Collection) Count(filters interface{}, options *types.Options) (*int, 
   return &result.Count, nil
 }
 
-/**
- * Create a new empty data collection, with no associated mapping.
- */
+/*
+  Create a new empty data collection, with no associated mapping.
+*/
 func (dc *Collection) Create(options *types.Options) (*types.AckResponse, error) {
   ch := make(chan types.KuzzleResponse)
 
