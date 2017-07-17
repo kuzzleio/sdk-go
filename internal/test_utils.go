@@ -7,7 +7,7 @@ import (
 
 type MockedConnection struct {
   mock.Mock
-  MockSend func() types.KuzzleResponse
+  MockSend func([]byte) types.KuzzleResponse
 }
 
 type Connection interface {
@@ -18,7 +18,7 @@ type Connection interface {
 
 func (c *MockedConnection) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
   if c.MockSend != nil {
-    responseChannel <- c.MockSend()
+    responseChannel <- c.MockSend(query)
   }
 
   return nil
