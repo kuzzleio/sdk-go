@@ -11,7 +11,7 @@ import (
 
 func TestCountError (t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
     },
   }
@@ -27,7 +27,7 @@ func TestCount(t *testing.T) {
   }
 
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       res := result{Count: 10}
       r, _ := json.Marshal(res)
       return types.KuzzleResponse{Result: r}
@@ -41,7 +41,7 @@ func TestCount(t *testing.T) {
 
 func TestCreateError (t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
     },
   }
@@ -53,7 +53,7 @@ func TestCreateError (t *testing.T) {
 
 func TestCreate(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       res := types.AckResponse{Acknowledged: true}
       r, _ := json.Marshal(res)
       return types.KuzzleResponse{Result: r}
