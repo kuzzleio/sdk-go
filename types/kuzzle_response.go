@@ -42,3 +42,5 @@ type AckResponse struct {
   Acknowledged       bool
   ShardsAcknowledged bool
 }
+
+type Document KuzzleResult

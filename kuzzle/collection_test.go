@@ -64,3 +64,39 @@ func TestCreate(t *testing.T) {
   res, _ := k.Collection("collection", "index").Create(nil)
   assert.Equal(t, true, res.Acknowledged)
 }
+
+func TestCreateDocumentError (t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func() types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := k.Collection("collection", "index").CreateDocument("id", Document{Title: "yolo"}, nil)
+  assert.NotNil(t, err)
+}
+
+func TestCreateDocument(t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  id := "myId"
+
+  c := &internal.MockedConnection{
+    MockSend: func() types.KuzzleResponse {
+      res := types.Document{Id: id, Source: []byte(`{"title": "yolo"}`)}
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := k.Collection("collection", "index").CreateDocument(id, Document{Title: "yolo"}, nil)
+  assert.Equal(t, id, res.Id)
+}

@@ -97,6 +97,7 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
   query.RequestId = requestId
 
   type body struct{}
+
   if query.Body == nil {
     query.Body = &body{}
   }
