@@ -27,7 +27,7 @@ func NewCollection(kuzzle *Kuzzle, collection, index string) *Collection {
   usually a couple of seconds.
   That means that a document that was just been created won’t be returned by this function
 */
-func (dc *Collection) Count(filters interface{}, options *types.Options) (*int, error) {
+func (dc Collection) Count(filters interface{}, options *types.Options) (*int, error) {
   type countResult struct {
     Count int `json:"count"`
   }
@@ -50,7 +50,7 @@ func (dc *Collection) Count(filters interface{}, options *types.Options) (*int, 
 /*
   Create a new empty data collection, with no associated mapping.
 */
-func (dc *Collection) Create(options *types.Options) (*types.AckResponse, error) {
+func (dc Collection) Create(options *types.Options) (*types.AckResponse, error) {
   ch := make(chan types.KuzzleResponse)
 
   go dc.kuzzle.Query(buildQuery(dc.collection, dc.index, "collection", "create", nil), options, ch)
@@ -65,4 +65,24 @@ func (dc *Collection) Create(options *types.Options) (*types.AckResponse, error)
   json.Unmarshal(res.Result, &ack)
 
   return ack, nil
+}
+
+/*
+  Searches documents in the given Collection, using provided filters and options.
+*/
+func (dc Collection) Search(filters interface{}, options *types.Options) (*types.KuzzleSearchResult, error) {
+  ch := make(chan types.KuzzleResponse)
+
+  go dc.kuzzle.Query(buildQuery(dc.collection, dc.index, "document", "search", filters), options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return nil, errors.New(res.Error.Message)
+  }
+
+  searchResult := &types.KuzzleSearchResult{}
+  json.Unmarshal(res.Result, &searchResult)
+
+  return searchResult, nil
 }
