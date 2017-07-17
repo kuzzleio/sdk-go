@@ -17,7 +17,7 @@ func TestCheckTokenTokenNull(t *testing.T) {
 
 func TestCheckTokenQueryError(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
     },
   }
@@ -28,7 +28,7 @@ func TestCheckTokenQueryError(t *testing.T) {
 
 func TestCheckToken(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       tokenValidity := kuzzle.TokenValidity{Valid: true}
       r, _ := json.Marshal(tokenValidity)
       return types.KuzzleResponse{Result: r}

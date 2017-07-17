@@ -17,7 +17,7 @@ func TestCreateIndexNull(t *testing.T) {
 
 func TestCreateIndexQueryError(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
     },
   }
@@ -33,7 +33,7 @@ func TestCreateIndex(t *testing.T) {
   }
 
   c := &internal.MockedConnection{
-    MockSend: func(query []byte) types.KuzzleResponse {
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       ack := ackResult{Acknowledged: true, ShardsAcknowledged: true}
       r, _ := json.Marshal(ack)
       return types.KuzzleResponse{Result: r}
