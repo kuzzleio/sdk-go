@@ -71,7 +71,7 @@ func TestCreateDocumentError (t *testing.T) {
   }
 
   c := &internal.MockedConnection{
-    MockSend: func() types.KuzzleResponse {
+    MockSend: func(query []byte) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
     },
   }
@@ -89,7 +89,7 @@ func TestCreateDocument(t *testing.T) {
   id := "myId"
 
   c := &internal.MockedConnection{
-    MockSend: func() types.KuzzleResponse {
+    MockSend: func(query []byte) types.KuzzleResponse {
       res := types.Document{Id: id, Source: []byte(`{"title": "yolo"}`)}
       r, _ := json.Marshal(res)
       return types.KuzzleResponse{Result: r}
