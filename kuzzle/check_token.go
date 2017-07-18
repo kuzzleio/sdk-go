@@ -4,6 +4,7 @@ import (
   "encoding/json"
   "errors"
   "github.com/kuzzleio/sdk-go/types"
+  "github.com/kuzzleio/sdk-go/internal"
 )
 
 // Checks the validity of a JSON Web Token.
@@ -24,7 +25,7 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
     Token string `json:"token"`
   }
 
-  go k.Query(buildQuery("auth", "checkToken", "", "", &body{token}), nil, result)
+  go k.Query(internal.BuildQuery("auth", "checkToken", "", "", &body{token}), nil, result)
 
   res := <-result
 
