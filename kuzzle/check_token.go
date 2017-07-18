@@ -4,6 +4,7 @@ import (
   "encoding/json"
   "errors"
   "github.com/kuzzleio/sdk-go/types"
+  "github.com/kuzzleio/sdk-go/internal"
 )
 
 // Checks the validity of a JSON Web Token.
