@@ -37,7 +37,7 @@ type WebSocket struct {
   autoReplay            bool
   autoResubscribe       bool
   queueTTL              time.Duration
-  offlineQueue          []queryObject
+  offlineQueue          []types.QueryObject
   offlineQueueLoader    OfflineQueueLoader
   queueFilter           QueueFilter
   queueMaxSize          int
@@ -46,14 +46,6 @@ type WebSocket struct {
   retrying              bool
   stopRetryingToConnect bool
   RequestHistory        map[string]time.Time
-}
-
-type queryObject struct {
-  query     []byte
-  options   *types.Options
-  resChan   chan<- types.KuzzleResponse
-  timestamp time.Time
-  requestId string
 }
 
 type QueueFilter interface {
@@ -67,7 +59,7 @@ func (qf defaultQueueFilter) Filter(interface{}) bool {
 }
 
 type OfflineQueueLoader interface {
-  load() []queryObject
+  load() []types.QueryObject
 }
 
 func (ws *WebSocket) SetQueueFilter(queueFilter QueueFilter) {
@@ -85,7 +77,7 @@ func NewWebSocket(host string, options *types.Options) Connection {
   ws := &WebSocket{
     mu:                    &sync.Mutex{},
     queueTTL:              opts.QueueTTL,
-    offlineQueue:          make([]queryObject, 0),
+    offlineQueue:          make([]types.QueryObject, 0),
     queueMaxSize:          opts.QueueMaxSize,
     channelsResult:        make(map[string]chan<- types.KuzzleResponse),
     subscriptions:         make(map[string]chan<- types.KuzzleNotification),
@@ -186,21 +178,21 @@ func (ws *WebSocket) Connect() (bool, error) {
 
 func (ws *WebSocket) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
   if ws.State == state.Connected || (options != nil && !options.Queuable) {
-    ws.emitRequest(queryObject{
-      query:     query,
-      resChan:   responseChannel,
-      requestId: requestId,
+    ws.emitRequest(types.QueryObject{
+      Query:     query,
+      ResChan:   responseChannel,
+      RequestId: requestId,
     })
   } else if ws.queuing || (options != nil && options.Queuable) || ws.State == state.Initializing || ws.State == state.Connecting {
     ws.cleanQueue()
 
     if ws.queueFilter.Filter(query) {
-      qo := queryObject{
-        timestamp: time.Now(),
-        resChan:   responseChannel,
-        query:     query,
-        requestId: requestId,
-        options:   options,
+      qo := types.QueryObject{
+        Timestamp: time.Now(),
+        ResChan:   responseChannel,
+        Query:     query,
+        RequestId: requestId,
+        Options:   options,
       }
       ws.offlineQueue = append(ws.offlineQueue, qo)
       ws.emitEvent(event.OfflieQueuePush, qo)
@@ -224,9 +216,9 @@ func (ws *WebSocket) cleanQueue() {
 
   // Clean queue of timed out query
   if ws.queueTTL > 0 {
-    var query queryObject
+    var query types.QueryObject
     for _, query = range ws.offlineQueue {
-      if query.timestamp.Before(now) {
+      if query.Timestamp.Before(now) {
         ws.offlineQueue = ws.offlineQueue[1:]
       } else {
         break
@@ -331,10 +323,10 @@ func (ws *WebSocket) mergeOfflineQueueWithLoader() error {
   for _, additionalQuery := range additionalOfflineQueue {
     for _, offlineQuery := range ws.offlineQueue {
       q := query{}
-      json.Unmarshal(additionalQuery.query, &q)
+      json.Unmarshal(additionalQuery.Query, &q)
       if q.requestId != "" || q.action != "" || q.controller != "" {
         offlineQ := query{}
-        json.Unmarshal(offlineQuery.query, &offlineQ)
+        json.Unmarshal(offlineQuery.Query, &offlineQ)
         if q.requestId != offlineQ.requestId {
           ws.offlineQueue = append(ws.offlineQueue, additionalQuery)
         } else {
@@ -370,13 +362,13 @@ func (ws *WebSocket) dequeue() error {
   return nil
 }
 
-func (ws *WebSocket) emitRequest(query queryObject) error {
+func (ws *WebSocket) emitRequest(query types.QueryObject) error {
   now := time.Now()
   now = now.Add(-MAX_EMIT_TIMEOUT * time.Second)
 
   ws.mu.Lock()
   defer ws.mu.Unlock()
-  ws.channelsResult[query.requestId] = query.resChan
+  ws.channelsResult[query.RequestId] = query.ResChan
   // todo write room feature for subscribe
   //if subscription != nil {
   //	k.mu.Lock()
@@ -384,13 +376,13 @@ func (ws *WebSocket) emitRequest(query queryObject) error {
   //	k.mu.Unlock()
   //}
 
-  err := ws.ws.WriteMessage(websocket.TextMessage, query.query)
+  err := ws.ws.WriteMessage(websocket.TextMessage, query.Query)
   if err != nil {
     return err
   }
 
   // Track requests made to allow Room.subscribeToSelf to work
-  ws.RequestHistory[query.requestId] = time.Now()
+  ws.RequestHistory[query.RequestId] = time.Now()
   for i, request := range ws.RequestHistory {
     if request.Before(now) {
       delete(ws.RequestHistory, i)
@@ -404,6 +396,10 @@ func (ws *WebSocket) Close() error {
   ws.stopRetryingToConnect = true
   ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
   return ws.ws.Close()
+}
+
+func (ws WebSocket) GetOfflineQueue() *[]types.QueryObject {
+  return &ws.offlineQueue
 }
 
 func (ws *WebSocket) isValidState() bool {

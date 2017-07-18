@@ -110,6 +110,10 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
   }
 }
 
+func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
+  return k.socket.GetOfflineQueue()
+}
+
 // Disconnect from Kuzzle and invalidate this instance.
 // Does not fire a disconnected event.
 func (k *Kuzzle) Disconnect() error {
