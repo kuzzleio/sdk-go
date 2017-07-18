@@ -10,7 +10,7 @@ import (
 /*
   Create a new empty data collection, with no associated mapping.
 */
-func (dc *Collection) Create(options *types.Options) (*types.AckResponse, error) {
+func (dc Collection) Create(options *types.Options) (*types.AckResponse, error) {
   ch := make(chan types.KuzzleResponse)
 
   go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "collection", "create", nil), options, ch)
