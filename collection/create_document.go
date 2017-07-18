@@ -17,7 +17,7 @@ import (
            - resolves with an error if set to "error".
            - replaces the existing document if set to "replace"
 */
-func (dc *Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
+func (dc Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
   ch := make(chan types.KuzzleResponse)
 
   go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "document", "create", document), options, ch)
