@@ -36,7 +36,9 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
     mu:     &sync.Mutex{},
     socket: c,
   }
-  // k.State = &k.socket.State
+
+  k.State = k.socket.GetState()
+
   if options.Connect == types.Auto {
     err = k.Connect()
   }
@@ -112,19 +114,6 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
     return
   }
-}
-
-// Disconnect from Kuzzle and invalidate this instance.
-// Does not fire a disconnected event.
-func (k *Kuzzle) Disconnect() error {
-  err := k.socket.Close()
-
-  if err != nil {
-    return err
-  }
-  k.wasConnected = false
-
-  return nil
 }
 
 func buildQuery(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
