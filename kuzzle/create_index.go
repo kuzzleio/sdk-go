@@ -7,7 +7,7 @@ import (
   "github.com/kuzzleio/sdk-go/internal"
 )
 
-func (k *Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckResponse, error) {
+func (k Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckResponse, error) {
   if index == "" {
     return nil, errors.New("Kuzzle.createIndex: index required")
   }
