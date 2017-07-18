@@ -25,7 +25,7 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
     Token string `json:"token"`
   }
 
-  go k.Query(internal.BuildQuery("auth", "checkToken", "", "", &body{token}), nil, result)
+  go k.Query(internal.BuildQuery("", "", "auth", "checkToken", &body{token}), nil, result)
 
   res := <-result
 
