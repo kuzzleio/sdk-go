@@ -38,7 +38,14 @@ type KuzzleResponse struct {
   Error     MessageError `json:"error"`
 }
 
+type KuzzleSearchResult struct {
+  Hits  []KuzzleResult `json:"hits"`
+  Total int `json:"total"`
+}
+
 type AckResponse struct {
   Acknowledged       bool
   ShardsAcknowledged bool
 }
+
+type Document KuzzleResult
