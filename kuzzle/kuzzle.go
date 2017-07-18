@@ -87,11 +87,6 @@ func (k *Kuzzle) Connect() error {
   return err
 }
 
-// Instantiates a new collection object.
-func (k *Kuzzle) Collection(collection, index string) *Collection {
-  return NewCollection(k, collection, index)
-}
-
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
   requestId := uuid.NewV4().String()
@@ -99,8 +94,9 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
   query.RequestId = requestId
 
   type body struct{}
+
   if query.Body == nil {
-    query.Body = &body{}
+    query.Body = make(map[string]interface{})
   }
 
   jsonRequest, err := json.Marshal(query)
@@ -113,15 +109,5 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
   if err != nil {
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
     return
-  }
-}
-
-func buildQuery(collection, index, controller, action string, body interface{}) types.KuzzleRequest {
-  return types.KuzzleRequest{
-    Controller: controller,
-    Action:     action,
-    Index:      index,
-    Collection: collection,
-    Body:       body,
   }
 }
