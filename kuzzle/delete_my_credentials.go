@@ -3,7 +3,6 @@ package kuzzle
 import (
   "github.com/kuzzleio/sdk-go/types"
   "errors"
-  "reflect"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/internal"
 )
@@ -11,7 +10,7 @@ import (
 /*
  * Create credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, options *types.Options) (*types.AckResponse, error) {
   type body struct {
     Strategy string `json:"strategy"`
     Body     interface{} `json:"body"`
@@ -26,8 +25,8 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, op
     return nil, errors.New(res.Error.Message)
   }
 
-  ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()
-  json.Unmarshal(res.Result, &ref)
+  ack := &types.AckResponse{}
+  json.Unmarshal(res.Result, &ack)
 
-  return ref.(map[string]interface{}), nil
+  return ack, nil
 }

@@ -1,13 +1,13 @@
 package kuzzle_test
 
 import (
-"testing"
-"github.com/stretchr/testify/assert"
-"github.com/kuzzleio/sdk-go/internal"
-"github.com/kuzzleio/sdk-go/types"
-"encoding/json"
-"github.com/kuzzleio/sdk-go/kuzzle"
-"fmt"
+  "testing"
+  "github.com/stretchr/testify/assert"
+  "github.com/kuzzleio/sdk-go/internal"
+  "github.com/kuzzleio/sdk-go/types"
+  "encoding/json"
+  "github.com/kuzzleio/sdk-go/kuzzle"
+  "fmt"
 )
 
 func TestDeleteMyCredentialsQueryError(t *testing.T) {
@@ -33,7 +33,12 @@ func TestDeleteMyCredentials(t *testing.T) {
 
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      ack := myCredentials{Username: "foo", Password: "bar"}
+      type ackResult struct {
+        Acknowledged       bool
+        ShardsAcknowledged bool
+      }
+
+      ack := ackResult{Acknowledged: true, ShardsAcknowledged: true}
       r, _ := json.Marshal(ack)
 
       request := types.KuzzleRequest{}
@@ -48,6 +53,6 @@ func TestDeleteMyCredentials(t *testing.T) {
   res, _ := k.DeleteMyCredentials("local", myCredentials{"foo", "bar"}, nil)
 
   fmt.Printf("%s\n", res)
-  assert.Equal(t, "foo", res["username"])
-  assert.Equal(t, "bar", res["password"])
+  assert.Equal(t, true, res.Acknowledged)
+  assert.Equal(t, true, res.ShardsAcknowledged)
 }
