@@ -3,7 +3,6 @@ package collection
 import (
   "errors"
   "encoding/json"
-  "github.com/kuzzleio/sdk-go/internal"
   "github.com/kuzzleio/sdk-go/types"
 )
 
@@ -13,7 +12,14 @@ import (
 func (dc Collection) Search(filters interface{}, options *types.Options) (*types.KuzzleSearchResult, error) {
   ch := make(chan types.KuzzleResponse)
 
-  go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "document", "search", filters), options, ch)
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index:      dc.index,
+    Controller: "document",
+    Action:     "search",
+    Body:       filters,
+  }
+  go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch
 
