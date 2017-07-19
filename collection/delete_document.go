@@ -9,9 +9,9 @@ import (
 /*
   Deletes the Document using its provided unique id.
 */
-func (dc Collection) DeleteDocument(id string, options *types.Options) (*string, error) {
+func (dc Collection) DeleteDocument(id string, options *types.Options) (string, error) {
   if id == "" {
-    return nil, errors.New("Collection.DeleteDocument: document id required")
+    return "", errors.New("Collection.DeleteDocument: document id required")
   }
 
   ch := make(chan types.KuzzleResponse)
@@ -28,11 +28,11 @@ func (dc Collection) DeleteDocument(id string, options *types.Options) (*string,
   res := <-ch
 
   if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
+    return "", errors.New(res.Error.Message)
   }
 
   document := &types.Document{}
   json.Unmarshal(res.Result, document)
 
-  return &document.Id, nil
+  return document.Id, nil
 }
