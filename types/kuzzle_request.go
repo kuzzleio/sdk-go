@@ -7,4 +7,5 @@ type KuzzleRequest struct {
   Index string `json:"index"`
   Collection string `json:"collection"`
   Body interface{} `json:"body"`
+  Id string `json:"_id"`
 }

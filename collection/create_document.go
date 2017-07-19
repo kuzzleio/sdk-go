@@ -1,10 +1,10 @@
 package collection
 
 import (
-  "github.com/kuzzleio/sdk-go/internal"
   "errors"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
+  "fmt"
 )
 
 /*
@@ -20,7 +20,25 @@ import (
 func (dc Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
   ch := make(chan types.KuzzleResponse)
 
-  go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "document", "create", document), options, ch)
+  action := "create"
+
+  if options != nil {
+    if options.IfExist == "replace" {
+      action = "createOrReplace"
+    } else if options.IfExist != "error" {
+      return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+    }
+  }
+
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index:      dc.index,
+    Controller: "document",
+    Action:     action,
+    Body:       document,
+    Id:         id,
+  }
+  go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch
 

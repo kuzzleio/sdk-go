@@ -1,7 +1,6 @@
 package collection
 
 import (
-  "github.com/kuzzleio/sdk-go/internal"
   "errors"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
@@ -13,7 +12,13 @@ import (
 func (dc Collection) Create(options *types.Options) (*types.AckResponse, error) {
   ch := make(chan types.KuzzleResponse)
 
-  go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "collection", "create", nil), options, ch)
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index:      dc.index,
+    Controller: "collection",
+    Action:     "create",
+  }
+  go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch
 

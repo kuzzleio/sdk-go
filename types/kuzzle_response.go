@@ -29,6 +29,7 @@ type KuzzleResult struct {
   Id     string `json:"_id"`
   Meta   KuzzleMeta `json:"_meta"`
   Source json.RawMessage `json:"_source"`
+  Version int `json:"_version"`
 }
 
 type KuzzleResponse struct {

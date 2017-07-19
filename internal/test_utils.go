@@ -29,6 +29,14 @@ func (c MockedConnection) Close() error {
   return nil
 }
 
+func (c *MockedConnection) AddListener(event int, channel chan<- interface{}) {
+
+}
+
+func (c *MockedConnection) GetState() *int {
+  state := 0
+  return &state
+}
 func (c MockedConnection) GetOfflineQueue() *[]types.QueryObject {
   return &OfflineQueue
 }

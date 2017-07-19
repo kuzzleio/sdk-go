@@ -21,6 +21,9 @@ type Options struct {
   ReconnectionDelay time.Duration
   ReplayInterval    time.Duration
   Connect           int
+  Volatile          interface{}
+  Refresh           string
+  IfExist           string
 }
 
 func DefaultOptions() *Options {

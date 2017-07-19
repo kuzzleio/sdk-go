@@ -22,7 +22,7 @@ type WebSocket struct {
   ws      *websocket.Conn
   mu      *sync.Mutex
   queuing bool
-  State   int
+  state   int
 
   listenChan     chan []byte
   channelsResult map[string]chan<- types.KuzzleResponse
@@ -89,7 +89,7 @@ func NewWebSocket(host string, options *types.Options) Connection {
     autoResubscribe:       opts.AutoResubscribe,
     reconnectionDelay:     opts.ReconnectionDelay,
     replayInterval:        opts.ReplayInterval,
-    State:                 state.Ready,
+    state:                 state.Ready,
     retrying:              false,
     stopRetryingToConnect: false,
     queueFilter:           &defaultQueueFilter{},
@@ -136,10 +136,10 @@ func (ws *WebSocket) Connect() (bool, error) {
 
   if ws.wasConnected {
     ws.emitEvent(event.Reconnected, nil)
-    ws.State = state.Connected
+    ws.state = state.Connected
   } else {
     ws.emitEvent(event.Connected, nil)
-    ws.State = state.Connected
+    ws.state = state.Connected
   }
 
   ws.ws = socket
@@ -158,7 +158,7 @@ func (ws *WebSocket) Connect() (bool, error) {
       if err != nil {
         close(resChan)
         ws.ws.Close()
-        ws.State = state.Offline
+        ws.state = state.Offline
         if ws.autoQueue {
           ws.queuing = true
         }
@@ -177,13 +177,13 @@ func (ws *WebSocket) Connect() (bool, error) {
 }
 
 func (ws *WebSocket) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
-  if ws.State == state.Connected || (options != nil && !options.Queuable) {
+  if ws.state == state.Connected || (options != nil && !options.Queuable) {
     ws.emitRequest(types.QueryObject{
       Query:     query,
       ResChan:   responseChannel,
       RequestId: requestId,
     })
-  } else if ws.queuing || (options != nil && options.Queuable) || ws.State == state.Initializing || ws.State == state.Connecting {
+  } else if ws.queuing || (options != nil && options.Queuable) || ws.state == state.Initializing || ws.state == state.Connecting {
     ws.cleanQueue()
 
     if ws.queueFilter.Filter(query) {
@@ -289,13 +289,13 @@ func (ws *WebSocket) emitEvent(event int, arg interface{}) {
 }
 
 func (ws *WebSocket) StartQueuing() {
-  if ws.State == state.Offline && !ws.autoQueue {
+  if ws.state == state.Offline && !ws.autoQueue {
     ws.queuing = true
   }
 }
 
 func (ws *WebSocket) StopQueuing() {
-  if ws.State == state.Offline && !ws.autoQueue {
+  if ws.state == state.Offline && !ws.autoQueue {
     ws.queuing = false
   }
 }
@@ -305,7 +305,7 @@ func (ws *WebSocket) FlushQueue() {
 }
 
 func (ws *WebSocket) ReplayQueue() {
-  if ws.State != state.Offline && !ws.autoReplay {
+  if ws.state != state.Offline && !ws.autoReplay {
     ws.cleanQueue()
     ws.dequeue()
   }
@@ -395,6 +395,8 @@ func (ws *WebSocket) emitRequest(query types.QueryObject) error {
 func (ws *WebSocket) Close() error {
   ws.stopRetryingToConnect = true
   ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+  ws.state = state.Disconnected
+
   return ws.ws.Close()
 }
 
@@ -403,9 +405,13 @@ func (ws WebSocket) GetOfflineQueue() *[]types.QueryObject {
 }
 
 func (ws *WebSocket) isValidState() bool {
-  switch ws.State {
+  switch ws.state {
   case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
     return true
   }
   return false
+}
+
+func (ws *WebSocket) GetState() *int {
+  return &ws.state
 }

@@ -1,7 +1,6 @@
 package collection
 
 import (
-  "github.com/kuzzleio/sdk-go/internal"
   "errors"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
@@ -20,8 +19,14 @@ func (dc Collection) Count(filters interface{}, options *types.Options) (*int, e
   }
 
   ch := make(chan types.KuzzleResponse)
-
-  go dc.kuzzle.Query(internal.BuildQuery(dc.collection, dc.index, "document", "count", filters), options, ch)
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index:      dc.index,
+    Controller: "document",
+    Action:     "count",
+    Body:       filters,
+  }
+  go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch
 
