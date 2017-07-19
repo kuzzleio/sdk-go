@@ -40,3 +40,7 @@ func DefaultOptions() *Options {
     Connect:           Auto,
   }
 }
+
+type QueryOptions struct {
+  Queuable bool
+}
