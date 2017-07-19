@@ -4,6 +4,7 @@ import (
   "errors"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
+  "fmt"
 )
 
 /*
@@ -19,11 +20,21 @@ import (
 func (dc Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
   ch := make(chan types.KuzzleResponse)
 
+  action := "create"
+
+  if options != nil {
+    if options.IfExist == "replace" {
+      action = "createOrReplace"
+    } else if options.IfExist != "error" {
+      return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+    }
+  }
+
   query := types.KuzzleRequest{
     Collection: dc.collection,
     Index:      dc.index,
     Controller: "document",
-    Action:     "create",
+    Action:     action,
     Body:       document,
     Id:         id,
   }
