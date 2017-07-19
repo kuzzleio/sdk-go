@@ -23,7 +23,7 @@ func TestDeleteDocumentError(t *testing.T) {
 }
 
 func TestDeleteDocument(t *testing.T) {
-	type Document struct {
+  type Document struct {
 		Title string
 	}
 

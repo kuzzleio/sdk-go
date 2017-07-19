@@ -41,7 +41,7 @@ func TestSearch(t *testing.T) {
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-  res, _ := collection.NewCollection(k,"collection", "index").Search(nil, nil)
+  res, _ := collection.NewCollection(k, "collection", "index").Search(nil, nil)
   assert.Equal(t, 42, res.Total)
   assert.Equal(t, hits, res.Hits)
   assert.Equal(t, res.Hits[0].Id, "doc42")

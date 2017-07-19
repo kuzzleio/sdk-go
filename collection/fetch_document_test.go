@@ -37,8 +37,8 @@ func TestFetchDocument(t *testing.T) {
 			assert.Equal(t, "document", parsedQuery.Controller)
 			assert.Equal(t, "get", parsedQuery.Action)
 			assert.Equal(t, "index", parsedQuery.Index)
-			assert.Equal(t, "collection", parsedQuery.Collection)
-			assert.Equal(t, id, parsedQuery.Id)
+      assert.Equal(t, "collection", parsedQuery.Collection)
+      assert.Equal(t, id, parsedQuery.Id)
 
 			res := types.Document{Id: id, Source: []byte(`{"foo": "bar"}`)}
 			r, _ := json.Marshal(res)
