@@ -52,7 +52,6 @@ func TestDeleteMyCredentials(t *testing.T) {
 
   res, _ := k.DeleteMyCredentials("local", myCredentials{"foo", "bar"}, nil)
 
-  fmt.Printf("%s\n", res)
   assert.Equal(t, true, res.Acknowledged)
   assert.Equal(t, true, res.ShardsAcknowledged)
 }

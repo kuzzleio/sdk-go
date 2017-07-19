@@ -8,7 +8,7 @@ import (
 )
 
 /*
- * Create credentials of the specified strategy for the current user.
+ * Delete credentials of the specified strategy for the current user.
  */
 func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, options *types.Options) (*types.AckResponse, error) {
   type body struct {
