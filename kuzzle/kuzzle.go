@@ -44,11 +44,6 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
   return k, err
 }
 
-// Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
-func AddListener(k Kuzzle, event int, channel chan<- interface{}) {
-  // k.socket.AddListener(event, channel)
-}
-
 // Connects to a Kuzzle instance using the provided host and port.
 func (k *Kuzzle) Connect() error {
   wasConnected, err := k.socket.Connect()
