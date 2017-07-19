@@ -19,6 +19,19 @@ func (dc Collection) Search(filters interface{}, options *types.Options) (*types
     Action:     "search",
     Body:       filters,
   }
+
+  if options != nil {
+    if options.From != 0 {
+      query.From = options.From
+    }
+    if options.Size != 10 {
+      query.Size = options.Size
+    }
+    if options.Scroll != "" {
+      query.Scroll = options.Scroll
+    }
+  }
+
   go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch

@@ -24,6 +24,10 @@ type Options struct {
   Volatile          interface{}
   Refresh           string
   IfExist           string
+  From              int
+  Size              int
+  Scroll            string
+  ScrollId          string
 }
 
 func DefaultOptions() *Options {
@@ -38,5 +42,9 @@ func DefaultOptions() *Options {
     ReconnectionDelay: 1000,
     ReplayInterval:    10,
     Connect:           Auto,
+    From:              0,
+    Size:              10,
+    Scroll:            "1m",
+    ScrollId:          "",
   }
 }
