@@ -36,17 +36,14 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
     mu:     &sync.Mutex{},
     socket: c,
   }
-  // k.State = &k.socket.State
+
+  k.State = k.socket.GetState()
+
   if options.Connect == types.Auto {
     err = k.Connect()
   }
 
   return k, err
-}
-
-// Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
-func AddListener(k Kuzzle, event int, channel chan<- interface{}) {
-  // k.socket.AddListener(event, channel)
 }
 
 // Connects to a Kuzzle instance using the provided host and port.
@@ -108,17 +105,4 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
     return
   }
-}
-
-// Disconnect from Kuzzle and invalidate this instance.
-// Does not fire a disconnected event.
-func (k *Kuzzle) Disconnect() error {
-  err := k.socket.Close()
-
-  if err != nil {
-    return err
-  }
-  k.wasConnected = false
-
-  return nil
 }
