@@ -5,7 +5,6 @@ import (
   "errors"
   "reflect"
   "encoding/json"
-  "github.com/kuzzleio/sdk-go/internal"
 )
 
 /*
@@ -18,7 +17,12 @@ func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, op
   }
   result := make(chan types.KuzzleResponse)
 
-  go k.Query(internal.BuildQuery("", "", "auth", "createMyCredentials", &body{strategy, credentials}), options, result)
+  query := types.KuzzleRequest{
+    Controller: "auth",
+    Action:     "createMyCredentials",
+    Body:       &body{strategy, credentials},
+  }
+  go k.Query(query, options, result)
 
   res := <-result
 

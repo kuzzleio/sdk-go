@@ -42,6 +42,7 @@ func TestCreateDocument(t *testing.T) {
       assert.Equal(t, "create", parsedQuery.Action)
       assert.Equal(t, "index", parsedQuery.Index)
       assert.Equal(t, "collection", parsedQuery.Collection)
+      assert.Equal(t, id, parsedQuery.Id)
 
       assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["Title"])
 
