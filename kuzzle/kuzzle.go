@@ -86,7 +86,7 @@ func (k *Kuzzle) Connect() error {
 }
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
+func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
   requestId := uuid.NewV4().String()
 
   query.RequestId = requestId
