@@ -7,7 +7,6 @@ import (
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/kuzzle"
-  "fmt"
 )
 
 func TestCreateMyCredentialsQueryError(t *testing.T) {
@@ -47,7 +46,6 @@ func TestCreateMyCredentials(t *testing.T) {
 
   res, _ := k.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
 
-  fmt.Printf("%s\n", res)
   assert.Equal(t, "foo", res["username"])
   assert.Equal(t, "bar", res["password"])
 }

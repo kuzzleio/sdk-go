@@ -24,6 +24,7 @@ type Options struct {
   Volatile          interface{}
   Refresh           string
   IfExist           string
+  DefaultIndex      string
 }
 
 func DefaultOptions() *Options {

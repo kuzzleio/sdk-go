@@ -22,6 +22,7 @@ type Kuzzle struct {
   message      chan []byte
   mu           *sync.Mutex
   jwtToken     string
+  defaultIndex string
 }
 
 // Kuzzle constructor
@@ -38,6 +39,8 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
   }
 
   k.State = k.socket.GetState()
+
+  k.defaultIndex = options.DefaultIndex
 
   if options.Connect == types.Auto {
     err = k.Connect()
