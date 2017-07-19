@@ -19,7 +19,13 @@ func TestGetAutoRefreshIndexNull(t *testing.T) {
   opts := types.DefaultOptions()
   opts.DefaultIndex = "myIndex"
 
-  k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, opts)
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Result: json.RawMessage("true")}
+    },
+  }
+
+  k, _ := kuzzle.NewKuzzle(c, opts)
   _, err := k.GetAutoRefresh("", nil)
   assert.Nil(t, err)
 }
@@ -31,6 +37,7 @@ func TestGetAutoRefreshQueryError(t *testing.T) {
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
+  k.Connect()
   _, err := k.GetAutoRefresh("index", nil)
   assert.NotNil(t, err)
 }
@@ -51,4 +58,3 @@ func TestGetAutoRefresh(t *testing.T) {
   res, _ := k.GetAutoRefresh("index", nil)
   assert.Equal(t, true, res)
 }
-

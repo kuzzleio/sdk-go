@@ -22,7 +22,6 @@ func (k Kuzzle) GetAutoRefresh(index string, options *types.Options) (bool, erro
     Action:     "getAutoRefresh",
     Index:      index,
   }
-
   go k.Query(query, options, result)
 
   res := <-result
