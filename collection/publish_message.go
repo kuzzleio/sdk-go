@@ -13,7 +13,7 @@ import (
     - volatile (object, default: null):
       Additional information passed to notifications to other users
 */
-func (dc Collection) PublishMessage(document interface{}, options *types.Options) (*types.RealtimeResponse, error) {
+func (dc Collection) PublishMessage(document interface{}, options *types.Options) (types.RealtimeResponse, error) {
   ch := make(chan types.KuzzleResponse)
 
   query := types.KuzzleRequest{
@@ -28,11 +28,11 @@ func (dc Collection) PublishMessage(document interface{}, options *types.Options
   res := <-ch
 
   if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
+    return types.RealtimeResponse{}, errors.New(res.Error.Message)
   }
 
-  response := &types.RealtimeResponse{}
-  json.Unmarshal(res.Result, response)
+  response := types.RealtimeResponse{}
+  json.Unmarshal(res.Result, &response)
 
   return response, nil
 }
