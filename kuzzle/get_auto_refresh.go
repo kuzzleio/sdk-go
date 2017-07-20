@@ -33,6 +33,5 @@ func (k Kuzzle) GetAutoRefresh(index string, options *types.Options) (bool, erro
   var r bool
   json.Unmarshal(res.Result, &r)
 
-  fmt.Printf("%s\n", res)
   return r, nil
 }
