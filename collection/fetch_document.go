@@ -9,9 +9,9 @@ import (
 /*
   Retrieves a Document using its provided unique id.
 */
-func (dc Collection) FetchDocument(id string, options *types.Options) (*types.Document, error) {
+func (dc Collection) FetchDocument(id string, options *types.Options) (types.Document, error) {
   if id == "" {
-    return nil, errors.New("Collection.FetchDocument: document id required")
+    return types.Document{}, errors.New("Collection.FetchDocument: document id required")
   }
 
   ch := make(chan types.KuzzleResponse)
@@ -28,10 +28,10 @@ func (dc Collection) FetchDocument(id string, options *types.Options) (*types.Do
   res := <-ch
 
   if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
+    return types.Document{}, errors.New(res.Error.Message)
   }
 
-  document := &types.Document{}
+  document := types.Document{}
   json.Unmarshal(res.Result, &document)
 
   return document, nil

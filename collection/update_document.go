@@ -9,7 +9,11 @@ import (
 /*
   Updates a document in Kuzzle.
 */
-func (dc Collection) UpdateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
+func (dc Collection) UpdateDocument(id string, document interface{}, options *types.Options) (types.Document, error) {
+  if id == "" {
+    return types.Document{}, errors.New("Collection.UpdateDocument: document id required")
+  }
+
   ch := make(chan types.KuzzleResponse)
 
   query := types.KuzzleRequest{
@@ -25,11 +29,11 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options *ty
   res := <-ch
 
   if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
+    return types.Document{}, errors.New(res.Error.Message)
   }
 
-  documentResponse := &types.Document{}
-  json.Unmarshal(res.Result, documentResponse)
+  documentResponse := types.Document{}
+  json.Unmarshal(res.Result, &documentResponse)
 
   return documentResponse, nil
 }
