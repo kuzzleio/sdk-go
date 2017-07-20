@@ -22,7 +22,7 @@ show_cover_report() {
     go tool cover -${1}="$profile"
 }
 
-generate_cover_data $(go list ./...)
+generate_cover_data
 show_cover_report func
 case "$1" in
 "")
