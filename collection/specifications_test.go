@@ -183,3 +183,42 @@ func TestUpdateSpecifications(t *testing.T) {
   assert.Equal(t, "string", res["index"]["collection"].Fields["foo"].Type)
   assert.Equal(t, "Exciting value", res["index"]["collection"].Fields["foo"].DefaultValue)
 }
+
+func TestDeleteSpecificationsError(t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, err := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
+  assert.Equal(t, false, res.Acknowledged)
+  assert.NotNil(t, err)
+}
+
+func TestDeleteSpecifications(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "collection", parsedQuery.Controller)
+      assert.Equal(t, "deleteSpecifications", parsedQuery.Action)
+      assert.Equal(t, "index", parsedQuery.Index)
+      assert.Equal(t, "collection", parsedQuery.Collection)
+
+      res := types.AckResponse{Acknowledged: true}
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
+  assert.Equal(t, true, res.Acknowledged)
+}

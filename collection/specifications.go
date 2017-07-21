@@ -97,3 +97,29 @@ func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation,
 
   return specification, nil
 }
+
+/*
+  Deletes the current specifications of this collection.
+*/
+func (dc Collection) DeleteSpecifications(options *types.Options) (types.AckResponse, error) {
+  ch := make(chan types.KuzzleResponse)
+
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index: dc.index,
+    Controller: "collection",
+    Action: "deleteSpecifications",
+  }
+  go dc.kuzzle.Query(query, options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
+  }
+
+  response := types.AckResponse{}
+  json.Unmarshal(res.Result, &response)
+
+  return response, nil
+}
