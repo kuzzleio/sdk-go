@@ -83,7 +83,7 @@ func (k *Kuzzle) Connect() error {
 }
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
+func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
   requestId := uuid.NewV4().String()
 
   query.RequestId = requestId
@@ -109,17 +109,4 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
   return k.socket.GetOfflineQueue()
-}
-
-// Disconnect from Kuzzle and invalidate this instance.
-// Does not fire a disconnected event.
-func (k *Kuzzle) Disconnect() error {
-  err := k.socket.Close()
-
-  if err != nil {
-    return err
-  }
-  k.wasConnected = false
-
-  return nil
 }
