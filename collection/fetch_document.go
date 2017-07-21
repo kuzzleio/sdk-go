@@ -36,3 +36,38 @@ func (dc Collection) FetchDocument(id string, options *types.Options) (types.Doc
 
   return document, nil
 }
+
+/*
+  Get specific documents according to given IDs.
+*/
+func (dc Collection) MGetDocument(ids []string, options *types.Options) (types.KuzzleSearchResult, error) {
+  if len(ids) == 0 {
+    return types.KuzzleSearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
+  }
+
+  ch := make(chan types.KuzzleResponse)
+
+  type body struct {
+    Ids []string `json:"ids"`
+  }
+
+  query := types.KuzzleRequest{
+    Collection: dc.collection,
+    Index:      dc.index,
+    Controller: "document",
+    Action:     "mGet",
+    Body:       &body{Ids: ids},
+  }
+  go dc.kuzzle.Query(query, options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+  }
+
+  result := types.KuzzleSearchResult{}
+  json.Unmarshal(res.Result, &result)
+
+  return result, nil
+}
