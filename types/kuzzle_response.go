@@ -27,11 +27,11 @@ type (
   }
 
   KuzzleResult struct {
-  Id     string `json:"_id"`
-  Meta   KuzzleMeta `json:"_meta"`
-  Source json.RawMessage `json:"_source"`
-  Version int `json:"_version"`
-}
+    Id      string `json:"_id"`
+    Meta    KuzzleMeta `json:"_meta"`
+    Source  json.RawMessage `json:"_source"`
+    Version int `json:"_version"`
+  }
 
   KuzzleResponse struct {
     RequestId string `json:"requestId"`
@@ -41,8 +41,8 @@ type (
   }
 
   KuzzleSearchResult struct {
-    Hits  []KuzzleResult `json:"hits"`
-    Total int `json:"total"`
+    Hits     []KuzzleResult `json:"hits"`
+    Total    int `json:"total"`
     ScrollId string `json:"_scroll_id"`
   }
 
@@ -63,5 +63,10 @@ type (
     FailedRequests    map[string]int `json:"failedRequests"`
     OngoingRequests   map[string]int `json:"ongoingRequests"`
     Timestamp         int `json:"timestamp"`
+  }
+
+  CollectionsList struct {
+    Name string `json:"name"`
+    Type string `json:"type"`
   }
 )
