@@ -36,12 +36,10 @@ func TestCheckToken(t *testing.T) {
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-
   type ackResult struct {
-    Acknowledged bool
+    Acknowledged       bool
     ShardsAcknowledged bool
   }
   res, _ := k.CheckToken("token")
   assert.Equal(t, true, res.Valid)
 }
-

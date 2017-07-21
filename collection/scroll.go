@@ -7,27 +7,20 @@ import (
 )
 
 /*
-  Searches documents in the given Collection, using provided filters and options.
+  A "scroll" option can be passed to search queries, creating persistent paginated results.
 */
-func (dc Collection) Search(filters interface{}, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) Scroll(scrollId string, options *types.Options) (types.KuzzleSearchResult, error) {
+  if scrollId == "" {
+    return types.KuzzleSearchResult{}, errors.New("Collection.Scroll: scroll id required")
+  }
+
   ch := make(chan types.KuzzleResponse)
 
   query := types.KuzzleRequest{
-    Collection: dc.collection,
-    Index:      dc.index,
     Controller: "document",
-    Action:     "search",
-    Body:       filters,
+    Action:     "scroll",
+    ScrollId:   scrollId,
   }
-
-  if options != nil {
-    query.From = options.From
-    query.Size = options.Size
-    if options.Scroll != "" {
-      query.Scroll = options.Scroll
-    }
-  }
-
   go dc.kuzzle.Query(query, options, ch)
 
   res := <-ch
