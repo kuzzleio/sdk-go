@@ -44,6 +44,10 @@ type KuzzleSearchResult struct {
   Total int `json:"total"`
 }
 
+type RealtimeResponse struct {
+  Published bool `json:"published"`
+}
+
 type AckResponse struct {
   Acknowledged       bool
   ShardsAcknowledged bool
