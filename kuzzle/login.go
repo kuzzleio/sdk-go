@@ -7,6 +7,9 @@ import (
   "github.com/kuzzleio/sdk-go/event"
 )
 
+/**
+ * Login Strategy name to use for the authentication
+ */
 func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
   if strategy == "" {
     return "", errors.New("Kuzzle.Login: cannot authenticate to Kuzzle without an authentication strategy")
