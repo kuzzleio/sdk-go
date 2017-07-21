@@ -41,7 +41,33 @@ type KuzzleResponse struct {
 
 type KuzzleSearchResult struct {
   Hits  []KuzzleResult `json:"hits"`
-  Total int `json:"total"`
+  Total int            `json:"total"`
+}
+
+type KuzzleValidationFields map[string]struct {
+  Type         string `json:"type"`
+  Mandatory    bool   `json:"mandatory"`
+  DefaultValue string `json:"defaultValue"`
+}
+
+type KuzzleValidation struct {
+  Strict bool                   `json:"strict"`
+  Fields KuzzleValidationFields `json:"fields"`
+}
+
+type KuzzleSpecifications map[string]map[string]struct {
+  Strict bool                   `json:"strict"`
+  Fields KuzzleValidationFields `json:"fields"`
+}
+
+type KuzzleSpecificationsResult struct {
+  Validation KuzzleValidation `json:"validation"`
+  Index      string           `json:"index"`
+  Collection string           `json:"collection"`
+}
+
+type ValidResponse struct {
+  Valid bool `json:"valid"`
 }
 
 type AckResponse struct {
