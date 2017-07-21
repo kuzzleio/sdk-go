@@ -69,6 +69,132 @@ func TestGetSpecifications(t *testing.T) {
   assert.Equal(t, "Boring value", res.Validation.Fields["foo"].DefaultValue)
 }
 
+func TestSearchSpecificationsError(t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, nil)
+  assert.NotNil(t, err)
+}
+
+func TestSearchSpecifications(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "collection", parsedQuery.Controller)
+      assert.Equal(t, "searchSpecifications", parsedQuery.Action)
+
+      res := types.KuzzleSpecificationSearchResult{
+        ScrollId: "f00b4r",
+        Total: 1,
+        Hits: []struct{Source types.KuzzleSpecificationsResult `json:"_source"`}{{Source: types.KuzzleSpecificationsResult{
+          Index: "index",
+          Collection: "collection",
+          Validation: types.KuzzleValidation{
+            Strict: false,
+            Fields: types.KuzzleValidationFields{
+              "foo": {
+                Mandatory: true,
+                Type: "string",
+                DefaultValue: "Value found with search",
+              },
+            },
+          },
+        }}},
+      }
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, &types.Options{From: 2, Size: 4, Scroll: "1m"})
+  assert.Equal(t, "f00b4r", res.ScrollId)
+  assert.Equal(t, 1, res.Total)
+  assert.Equal(t, "Value found with search", res.Hits[0].Source.Validation.Fields["foo"].DefaultValue)
+}
+
+func TestScrollSpecificationsEmptyScrollId(t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.ScrollSpecifications: scroll id required"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").ScrollSpecifications("", nil)
+  assert.NotNil(t, err)
+}
+
+func TestScrollSpecificationsError(t *testing.T) {
+  type Document struct {
+    Title string
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").ScrollSpecifications("f00b4r", nil)
+  assert.NotNil(t, err)
+}
+
+func TestScrollSpecifications(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "collection", parsedQuery.Controller)
+      assert.Equal(t, "scrollSpecifications", parsedQuery.Action)
+
+      res := types.KuzzleSpecificationSearchResult{
+        ScrollId: "f00b4r",
+        Total: 1,
+        Hits: []struct{Source types.KuzzleSpecificationsResult `json:"_source"`}{{Source: types.KuzzleSpecificationsResult{
+          Index: "index",
+          Collection: "collection",
+          Validation: types.KuzzleValidation{
+            Strict: false,
+            Fields: types.KuzzleValidationFields{
+              "bar": {
+                Mandatory: true,
+                Type: "string",
+                DefaultValue: "Value found with scroll",
+              },
+            },
+          },
+        }}},
+      }
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := collection.NewCollection(k, "collection", "index").ScrollSpecifications("f00b4r", &types.Options{Scroll: "1m"})
+  assert.Equal(t, "f00b4r", res.ScrollId)
+  assert.Equal(t, 1, res.Total)
+  assert.Equal(t, "Value found with scroll", res.Hits[0].Source.Validation.Fields["bar"].DefaultValue)
+}
+
 func TestValidateSpecificationsError(t *testing.T) {
   type Document struct {
     Title string
