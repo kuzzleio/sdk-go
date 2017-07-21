@@ -51,8 +51,8 @@ type (
   }
 
   AckResponse struct {
-    Acknowledged       bool
-    ShardsAcknowledged bool
+    Acknowledged       bool `json:"acknowledged"`
+    ShardsAcknowledged bool `json:"shardsAcknowledged"`
   }
 
   Document KuzzleResult
@@ -63,5 +63,13 @@ type (
     FailedRequests    map[string]int `json:"failedRequests"`
     OngoingRequests   map[string]int `json:"ongoingRequests"`
     Timestamp         int `json:"timestamp"`
+  }
+
+  Rights struct {
+    Controller string `json:"controller"`
+    Action string `json:"action"`
+    Index string `json:"index"`
+    Collection string `json:"collection"`
+    Value string `json:"value"`
   }
 )
