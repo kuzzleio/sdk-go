@@ -3,7 +3,6 @@ package kuzzle
 import (
   "github.com/kuzzleio/sdk-go/types"
   "errors"
-  "fmt"
   "encoding/json"
 )
 
