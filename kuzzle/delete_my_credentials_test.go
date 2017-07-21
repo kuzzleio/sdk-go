@@ -7,7 +7,6 @@ import (
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/kuzzle"
-  "fmt"
 )
 
 func TestDeleteMyCredentialsQueryError(t *testing.T) {

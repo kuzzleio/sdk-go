@@ -264,7 +264,7 @@ func (ws *WebSocket) listen() {
 
       if ws.channelsResult[m.RequestId] != nil {
         if message.Error.Message == "Token expired" {
-          ws.emitEvent(event.JwtTokenExpired, nil)
+          ws.emitEvent(event.JwtExpired, nil)
         }
 
         // If this is a response to a query we simply broadcast the response to the corresponding channel

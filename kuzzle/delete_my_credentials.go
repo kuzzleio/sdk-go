@@ -4,7 +4,6 @@ import (
   "github.com/kuzzleio/sdk-go/types"
   "errors"
   "encoding/json"
-  "github.com/kuzzleio/sdk-go/internal"
 )
 
 /*
@@ -17,7 +16,13 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, op
   }
   result := make(chan types.KuzzleResponse)
 
-  go k.Query(internal.BuildQuery("", "", "auth", "deleteMyCredentials", &body{strategy, credentials}), options, result)
+  query := types.KuzzleRequest{
+    Controller: "auth",
+    Action:     "deleteMyCredentials",
+    Body:       &body{strategy, credentials},
+  }
+
+  go k.Query(query, options, result)
 
   res := <-result
 

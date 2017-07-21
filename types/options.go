@@ -49,3 +49,7 @@ func DefaultOptions() *Options {
     ScrollId:          "",
   }
 }
+
+type QueryOptions struct {
+  Queuable bool
+}

@@ -21,8 +21,8 @@ type Kuzzle struct {
   lastUrl      string
   message      chan []byte
   mu           *sync.Mutex
-  jwtToken     string
   defaultIndex string
+  jwt     string
 }
 
 // Kuzzle constructor
@@ -59,21 +59,21 @@ func (k *Kuzzle) Connect() error {
     //}
 
     if wasConnected {
-      if k.jwtToken != "" {
+      if k.jwt != "" {
         // todo avoid import cycle (kuzzle)
         //go func() {
-        //	res, err := kuzzle.CheckToken(k, k.jwtToken)
+        //	res, err := kuzzle.CheckToken(k, k.jwt)
         //
         //	if err != nil {
-        //		k.jwtToken = ""
-        //		k.emitEvent(event.JwtTokenExpired, nil)
+        //		k.jwt = ""
+        //		k.emitEvent(event.jwtExpired, nil)
         //		k.Reconnect()
         //		return
         //	}
         //
         //	if !res.Valid {
-        //		k.jwtToken = ""
-        //		k.emitEvent(event.JwtTokenExpired, nil)
+        //		k.jwt = ""
+        //		k.emitEvent(event.jwtExpired, nil)
         //	}
         //	k.Reconnect()
         //}()
@@ -86,7 +86,7 @@ func (k *Kuzzle) Connect() error {
 }
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
+func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
   requestId := uuid.NewV4().String()
 
   query.RequestId = requestId
@@ -112,17 +112,4 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respon
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
   return k.socket.GetOfflineQueue()
-}
-
-// Disconnect from Kuzzle and invalidate this instance.
-// Does not fire a disconnected event.
-func (k *Kuzzle) Disconnect() error {
-  err := k.socket.Close()
-
-  if err != nil {
-    return err
-  }
-  k.wasConnected = false
-
-  return nil
 }
