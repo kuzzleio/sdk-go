@@ -64,4 +64,9 @@ type (
     OngoingRequests   map[string]int `json:"ongoingRequests"`
     Timestamp         int `json:"timestamp"`
   }
+
+  LoginAttempt struct {
+    Success bool `json:"success"`
+    Error error `json:"error"`
+  }
 )

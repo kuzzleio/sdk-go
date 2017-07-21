@@ -22,7 +22,7 @@ type Kuzzle struct {
   message      chan []byte
   mu           *sync.Mutex
   defaultIndex string
-  jwt     string
+  jwt          string
 }
 
 // Kuzzle constructor
