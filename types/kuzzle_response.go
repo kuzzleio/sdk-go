@@ -40,8 +40,9 @@ type KuzzleResponse struct {
 }
 
 type KuzzleSearchResult struct {
-  Hits  []KuzzleResult `json:"hits"`
-  Total int `json:"total"`
+  Hits     []KuzzleResult `json:"hits"`
+  Total    int `json:"total"`
+  ScrollId string `json:"_scroll_id"`
 }
 
 type RealtimeResponse struct {
