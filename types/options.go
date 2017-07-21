@@ -24,6 +24,11 @@ type Options struct {
   Volatile          interface{}
   Refresh           string
   IfExist           string
+  DefaultIndex      string
+  From              int
+  Size              int
+  Scroll            string
+  ScrollId          string
 }
 
 func DefaultOptions() *Options {
@@ -38,7 +43,15 @@ func DefaultOptions() *Options {
     ReconnectionDelay: 1000,
     ReplayInterval:    10,
     Connect:           Auto,
+    From:              0,
+    Size:              10,
+    Scroll:            "1m",
+    ScrollId:          "",
   }
+}
+
+type QueryOptions struct {
+  Queuable bool
 }
 
 type RoomOptions struct {
@@ -50,9 +63,10 @@ type RoomOptions struct {
 
 func DefaultRoomOptions() *RoomOptions {
   return &RoomOptions{
-    Scope: SCOPE_ALL,
-    State: STATE_DONE,
-    User: USER_NONE,
+    Scope:           SCOPE_ALL,
+    State:           STATE_DONE,
+    User:            USER_NONE,
     SubscribeToSelf: true,
   }
 }
+

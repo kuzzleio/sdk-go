@@ -8,4 +8,8 @@ type KuzzleRequest struct {
   Collection string `json:"collection"`
   Body interface{} `json:"body"`
   Id string `json:"_id"`
+  From int `json:"from"`
+  Size int `json:"size"`
+  Scroll string `json:"scroll"`
+  ScrollId string `json:"scrollId"`
 }
