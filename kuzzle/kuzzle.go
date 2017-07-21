@@ -113,3 +113,7 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
   return k.socket.GetOfflineQueue()
 }
+
+func (k Kuzzle) GetJwt() string {
+  return k.jwt
+}
