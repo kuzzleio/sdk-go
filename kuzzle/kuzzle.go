@@ -21,7 +21,7 @@ type Kuzzle struct {
   lastUrl      string
   message      chan []byte
   mu           *sync.Mutex
-  jwtToken     string
+  jwt     string
 }
 
 // Kuzzle constructor
@@ -56,21 +56,21 @@ func (k *Kuzzle) Connect() error {
     //}
 
     if wasConnected {
-      if k.jwtToken != "" {
+      if k.jwt != "" {
         // todo avoid import cycle (kuzzle)
         //go func() {
-        //	res, err := kuzzle.CheckToken(k, k.jwtToken)
+        //	res, err := kuzzle.CheckToken(k, k.jwt)
         //
         //	if err != nil {
-        //		k.jwtToken = ""
-        //		k.emitEvent(event.JwtTokenExpired, nil)
+        //		k.jwt = ""
+        //		k.emitEvent(event.jwtExpired, nil)
         //		k.Reconnect()
         //		return
         //	}
         //
         //	if !res.Valid {
-        //		k.jwtToken = ""
-        //		k.emitEvent(event.JwtTokenExpired, nil)
+        //		k.jwt = ""
+        //		k.emitEvent(event.jwtExpired, nil)
         //	}
         //	k.Reconnect()
         //}()
