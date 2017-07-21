@@ -43,6 +43,11 @@ type (
   KuzzleSearchResult struct {
     Hits  []KuzzleResult `json:"hits"`
     Total int `json:"total"`
+    ScrollId string `json:"_scroll_id"`
+  }
+
+  RealtimeResponse struct {
+    Published bool `json:"published"`
   }
 
   AckResponse struct {
