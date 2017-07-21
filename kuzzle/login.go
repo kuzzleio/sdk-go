@@ -47,7 +47,7 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 
   if res.Error.Message != "" {
     err := errors.New(res.Error.Message)
-    k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: true, Error: err})
+    k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: false, Error: err})
     return "", err
   }
 
