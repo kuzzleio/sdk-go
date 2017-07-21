@@ -53,7 +53,7 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 
   if token.Jwt != "" {
     // todo renew subscriptions
-    k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: true})
+    k.SetJwt(token.Jwt)
   }
 
   return token.Jwt, nil
