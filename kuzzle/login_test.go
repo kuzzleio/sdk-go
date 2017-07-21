@@ -29,7 +29,6 @@ func TestLoginError(t *testing.T) {
     MockEmitEvent: func(e int, arg interface{}) {
       assert.Equal(t, event.LoginAttempt, e)
       assert.Equal(t, "error", arg.(types.LoginAttempt).Error.Error())
-      assert.Nil(t, arg.(types.LoginAttempt).Success)
     },
   }
 
