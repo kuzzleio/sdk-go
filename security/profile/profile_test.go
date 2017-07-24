@@ -1,4 +1,4 @@
-package security_test
+package profile_test
 
 import (
   "testing"
@@ -10,19 +10,19 @@ import (
   "github.com/kuzzleio/sdk-go/security"
 )
 
-func TestFetchUserEmptyId(t *testing.T) {
+func TestFetchEmptyId(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      return types.KuzzleResponse{Error: types.MessageError{Message: "Security.FetchUser: user id required"}}
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Fetch: profile id required"}}
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := security.NewSecurity(k).FetchUser("", nil)
+  _, err := security.NewSecurity(k).Profile.Fetch("", nil)
   assert.NotNil(t, err)
 }
 
-func TestFetchUserError(t *testing.T) {
+func TestFetchError(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -30,12 +30,12 @@ func TestFetchUserError(t *testing.T) {
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := security.NewSecurity(k).FetchUser("userId", nil)
+  _, err := security.NewSecurity(k).Profile.Fetch("profileId", nil)
   assert.NotNil(t, err)
 }
 
-func TestFetchUser(t *testing.T) {
-  id := "userId"
+func TestFetch(t *testing.T) {
+  id := "profileId"
 
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
@@ -43,28 +43,18 @@ func TestFetchUser(t *testing.T) {
       json.Unmarshal(query, parsedQuery)
 
       assert.Equal(t, "security", parsedQuery.Controller)
-      assert.Equal(t, "getUser", parsedQuery.Action)
+      assert.Equal(t, "getProfile", parsedQuery.Action)
       assert.Equal(t, id, parsedQuery.Id)
 
-      res := types.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+      res := types.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
       r, _ := json.Marshal(res)
       return types.KuzzleResponse{Result: r}
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-  res, _ := security.NewSecurity(k).FetchUser(id, nil)
+  res, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
   assert.Equal(t, id, res.Id)
-
-  assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
-
-  assert.Equal(t, "Luke", res.Content("name"))
-  assert.Equal(t, "Jedi", res.Content("function"))
-
-  contentAsMap := make(map[string]interface{})
-  contentAsMap["name"] = "Luke"
-  contentAsMap["function"] = "Jedi"
-
-  assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
+  assert.Equal(t, []string{"admin", "other"}, res.Policies())
 }

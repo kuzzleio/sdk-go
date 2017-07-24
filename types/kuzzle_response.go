@@ -91,17 +91,15 @@ type (
     Timestamp         int `json:"timestamp"`
   }
 
-  UserInterface interface {
-    ProfileIds()
-    Content(key string)
-    ContentMap(keys ...string)
-  }
-
-  User struct {
+  SecurityDocument struct {
     Id     string          `json:"_id"`
     Source json.RawMessage `json:"_source"`
     Meta   KuzzleMeta      `json:"_meta"`
   }
+
+  User SecurityDocument
+  Profile SecurityDocument
+  Role SecurityDocument
 )
 
 func (user User) ProfileIDs() ([]string) {
@@ -145,4 +143,32 @@ func (user User) ContentMap(keys ...string) (map[string]interface{}) {
   }
 
   return values
+}
+
+func (profile Profile) Policies() ([]string) {
+  type Policies struct {
+    Policies []struct{RoleId string `json:"roleId"`} `json:"policies"`
+  }
+
+  var policies = Policies{}
+  json.Unmarshal(profile.Source, &policies)
+
+  roleIDs := []string{}
+
+  for _, role := range policies.Policies {
+    roleIDs = append(roleIDs, role.RoleId)
+  }
+
+  return roleIDs
+}
+
+func (role Role) Controllers() (map[string]struct{Actions map[string]bool `json:"actions"`}) {
+  type Controllers struct {
+    Controllers map[string]struct{Actions map[string]bool `json:"actions"`} `json:"controllers"`
+  }
+
+  var controllers = Controllers{}
+  json.Unmarshal(role.Source, &controllers)
+
+  return controllers.Controllers
 }

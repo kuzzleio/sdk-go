@@ -1,17 +1,22 @@
-package security
+package user
 
 import (
   "errors"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
+  "github.com/kuzzleio/sdk-go/kuzzle"
 )
+
+type SecurityUser struct {
+  Kuzzle kuzzle.Kuzzle
+}
 
 /*
   Retrieves an User using its provided unique id.
 */
-func (security Security) FetchUser(id string, options *types.Options) (types.User, error) {
+func (su SecurityUser) Fetch(id string, options *types.Options) (types.User, error) {
   if id == "" {
-    return types.User{}, errors.New("Security.FetchUser: user id required")
+    return types.User{}, errors.New("Security.User.Fetch: user id required")
   }
 
   ch := make(chan types.KuzzleResponse)
@@ -21,7 +26,7 @@ func (security Security) FetchUser(id string, options *types.Options) (types.Use
     Action:     "getUser",
     Id:         id,
   }
-  go security.kuzzle.Query(query, options, ch)
+  go su.Kuzzle.Query(query, options, ch)
 
   res := <-ch
 
