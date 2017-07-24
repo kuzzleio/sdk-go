@@ -25,11 +25,6 @@ func TestRefreshIndexQueryError(t *testing.T) {
 }
 
 func TestRefreshIndex(t *testing.T) {
-  type myCredentials struct {
-    Username string `json:"username"`
-    Password string `json:"password"`
-  }
-
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       type shards struct {
