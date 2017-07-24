@@ -12,10 +12,6 @@ import (
 func (k Kuzzle) Now(options *types.Options) (int, error) {
   result := make(chan types.KuzzleResponse)
 
-  type body struct {
-    Token string `json:"token"`
-  }
-
   query := types.KuzzleRequest{
     Controller: "server",
     Action:     "now",

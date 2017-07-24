@@ -36,11 +36,6 @@ func TestNow(t *testing.T) {
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-
-  type ackResult struct {
-    Acknowledged bool
-    ShardsAcknowledged bool
-  }
   res, _ := k.Now(nil)
   assert.Equal(t, 1500646351073, res)
 }
