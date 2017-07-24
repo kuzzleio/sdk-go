@@ -29,6 +29,7 @@ type Options struct {
   Size              int
   Scroll            string
   ScrollId          string
+  Headers           map[string]interface{}
 }
 
 func DefaultOptions() *Options {
@@ -47,6 +48,7 @@ func DefaultOptions() *Options {
     Size:              10,
     Scroll:            "1m",
     ScrollId:          "",
+    Headers:           make(map[string]interface{}),
   }
 }
 
@@ -69,4 +71,3 @@ func DefaultRoomOptions() *RoomOptions {
     SubscribeToSelf: true,
   }
 }
-
