@@ -27,11 +27,11 @@ type (
   }
 
   KuzzleResult struct {
-    Id      string `json:"_id"`
-    Meta    KuzzleMeta `json:"_meta"`
-    Source  json.RawMessage `json:"_source"`
-    Version int `json:"_version"`
-  }
+  Id     string `json:"_id"`
+  Meta   KuzzleMeta `json:"_meta"`
+  Source json.RawMessage `json:"_source"`
+  Version int `json:"_version"`
+}
 
   KuzzleResponse struct {
     RequestId string `json:"requestId"`
@@ -44,6 +44,32 @@ type (
     Hits     []KuzzleResult `json:"hits"`
     Total    int `json:"total"`
     ScrollId string `json:"_scroll_id"`
+  }
+
+  KuzzleValidationFields map[string]struct {
+    Type         string `json:"type"`
+    Mandatory    bool   `json:"mandatory"`
+    DefaultValue string `json:"defaultValue"`
+  }
+
+  KuzzleValidation struct {
+    Strict bool                   `json:"strict"`
+    Fields KuzzleValidationFields `json:"fields"`
+  }
+
+  KuzzleSpecifications map[string]map[string]struct {
+    Strict bool                   `json:"strict"`
+    Fields KuzzleValidationFields `json:"fields"`
+  }
+
+  KuzzleSpecificationsResult struct {
+    Validation KuzzleValidation `json:"validation"`
+    Index      string           `json:"index"`
+    Collection string           `json:"collection"`
+  }
+
+  ValidResponse struct {
+    Valid bool `json:"valid"`
   }
 
   RealtimeResponse struct {

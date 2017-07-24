@@ -10,6 +10,18 @@ import (
   "github.com/kuzzleio/sdk-go/collection"
 )
 
+func TestScrollEmptyScrollId(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.Scroll: scroll id required"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").Scroll("", nil)
+  assert.NotNil(t, err)
+}
+
 func TestScrollError(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
@@ -30,7 +42,7 @@ func TestScroll(t *testing.T) {
 
   hits := make([]types.KuzzleResult, 1)
   hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
-  var results = types.KuzzleSearchResult{Hits: hits}
+  var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
 
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
@@ -40,7 +52,7 @@ func TestScroll(t *testing.T) {
       assert.Equal(t, "document", parsedQuery.Controller)
       assert.Equal(t, "scroll", parsedQuery.Action)
 
-      res := response{Total: 42, Hits: results.Hits}
+      res := response{Total: results.Total, Hits: results.Hits}
       r, _ := json.Marshal(res)
       return types.KuzzleResponse{Result: r}
     },
@@ -48,7 +60,7 @@ func TestScroll(t *testing.T) {
   k, _ := kuzzle.NewKuzzle(c, nil)
 
   res, _ := collection.NewCollection(k,"collection", "index").Scroll("f00b4r", nil)
-  assert.Equal(t, 42, res.Total)
+  assert.Equal(t, results.Total, res.Total)
   assert.Equal(t, hits, res.Hits)
   assert.Equal(t, res.Hits[0].Id, "doc42")
   assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
