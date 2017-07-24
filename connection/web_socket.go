@@ -281,6 +281,11 @@ func (ws *WebSocket) AddListener(event int, channel chan<- interface{}) {
   ws.eventListeners[event] = channel
 }
 
+// Removes a listener from an event.
+func (ws *WebSocket) RemoveListener(event int) {
+  delete(ws.eventListeners, event)
+}
+
 // Emit an event to all registered listeners
 func (ws *WebSocket) emitEvent(event int, arg interface{}) {
   if ws.eventListeners[event] != nil {
