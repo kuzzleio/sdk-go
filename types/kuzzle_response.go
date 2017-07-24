@@ -90,4 +90,11 @@ type (
     OngoingRequests   map[string]int `json:"ongoingRequests"`
     Timestamp         int `json:"timestamp"`
   }
+
+  Shards struct {
+    Total int `json:"total"`
+    Successful int `json:successful`
+    Failed int `json:"failed"`
+  }
+
 )
