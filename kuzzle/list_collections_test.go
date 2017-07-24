@@ -66,4 +66,7 @@ func TestListCollections(t *testing.T) {
 
   assert.Equal(t, "collection1", res[0].Name)
   assert.Equal(t, "collection2", res[1].Name)
+  assert.Equal(t, "stored", res[0].Type)
+  assert.Equal(t, "stored", res[1].Type)
+
 }
