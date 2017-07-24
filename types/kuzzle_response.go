@@ -90,4 +90,59 @@ type (
     OngoingRequests   map[string]int `json:"ongoingRequests"`
     Timestamp         int `json:"timestamp"`
   }
+
+  UserInterface interface {
+    ProfileIds()
+    Content(key string)
+    ContentMap(keys ...string)
+  }
+
+  User struct {
+    Id     string          `json:"_id"`
+    Source json.RawMessage `json:"_source"`
+    Meta   KuzzleMeta      `json:"_meta"`
+  }
 )
+
+func (user User) ProfileIDs() ([]string) {
+  type profileIds struct {
+    ProfileIds []string `json:"profileIds"`
+  }
+
+  var content = profileIds{}
+  json.Unmarshal(user.Source, &content)
+
+  return content.ProfileIds
+}
+
+func (user User) Content(key string) (interface{}) {
+  type Fields map[string]interface{}
+
+  var content = Fields{}
+  json.Unmarshal(user.Source, &content)
+
+  if key == "" {
+    return content
+  }
+
+  return content[key]
+}
+
+func (user User) ContentMap(keys ...string) (map[string]interface{}) {
+  type Fields map[string]interface{}
+
+  var content = Fields{}
+  json.Unmarshal(user.Source, &content)
+
+  if len(keys) == 0 {
+    return content
+  }
+
+  values := make(map[string]interface{})
+
+  for _, key := range keys {
+    values[key] = content[key]
+  }
+
+  return values
+}
