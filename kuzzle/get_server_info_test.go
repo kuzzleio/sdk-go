@@ -7,7 +7,6 @@ import (
   "github.com/kuzzleio/sdk-go/kuzzle"
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
-  "fmt"
 )
 
 func TestGetServerInfoQueryError(t *testing.T) {
@@ -55,7 +54,6 @@ func TestGetServerInfo(t *testing.T) {
   k, _ := kuzzle.NewKuzzle(c, nil)
 
   res, _ := k.GetServerInfo(nil)
-  fmt.Printf("%s\n", res)
 
   var info myServerInfo
   json.Unmarshal(res, &info)

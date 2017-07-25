@@ -21,6 +21,7 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
   jsonRequest, _ := json.Marshal(query)
   out := map[string]interface{}{}
   json.Unmarshal(jsonRequest, &out)
+
   k.addHeaders(&out, query)
 
   finalRequest, err := json.Marshal(out)
