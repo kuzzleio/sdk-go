@@ -17,7 +17,7 @@ func (k Kuzzle) ListIndexes(options *types.Options) ([]string, error) {
     Action:     "list",
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 

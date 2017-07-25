@@ -21,7 +21,7 @@ func (k Kuzzle) GetAllStatistics(options *types.Options) ([]types.Statistics, er
     Hits []json.RawMessage `json:"hits"`
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 

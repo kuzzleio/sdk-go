@@ -26,7 +26,7 @@ func (k Kuzzle) ListCollections(index string, options *types.Options) ([]types.C
     Collections []types.CollectionsList `json:"collections"`
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 
