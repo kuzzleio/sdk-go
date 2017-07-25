@@ -134,6 +134,71 @@ func TestCreate(t *testing.T) {
   assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
+func TestCreateRestrictedEmptyId(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.CreateRestrictedUser: user id required"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := security.NewSecurity(k).User.CreateRestrictedUser("", types.UserData{}, nil)
+  assert.NotNil(t, err)
+}
+
+func TestCreateRestrictedError(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := security.NewSecurity(k).User.CreateRestrictedUser("userId", types.UserData{}, nil)
+  assert.NotNil(t, err)
+}
+
+func TestCreateRestricted(t *testing.T) {
+  id := "userId"
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "security", parsedQuery.Controller)
+      assert.Equal(t, "createRestrictedUser", parsedQuery.Action)
+      assert.Equal(t, id, parsedQuery.Id)
+
+      res := types.User{
+        Id: id,
+        Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`),
+      }
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  type UserContent map[string]interface{}
+  ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+
+  res, _ := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
+
+  assert.Equal(t, id, res.Id)
+
+  assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+
+  assert.Equal(t, "Luke", res.Content("name"))
+  assert.Equal(t, "Jedi", res.Content("function"))
+
+  contentAsMap := make(map[string]interface{})
+  contentAsMap["name"] = "Luke"
+  contentAsMap["function"] = "Jedi"
+
+  assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
+}
+
 func TestReplaceEmptyId(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {

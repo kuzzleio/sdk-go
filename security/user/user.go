@@ -84,6 +84,48 @@ func (su SecurityUser) Create(id string, content types.UserData, options *types.
 }
 
 /*
+  Create a new restricted User in Kuzzle.
+*/
+func (su SecurityUser) CreateRestrictedUser(id string, content types.UserData, options *types.Options) (types.User, error) {
+  if id == "" {
+    return types.User{}, errors.New("Security.User.CreateRestrictedUser: user id required")
+  }
+
+  ch := make(chan types.KuzzleResponse)
+
+  type userData map[string]interface {}
+  ud := userData{}
+  for key, value := range content.Content {
+    ud[key] = value
+  }
+  type createBody struct {
+    Content     userData              `json:"content"`
+    Credentials types.UserCredentials `json:"credentials"`
+  }
+
+  body := createBody{Content: ud, Credentials: content.Credentials}
+
+  query := types.KuzzleRequest{
+    Controller: "security",
+    Action:     "createRestrictedUser",
+    Body:       body,
+    Id:         id,
+  }
+  go su.Kuzzle.Query(query, options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return types.User{}, errors.New(res.Error.Message)
+  }
+
+  user := types.User{}
+  json.Unmarshal(res.Result, &user)
+
+  return user, nil
+}
+
+/*
   Replace an User in Kuzzle.
 */
 func (su SecurityUser) Replace(id string, content types.UserData, options *types.Options) (types.User, error) {
