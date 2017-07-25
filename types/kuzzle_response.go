@@ -110,6 +110,12 @@ type (
     Error error `json:"error"`
   }
 
+  Shards struct {
+    Total int `json:"total"`
+    Successful int `json:successful`
+    Failed int `json:"failed"`
+  }
+
   CollectionsList struct {
     Name string `json:"name"`
     Type string `json:"type"`
