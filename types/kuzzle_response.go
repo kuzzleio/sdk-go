@@ -77,8 +77,8 @@ type (
   }
 
   AckResponse struct {
-    Acknowledged       bool
-    ShardsAcknowledged bool
+    Acknowledged       bool `json:"acknowledged"`
+    ShardsAcknowledged bool `json:"shardsAcknowledged"`
   }
 
   Document KuzzleResult
@@ -91,6 +91,14 @@ type (
     Timestamp         int `json:"timestamp"`
   }
 
+  Rights struct {
+    Controller string `json:"controller"`
+    Action string `json:"action"`
+    Index string `json:"index"`
+    Collection string `json:"collection"`
+    Value string `json:"value"`
+  }
+  
   LoginAttempt struct {
     Success bool `json:"success"`
     Error error `json:"error"`
