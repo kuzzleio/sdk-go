@@ -119,13 +119,13 @@ func (ws *WebSocket) Connect() (bool, error) {
     if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
       for err != nil {
         ws.retrying = true
-        ws.emitEvent(event.NetworkError, err)
+        ws.EmitEvent(event.NetworkError, err)
         time.Sleep(ws.reconnectionDelay)
         ws.retrying = false
         socket, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
       }
     }
-    ws.emitEvent(event.NetworkError, err)
+    ws.EmitEvent(event.NetworkError, err)
     return ws.wasConnected, err
   }
 
@@ -135,10 +135,10 @@ func (ws *WebSocket) Connect() (bool, error) {
   }
 
   if ws.wasConnected {
-    ws.emitEvent(event.Reconnected, nil)
+    ws.EmitEvent(event.Reconnected, nil)
     ws.state = state.Connected
   } else {
-    ws.emitEvent(event.Connected, nil)
+    ws.EmitEvent(event.Connected, nil)
     ws.state = state.Connected
   }
 
@@ -162,7 +162,7 @@ func (ws *WebSocket) Connect() (bool, error) {
         if ws.autoQueue {
           ws.queuing = true
         }
-        ws.emitEvent(event.Disconnected, nil)
+        ws.EmitEvent(event.Disconnected, nil)
         return
       }
       go func() {
@@ -195,7 +195,7 @@ func (ws *WebSocket) Send(query []byte, options *types.Options, responseChannel 
         Options:   options,
       }
       ws.offlineQueue = append(ws.offlineQueue, qo)
-      ws.emitEvent(event.OfflieQueuePush, qo)
+      ws.EmitEvent(event.OfflieQueuePush, qo)
     }
   } else {
     ws.discardRequest(responseChannel, query)
@@ -264,7 +264,7 @@ func (ws *WebSocket) listen() {
 
       if ws.channelsResult[m.RequestId] != nil {
         if message.Error.Message == "Token expired" {
-          ws.emitEvent(event.JwtExpired, nil)
+          ws.EmitEvent(event.JwtExpired, nil)
         }
 
         // If this is a response to a query we simply broadcast the response to the corresponding channel
@@ -281,8 +281,24 @@ func (ws *WebSocket) AddListener(event int, channel chan<- interface{}) {
   ws.eventListeners[event] = channel
 }
 
+
+// Removes all listeners, either from all events and close channels
+func (ws *WebSocket) RemoveAllListeners() {
+  for k := range ws.eventListeners {
+    if ws.eventListeners[k] != nil {
+      close(ws.eventListeners[k])
+    }
+    delete(ws.eventListeners, k)
+  }
+}
+
+// Removes a listener from an event.
+func (ws *WebSocket) RemoveListener(event int) {
+  delete(ws.eventListeners, event)
+}
+
 // Emit an event to all registered listeners
-func (ws *WebSocket) emitEvent(event int, arg interface{}) {
+func (ws *WebSocket) EmitEvent(event int, arg interface{}) {
   if ws.eventListeners[event] != nil {
     ws.eventListeners[event] <- arg
   }
@@ -352,7 +368,7 @@ func (ws *WebSocket) dequeue() error {
     for _, query := range ws.offlineQueue {
       ws.emitRequest(query)
       ws.offlineQueue = ws.offlineQueue[:1]
-      ws.emitEvent(event.OfflineQueuePop, query)
+      ws.EmitEvent(event.OfflineQueuePop, query)
       time.Sleep(ws.replayInterval * time.Millisecond)
       ws.offlineQueue = ws.offlineQueue[:1]
     }

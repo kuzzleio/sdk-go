@@ -4,6 +4,7 @@ import (
   "github.com/kuzzleio/sdk-go/connection"
   "github.com/kuzzleio/sdk-go/types"
   "sync"
+  "errors"
 )
 
 type IKuzzle interface {
@@ -27,6 +28,10 @@ type Kuzzle struct {
 // Kuzzle constructor
 func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
   var err error
+
+  if c == nil {
+    return nil, errors.New("Connection is nil")
+  }
 
   if options == nil {
     options = types.DefaultOptions()
@@ -91,4 +96,8 @@ func (k *Kuzzle) Connect() error {
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
   return k.socket.GetOfflineQueue()
+}
+
+func (k Kuzzle) GetJwt() string {
+  return k.jwt
 }
