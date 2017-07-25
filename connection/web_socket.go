@@ -290,6 +290,7 @@ func (ws *WebSocket) RemoveAllListeners() {
     }
     delete(ws.eventListeners, k)
   }
+}
 
 // Removes a listener from an event.
 func (ws *WebSocket) RemoveListener(event int) {
