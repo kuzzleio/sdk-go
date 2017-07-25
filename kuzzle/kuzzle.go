@@ -6,6 +6,7 @@ import (
   "encoding/json"
   "github.com/satori/go.uuid"
   "sync"
+  "errors"
 )
 
 type IKuzzle interface {
@@ -28,6 +29,10 @@ type Kuzzle struct {
 // Kuzzle constructor
 func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
   var err error
+
+  if c == nil {
+    return nil, errors.New("Connection is nil")
+  }
 
   if options == nil {
     options = types.DefaultOptions()
