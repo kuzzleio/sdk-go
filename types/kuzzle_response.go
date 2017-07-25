@@ -27,11 +27,11 @@ type (
   }
 
   KuzzleResult struct {
-  Id     string          `json:"_id"`
-  Meta   KuzzleMeta      `json:"_meta"`
-  Source json.RawMessage `json:"_source"`
-  Version int            `json:"_version"`
-}
+    Id      string          `json:"_id"`
+    Meta    KuzzleMeta      `json:"_meta"`
+    Source  json.RawMessage `json:"_source"`
+    Version int            `json:"_version"`
+  }
 
   KuzzleResponse struct {
     RequestId string          `json:"requestId"`
@@ -69,7 +69,7 @@ type (
   }
 
   KuzzleSpecificationSearchResult struct {
-    Hits     []struct{Source KuzzleSpecificationsResult `json:"_source"`} `json:"hits"`
+    Hits     []struct{ Source KuzzleSpecificationsResult `json:"_source"` } `json:"hits"`
     Total    int                                                          `json:"total"`
     ScrollId string                                                       `json:"scrollId"`
   }
@@ -99,21 +99,21 @@ type (
 
   Rights struct {
     Controller string `json:"controller"`
-    Action string `json:"action"`
-    Index string `json:"index"`
+    Action     string `json:"action"`
+    Index      string `json:"index"`
     Collection string `json:"collection"`
-    Value string `json:"value"`
+    Value      string `json:"value"`
   }
-  
+
   LoginAttempt struct {
     Success bool `json:"success"`
-    Error error `json:"error"`
+    Error   error `json:"error"`
   }
 
   Shards struct {
-    Total int `json:"total"`
+    Total      int `json:"total"`
     Successful int `json:successful`
-    Failed int `json:"failed"`
+    Failed     int `json:"failed"`
   }
 
   CollectionsList struct {
@@ -177,7 +177,7 @@ func (user User) ContentMap(keys ...string) (map[string]interface{}) {
 
 func (profile Profile) Policies() ([]string) {
   type Policies struct {
-    Policies []struct{RoleId string `json:"roleId"`} `json:"policies"`
+    Policies []struct{ RoleId string `json:"roleId"` } `json:"policies"`
   }
 
   var policies = Policies{}
@@ -192,9 +192,9 @@ func (profile Profile) Policies() ([]string) {
   return roleIDs
 }
 
-func (role Role) Controllers() (map[string]struct{Actions map[string]bool `json:"actions"`}) {
+func (role Role) Controllers() (map[string]struct{ Actions map[string]bool `json:"actions"` }) {
   type Controllers struct {
-    Controllers map[string]struct{Actions map[string]bool `json:"actions"`} `json:"controllers"`
+    Controllers map[string]struct{ Actions map[string]bool `json:"actions"` } `json:"controllers"`
   }
 
   var controllers = Controllers{}
