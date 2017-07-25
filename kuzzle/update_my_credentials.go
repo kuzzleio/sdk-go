@@ -8,14 +8,14 @@ import (
 )
 
 /*
- * Create credentials of the specified strategy for the current user.
+ * Update credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
   result := make(chan types.KuzzleResponse)
 
   query := types.KuzzleRequest{
     Controller: "auth",
-    Action:     "createMyCredentials",
+    Action:     "updateMyCredentials",
     Body:       credentials,
     Strategy:   strategy,
   }
