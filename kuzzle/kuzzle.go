@@ -1,103 +1,103 @@
 package kuzzle
 
 import (
-  "github.com/kuzzleio/sdk-go/connection"
-  "github.com/kuzzleio/sdk-go/types"
-  "sync"
-  "errors"
+	"errors"
+	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/types"
+	"sync"
 )
 
 type IKuzzle interface {
-  Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
+	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
 }
 
 type Kuzzle struct {
-  Host   string
-  socket connection.Connection
-  State  *int
+	Host   string
+	socket connection.Connection
+	State  *int
 
-  wasConnected bool
-  lastUrl      string
-  message      chan []byte
-  mu           *sync.Mutex
-  defaultIndex string
-  jwt          string
-  headers      map[string]interface{}
+	wasConnected bool
+	lastUrl      string
+	message      chan []byte
+	mu           *sync.Mutex
+	defaultIndex string
+	jwt          string
+	headers      map[string]interface{}
 }
 
 // Kuzzle constructor
 func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
-  var err error
+	var err error
 
-  if c == nil {
-    return nil, errors.New("Connection is nil")
-  }
+	if c == nil {
+		return nil, errors.New("Connection is nil")
+	}
 
-  if options == nil {
-    options = types.DefaultOptions()
-  }
+	if options == nil {
+		options = types.DefaultOptions()
+	}
 
-  k := &Kuzzle{
-    mu:      &sync.Mutex{},
-    socket:  c,
-    headers: options.Headers,
-  }
+	k := &Kuzzle{
+		mu:      &sync.Mutex{},
+		socket:  c,
+		headers: options.Headers,
+	}
 
-  if options.Headers != nil {
-    k.headers = options.Headers
-  }
+	if options.Headers != nil {
+		k.headers = options.Headers
+	}
 
-  k.State = k.socket.GetState()
+	k.State = k.socket.GetState()
 
-  k.defaultIndex = options.DefaultIndex
+	k.defaultIndex = options.DefaultIndex
 
-  if options.Connect == types.Auto {
-    err = k.Connect()
-  }
+	if options.Connect == types.Auto {
+		err = k.Connect()
+	}
 
-  return k, err
+	return k, err
 }
 
 // Connects to a Kuzzle instance using the provided host and port.
 func (k *Kuzzle) Connect() error {
-  wasConnected, err := k.socket.Connect()
-  if err == nil {
-    //if k.lastUrl != k.Host {
-    //  k.wasConnected = false
-    //  k.lastUrl = k.Host
-    //}
+	wasConnected, err := k.socket.Connect()
+	if err == nil {
+		//if k.lastUrl != k.Host {
+		//  k.wasConnected = false
+		//  k.lastUrl = k.Host
+		//}
 
-    if wasConnected {
-      if k.jwt != "" {
-        // todo avoid import cycle (kuzzle)
-        //go func() {
-        //	res, err := kuzzle.CheckToken(k, k.jwt)
-        //
-        //	if err != nil {
-        //		k.jwt = ""
-        //		k.emitEvent(event.jwtExpired, nil)
-        //		k.Reconnect()
-        //		return
-        //	}
-        //
-        //	if !res.Valid {
-        //		k.jwt = ""
-        //		k.emitEvent(event.jwtExpired, nil)
-        //	}
-        //	k.Reconnect()
-        //}()
-      }
-    }
-    return nil
-  }
+		if wasConnected {
+			if k.jwt != "" {
+				// todo avoid import cycle (kuzzle)
+				//go func() {
+				//	res, err := kuzzle.CheckToken(k, k.jwt)
+				//
+				//	if err != nil {
+				//		k.jwt = ""
+				//		k.emitEvent(event.jwtExpired, nil)
+				//		k.Reconnect()
+				//		return
+				//	}
+				//
+				//	if !res.Valid {
+				//		k.jwt = ""
+				//		k.emitEvent(event.jwtExpired, nil)
+				//	}
+				//	k.Reconnect()
+				//}()
+			}
+		}
+		return nil
+	}
 
-  return err
+	return err
 }
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
-  return k.socket.GetOfflineQueue()
+	return k.socket.GetOfflineQueue()
 }
 
 func (k Kuzzle) GetJwt() string {
-  return k.jwt
+	return k.jwt
 }
