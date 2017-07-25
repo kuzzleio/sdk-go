@@ -91,6 +91,28 @@ type (
     Timestamp         int `json:"timestamp"`
   }
 
+  ShardResponse struct {
+    Found   bool   `json:"found"`
+    Index   string `json:"_index"`
+    Type    string `json:"_type"`
+    Id      string `json:"_id"`
+    Version int    `json:"_version"`
+    Result  string `json:"result"`
+    Shards  struct {
+      Total      int `json:"total"`
+      Successful int `json:"successful"`
+      Failed     int `json:"failed"`
+    } `json:"_shards"`
+  }
+
+  Controller struct {
+    Actions map[string]bool `json:"actions"`
+  }
+
+  Controllers struct {
+    Controllers map[string]Controller `json:"controllers"`
+  }
+
   SecurityDocument struct {
     Id     string          `json:"_id"`
     Source json.RawMessage `json:"_source"`
@@ -146,10 +168,6 @@ func (user User) ContentMap(keys ...string) (map[string]interface{}) {
 }
 
 func (profile Profile) Policies() ([]string) {
-  type Policies struct {
-    Policies []struct{RoleId string `json:"roleId"`} `json:"policies"`
-  }
-
   var policies = Policies{}
   json.Unmarshal(profile.Source, &policies)
 
@@ -162,11 +180,7 @@ func (profile Profile) Policies() ([]string) {
   return roleIDs
 }
 
-func (role Role) Controllers() (map[string]struct{Actions map[string]bool `json:"actions"`}) {
-  type Controllers struct {
-    Controllers map[string]struct{Actions map[string]bool `json:"actions"`} `json:"controllers"`
-  }
-
+func (role Role) Controllers() (map[string]Controller) {
   var controllers = Controllers{}
   json.Unmarshal(role.Source, &controllers)
 

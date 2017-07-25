@@ -13,3 +13,22 @@ type KuzzleRequest struct {
   Scroll string `json:"scroll"`
   ScrollId string `json:"scrollId"`
 }
+
+type UserCredentials map[string]struct {
+  Username string `json:"username"`
+  Password string `json:"password"`
+}
+
+type UserData struct {
+  ProfileIds []string `json:"profileIds"`
+  Content map[string]interface{} `json:"content"`
+  Credentials UserCredentials `json:"credentials"`
+}
+
+type Policy struct {
+  RoleId string `json:"roleId"`
+}
+
+type Policies struct {
+  Policies []Policy `json:"policies"`
+}
