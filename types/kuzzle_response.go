@@ -42,8 +42,8 @@ type (
 
   KuzzleSearchResult struct {
     Hits     []KuzzleResult `json:"hits"`
-    Total    int            `json:"total"`
-    ScrollId string         `json:"_scroll_id"`
+    Total    int `json:"total"`
+    ScrollId string `json:"_scroll_id"`
   }
 
   KuzzleValidationFields map[string]struct {
@@ -108,5 +108,10 @@ type (
   LoginAttempt struct {
     Success bool `json:"success"`
     Error error `json:"error"`
+  }
+
+  CollectionsList struct {
+    Name string `json:"name"`
+    Type string `json:"type"`
   }
 )
