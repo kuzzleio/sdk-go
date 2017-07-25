@@ -4,7 +4,6 @@ import (
   "github.com/kuzzleio/sdk-go/types"
   "errors"
   "encoding/json"
-  "fmt"
 )
 
 /*
@@ -28,7 +27,6 @@ func (k Kuzzle) UpdateSelf(credentials interface{}, options *types.Options) (typ
   }
 
   u := types.User{}
-  fmt.Printf("%s\n", res.Result)
   json.Unmarshal(res.Result, &u)
 
   return u, nil
