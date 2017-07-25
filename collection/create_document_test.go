@@ -119,3 +119,117 @@ func TestCreateDocumentCreate(t *testing.T) {
   newCollection := collection.NewCollection(k, "collection", "index")
   newCollection.CreateDocument("id", Document{Title: "yolo"}, &types.Options{IfExist: "error"})
 }
+
+func TestMCreateDocumentError(t *testing.T) {
+  documents := []types.Document{
+    {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+    {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").MCreateDocument(documents, nil)
+  assert.NotNil(t, err)
+}
+
+func TestMCreateDocument(t *testing.T) {
+  documents := []types.Document{
+    {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+    {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "document", parsedQuery.Controller)
+      assert.Equal(t, "mCreate", parsedQuery.Action)
+      assert.Equal(t, "index", parsedQuery.Index)
+      assert.Equal(t, "collection", parsedQuery.Collection)
+
+      results := []types.KuzzleResult{
+        {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+        {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+      }
+
+      res := types.KuzzleSearchResult{
+        Total: 2,
+        Hits: results,
+      }
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := collection.NewCollection(k, "collection", "index").MCreateDocument(documents, nil)
+  assert.Equal(t, 2, res.Total)
+
+  for index, doc := range res.Hits {
+    assert.Equal(t, documents[index].Id, doc.Id)
+    assert.Equal(t, documents[index].Source, doc.Source)
+  }
+}
+
+func TestMCreateOrReplaceDocumentError(t *testing.T) {
+  documents := []types.Document{
+    {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+    {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  _, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument(documents, nil)
+  assert.NotNil(t, err)
+}
+
+func TestMCreateOrReplaceDocument(t *testing.T) {
+  documents := []types.Document{
+    {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+    {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+  }
+
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      parsedQuery := &types.KuzzleRequest{}
+      json.Unmarshal(query, parsedQuery)
+
+      assert.Equal(t, "document", parsedQuery.Controller)
+      assert.Equal(t, "mCreateOrReplace", parsedQuery.Action)
+      assert.Equal(t, "index", parsedQuery.Index)
+      assert.Equal(t, "collection", parsedQuery.Collection)
+
+      results := []types.KuzzleResult{
+        {Id: "foo", Source: []byte(`{"title":"Foo"}`)},
+        {Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+      }
+
+      res := types.KuzzleSearchResult{
+        Total: 2,
+        Hits: results,
+      }
+      r, _ := json.Marshal(res)
+      return types.KuzzleResponse{Result: r}
+    },
+  }
+  k, _ := kuzzle.NewKuzzle(c, nil)
+
+  res, _ := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument(documents, nil)
+  assert.Equal(t, 2, res.Total)
+
+  for index, doc := range res.Hits {
+    assert.Equal(t, documents[index].Id, doc.Id)
+    assert.Equal(t, documents[index].Source, doc.Source)
+  }
+}
