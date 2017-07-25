@@ -5,6 +5,7 @@ import (
   "github.com/kuzzleio/sdk-go/types"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/event"
+  "fmt"
 )
 
 func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
@@ -36,6 +37,8 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 
   result := make(chan types.KuzzleResponse)
 
+  fmt.Printf("%s\n", q)
+
   go k.Query(q, nil, result)
 
   res := <-result
@@ -47,6 +50,8 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
     k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: false, Error: err})
     return "", err
   }
+
+  k.jwt = token.Jwt
 
   if token.Jwt != "" {
     // todo renew subscriptions
