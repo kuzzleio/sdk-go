@@ -3,9 +3,8 @@ package kuzzle
 import (
   "github.com/kuzzleio/sdk-go/connection"
   "github.com/kuzzleio/sdk-go/types"
-  "encoding/json"
-  "github.com/satori/go.uuid"
   "sync"
+  "errors"
 )
 
 type IKuzzle interface {
@@ -23,19 +22,29 @@ type Kuzzle struct {
   mu           *sync.Mutex
   defaultIndex string
   jwt          string
+  headers      map[string]interface{}
 }
 
 // Kuzzle constructor
 func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
   var err error
 
+  if c == nil {
+    return nil, errors.New("Connection is nil")
+  }
+
   if options == nil {
     options = types.DefaultOptions()
   }
 
   k := &Kuzzle{
-    mu:     &sync.Mutex{},
-    socket: c,
+    mu:      &sync.Mutex{},
+    socket:  c,
+    headers: options.Headers,
+  }
+
+  if options.Headers != nil {
+    k.headers = options.Headers
   }
 
   k.State = k.socket.GetState()
@@ -83,31 +92,6 @@ func (k *Kuzzle) Connect() error {
   }
 
   return err
-}
-
-// This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
-  requestId := uuid.NewV4().String()
-
-  query.RequestId = requestId
-
-  type body struct{}
-
-  if query.Body == nil {
-    query.Body = make(map[string]interface{})
-  }
-
-  jsonRequest, err := json.Marshal(query)
-  if err != nil {
-    responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
-    return
-  }
-
-  err = k.socket.Send(jsonRequest, options, responseChannel, requestId)
-  if err != nil {
-    responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
-    return
-  }
 }
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {

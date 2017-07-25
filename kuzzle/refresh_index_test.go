@@ -9,45 +9,43 @@ import (
   "github.com/kuzzleio/sdk-go/kuzzle"
 )
 
-func TestCreateMyCredentialsQueryError(t *testing.T) {
+func TestRefreshIndexQueryError(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
-      assert.Equal(t, "auth", request.Controller)
-      assert.Equal(t, "createMyCredentials", request.Action)
+      assert.Equal(t, "index", request.Controller)
+      assert.Equal(t, "refresh", request.Action)
       return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
-  _, err := k.CreateMyCredentials("local", nil, nil)
+  _, err := k.RefreshIndex("index",nil)
   assert.NotNil(t, err)
 }
 
-func TestCreateMyCredentials(t *testing.T) {
-  type myCredentials struct {
-    Username string `json:"username"`
-    Password string `json:"password"`
-  }
-
+func TestRefreshIndex(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      ack := myCredentials{Username: "foo", Password: "bar"}
+      type shards struct {
+        Shards types.Shards `json:"_shards"`
+      }
+
+      ack := shards{types.Shards{10, 9, 8}}
       r, _ := json.Marshal(ack)
 
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
-      assert.Equal(t, "auth", request.Controller)
-      assert.Equal(t, "createMyCredentials", request.Action)
-      assert.Equal(t, "local", request.Strategy)
-
+      assert.Equal(t, "index", request.Controller)
+      assert.Equal(t, "refresh", request.Action)
       return types.KuzzleResponse{Result: r}
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
 
-  res, _ := k.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
+  res, _ := k.RefreshIndex("index",nil)
 
-  assert.Equal(t, "foo", res["username"])
-  assert.Equal(t, "bar", res["password"])
+  assert.Equal(t, 10, res.Total)
+  assert.Equal(t, 9, res.Successful)
+  assert.Equal(t, 8, res.Failed)
 }

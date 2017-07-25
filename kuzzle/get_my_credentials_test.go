@@ -9,45 +9,55 @@ import (
   "github.com/kuzzleio/sdk-go/kuzzle"
 )
 
-func TestCreateMyCredentialsQueryError(t *testing.T) {
+func TestGetMyCredentialsQueryError(t *testing.T) {
   c := &internal.MockedConnection{
     MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
       assert.Equal(t, "auth", request.Controller)
-      assert.Equal(t, "createMyCredentials", request.Action)
+      assert.Equal(t, "getMyCredentials", request.Action)
+      assert.Equal(t, "local", request.Strategy)
       return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
     },
   }
   k, _ := kuzzle.NewKuzzle(c, nil)
-  _, err := k.CreateMyCredentials("local", nil, nil)
+  _, err := k.GetMyCredentials("local", nil)
   assert.NotNil(t, err)
 }
 
-func TestCreateMyCredentials(t *testing.T) {
+func TestGetMyCredentials(t *testing.T) {
+  c := &internal.MockedConnection{
+    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+      request := types.KuzzleRequest{}
+      json.Unmarshal(query, &request)
+      assert.Equal(t, "auth", request.Controller)
+      assert.Equal(t, "getMyCredentials", request.Action)
+      assert.Equal(t, "local", request.Strategy)
+
+      type myCredentials struct {
+        Username string `json:"username"`
+        Password string `json:"password"`
+      }
+
+      myCred := myCredentials{"admin", "test"}
+      marsh, _ := json.Marshal(myCred)
+
+      return types.KuzzleResponse{Result: marsh}
+    },
+  }
+
+  k, _ := kuzzle.NewKuzzle(c, nil)
+  res, err := k.GetMyCredentials("local", nil)
+  assert.Nil(t, err)
+
   type myCredentials struct {
     Username string `json:"username"`
     Password string `json:"password"`
   }
 
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      ack := myCredentials{Username: "foo", Password: "bar"}
-      r, _ := json.Marshal(ack)
+  cred := myCredentials{}
+  json.Unmarshal(res, &cred)
 
-      request := types.KuzzleRequest{}
-      json.Unmarshal(query, &request)
-      assert.Equal(t, "auth", request.Controller)
-      assert.Equal(t, "createMyCredentials", request.Action)
-      assert.Equal(t, "local", request.Strategy)
-
-      return types.KuzzleResponse{Result: r}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
-
-  res, _ := k.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
-
-  assert.Equal(t, "foo", res["username"])
-  assert.Equal(t, "bar", res["password"])
+  assert.Equal(t, "admin", cred.Username)
+  assert.Equal(t, "test", cred.Password)
 }
