@@ -4,7 +4,6 @@ import (
   "github.com/satori/go.uuid"
   "encoding/json"
   "github.com/kuzzleio/sdk-go/types"
-  "fmt"
 )
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
@@ -31,7 +30,6 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
     return
   }
 
-  fmt.Printf("%s\n", finalRequest)
   err = k.socket.Send(finalRequest, options, responseChannel, requestId)
   if err != nil {
     responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
