@@ -6,6 +6,7 @@ import (
   "encoding/json"
   "github.com/satori/go.uuid"
   "sync"
+  "errors"
 )
 
 type IKuzzle interface {
@@ -22,12 +23,16 @@ type Kuzzle struct {
   message      chan []byte
   mu           *sync.Mutex
   defaultIndex string
-  jwt     string
+  jwt          string
 }
 
 // Kuzzle constructor
 func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
   var err error
+
+  if c == nil {
+    return nil, errors.New("Connection is nil")
+  }
 
   if options == nil {
     options = types.DefaultOptions()
@@ -112,4 +117,8 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
   return k.socket.GetOfflineQueue()
+}
+
+func (k Kuzzle) GetJwt() string {
+  return k.jwt
 }
