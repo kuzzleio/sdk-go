@@ -19,7 +19,7 @@ func (k Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, 
     Body:       credentials,
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 
