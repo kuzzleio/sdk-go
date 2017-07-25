@@ -33,6 +33,76 @@ func (dc Collection) GetSpecifications(options *types.Options) (types.KuzzleSpec
 }
 
 /*
+  Searches specifications across indexes/collections according to the provided filters.
+*/
+func (dc Collection) SearchSpecifications(filters interface{}, options *types.Options) (types.KuzzleSpecificationSearchResult, error) {
+  ch := make(chan types.KuzzleResponse)
+
+  query := types.KuzzleRequest{
+    Controller: "collection",
+    Action:     "searchSpecifications",
+    Body:       struct{Query interface{} `json:"query"`}{Query: filters},
+  }
+
+  if options != nil {
+    query.From = options.From
+    query.Size = options.Size
+    if options.Scroll != "" {
+      query.Scroll = options.Scroll
+    }
+  }
+
+  go dc.kuzzle.Query(query, options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return types.KuzzleSpecificationSearchResult{}, errors.New(res.Error.Message)
+  }
+
+  specifications := types.KuzzleSpecificationSearchResult{}
+  json.Unmarshal(res.Result, &specifications)
+
+  return specifications, nil
+}
+
+/*
+  Retrieves next result of a specification search with scroll query.
+*/
+func (dc Collection) ScrollSpecifications(scrollId string, options *types.Options) (types.KuzzleSpecificationSearchResult, error) {
+  if scrollId == "" {
+    return types.KuzzleSpecificationSearchResult{}, errors.New("Collection.ScrollSpecifications: scroll id required")
+  }
+
+  ch := make(chan types.KuzzleResponse)
+
+  query := types.KuzzleRequest{
+    Controller: "collection",
+    Action:     "scrollSpecifications",
+    ScrollId:   scrollId,
+  }
+
+  if options != nil {
+    if options.Scroll != "" {
+      query.Scroll = options.Scroll
+    }
+  }
+
+  go dc.kuzzle.Query(query, options, ch)
+
+  res := <-ch
+
+  if res.Error.Message != "" {
+    return types.KuzzleSpecificationSearchResult{}, errors.New(res.Error.Message)
+  }
+
+  specifications := types.KuzzleSpecificationSearchResult{}
+  json.Unmarshal(res.Result, &specifications)
+
+  return specifications, nil
+}
+
+/*
   Validates the provided specifications.
 */
 func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidation, options *types.Options) (types.ValidResponse, error) {
