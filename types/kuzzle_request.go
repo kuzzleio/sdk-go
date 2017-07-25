@@ -13,4 +13,5 @@ type KuzzleRequest struct {
   Scroll     string `json:"scroll"`
   ScrollId   string `json:"scrollId"`
   Strategy   string `json:"strategy"`
+  ExpiresIn  int `json:"expiresIn"`
 }
