@@ -22,11 +22,7 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
   jsonRequest, _ := json.Marshal(query)
   out := map[string]interface{}{}
   json.Unmarshal(jsonRequest, &out)
-  k.addHeaders(&out)
-
-  if k.jwt != "" && !(query.Controller == "auth" && query.Action == "checkToken") {
-    out["jwt"] = k.jwt
-  }
+  k.addHeaders(&out, query)
 
   finalRequest, err := json.Marshal(out)
 
@@ -44,7 +40,11 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 }
 
 // Helper function copying headers to the query data
-func (k Kuzzle) addHeaders(request *map[string]interface{}) {
+func (k Kuzzle) addHeaders(request *map[string]interface{}, query types.KuzzleRequest) {
+  if k.jwt != "" && !(query.Controller == "auth" && query.Action == "checkToken") {
+    (*request)["jwt"] = k.jwt
+  }
+
   for k, v := range k.headers {
     if (*request)[k] == nil {
       (*request)[k] = v
