@@ -12,7 +12,7 @@ import (
 
 func TestWhoAmIQueryError(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+    MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
       assert.Equal(t, "auth", request.Controller)
@@ -27,7 +27,7 @@ func TestWhoAmIQueryError(t *testing.T) {
 
 func TestWhoAmI(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+    MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
       assert.Equal(t, "auth", request.Controller)
