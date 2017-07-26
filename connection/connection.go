@@ -9,4 +9,5 @@ type Connection interface {
 	Close() error
 	GetOfflineQueue() *[]types.QueryObject
 	GetState() *int
+	EmitEvent(int, interface{})
 }
