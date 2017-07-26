@@ -21,7 +21,7 @@ type Options struct {
 	ReconnectionDelay time.Duration
 	ReplayInterval    time.Duration
 	Connect           int
-	Volatile          interface{}
+	Volatile          VolatileData
 	Refresh           string
 	IfExist           string
 	DefaultIndex      string
