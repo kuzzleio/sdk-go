@@ -109,7 +109,7 @@ func TestGetRights(t *testing.T) {
 				UserRights []types.UserRights `json:"hits"`
 			}
 			userRights := []types.UserRights{}
-			userRights = append(userRights, types.UserRights{Controller:"wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+			userRights = append(userRights, types.UserRights{Controller: "wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
 			actualRights := resultUserRights{UserRights: userRights}
 			r, _ := json.Marshal(actualRights)
 			return types.KuzzleResponse{Result: r}
@@ -120,7 +120,7 @@ func TestGetRights(t *testing.T) {
 	res, _ := security.NewSecurity(k).User.GetRights(id, nil)
 
 	expectedRights := []types.UserRights{}
-	expectedRights = append(expectedRights, types.UserRights{Controller:"wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+	expectedRights = append(expectedRights, types.UserRights{Controller: "wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
 
 	assert.Equal(t, expectedRights, res)
 }
