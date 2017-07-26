@@ -202,3 +202,60 @@ func TestScroll(t *testing.T) {
 	assert.Equal(t, res.Hits[0].ProfileIDs(), []string{"admin", "other"})
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
 }
+
+func TestGetRightsEmptyId(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.GetRights: user id required"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	_, err := security.NewSecurity(k).User.GetRights("", nil)
+	assert.NotNil(t, err)
+}
+
+func TestGetRightsError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	_, err := security.NewSecurity(k).User.GetRights("userId", nil)
+	assert.NotNil(t, err)
+}
+
+func TestGetRights(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUserRights", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			type resultUserRights struct {
+				UserRights []types.UserRights `json:"hits"`
+			}
+			userRights := []types.UserRights{}
+			userRights = append(userRights, types.UserRights{Controller:"wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+			actualRights := resultUserRights{UserRights: userRights}
+			r, _ := json.Marshal(actualRights)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, _ := security.NewSecurity(k).User.GetRights(id, nil)
+
+	expectedRights := []types.UserRights{}
+	expectedRights = append(expectedRights, types.UserRights{Controller:"wow-controll", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+
+	assert.Equal(t, expectedRights, res)
+}
+
