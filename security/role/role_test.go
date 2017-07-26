@@ -61,7 +61,7 @@ func TestFetch(t *testing.T) {
 
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -77,7 +77,7 @@ func TestSearch(t *testing.T) {
 	var results = types.KuzzleSearchRolesResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -105,7 +105,7 @@ func TestSearchWithOptions(t *testing.T) {
 	var results = types.KuzzleSearchRolesResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -119,7 +119,11 @@ func TestSearchWithOptions(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := security.NewSecurity(k).Role.Search(nil, &types.Options{From: 2, Size: 4})
+	opts := types.NewQueryOptions()
+	opts.SetFrom(2)
+	opts.SetSize(4)
+
+	res, _ := security.NewSecurity(k).Role.Search(nil, opts)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "role42")

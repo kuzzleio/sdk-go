@@ -43,7 +43,7 @@ func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User,
 /*
   Executes a search on Users according to filters.
 */
-func (su SecurityUser) Search(filters interface{}, options *types.Options) (types.KuzzleSearchUsersResult, error) {
+func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchUsersResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -53,13 +53,13 @@ func (su SecurityUser) Search(filters interface{}, options *types.Options) (type
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
-		if options.Scroll != "" {
-			query.Scroll = options.Scroll
+		query.From = options.GetFrom()
+		query.Size = options.GetSize()
+
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
 		}
-	} else {
-		query.Size = 10
 	}
 
 	go su.Kuzzle.Query(query, options, ch)
@@ -79,21 +79,16 @@ func (su SecurityUser) Search(filters interface{}, options *types.Options) (type
 /*
   Executes a scroll search on Users.
 */
-func (su SecurityUser) Scroll(scrollId string, options *types.Options) (types.KuzzleSearchUsersResult, error) {
+func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (types.KuzzleSearchUsersResult, error) {
 	if scrollId == "" {
 		return types.KuzzleSearchUsersResult{}, errors.New("Security.User.Scroll: scroll id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
 
-	if options == nil {
-		options = &types.Options{Scroll: "1m"}
-	}
-
 	query := types.KuzzleRequest{
 		Controller: "security",
 		Action:     "scrollUsers",
-		Scroll:     options.Scroll,
 		ScrollId:   scrollId,
 	}
 

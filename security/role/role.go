@@ -43,7 +43,7 @@ func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role,
 /*
   Executes a search on Roles according to filters.
 */
-func (sr SecurityRole) Search(filters interface{}, options *types.Options) (types.KuzzleSearchRolesResult, error) {
+func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchRolesResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -53,10 +53,13 @@ func (sr SecurityRole) Search(filters interface{}, options *types.Options) (type
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
-	} else {
-		query.Size = 10
+		query.From = options.GetFrom()
+		query.Size = options.GetSize()
+
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
+		}
 	}
 
 	go sr.Kuzzle.Query(query, options, ch)
