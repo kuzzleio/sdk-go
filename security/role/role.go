@@ -1,41 +1,41 @@
 package role
 
 import (
-  "errors"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
-  "github.com/kuzzleio/sdk-go/kuzzle"
+	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type SecurityRole struct {
-  Kuzzle kuzzle.Kuzzle
+	Kuzzle kuzzle.Kuzzle
 }
 
 /*
   Retrieves a Role using its provided unique id.
 */
-func (sr SecurityRole) Fetch(id string, options *types.Options) (types.Role, error) {
-  if id == "" {
-    return types.Role{}, errors.New("Security.Role.Fetch: role id required")
-  }
+func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role, error) {
+	if id == "" {
+		return types.Role{}, errors.New("Security.Role.Fetch: role id required")
+	}
 
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "security",
-    Action:     "getRole",
-    Id:         id,
-  }
-  go sr.Kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     "getRole",
+		Id:         id,
+	}
+	go sr.Kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return types.Role{}, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return types.Role{}, errors.New(res.Error.Message)
+	}
 
-  role := types.Role{}
-  json.Unmarshal(res.Result, &role)
+	role := types.Role{}
+	json.Unmarshal(res.Result, &role)
 
-  return role, nil
+	return role, nil
 }
