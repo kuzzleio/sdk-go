@@ -10,7 +10,7 @@ import (
 /*
  * Create credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -24,7 +24,7 @@ func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, op
 	res := <-result
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return types.Credentials{}, errors.New(res.Error.Message)
 	}
 
 	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()
