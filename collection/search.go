@@ -26,7 +26,9 @@ func (dc Collection) Search(filters interface{}, options *types.Options) (types.
     if options.Scroll != "" {
       query.Scroll = options.Scroll
     }
-  }
+  } else {
+		query.Size = 10
+	}
 
   go dc.kuzzle.Query(query, options, ch)
 
