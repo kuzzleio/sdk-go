@@ -1,111 +1,111 @@
 package collection_test
 
 import (
-  "testing"
-  "github.com/kuzzleio/sdk-go/internal"
-  "github.com/kuzzleio/sdk-go/kuzzle"
-  "github.com/stretchr/testify/assert"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
-  "github.com/kuzzleio/sdk-go/collection"
+	"encoding/json"
+	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/internal"
+	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestDeleteDocumentEmptyId(t *testing.T) {
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.DeleteDocument: document id required"}}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.DeleteDocument: document id required"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := collection.NewCollection(k, "collection", "index").DeleteDocument("", nil)
-  assert.NotNil(t, err)
+	_, err := collection.NewCollection(k, "collection", "index").DeleteDocument("", nil)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteDocumentError(t *testing.T) {
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := collection.NewCollection(k, "collection", "index").DeleteDocument("myId", nil)
-  assert.NotNil(t, err)
+	_, err := collection.NewCollection(k, "collection", "index").DeleteDocument("myId", nil)
+	assert.NotNil(t, err)
 }
 
 func TestDeleteDocument(t *testing.T) {
-  type Document struct {
-    Title string
-  }
+	type Document struct {
+		Title string
+	}
 
-  id := "myId"
+	id := "myId"
 
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      parsedQuery := &types.KuzzleRequest{}
-      json.Unmarshal(query, parsedQuery)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
 
-      assert.Equal(t, "document", parsedQuery.Controller)
-      assert.Equal(t, "delete", parsedQuery.Action)
-      assert.Equal(t, "index", parsedQuery.Index)
-      assert.Equal(t, "collection", parsedQuery.Collection)
-      assert.Equal(t, id, parsedQuery.Id)
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "delete", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
 
-      res := types.Document{Id: id}
-      r, _ := json.Marshal(res)
-      return types.KuzzleResponse{Result: r}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+			res := types.Document{Id: id}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  res, _ := collection.NewCollection(k, "collection", "index").DeleteDocument(id, nil)
-  assert.Equal(t, id, res)
+	res, _ := collection.NewCollection(k, "collection", "index").DeleteDocument(id, nil)
+	assert.Equal(t, id, res)
 }
 
 func TestMDeleteDocumentEmptyIds(t *testing.T) {
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.MDeleteDocument: please provide at least one id of document to delete"}}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.MDeleteDocument: please provide at least one id of document to delete"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{}, nil)
-  assert.NotNil(t, err)
+	_, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{}, nil)
+	assert.NotNil(t, err)
 }
 
 func TestMDeleteDocumentError(t *testing.T) {
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  _, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{"foo", "bar"}, nil)
-  assert.NotNil(t, err)
+	_, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{"foo", "bar"}, nil)
+	assert.NotNil(t, err)
 }
 
 func TestMDeleteDocument(t *testing.T) {
-  ids := []string{"foo", "bar"}
+	ids := []string{"foo", "bar"}
 
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
-      parsedQuery := &types.KuzzleRequest{}
-      json.Unmarshal(query, parsedQuery)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
 
-      assert.Equal(t, "document", parsedQuery.Controller)
-      assert.Equal(t, "mDelete", parsedQuery.Action)
-      assert.Equal(t, "index", parsedQuery.Index)
-      assert.Equal(t, "collection", parsedQuery.Collection)
-      assert.Equal(t, []interface{}{"foo", "bar"}, parsedQuery.Body.(map[string]interface{})["ids"])
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "mDelete", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, []interface{}{"foo", "bar"}, parsedQuery.Body.(map[string]interface{})["ids"])
 
-      return types.KuzzleResponse{Result: []byte(`["foo","bar"]`)}
-    },
-  }
-  k, _ := kuzzle.NewKuzzle(c, nil)
+			return types.KuzzleResponse{Result: []byte(`["foo","bar"]`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 
-  res, _ := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
-  assert.Equal(t, []string{"foo", "bar"}, res)
+	res, _ := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
+	assert.Equal(t, []string{"foo", "bar"}, res)
 }
