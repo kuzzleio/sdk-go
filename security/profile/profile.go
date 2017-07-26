@@ -1,114 +1,114 @@
 package profile
 
 import (
-  "errors"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
-  "github.com/kuzzleio/sdk-go/kuzzle"
-  "fmt"
+	"errors"
+	"encoding/json"
+	"github.com/kuzzleio/sdk-go/types"
+	"github.com/kuzzleio/sdk-go/kuzzle"
+	"fmt"
 )
 
 type SecurityProfile struct {
-  Kuzzle kuzzle.Kuzzle
+	Kuzzle kuzzle.Kuzzle
 }
 
 /*
   Retrieves a Profile using its provided unique id.
 */
 func (sp SecurityProfile) Fetch(id string, options *types.Options) (types.Profile, error) {
-  if id == "" {
-    return types.Profile{}, errors.New("Security.Profile.Fetch: profile id required")
-  }
+	if id == "" {
+		return types.Profile{}, errors.New("Security.Profile.Fetch: profile id required")
+	}
 
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "security",
-    Action:     "getProfile",
-    Id:         id,
-  }
-  go sp.Kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     "getProfile",
+		Id:         id,
+	}
+	go sp.Kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return types.Profile{}, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return types.Profile{}, errors.New(res.Error.Message)
+	}
 
-  profile := types.Profile{}
-  json.Unmarshal(res.Result, &profile)
+	profile := types.Profile{}
+	json.Unmarshal(res.Result, &profile)
 
-  return profile, nil
+	return profile, nil
 }
 
 /*
   Create a new Profile in Kuzzle.
 */
 func (sp SecurityProfile) Create(id string, policies types.Policies, options *types.Options) (types.Profile, error) {
-  if id == "" {
-    return types.Profile{}, errors.New("Security.Profile.Create: profile id required")
-  }
+	if id == "" {
+		return types.Profile{}, errors.New("Security.Profile.Create: profile id required")
+	}
 
-  action := "createProfile"
+	action := "createProfile"
 
-  if options != nil {
-    if options.IfExist == "replace" {
-      action = "createOrReplaceProfile"
-    } else if options.IfExist != "error" {
-      return types.Profile{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
-    }
-  }
+	if options != nil {
+		if options.IfExist == "replace" {
+			action = "createOrReplaceProfile"
+		} else if options.IfExist != "error" {
+			return types.Profile{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+		}
+	}
 
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "security",
-    Action:     action,
-    Body:       policies,
-    Id:         id,
-  }
-  go sp.Kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     action,
+		Body:       policies,
+		Id:         id,
+	}
+	go sp.Kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return types.Profile{}, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return types.Profile{}, errors.New(res.Error.Message)
+	}
 
-  profile := types.Profile{}
-  json.Unmarshal(res.Result, &profile)
+	profile := types.Profile{}
+	json.Unmarshal(res.Result, &profile)
 
-  return profile, nil
+	return profile, nil
 }
 
 /*
   Update a Profile in Kuzzle.
 */
 func (sp SecurityProfile) Update(id string, policies types.Policies, options *types.Options) (types.Profile, error) {
-  if id == "" {
-    return types.Profile{}, errors.New("Security.Profile.Update: profile id required")
-  }
+	if id == "" {
+		return types.Profile{}, errors.New("Security.Profile.Update: profile id required")
+	}
 
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "security",
-    Action:     "updateProfile",
-    Body:       policies,
-    Id:         id,
-  }
-  go sp.Kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     "updateProfile",
+		Body:       policies,
+		Id:         id,
+	}
+	go sp.Kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return types.Profile{}, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return types.Profile{}, errors.New(res.Error.Message)
+	}
 
-  profile := types.Profile{}
-  json.Unmarshal(res.Result, &profile)
+	profile := types.Profile{}
+	json.Unmarshal(res.Result, &profile)
 
-  return profile, nil
+	return profile, nil
 }
 
 /*
@@ -118,27 +118,27 @@ func (sp SecurityProfile) Update(id string, policies types.Policies, options *ty
  * This means that a profile that has just been deleted will still be returned by this function.
 */
 func (sp SecurityProfile) Delete(id string, options *types.Options) (string, error) {
-  if id == "" {
-    return "", errors.New("Security.Profile.Delete: profile id required")
-  }
+	if id == "" {
+		return "", errors.New("Security.Profile.Delete: profile id required")
+	}
 
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "security",
-    Action:     "deleteProfile",
-    Id:         id,
-  }
-  go sp.Kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     "deleteProfile",
+		Id:         id,
+	}
+	go sp.Kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return "", errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return "", errors.New(res.Error.Message)
+	}
 
-  shardResponse := types.ShardResponse{}
-  json.Unmarshal(res.Result, &shardResponse)
+	shardResponse := types.ShardResponse{}
+	json.Unmarshal(res.Result, &shardResponse)
 
-  return shardResponse.Id, nil
+	return shardResponse.Id, nil
 }
