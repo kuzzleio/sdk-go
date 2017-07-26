@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+const version = "0.1"
+
 type IKuzzle interface {
 	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
 }
@@ -23,6 +25,8 @@ type Kuzzle struct {
 	defaultIndex string
 	jwt          string
 	headers      map[string]interface{}
+	volatile     types.VolatileData
+	version      string
 }
 
 // Kuzzle constructor
@@ -38,9 +42,11 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
 	}
 
 	k := &Kuzzle{
-		mu:      &sync.Mutex{},
-		socket:  c,
-		headers: options.Headers,
+		mu:       &sync.Mutex{},
+		socket:   c,
+		headers:  options.Headers,
+		volatile: options.Volatile,
+		version:  version,
 	}
 
 	if options.Headers != nil {
