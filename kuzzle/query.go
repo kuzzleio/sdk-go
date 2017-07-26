@@ -18,10 +18,36 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 		query.Body = make(map[string]interface{})
 	}
 
+	if k.volatile != nil {
+		query.Volatile = k.volatile
+		query.Volatile["sdkVersion"] = version
+	} else {
+		query.Volatile = types.VolatileData{"sdkVersion": version}
+	}
+
 	jsonRequest, _ := json.Marshal(query)
 	out := map[string]interface{}{}
 	json.Unmarshal(jsonRequest, &out)
 	k.addHeaders(&out, query)
+
+	if options == nil {
+		options = types.DefaultOptions()
+	}
+
+	if options.Refresh != "" {
+		out["refresh"] = options.Refresh
+	}
+
+	out["from"] = options.From
+	out["size"] = options.Size
+
+	if options.Scroll != "" {
+		out["scroll"] = options.Scroll
+	}
+
+	if options.ScrollId != "" {
+		out["scrollId"] = options.ScrollId
+	}
 
 	finalRequest, err := json.Marshal(out)
 
