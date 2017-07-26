@@ -27,8 +27,8 @@ func (dc Collection) Search(filters interface{}, options *types.Options) (types.
       query.Scroll = options.Scroll
     }
   } else {
-		query.Size = 10
-	}
+    query.Size = 10
+  }
 
   go dc.kuzzle.Query(query, options, ch)
 

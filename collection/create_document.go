@@ -1,10 +1,10 @@
 package collection
 
 import (
-  "errors"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
-  "fmt"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*
@@ -18,91 +18,91 @@ import (
            - replaces the existing document if set to "replace"
 */
 func (dc Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  action := "create"
+	action := "create"
 
-  if options != nil {
-    if options.IfExist == "replace" {
-      action = "createOrReplace"
-    } else if options.IfExist != "error" {
-      return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
-    }
-  }
+	if options != nil {
+		if options.IfExist == "replace" {
+			action = "createOrReplace"
+		} else if options.IfExist != "error" {
+			return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+		}
+	}
 
-  query := types.KuzzleRequest{
-    Collection: dc.collection,
-    Index:      dc.index,
-    Controller: "document",
-    Action:     action,
-    Body:       document,
-    Id:         id,
-  }
-  go dc.kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Collection: dc.collection,
+		Index:      dc.index,
+		Controller: "document",
+		Action:     action,
+		Body:       document,
+		Id:         id,
+	}
+	go dc.kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return nil, errors.New(res.Error.Message)
+	}
 
-  documentResponse := &types.Document{}
-  json.Unmarshal(res.Result, documentResponse)
+	documentResponse := &types.Document{}
+	json.Unmarshal(res.Result, documentResponse)
 
-  return documentResponse, nil
+	return documentResponse, nil
 }
 
 /*
   Creates the provided documents.
 */
 func (dc Collection) MCreateDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
-  return performMultipleCreate(dc, documents, "mCreate", options)
+	return performMultipleCreate(dc, documents, "mCreate", options)
 }
 
 /*
   Creates or replaces the provided documents.
 */
 func (dc Collection) MCreateOrReplaceDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
-  return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
+	return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
 }
 
 func performMultipleCreate(dc Collection, documents []types.Document, action string, options *types.Options) (types.KuzzleSearchResult, error) {
-  ch := make(chan types.KuzzleResponse)
+	ch := make(chan types.KuzzleResponse)
 
-  type CreationDocument struct {
-    Id string `json:"_id"`
-    Body interface{} `json:"body"`
-  }
-  docs := []CreationDocument{}
+	type CreationDocument struct {
+		Id   string      `json:"_id"`
+		Body interface{} `json:"body"`
+	}
+	docs := []CreationDocument{}
 
-  type body struct {
-    Documents []CreationDocument `json:"documents"`
-  }
+	type body struct {
+		Documents []CreationDocument `json:"documents"`
+	}
 
-  for _, doc := range documents {
-    docs = append(docs, CreationDocument{
-      Id:   doc.Id,
-      Body: doc.Source,
-    })
-  }
+	for _, doc := range documents {
+		docs = append(docs, CreationDocument{
+			Id:   doc.Id,
+			Body: doc.Source,
+		})
+	}
 
-  query := types.KuzzleRequest{
-    Collection: dc.collection,
-    Index:      dc.index,
-    Controller: "document",
-    Action:     action,
-    Body:       &body{docs},
-  }
-  go dc.kuzzle.Query(query, options, ch)
+	query := types.KuzzleRequest{
+		Collection: dc.collection,
+		Index:      dc.index,
+		Controller: "document",
+		Action:     action,
+		Body:       &body{docs},
+	}
+	go dc.kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+	}
 
-  result := types.KuzzleSearchResult{}
-  json.Unmarshal(res.Result, &result)
+	result := types.KuzzleSearchResult{}
+	json.Unmarshal(res.Result, &result)
 
-  return result, nil
+	return result, nil
 }

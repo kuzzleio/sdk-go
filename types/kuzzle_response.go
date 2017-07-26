@@ -46,23 +46,23 @@ type (
     ScrollId string         `json:"_scroll_id"`
   }
 
-	KuzzleSearchUsersResult struct {
-		Hits     []User `json:"hits"`
-		Total    int    `json:"total"`
-		ScrollId string `json:"scrollId"`
-	}
+  KuzzleSearchUsersResult struct {
+    Hits     []User `json:"hits"`
+    Total    int    `json:"total"`
+    ScrollId string `json:"scrollId"`
+  }
 
-	KuzzleSearchProfilesResult struct {
-		Hits     []Profile `json:"hits"`
-		Total    int       `json:"total"`
-		ScrollId string    `json:"scrollId"`
-	}
+  KuzzleSearchProfilesResult struct {
+    Hits     []Profile `json:"hits"`
+    Total    int       `json:"total"`
+    ScrollId string    `json:"scrollId"`
+  }
 
-	KuzzleSearchRolesResult struct {
-		Hits     []Role `json:"hits"`
-		Total    int    `json:"total"`
-		ScrollId string `json:"scrollId"`
-	}
+  KuzzleSearchRolesResult struct {
+    Hits     []Role `json:"hits"`
+    Total    int    `json:"total"`
+    ScrollId string `json:"scrollId"`
+  }
 
   KuzzleValidationFields map[string]struct {
     Type         string `json:"type"`
