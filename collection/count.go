@@ -1,9 +1,9 @@
 package collection
 
 import (
-  "errors"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*
@@ -13,28 +13,28 @@ import (
   usually a couple of seconds.
   That means that a document that was just been created won’t be returned by this function
 */
-func (dc Collection) Count(filters interface{}, options *types.Options) (*int, error) {
-  type countResult struct {
-    Count int `json:"count"`
-  }
+func (dc Collection) Count(filters interface{}, options types.QueryOptions) (int, error) {
+	type countResult struct {
+		Count int `json:"count"`
+	}
 
-  ch := make(chan types.KuzzleResponse)
-  query := types.KuzzleRequest{
-    Collection: dc.collection,
-    Index:      dc.index,
-    Controller: "document",
-    Action:     "count",
-    Body:       filters,
-  }
-  go dc.kuzzle.Query(query, options, ch)
+	ch := make(chan types.KuzzleResponse)
+	query := types.KuzzleRequest{
+		Collection: dc.collection,
+		Index:      dc.index,
+		Controller: "document",
+		Action:     "count",
+		Body:       filters,
+	}
+	go dc.kuzzle.Query(query, options, ch)
 
-  res := <-ch
+	res := <-ch
 
-  if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
-  }
-  result := &countResult{}
-  json.Unmarshal(res.Result, result)
+	if res.Error.Message != "" {
+		return 0, errors.New(res.Error.Message)
+	}
+	result := countResult{}
+	json.Unmarshal(res.Result, &result)
 
-  return &result.Count, nil
+	return result.Count, nil
 }

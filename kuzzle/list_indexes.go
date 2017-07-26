@@ -1,36 +1,36 @@
 package kuzzle
 
 import (
-  "github.com/kuzzleio/sdk-go/types"
-  "errors"
-  "encoding/json"
+	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*
  * List data indexes
  */
-func (k Kuzzle) ListIndexes(options *types.Options) ([]string, error) {
-  result := make(chan types.KuzzleResponse)
+func (k Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
+	result := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Controller: "index",
-    Action:     "list",
-  }
+	query := types.KuzzleRequest{
+		Controller: "index",
+		Action:     "list",
+	}
 
-  go k.Query(query, nil, result)
+	go k.Query(query, options, result)
 
-  res := <-result
+	res := <-result
 
-  type indexes struct {
-    Indexes []string  `json:"indexes"`
-  }
+	type indexes struct {
+		Indexes []string `json:"indexes"`
+	}
 
-  if res.Error.Message != "" {
-    return nil, errors.New(res.Error.Message)
-  }
+	if res.Error.Message != "" {
+		return nil, errors.New(res.Error.Message)
+	}
 
-  var i indexes
-  json.Unmarshal(res.Result, &i)
+	var i indexes
+	json.Unmarshal(res.Result, &i)
 
-  return i.Indexes, nil
+	return i.Indexes, nil
 }
