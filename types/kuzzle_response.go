@@ -129,9 +129,10 @@ type (
 		Meta   KuzzleMeta      `json:"_meta"`
 	}
 
-	User    SecurityDocument
-	Profile SecurityDocument
-	Role    SecurityDocument
+	User        SecurityDocument
+	Profile     SecurityDocument
+	Role        SecurityDocument
+	Credentials map[string]interface{}
 )
 
 func (user User) ProfileIDs() []string {

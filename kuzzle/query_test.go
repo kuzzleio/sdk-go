@@ -12,14 +12,14 @@ func TestQueryOptions(t *testing.T) {
 	var k *Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, k.version, request.Volatile["sdkVersion"])
 			assert.Equal(t, 0, request.From)
 			assert.Equal(t, 10, request.Size)
-			assert.Equal(t, "1m", request.Scroll)
+			assert.Equal(t, "", request.Scroll)
 			assert.Equal(t, "", request.ScrollId)
 
 			return types.KuzzleResponse{}
@@ -28,7 +28,7 @@ func TestQueryOptions(t *testing.T) {
 	k, _ = NewKuzzle(c, nil)
 
 	ch := make(chan types.KuzzleResponse)
-	options := types.DefaultOptions()
+	options := types.NewQueryOptions()
 	go k.Query(types.KuzzleRequest{}, options, ch)
 	<-ch
 }

@@ -13,9 +13,9 @@ type TokenValidity struct {
 	ExpiresAt int    `json:"expiresAt"`
 }
 
-func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
+func (k Kuzzle) CheckToken(token string) (TokenValidity, error) {
 	if token == "" {
-		return nil, errors.New("Kuzzle.CheckToken: token required")
+		return TokenValidity{}, errors.New("Kuzzle.CheckToken: token required")
 	}
 
 	result := make(chan types.KuzzleResponse)
@@ -34,9 +34,9 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 	res := <-result
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return TokenValidity{}, errors.New(res.Error.Message)
 	}
-	tokenValidity := &TokenValidity{}
+	tokenValidity := TokenValidity{}
 	json.Unmarshal(res.Result, &tokenValidity)
 
 	return tokenValidity, nil

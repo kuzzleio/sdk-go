@@ -6,9 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (k Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckResponse, error) {
+func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (types.AckResponse, error) {
 	if index == "" {
-		return nil, errors.New("Kuzzle.createIndex: index required")
+		return types.AckResponse{}, errors.New("Kuzzle.createIndex: index required")
 	}
 
 	result := make(chan types.KuzzleResponse)
@@ -23,10 +23,10 @@ func (k Kuzzle) CreateIndex(index string, options *types.Options) (*types.AckRes
 	res := <-result
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := &types.AckResponse{}
+	ack := types.AckResponse{}
 	json.Unmarshal(res.Result, &ack)
 
 	return ack, nil

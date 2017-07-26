@@ -11,7 +11,7 @@ import (
 
 func TestInitRoomWithoutOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{}
 		},
 	}
@@ -27,14 +27,14 @@ func TestInitRoomWithoutOptions(t *testing.T) {
 
 func TestInitRoomWithDefaultOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	roomOptions := types.DefaultRoomOptions()
+	roomOptions := types.NewRoomOptions()
 	room := collection.NewCollection(k, "collection", "index").Room(roomOptions)
 
 	assert.Equal(t, types.SCOPE_ALL, room.Scope)
@@ -45,19 +45,19 @@ func TestInitRoomWithDefaultOptions(t *testing.T) {
 
 func TestInitRoomWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	roomOptions := &types.RoomOptions{
-		Scope:           types.SCOPE_OUT,
-		State:           types.STATE_PENDING,
-		User:            types.USER_ALL,
-		SubscribeToSelf: false,
-	}
+	roomOptions := types.NewRoomOptions()
+	roomOptions.SetScope(types.SCOPE_OUT)
+	roomOptions.SetState(types.STATE_PENDING)
+	roomOptions.SetUser(types.USER_ALL)
+	roomOptions.SetSubscribeToSelf(false)
+
 	room := collection.NewCollection(k, "collection", "index").Room(roomOptions)
 
 	assert.Equal(t, types.SCOPE_OUT, room.Scope)

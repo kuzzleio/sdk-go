@@ -16,11 +16,11 @@ func TestGetAutoRefreshDefaultIndexNull(t *testing.T) {
 }
 
 func TestGetAutoRefreshIndexNull(t *testing.T) {
-	opts := types.DefaultOptions()
-	opts.DefaultIndex = "myIndex"
+	opts := types.NewOptions()
+	opts.SetDefaultIndex("myIndex")
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Result: json.RawMessage("true")}
 		},
 	}
@@ -32,7 +32,7 @@ func TestGetAutoRefreshIndexNull(t *testing.T) {
 
 func TestGetAutoRefreshQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
 		},
 	}
@@ -44,7 +44,7 @@ func TestGetAutoRefreshQueryError(t *testing.T) {
 
 func TestGetAutoRefresh(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Result: json.RawMessage("true")}
 		},
 	}

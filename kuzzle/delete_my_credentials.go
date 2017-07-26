@@ -9,7 +9,7 @@ import (
 /*
  * Delete credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, options *types.Options) (*types.AckResponse, error) {
+func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (types.AckResponse, error) {
 	type body struct {
 		Strategy string      `json:"strategy"`
 		Body     interface{} `json:"body"`
@@ -27,10 +27,10 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, credentials interface{}, op
 	res := <-result
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := &types.AckResponse{}
+	ack := types.AckResponse{}
 	json.Unmarshal(res.Result, &ack)
 
 	return ack, nil
