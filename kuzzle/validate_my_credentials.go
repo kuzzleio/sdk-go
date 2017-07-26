@@ -7,7 +7,7 @@ import (
 )
 
 /*
- * Get credential information of the specified strategy for the current user.
+ * Validate credentials of the specified strategy for the current user.
  */
 func (k Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (bool, error) {
   result := make(chan types.KuzzleResponse)
