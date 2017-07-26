@@ -21,7 +21,7 @@ func (k Kuzzle) GetMyRights(options *types.Options) ([]types.Rights, error) {
     Hits []types.Rights `json:"hits"`
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 

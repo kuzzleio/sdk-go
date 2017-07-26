@@ -17,7 +17,7 @@ func (k Kuzzle) GetStatistics(options *types.Options) (types.Statistics, error) 
     Action:     "getLastStats",
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 

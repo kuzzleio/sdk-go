@@ -18,7 +18,7 @@ func (k Kuzzle) GetMyCredentials(strategy string, options *types.Options) (json.
     Strategy:   strategy,
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 

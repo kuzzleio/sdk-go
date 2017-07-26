@@ -16,7 +16,7 @@ func (k Kuzzle) Now(options *types.Options) (int, error) {
     Controller: "server",
     Action:     "now",
   }
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 
