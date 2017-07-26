@@ -11,6 +11,10 @@ import (
  * Create credentials of the specified strategy for the current user.
  */
 func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+	if strategy == "" {
+		return nil, errors.New("Kuzzle.CreateMyCredentials: strategy is required")
+	}
+
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

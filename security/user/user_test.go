@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestFetchEmptyId(t *testing.T) {
+func TestFetchEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Fetch: user id required"}}
@@ -69,7 +69,7 @@ func TestFetch(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
-func TestCreateEmptyId(t *testing.T) {
+func TestCreateEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Create: user id required"}}
@@ -134,7 +134,7 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
-func TestCreateRestrictedEmptyId(t *testing.T) {
+func TestCreateRestrictedEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.CreateRestrictedUser: user id required"}}
@@ -199,7 +199,7 @@ func TestCreateRestricted(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
-func TestReplaceEmptyId(t *testing.T) {
+func TestReplaceEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Replace: user id required"}}
@@ -264,7 +264,7 @@ func TestReplace(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
-func TestUpdateEmptyId(t *testing.T) {
+func TestUpdateEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Update: user id required"}}
@@ -329,7 +329,7 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
-func TestDeleteEmptyId(t *testing.T) {
+func TestDeleteEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Delete: user id required"}}

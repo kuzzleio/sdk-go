@@ -10,6 +10,10 @@ import (
  * Get credential information of the specified strategy for the current user.
  */
 func (k Kuzzle) GetMyCredentials(strategy string, options *types.Options) (json.RawMessage, error) {
+	if strategy == "" {
+		return nil, errors.New("Kuzzle.GetMyCredentials: strategy is required")
+	}
+
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
