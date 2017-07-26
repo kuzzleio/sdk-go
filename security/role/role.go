@@ -14,7 +14,7 @@ type SecurityRole struct {
 /*
   Retrieves a Role using its provided unique id.
 */
-func (sr SecurityRole) Fetch(id string, options *types.Options) (types.Role, error) {
+func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role, error) {
 	if id == "" {
 		return types.Role{}, errors.New("Security.Role.Fetch: role id required")
 	}
