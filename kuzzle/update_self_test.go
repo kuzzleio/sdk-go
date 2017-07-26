@@ -12,7 +12,7 @@ import (
 
 func TestUpdateSelfQueryError(t *testing.T) {
   c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+    MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
       return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
     },
   }
@@ -25,7 +25,7 @@ func TestUpdateSelf(t *testing.T) {
   q:= struct{Username string `json:"username"`}{"foo"}
 
   c := &internal.MockedConnection{
-    MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+    MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
       request := types.KuzzleRequest{}
       json.Unmarshal(query, &request)
       assert.Equal(t, "auth", request.Controller)

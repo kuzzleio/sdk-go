@@ -9,7 +9,7 @@ import (
 /*
  * Update the currently authenticated user informations
  */
-func (k Kuzzle) UpdateSelf(credentials interface{}, options *types.Options) (types.User, error) {
+func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) (types.User, error) {
   result := make(chan types.KuzzleResponse)
 
   query := types.KuzzleRequest{
@@ -18,7 +18,7 @@ func (k Kuzzle) UpdateSelf(credentials interface{}, options *types.Options) (typ
     Body:       credentials,
   }
 
-  go k.Query(query, nil, result)
+  go k.Query(query, options, result)
 
   res := <-result
 
