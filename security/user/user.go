@@ -1,10 +1,10 @@
 package user
 
 import (
-	"errors"
 	"encoding/json"
-	"github.com/kuzzleio/sdk-go/types"
+	"errors"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type SecurityUser struct {
@@ -14,7 +14,7 @@ type SecurityUser struct {
 /*
   Retrieves an User using its provided unique id.
 */
-func (su SecurityUser) Fetch(id string, options *types.Options) (types.User, error) {
+func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.Fetch: user id required")
 	}
@@ -229,4 +229,36 @@ func (su SecurityUser) Delete(id string, options *types.Options) (string, error)
 	json.Unmarshal(res.Result, &shardResponse)
 
 	return shardResponse.Id, nil
+}
+
+/*
+  Gets the rights of an User using its provided unique id.
+*/
+func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]types.UserRights, error) {
+	if kuid == "" {
+		return []types.UserRights{}, errors.New("Security.User.GetRights: user id required")
+	}
+
+	ch := make(chan types.KuzzleResponse)
+
+	query := types.KuzzleRequest{
+		Controller: "security",
+		Action:     "getUserRights",
+		Id:         kuid,
+	}
+	go su.Kuzzle.Query(query, options, ch)
+
+	res := <-ch
+
+	if res.Error.Message != "" {
+		return []types.UserRights{}, errors.New(res.Error.Message)
+	}
+
+	type response struct {
+		UserRights []types.UserRights `json:"hits"`
+	}
+	userRights := response{}
+	json.Unmarshal(res.Result, &userRights)
+
+	return userRights.UserRights, nil
 }

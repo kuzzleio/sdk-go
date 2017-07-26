@@ -1,115 +1,108 @@
 package kuzzle
 
 import (
-  "github.com/kuzzleio/sdk-go/connection"
-  "github.com/kuzzleio/sdk-go/types"
-  "encoding/json"
-  "github.com/satori/go.uuid"
-  "sync"
+	"errors"
+	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/types"
+	"sync"
 )
 
+const version = "0.1"
+
 type IKuzzle interface {
-  Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
+	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, types.QueryOptions)
 }
 
 type Kuzzle struct {
-  Host   string
-  socket connection.Connection
-  State  *int
+	Host   string
+	socket connection.Connection
+	State  *int
 
-  wasConnected bool
-  lastUrl      string
-  message      chan []byte
-  mu           *sync.Mutex
-  defaultIndex string
-  jwt     string
+	wasConnected bool
+	lastUrl      string
+	message      chan []byte
+	mu           *sync.Mutex
+	defaultIndex string
+	jwt          string
+	headers      map[string]interface{}
+	version      string
 }
 
 // Kuzzle constructor
-func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
-  var err error
+func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
+	var err error
 
-  if options == nil {
-    options = types.DefaultOptions()
-  }
+	if c == nil {
+		return nil, errors.New("Connection is nil")
+	}
 
-  k := &Kuzzle{
-    mu:     &sync.Mutex{},
-    socket: c,
-  }
+	if options == nil {
+		options = types.NewOptions()
+	}
 
-  k.State = k.socket.GetState()
+	k := &Kuzzle{
+		mu:      &sync.Mutex{},
+		socket:  c,
+		headers: options.GetHeaders(),
+		version: version,
+	}
 
-  k.defaultIndex = options.DefaultIndex
+	headers := options.GetHeaders()
+	if headers != nil {
+		k.headers = headers
+	}
 
-  if options.Connect == types.Auto {
-    err = k.Connect()
-  }
+	k.State = k.socket.GetState()
 
-  return k, err
+	k.defaultIndex = options.GetDefaultIndex()
+
+	if options.GetConnect() == types.Auto {
+		err = k.Connect()
+	}
+
+	return k, err
 }
 
 // Connects to a Kuzzle instance using the provided host and port.
 func (k *Kuzzle) Connect() error {
-  wasConnected, err := k.socket.Connect()
-  if err == nil {
-    //if k.lastUrl != k.Host {
-    //  k.wasConnected = false
-    //  k.lastUrl = k.Host
-    //}
+	wasConnected, err := k.socket.Connect()
+	if err == nil {
+		//if k.lastUrl != k.Host {
+		//  k.wasConnected = false
+		//  k.lastUrl = k.Host
+		//}
 
-    if wasConnected {
-      if k.jwt != "" {
-        // todo avoid import cycle (kuzzle)
-        //go func() {
-        //	res, err := kuzzle.CheckToken(k, k.jwt)
-        //
-        //	if err != nil {
-        //		k.jwt = ""
-        //		k.emitEvent(event.jwtExpired, nil)
-        //		k.Reconnect()
-        //		return
-        //	}
-        //
-        //	if !res.Valid {
-        //		k.jwt = ""
-        //		k.emitEvent(event.jwtExpired, nil)
-        //	}
-        //	k.Reconnect()
-        //}()
-      }
-    }
-    return nil
-  }
+		if wasConnected {
+			if k.jwt != "" {
+				// todo avoid import cycle (kuzzle)
+				//go func() {
+				//	res, err := kuzzle.CheckToken(k, k.jwt)
+				//
+				//	if err != nil {
+				//		k.jwt = ""
+				//		k.emitEvent(event.jwtExpired, nil)
+				//		k.Reconnect()
+				//		return
+				//	}
+				//
+				//	if !res.Valid {
+				//		k.jwt = ""
+				//		k.emitEvent(event.jwtExpired, nil)
+				//	}
+				//	k.Reconnect()
+				//}()
+			}
+		}
+		return nil
+	}
 
-  return err
-}
-
-// This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
-  requestId := uuid.NewV4().String()
-
-  query.RequestId = requestId
-
-  type body struct{}
-
-  if query.Body == nil {
-    query.Body = make(map[string]interface{})
-  }
-
-  jsonRequest, err := json.Marshal(query)
-  if err != nil {
-    responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
-    return
-  }
-
-  err = k.socket.Send(jsonRequest, options, responseChannel, requestId)
-  if err != nil {
-    responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
-    return
-  }
+	return err
 }
 
 func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
-  return k.socket.GetOfflineQueue()
+	return k.socket.GetOfflineQueue()
+}
+
+func (k Kuzzle) GetJwt() string {
+	return k.jwt
 }
