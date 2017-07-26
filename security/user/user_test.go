@@ -71,7 +71,7 @@ func TestFetchUser(t *testing.T) {
 
 func TestGetRightsEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.GetRights: user id required"}}
 		},
 	}
@@ -83,7 +83,7 @@ func TestGetRightsEmptyId(t *testing.T) {
 
 func TestGetRightsError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -97,7 +97,7 @@ func TestGetRights(t *testing.T) {
 	id := "userId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 

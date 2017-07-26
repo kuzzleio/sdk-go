@@ -43,7 +43,7 @@ func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User,
 /*
   Gets the rights of an User using its provided unique id.
  */
-func (su SecurityUser) GetRights(kuid string, options *types.Options) ([]types.UserRights, error) {
+func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]types.UserRights, error) {
 	if kuid == "" {
 		return []types.UserRights{}, errors.New("Security.User.GetRights: user id required")
 	}
