@@ -28,15 +28,38 @@ https://github.com/kuzzleio/kuzzle-sdk/issues
 
 ## Installation
 
-__TO BE COMPLETED__
+````sh
+go get github.com/kuzzleio/sdk-go
+````
 
 ## Basic usage
 
-__TO BE COMPLETED__
+````go
+func main() {
+    ws := connection.NewWebSocket("localhost:7512", nil)
+    k, err := kuzzle.NewKuzzle(conn, nil)
+    if err != nil {
+        panic(err)
+    }
+
+    res, err := k.GetAllStatistics(nil)
+    if err != nil {
+        panic(err)
+    }
+    for _, v := range res {
+        println(v.CompletedRequests["websocket"])
+    }
+}
+
+
+````
 
 ## <a name="tests"></a> Running Tests
 
-__TO BE COMPLETED__
+To run the tests you can simply execute the coverage.sh script
+```sh
+./coverage.sh
+```
 
 ## License
 
