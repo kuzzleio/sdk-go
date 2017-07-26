@@ -16,7 +16,7 @@ const (
 	STATE_DONE    = "done"
 )
 
-// User notifications constants
+// user notifications constants
 const (
 	USER_ALL  = "all"
 	USER_IN   = "in"

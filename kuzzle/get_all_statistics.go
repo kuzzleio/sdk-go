@@ -9,7 +9,7 @@ import (
 /*
  * Get all Kuzzle usage statistics frames
  */
-func (k Kuzzle) GetAllStatistics(options *types.Options) ([]types.Statistics, error) {
+func (k Kuzzle) GetAllStatistics(options types.QueryOptions) ([]types.Statistics, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

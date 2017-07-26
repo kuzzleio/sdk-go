@@ -12,7 +12,7 @@ import (
 
 func TestCreateError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -24,7 +24,7 @@ func TestCreateError(t *testing.T) {
 
 func TestCreate(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			res := types.AckResponse{Acknowledged: true}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}

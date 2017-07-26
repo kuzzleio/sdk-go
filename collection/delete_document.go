@@ -9,7 +9,7 @@ import (
 /*
   Deletes the Document using its provided unique id.
 */
-func (dc Collection) DeleteDocument(id string, options *types.Options) (string, error) {
+func (dc Collection) DeleteDocument(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Collection.DeleteDocument: document id required")
 	}
@@ -40,7 +40,7 @@ func (dc Collection) DeleteDocument(id string, options *types.Options) (string, 
 /*
   Delete specific documents according to given IDs.
 */
-func (dc Collection) MDeleteDocument(ids []string, options *types.Options) ([]string, error) {
+func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) ([]string, error) {
 	if len(ids) == 0 {
 		return []string{}, errors.New("Collection.MDeleteDocument: please provide at least one id of document to delete")
 	}

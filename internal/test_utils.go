@@ -9,11 +9,11 @@ var OfflineQueue []types.QueryObject
 
 type MockedConnection struct {
 	mock.Mock
-	MockSend      func([]byte, *types.Options) types.KuzzleResponse
+	MockSend      func([]byte, types.QueryOptions) types.KuzzleResponse
 	MockEmitEvent func(int, interface{})
 }
 
-func (c MockedConnection) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
+func (c MockedConnection) Send(query []byte, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse, requestId string) error {
 	if c.MockSend != nil {
 		responseChannel <- c.MockSend(query, options)
 	}

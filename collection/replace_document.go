@@ -9,7 +9,7 @@ import (
 /*
   Replaces a document in Kuzzle.
 */
-func (dc Collection) ReplaceDocument(id string, document interface{}, options *types.Options) (types.Document, error) {
+func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (types.Document, error) {
 	if id == "" {
 		return types.Document{}, errors.New("Collection.ReplaceDocument: document id required")
 	}
@@ -41,7 +41,7 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options *t
 /*
   Replace the provided documents.
 */
-func (dc Collection) MReplaceDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) MReplaceDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	if len(documents) == 0 {
 		return types.KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
 	}
