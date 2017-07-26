@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (k Kuzzle) GetServerInfo(options *types.Options) (json.RawMessage, error) {
+func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

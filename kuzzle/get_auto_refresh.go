@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (k Kuzzle) GetAutoRefresh(index string, options *types.Options) (bool, error) {
+func (k Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
 			return false, errors.New("Kuzzle.GetAutoRefresh: index required")

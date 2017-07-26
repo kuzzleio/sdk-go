@@ -66,29 +66,29 @@ func (ws *WebSocket) SetQueueFilter(queueFilter QueueFilter) {
 	ws.queueFilter = queueFilter
 }
 
-func NewWebSocket(host string, options *types.Options) Connection {
-	var opts *types.Options
+func NewWebSocket(host string, options types.Options) Connection {
+	var opts types.Options
 
 	if options == nil {
-		opts = types.DefaultOptions()
+		opts = types.NewOptions()
 	} else {
 		opts = options
 	}
 	ws := &WebSocket{
 		mu:                    &sync.Mutex{},
-		queueTTL:              opts.QueueTTL,
+		queueTTL:              opts.GetQueueTTL(),
 		offlineQueue:          make([]types.QueryObject, 0),
-		queueMaxSize:          opts.QueueMaxSize,
+		queueMaxSize:          opts.GetQueueMaxSize(),
 		channelsResult:        make(map[string]chan<- types.KuzzleResponse),
 		subscriptions:         make(map[string]chan<- types.KuzzleNotification),
 		eventListeners:        make(map[int]chan<- interface{}),
 		RequestHistory:        make(map[string]time.Time),
-		autoQueue:             opts.AutoQueue,
-		autoReconnect:         opts.AutoReconnect,
-		autoReplay:            opts.AutoReplay,
-		autoResubscribe:       opts.AutoResubscribe,
-		reconnectionDelay:     opts.ReconnectionDelay,
-		replayInterval:        opts.ReplayInterval,
+		autoQueue:             opts.GetAutoQueue(),
+		autoReconnect:         opts.GetAutoReconnect(),
+		autoReplay:            opts.GetAutoReplay(),
+		autoResubscribe:       opts.GetAutoResubscribe(),
+		reconnectionDelay:     opts.GetReconnectionDelay(),
+		replayInterval:        opts.GetReplayInterval(),
 		state:                 state.Ready,
 		retrying:              false,
 		stopRetryingToConnect: false,
@@ -96,7 +96,7 @@ func NewWebSocket(host string, options *types.Options) Connection {
 	}
 	ws.host = host
 
-	if opts.OfflineMode == types.Auto {
+	if opts.GetOfflineMode() == types.Auto {
 		ws.autoReconnect = true
 		ws.autoQueue = true
 		ws.autoReplay = true
@@ -176,14 +176,14 @@ func (ws *WebSocket) Connect() (bool, error) {
 	return ws.wasConnected, err
 }
 
-func (ws *WebSocket) Send(query []byte, options *types.Options, responseChannel chan<- types.KuzzleResponse, requestId string) error {
-	if ws.state == state.Connected || (options != nil && !options.Queuable) {
+func (ws *WebSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse, requestId string) error {
+	if ws.state == state.Connected || (options != nil && !options.GetQueuable()) {
 		ws.emitRequest(types.QueryObject{
 			Query:     query,
 			ResChan:   responseChannel,
 			RequestId: requestId,
 		})
-	} else if ws.queuing || (options != nil && options.Queuable) || ws.state == state.Initializing || ws.state == state.Connecting {
+	} else if ws.queuing || (options != nil && options.GetQueuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
 		ws.cleanQueue()
 
 		if ws.queueFilter.Filter(query) {

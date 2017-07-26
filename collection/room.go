@@ -7,7 +7,7 @@ import (
 /*
   Instantiates a new Room object.
 */
-func (dc Collection) Room(options *types.RoomOptions) types.Room {
+func (dc Collection) Room(options types.RoomOptions) types.Room {
 	room := types.Room{}
 
 	scopes := map[string]bool{types.SCOPE_ALL: true, types.SCOPE_IN: true, types.SCOPE_OUT: true, types.SCOPE_NONE: true, types.SCOPE_UNKNOWN: true}
@@ -15,16 +15,19 @@ func (dc Collection) Room(options *types.RoomOptions) types.Room {
 	user := map[string]bool{types.USER_ALL: true, types.USER_IN: true, types.USER_OUT: true, types.USER_NONE: true}
 
 	if options != nil {
-		if scopes[options.Scope] {
-			room.Scope = options.Scope
+		scope := options.GetScope()
+		if scopes[scope] {
+			room.Scope = scope
 		}
-		if states[options.State] {
-			room.State = options.State
+		state := options.GetState()
+		if states[state] {
+			room.State = state
 		}
-		if user[options.User] {
-			room.User = options.User
+		u := options.GetUser()
+		if user[u] {
+			room.User = u
 		}
-		room.SubscribeToSelf = options.SubscribeToSelf
+		room.SubscribeToSelf = options.GetSubscribeToSelf()
 	}
 
 	return room

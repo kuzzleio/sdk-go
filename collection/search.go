@@ -7,9 +7,9 @@ import (
 )
 
 /*
-  Searches documents in the given Collection, using provided filters and options.
+  Searches documents in the given Collection, using provided filters and option.
 */
-func (dc Collection) Search(filters interface{}, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -21,10 +21,12 @@ func (dc Collection) Search(filters interface{}, options *types.Options) (types.
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
-		if options.Scroll != "" {
-			query.Scroll = options.Scroll
+		query.From = options.GetFrom()
+		query.Size = options.GetSize()
+
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
 		}
 	}
 
