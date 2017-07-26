@@ -37,7 +37,7 @@ go get github.com/kuzzleio/sdk-go
 ````go
 func main() {
     ws := connection.NewWebSocket("localhost:7512", nil)
-    k, err := kuzzle.NewKuzzle(conn, nil)
+    k, err := kuzzle.NewKuzzle(ws, nil)
     if err != nil {
         panic(err)
     }
