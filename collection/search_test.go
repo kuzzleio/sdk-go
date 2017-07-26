@@ -67,7 +67,7 @@ func TestSearchWithScroll(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, 2, parsedQuery.From)
 			assert.Equal(t, 4, parsedQuery.Size)
-			assert.Equal(t, "", parsedQuery.Scroll)
+			assert.Equal(t, "1m", parsedQuery.Scroll)
 
 			res := types.KuzzleSearchResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
 			r, _ := json.Marshal(res)

@@ -9,13 +9,13 @@ type roomOptions struct {
 
 type RoomOptions interface {
 	GetScope() string
-	SetScope(string)
+	SetScope(string) *roomOptions
 	GetState() string
-	SetState(string)
+	SetState(string) *roomOptions
 	GetUser() string
-	SetUser(string)
+	SetUser(string) *roomOptions
 	GetSubscribeToSelf() bool
-	SetSubscribeToSelf(bool)
+	SetSubscribeToSelf(bool) *roomOptions
 }
 
 func (ro roomOptions) GetScope() string {
@@ -33,7 +33,7 @@ func (ro roomOptions) GetState() string {
 
 func (ro *roomOptions) SetState(state string) *roomOptions {
 	ro.state = state
-	return so
+	return ro
 }
 
 func (ro roomOptions) GetUser() string {

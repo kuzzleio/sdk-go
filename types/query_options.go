@@ -2,21 +2,21 @@ package types
 
 type QueryOptions interface {
 	GetQueuable() bool
-	SetQueuable(bool)
+	SetQueuable(bool) *queryOptions
 	GetFrom() int
-	SetFrom(int)
+	SetFrom(int) *queryOptions
 	GetSize() int
-	SetSize(int)
+	SetSize(int) *queryOptions
 	GetScroll() string
-	SetScroll(string)
+	SetScroll(string) *queryOptions
 	GetScrollId() string
-	SetScrollId(string)
+	SetScrollId(string) *queryOptions
 	GetVolatile() VolatileData
-	SetVolatile(VolatileData)
+	SetVolatile(VolatileData) *queryOptions
 	GetRefresh() string
-	SetRefresh(string)
+	SetRefresh(string) *queryOptions
 	GetIfExist() string
-	SetIfExist(string)
+	SetIfExist(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -61,7 +61,7 @@ func (qo queryOptions) GetScroll() string {
 	return qo.scroll
 }
 
-func (qo queryOptions) SetScroll(scroll string) *queryOptions {
+func (qo *queryOptions) SetScroll(scroll string) *queryOptions {
 	qo.scroll = scroll
 	return qo
 }
@@ -93,12 +93,12 @@ func (qo *queryOptions) SetRefresh(refresh string) *queryOptions {
 	return qo
 }
 
-func (o queryOptions) GetIfExist() string {
-	return o.ifExist
+func (qo queryOptions) GetIfExist() string {
+	return qo.ifExist
 }
 
-func (o *queryOptions) SetIfExist(ifExist string) *queryOptions {
-	o.ifExist = ifExist
+func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
+	qo.ifExist = ifExist
 	return qo
 }
 

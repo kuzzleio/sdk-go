@@ -11,31 +11,31 @@ const (
 
 type Options interface {
 	GetQueueTTL() time.Duration
-	SetQueueTTL(time.Duration)
+	SetQueueTTL(time.Duration) *options
 	GetQueueMaxSize() int
-	SetQueueMaxSize(int)
+	SetQueueMaxSize(int) *options
 	GetOfflineMode() int
-	SetOfflineMode(int)
+	SetOfflineMode(int) *options
 	GetAutoQueue() bool
-	SetAutoQueue(bool)
+	SetAutoQueue(bool) *options
 	GetAutoReconnect() bool
-	SetAutoReconnect(bool)
+	SetAutoReconnect(bool) *options
 	GetAutoReplay() bool
-	SetAutoReplay(bool)
+	SetAutoReplay(bool) *options
 	GetAutoResubscribe() bool
-	SetAutoResubscribe(bool)
+	SetAutoResubscribe(bool) *options
 	GetReconnectionDelay() time.Duration
-	SetReconnectionDelay(time.Duration)
+	SetReconnectionDelay(time.Duration) *options
 	GetReplayInterval() time.Duration
-	SetReplayInterval(time.Duration)
+	SetReplayInterval(time.Duration) *options
 	GetConnect() int
-	SetConnect(int)
+	SetConnect(int) *options
 	GetRefresh() string
-	SetRefresh(string)
+	SetRefresh(string) *options
 	GetDefaultIndex() string
-	SetDefaultIndex(string)
+	SetDefaultIndex(string) *options
 	GetHeaders() HeadersData
-	SetHeaders(HeadersData)
+	SetHeaders(HeadersData) *options
 }
 
 type options struct {
