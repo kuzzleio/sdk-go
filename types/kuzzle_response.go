@@ -133,6 +133,14 @@ type (
 	Profile     SecurityDocument
 	Role        SecurityDocument
 	Credentials map[string]interface{}
+
+	UserRights struct {
+		Controller string `json:"controller"`
+		Action     string `json:"action"`
+		Index      string `json:"index"`
+		Collection string `json:"collection"`
+		Value      string `json:"value"`
+	}
 )
 
 func (user User) ProfileIDs() []string {
