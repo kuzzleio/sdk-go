@@ -9,7 +9,7 @@ import (
 /*
   Updates a document in Kuzzle.
 */
-func (dc Collection) UpdateDocument(id string, document interface{}, options *types.Options) (types.Document, error) {
+func (dc Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (types.Document, error) {
 	if id == "" {
 		return types.Document{}, errors.New("Collection.UpdateDocument: document id required")
 	}
@@ -41,7 +41,7 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options *ty
 /*
   Update the provided documents.
 */
-func (dc Collection) MUpdateDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) MUpdateDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	if len(documents) == 0 {
 		return types.KuzzleSearchResult{}, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
 	}

@@ -9,7 +9,7 @@ import (
 /*
  * Get Kuzzle usage statistics
  */
-func (k Kuzzle) GetStatistics(options *types.Options) (types.Statistics, error) {
+func (k Kuzzle) GetStatistics(options types.QueryOptions) (types.Statistics, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -17,7 +17,7 @@ func (k Kuzzle) GetStatistics(options *types.Options) (types.Statistics, error) 
 		Action:     "getLastStats",
 	}
 
-	go k.Query(query, nil, result)
+	go k.Query(query, options, result)
 
 	res := <-result
 

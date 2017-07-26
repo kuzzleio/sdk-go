@@ -1,10 +1,12 @@
 package types
 
-import "time"
+import (
+	"time"
+)
 
 type QueryObject struct {
 	Query     []byte
-	Options   *Options
+	Options   QueryOptions
 	ResChan   chan<- KuzzleResponse
 	Timestamp time.Time
 	RequestId string

@@ -14,7 +14,7 @@ type SecurityProfile struct {
 /*
   Retrieves a Profile using its provided unique id.
 */
-func (sp SecurityProfile) Fetch(id string, options *types.Options) (types.Profile, error) {
+func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (types.Profile, error) {
 	if id == "" {
 		return types.Profile{}, errors.New("Security.Profile.Fetch: profile id required")
 	}

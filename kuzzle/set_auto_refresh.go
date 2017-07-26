@@ -9,7 +9,7 @@ import (
 /*
  * autorefresh status setter for the provided data index name
  */
-func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options *types.Options) (bool, error) {
+func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
 			return false, errors.New("Kuzzle.SetAutoRefresh: index required")

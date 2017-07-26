@@ -7,7 +7,7 @@ import (
 )
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, responseChannel chan<- types.KuzzleResponse) {
+func (k Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
 	requestId := uuid.NewV4().String()
 
 	query.RequestId = requestId
@@ -18,8 +18,13 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 		query.Body = make(map[string]interface{})
 	}
 
-	if k.volatile != nil {
-		query.Volatile = k.volatile
+	if options == nil {
+		options = types.NewQueryOptions()
+	}
+
+	volatile := options.GetVolatile()
+	if options.GetVolatile() != nil {
+		query.Volatile = volatile
 		query.Volatile["sdkVersion"] = version
 	} else {
 		query.Volatile = types.VolatileData{"sdkVersion": version}
@@ -31,22 +36,25 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options *types.Options, respons
 	k.addHeaders(&out, query)
 
 	if options == nil {
-		options = types.DefaultOptions()
+		options = types.NewQueryOptions()
 	}
 
-	if options.Refresh != "" {
-		out["refresh"] = options.Refresh
+	refresh := options.GetRefresh()
+	if refresh != "" {
+		out["refresh"] = refresh
 	}
 
-	out["from"] = options.From
-	out["size"] = options.Size
+	out["from"] = options.GetFrom()
+	out["size"] = options.GetSize()
 
-	if options.Scroll != "" {
-		out["scroll"] = options.Scroll
+	scroll := options.GetScroll()
+	if scroll != "" {
+		out["scroll"] = scroll
 	}
 
-	if options.ScrollId != "" {
-		out["scrollId"] = options.ScrollId
+	scrollId := options.GetScrollId()
+	if scrollId != "" {
+		out["scrollId"] = scrollId
 	}
 
 	finalRequest, err := json.Marshal(out)

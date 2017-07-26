@@ -9,7 +9,7 @@ import (
 /*
   Retrieves a Document using its provided unique id.
 */
-func (dc Collection) FetchDocument(id string, options *types.Options) (types.Document, error) {
+func (dc Collection) FetchDocument(id string, options types.QueryOptions) (types.Document, error) {
 	if id == "" {
 		return types.Document{}, errors.New("Collection.FetchDocument: document id required")
 	}
@@ -40,7 +40,7 @@ func (dc Collection) FetchDocument(id string, options *types.Options) (types.Doc
 /*
   Get specific documents according to given IDs.
 */
-func (dc Collection) MGetDocument(ids []string, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	if len(ids) == 0 {
 		return types.KuzzleSearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
 	}

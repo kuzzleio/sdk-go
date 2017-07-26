@@ -14,7 +14,7 @@ type SecurityUser struct {
 /*
   Retrieves an User using its provided unique id.
 */
-func (su SecurityUser) Fetch(id string, options *types.Options) (types.User, error) {
+func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.Fetch: user id required")
 	}

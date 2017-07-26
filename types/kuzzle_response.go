@@ -1,222 +1,231 @@
 package types
 
 import (
-  "encoding/json"
+	"encoding/json"
 )
 
 type (
-  MessageError struct {
-    Message string `json:"message"`
-    Status  int    `json:"status"`
-  }
+	MessageError struct {
+		Message string `json:"message"`
+		Status  int    `json:"status"`
+	}
 
-  KuzzleMeta struct {
-    Author    string `json:"author"`
-    CreatedAt int    `json:"createdAt"`
-    UpdatedAt int    `json:"updatedAt"`
-    Updater   string `json:"updater"`
-    Active    bool   `json:"active"`
-    DeletedAt int    `json:"deletedAt"`
-  }
+	KuzzleMeta struct {
+		Author    string `json:"author"`
+		CreatedAt int    `json:"createdAt"`
+		UpdatedAt int    `json:"updatedAt"`
+		Updater   string `json:"updater"`
+		Active    bool   `json:"active"`
+		DeletedAt int    `json:"deletedAt"`
+	}
 
-  KuzzleNotification struct {
-    RequestId string       `json:"requestId"`
-    Result    KuzzleResult `json:"result"`
-    RoomId    string       `json:"room"`
-    Error     MessageError `json:"error"`
-  }
+	KuzzleNotification struct {
+		RequestId string       `json:"requestId"`
+		Result    KuzzleResult `json:"result"`
+		RoomId    string       `json:"room"`
+		Error     MessageError `json:"error"`
+	}
 
-  KuzzleResult struct {
-    Id      string          `json:"_id"`
-    Meta    KuzzleMeta      `json:"_meta"`
-    Source  json.RawMessage `json:"_source"`
-    Version int             `json:"_version"`
-  }
+	KuzzleResult struct {
+		Id      string          `json:"_id"`
+		Meta    KuzzleMeta      `json:"_meta"`
+		Source  json.RawMessage `json:"_source"`
+		Version int             `json:"_version"`
+	}
 
-  KuzzleResponse struct {
-    RequestId string          `json:"requestId"`
-    Result    json.RawMessage `json:"result"`
-    RoomId    string          `json:"room"`
-    Error     MessageError    `json:"error"`
-  }
+	KuzzleResponse struct {
+		RequestId string          `json:"requestId"`
+		Result    json.RawMessage `json:"result"`
+		RoomId    string          `json:"room"`
+		Error     MessageError    `json:"error"`
+	}
 
-  KuzzleSearchResult struct {
-    Hits     []KuzzleResult `json:"hits"`
-    Total    int            `json:"total"`
-    ScrollId string         `json:"_scroll_id"`
-  }
+	KuzzleSearchResult struct {
+		Hits     []KuzzleResult `json:"hits"`
+		Total    int            `json:"total"`
+		ScrollId string         `json:"_scroll_id"`
+	}
 
-  KuzzleSearchUsersResult struct {
-    Hits     []User `json:"hits"`
-    Total    int    `json:"total"`
-    ScrollId string `json:"scrollId"`
-  }
+	KuzzleSearchUsersResult struct {
+		Hits     []User `json:"hits"`
+		Total    int    `json:"total"`
+		ScrollId string `json:"scrollId"`
+	}
 
-  KuzzleSearchProfilesResult struct {
-    Hits     []Profile `json:"hits"`
-    Total    int       `json:"total"`
-    ScrollId string    `json:"scrollId"`
-  }
+	KuzzleSearchProfilesResult struct {
+		Hits     []Profile `json:"hits"`
+		Total    int       `json:"total"`
+		ScrollId string    `json:"scrollId"`
+	}
 
-  KuzzleSearchRolesResult struct {
-    Hits     []Role `json:"hits"`
-    Total    int    `json:"total"`
-    ScrollId string `json:"scrollId"`
-  }
+	KuzzleSearchRolesResult struct {
+		Hits     []Role `json:"hits"`
+		Total    int    `json:"total"`
+		ScrollId string `json:"scrollId"`
+	}
 
-  KuzzleValidationFields map[string]struct {
-    Type         string `json:"type"`
-    Mandatory    bool   `json:"mandatory"`
-    DefaultValue string `json:"defaultValue"`
-  }
+	KuzzleValidationFields map[string]struct {
+		Type         string `json:"type"`
+		Mandatory    bool   `json:"mandatory"`
+		DefaultValue string `json:"defaultValue"`
+	}
 
-  KuzzleValidation struct {
-    Strict bool                   `json:"strict"`
-    Fields KuzzleValidationFields `json:"fields"`
-  }
+	KuzzleValidation struct {
+		Strict bool                   `json:"strict"`
+		Fields KuzzleValidationFields `json:"fields"`
+	}
 
-  KuzzleSpecifications map[string]map[string]struct {
-    Strict bool                   `json:"strict"`
-    Fields KuzzleValidationFields `json:"fields"`
-  }
+	KuzzleSpecifications map[string]map[string]struct {
+		Strict bool                   `json:"strict"`
+		Fields KuzzleValidationFields `json:"fields"`
+	}
 
-  KuzzleSpecificationsResult struct {
-    Validation KuzzleValidation `json:"validation"`
-    Index      string           `json:"index"`
-    Collection string           `json:"collection"`
-  }
+	KuzzleSpecificationsResult struct {
+		Validation KuzzleValidation `json:"validation"`
+		Index      string           `json:"index"`
+		Collection string           `json:"collection"`
+	}
 
-  KuzzleSpecificationSearchResult struct {
-    Hits     []struct{Source KuzzleSpecificationsResult `json:"_source"`} `json:"hits"`
-    Total    int                                                          `json:"total"`
-    ScrollId string                                                       `json:"scrollId"`
-  }
+	KuzzleSpecificationSearchResult struct {
+		Hits []struct {
+			Source KuzzleSpecificationsResult `json:"_source"`
+		} `json:"hits"`
+		Total    int    `json:"total"`
+		ScrollId string `json:"scrollId"`
+	}
 
-  ValidResponse struct {
-    Valid bool `json:"valid"`
-  }
+	ValidResponse struct {
+		Valid bool `json:"valid"`
+	}
 
-  RealtimeResponse struct {
-    Published bool `json:"published"`
-  }
+	RealtimeResponse struct {
+		Published bool `json:"published"`
+	}
 
-  AckResponse struct {
-    Acknowledged       bool `json:"acknowledged"`
-    ShardsAcknowledged bool `json:"shardsAcknowledged"`
-  }
+	AckResponse struct {
+		Acknowledged       bool `json:"acknowledged"`
+		ShardsAcknowledged bool `json:"shardsAcknowledged"`
+	}
 
-  Document KuzzleResult
+	Document KuzzleResult
 
-  Statistics struct {
-    CompletedRequests map[string]int `json:"completedRequests"`
-    Connections       map[string]int `json:"connections"`
-    FailedRequests    map[string]int `json:"failedRequests"`
-    OngoingRequests   map[string]int `json:"ongoingRequests"`
-    Timestamp         int            `json:"timestamp"`
-  }
+	Statistics struct {
+		CompletedRequests map[string]int `json:"completedRequests"`
+		Connections       map[string]int `json:"connections"`
+		FailedRequests    map[string]int `json:"failedRequests"`
+		OngoingRequests   map[string]int `json:"ongoingRequests"`
+		Timestamp         int            `json:"timestamp"`
+	}
 
-  Rights struct {
-    Controller string `json:"controller"`
-    Action string `json:"action"`
-    Index string `json:"index"`
-    Collection string `json:"collection"`
-    Value string `json:"value"`
-  }
-  
-  LoginAttempt struct {
-    Success bool `json:"success"`
-    Error error `json:"error"`
-  }
+	Rights struct {
+		Controller string `json:"controller"`
+		Action     string `json:"action"`
+		Index      string `json:"index"`
+		Collection string `json:"collection"`
+		Value      string `json:"value"`
+	}
 
-  Shards struct {
-    Total int `json:"total"`
-    Successful int `json:successful`
-    Failed int `json:"failed"`
-  }
+	LoginAttempt struct {
+		Success bool  `json:"success"`
+		Error   error `json:"error"`
+	}
 
-  CollectionsList struct {
-    Name string `json:"name"`
-    Type string `json:"type"`
-  }
+	Shards struct {
+		Total      int `json:"total"`
+		Successful int `json:successful`
+		Failed     int `json:"failed"`
+	}
 
-  SecurityDocument struct {
-    Id     string          `json:"_id"`
-    Source json.RawMessage `json:"_source"`
-    Meta   KuzzleMeta      `json:"_meta"`
-  }
+	CollectionsList struct {
+		Name string `json:"name"`
+		Type string `json:"type"`
+	}
 
-  User SecurityDocument
-  Profile SecurityDocument
-  Role SecurityDocument
+	SecurityDocument struct {
+		Id     string          `json:"_id"`
+		Source json.RawMessage `json:"_source"`
+		Meta   KuzzleMeta      `json:"_meta"`
+	}
+
+	User        SecurityDocument
+	Profile     SecurityDocument
+	Role        SecurityDocument
+	Credentials map[string]interface{}
 )
 
-func (user User) ProfileIDs() ([]string) {
-  type profileIds struct {
-    ProfileIds []string `json:"profileIds"`
-  }
+func (user User) ProfileIDs() []string {
+	type profileIds struct {
+		ProfileIds []string `json:"profileIds"`
+	}
 
-  var content = profileIds{}
-  json.Unmarshal(user.Source, &content)
+	var content = profileIds{}
+	json.Unmarshal(user.Source, &content)
 
-  return content.ProfileIds
+	return content.ProfileIds
 }
 
-func (user User) Content(key string) (interface{}) {
-  type Fields map[string]interface{}
+func (user User) Content(key string) interface{} {
+	type Fields map[string]interface{}
 
-  var content = Fields{}
-  json.Unmarshal(user.Source, &content)
+	var content = Fields{}
+	json.Unmarshal(user.Source, &content)
 
-  if key == "" {
-    return content
-  }
+	if key == "" {
+		return content
+	}
 
-  return content[key]
+	return content[key]
 }
 
-func (user User) ContentMap(keys ...string) (map[string]interface{}) {
-  type Fields map[string]interface{}
+func (user User) ContentMap(keys ...string) map[string]interface{} {
+	type Fields map[string]interface{}
 
-  var content = Fields{}
-  json.Unmarshal(user.Source, &content)
+	var content = Fields{}
+	json.Unmarshal(user.Source, &content)
 
-  if len(keys) == 0 {
-    return content
-  }
+	if len(keys) == 0 {
+		return content
+	}
 
-  values := make(map[string]interface{})
+	values := make(map[string]interface{})
 
-  for _, key := range keys {
-    values[key] = content[key]
-  }
+	for _, key := range keys {
+		values[key] = content[key]
+	}
 
-  return values
+	return values
 }
 
-func (profile Profile) Policies() ([]string) {
-  type Policies struct {
-    Policies []struct{RoleId string `json:"roleId"`} `json:"policies"`
-  }
+func (profile Profile) Policies() []string {
+	type Policies struct {
+		Policies []struct {
+			RoleId string `json:"roleId"`
+		} `json:"policies"`
+	}
 
-  var policies = Policies{}
-  json.Unmarshal(profile.Source, &policies)
+	var policies = Policies{}
+	json.Unmarshal(profile.Source, &policies)
 
-  roleIDs := []string{}
+	roleIDs := []string{}
 
-  for _, role := range policies.Policies {
-    roleIDs = append(roleIDs, role.RoleId)
-  }
+	for _, role := range policies.Policies {
+		roleIDs = append(roleIDs, role.RoleId)
+	}
 
-  return roleIDs
+	return roleIDs
 }
 
-func (role Role) Controllers() (map[string]struct{Actions map[string]bool `json:"actions"`}) {
-  type Controllers struct {
-    Controllers map[string]struct{Actions map[string]bool `json:"actions"`} `json:"controllers"`
-  }
+func (role Role) Controllers() map[string]struct {
+	Actions map[string]bool `json:"actions"`
+} {
+	type Controllers struct {
+		Controllers map[string]struct {
+			Actions map[string]bool `json:"actions"`
+		} `json:"controllers"`
+	}
 
-  var controllers = Controllers{}
-  json.Unmarshal(role.Source, &controllers)
+	var controllers = Controllers{}
+	json.Unmarshal(role.Source, &controllers)
 
-  return controllers.Controllers
+	return controllers.Controllers
 }

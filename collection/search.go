@@ -1,45 +1,45 @@
 package collection
 
 import (
-  "errors"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*
-  Searches documents in the given Collection, using provided filters and options.
+  Searches documents in the given Collection, using provided filters and option.
 */
-func (dc Collection) Search(filters interface{}, options *types.Options) (types.KuzzleSearchResult, error) {
-  ch := make(chan types.KuzzleResponse)
+func (dc Collection) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+	ch := make(chan types.KuzzleResponse)
 
-  query := types.KuzzleRequest{
-    Collection: dc.collection,
-    Index:      dc.index,
-    Controller: "document",
-    Action:     "search",
-    Body:       filters,
-  }
+	query := types.KuzzleRequest{
+		Collection: dc.collection,
+		Index:      dc.index,
+		Controller: "document",
+		Action:     "search",
+		Body:       filters,
+	}
 
-  if options != nil {
-    query.From = options.From
-    query.Size = options.Size
-    if options.Scroll != "" {
-      query.Scroll = options.Scroll
-    }
-  } else {
-    query.Size = 10
-  }
+	if options != nil {
+		query.From = options.GetFrom()
+		query.Size = options.GetSize()
 
-  go dc.kuzzle.Query(query, options, ch)
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
+		}
+	}
 
-  res := <-ch
+	go dc.kuzzle.Query(query, options, ch)
 
-  if res.Error.Message != "" {
-    return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
-  }
+	res := <-ch
 
-  searchResult := types.KuzzleSearchResult{}
-  json.Unmarshal(res.Result, &searchResult)
+	if res.Error.Message != "" {
+		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+	}
 
-  return searchResult, nil
+	searchResult := types.KuzzleSearchResult{}
+	json.Unmarshal(res.Result, &searchResult)
+
+	return searchResult, nil
 }
