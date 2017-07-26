@@ -3,6 +3,7 @@ package role
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 )

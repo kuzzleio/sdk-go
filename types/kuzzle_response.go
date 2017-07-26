@@ -144,6 +144,7 @@ type (
 	Controllers struct {
 		Controllers map[string]Controller `json:"controllers"`
 	}
+
 	SecurityDocument struct {
 		Id     string          `json:"_id"`
 		Source json.RawMessage `json:"_source"`
@@ -153,6 +154,8 @@ type (
 	User    SecurityDocument
 	Profile SecurityDocument
 	Role    SecurityDocument
+
+	CredentialFields map[string][]string
 )
 
 func (user User) ProfileIDs() []string {

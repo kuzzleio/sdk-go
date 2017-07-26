@@ -2,6 +2,7 @@ package profile_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"

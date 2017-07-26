@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestGetCredentialFieldsError(t *testing.T) {
+func TestGetAllCredentialFieldsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -22,6 +22,6 @@ func TestGetCredentialFieldsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	s := security.NewSecurity(k)
-	_, err := s.GetCredentialFields(nil)
+	_, err := s.GetAllCredentialFields(nil)
 	assert.NotNil(t, err)
 }
