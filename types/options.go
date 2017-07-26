@@ -58,104 +58,117 @@ func (o options) GetQueueTTL() time.Duration {
 	return o.queueTTL
 }
 
-func (o *options) SetQueueTTL(queueTTL time.Duration) {
+func (o *options) SetQueueTTL(queueTTL time.Duration) *options {
 	o.queueTTL = queueTTL
+	return o
 }
 
 func (o options) GetQueueMaxSize() int {
 	return o.queueMaxSize
 }
 
-func (o *options) SetQueueMaxSize(queueMaxSize int) {
+func (o *options) SetQueueMaxSize(queueMaxSize int) *options {
 	o.queueMaxSize = queueMaxSize
+	return o
 }
 
 func (o options) GetOfflineMode() int {
 	return o.offlineMode
 }
 
-func (o *options) SetOfflineMode(offlineMode int) {
+func (o *options) SetOfflineMode(offlineMode int) *options {
 	o.offlineMode = offlineMode
+	return o
 }
 
 func (o options) GetAutoQueue() bool {
 	return o.autoQueue
 }
 
-func (o *options) SetAutoQueue(autoQueue bool) {
+func (o *options) SetAutoQueue(autoQueue bool) *options {
 	o.autoQueue = autoQueue
+	return o
 }
 
 func (o options) GetAutoReconnect() bool {
 	return o.autoReconnect
 }
 
-func (o *options) SetAutoReconnect(autoReconnect bool) {
+func (o *options) SetAutoReconnect(autoReconnect bool) *options {
 	o.autoReconnect = autoReconnect
+	return o
 }
 
 func (o options) GetAutoReplay() bool {
 	return o.autoReplay
 }
 
-func (o *options) SetAutoReplay(autoReplay bool) {
+func (o *options) SetAutoReplay(autoReplay bool) *options {
 	o.autoReplay = autoReplay
+	return o
 }
 
 func (o options) GetAutoResubscribe() bool {
 	return o.autoResubscribe
 }
 
-func (o *options) SetAutoResubscribe(autoResubscribe bool) {
+func (o *options) SetAutoResubscribe(autoResubscribe bool) *options {
 	o.autoResubscribe = autoResubscribe
+	return o
 }
 
 func (o options) GetReconnectionDelay() time.Duration {
 	return o.reconnectionDelay
 }
 
-func (o *options) SetReconnectionDelay(reconnectionDelay time.Duration) {
+func (o *options) SetReconnectionDelay(reconnectionDelay time.Duration) *options {
 	o.reconnectionDelay = reconnectionDelay
+	return o
 }
 
 func (o options) GetReplayInterval() time.Duration {
 	return o.replayInterval
 }
 
-func (o *options) SetReplayInterval(replayInterval time.Duration) {
+func (o *options) SetReplayInterval(replayInterval time.Duration) *options {
 	o.replayInterval = replayInterval
+	return o
 }
 
 func (o options) GetConnect() int {
 	return o.connect
 }
 
-func (o *options) SetConnect(connect int) {
+func (o *options) SetConnect(connect int) *options {
 	o.connect = connect
+	return o
 }
 
 func (o options) GetRefresh() string {
 	return o.refresh
 }
 
-func (o *options) SetRefresh(refresh string) {
+func (o *options) SetRefresh(refresh string) *options {
 	o.refresh = refresh
+	return o
 }
 
 func (o options) GetDefaultIndex() string {
 	return o.defaultIndex
 }
 
-func (o *options) SetDefaultIndex(defaultIndex string) {
+func (o *options) SetDefaultIndex(defaultIndex string) *options {
 	o.defaultIndex = defaultIndex
+	return o
 }
 
 func (o options) GetHeaders() HeadersData {
 	return o.headers
 }
 
-func (o *options) SetHeaders(headers HeadersData) {
+func (o *options) SetHeaders(headers HeadersData) *options {
 	o.headers = headers
+	return o
 }
 
 func NewOptions() *options {

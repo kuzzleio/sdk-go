@@ -22,32 +22,36 @@ func (ro roomOptions) GetScope() string {
 	return ro.scope
 }
 
-func (ro *roomOptions) SetScope(scope string) {
+func (ro *roomOptions) SetScope(scope string) *roomOptions {
 	ro.scope = scope
+	return ro
 }
 
 func (ro roomOptions) GetState() string {
 	return ro.state
 }
 
-func (ro *roomOptions) SetState(state string) {
+func (ro *roomOptions) SetState(state string) *roomOptions {
 	ro.state = state
+	return so
 }
 
 func (ro roomOptions) GetUser() string {
 	return ro.user
 }
 
-func (ro *roomOptions) SetUser(user string) {
+func (ro *roomOptions) SetUser(user string) *roomOptions {
 	ro.user = user
+	return ro
 }
 
 func (ro roomOptions) GetSubscribeToSelf() bool {
 	return ro.subscribeToSelf
 }
 
-func (ro *roomOptions) SetSubscribeToSelf(subscribeToSelf bool) {
+func (ro *roomOptions) SetSubscribeToSelf(subscribeToSelf bool) *roomOptions {
 	ro.subscribeToSelf = subscribeToSelf
+	return ro
 }
 
 func NewRoomOptions() *roomOptions {
