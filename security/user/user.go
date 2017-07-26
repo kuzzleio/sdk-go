@@ -43,7 +43,7 @@ func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User,
 /*
   Create a new User in Kuzzle.
 */
-func (su SecurityUser) Create(id string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Create(id string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.Create: user id required")
 	}
@@ -86,7 +86,7 @@ func (su SecurityUser) Create(id string, content types.UserData, options *types.
 /*
   Create a new restricted User in Kuzzle.
 */
-func (su SecurityUser) CreateRestrictedUser(id string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) CreateRestrictedUser(id string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.CreateRestrictedUser: user id required")
 	}
@@ -128,7 +128,7 @@ func (su SecurityUser) CreateRestrictedUser(id string, content types.UserData, o
 /*
   Replace an User in Kuzzle.
 */
-func (su SecurityUser) Replace(id string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Replace(id string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.Replace: user id required")
 	}
@@ -165,7 +165,7 @@ func (su SecurityUser) Replace(id string, content types.UserData, options *types
 /*
   Update an User in Kuzzle.
 */
-func (su SecurityUser) Update(id string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Update(id string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if id == "" {
 		return types.User{}, errors.New("Security.User.Update: user id required")
 	}
@@ -205,7 +205,7 @@ func (su SecurityUser) Update(id string, content types.UserData, options *types.
   There is a small delay between user deletion and their deletion in our advanced search layer, usually a couple of seconds.
   This means that a user that has just been deleted will still be returned by this function.
 */
-func (su SecurityUser) Delete(id string, options *types.Options) (string, error) {
+func (su SecurityUser) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Security.User.Delete: user id required")
 	}
