@@ -10,11 +10,10 @@ import (
 /*
  * Update credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.UpdateMyCredentials: strategy is required")
 	}
-
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

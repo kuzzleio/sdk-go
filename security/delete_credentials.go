@@ -9,7 +9,7 @@ import (
 /*
  * Delete credentials of the specified strategy for the given user.
  */
-func (s Security) DeleteCredentials(strategy string, kuid string, options *types.Options) (*types.AckResponse, error) {
+func (s Security) DeleteCredentials(strategy string, kuid string, options types.QueryOptions) (*types.AckResponse, error) {
 	if strategy == "" {
 		return nil, errors.New("Security.DeleteCredentials: strategy is required")
 	}

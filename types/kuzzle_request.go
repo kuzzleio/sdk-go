@@ -1,20 +1,23 @@
 package types
 
 type KuzzleRequest struct {
-	RequestId  string      `json:"requestId"`
-	Controller string      `json:"controller"`
-	Action     string      `json:"action"`
-	Index      string      `json:"index"`
-	Collection string      `json:"collection"`
-	Body       interface{} `json:"body"`
-	Id         string      `json:"_id"`
-	From       int         `json:"from"`
-	Size       int         `json:"size"`
-	Scroll     string      `json:"scroll"`
-	ScrollId   string      `json:"scrollId"`
-	Strategy   string      `json:"strategy"`
-	ExpiresIn  int         `json:"expiresIn"`
+	RequestId  string       `json:"requestId"`
+	Controller string       `json:"controller"`
+	Action     string       `json:"action"`
+	Index      string       `json:"index"`
+	Collection string       `json:"collection"`
+	Body       interface{}  `json:"body"`
+	Id         string       `json:"_id"`
+	From       int          `json:"from"`
+	Size       int          `json:"size"`
+	Scroll     string       `json:"scroll"`
+	ScrollId   string       `json:"scrollId"`
+	Strategy   string       `json:"strategy"`
+	ExpiresIn  int          `json:"expiresIn"`
+	Volatile   VolatileData `json:"volatile"`
 }
+
+type VolatileData map[string]interface{}
 
 type UserCredentials map[string]struct {
 	Username string `json:"username"`

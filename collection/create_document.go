@@ -17,16 +17,16 @@ import (
            - resolves with an error if set to "error".
            - replaces the existing document if set to "replace"
 */
-func (dc Collection) CreateDocument(id string, document interface{}, options *types.Options) (*types.Document, error) {
+func (dc Collection) CreateDocument(id string, document interface{}, options types.QueryOptions) (*types.Document, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	action := "create"
 
 	if options != nil {
-		if options.IfExist == "replace" {
+		if options.GetIfExist() == "replace" {
 			action = "createOrReplace"
-		} else if options.IfExist != "error" {
-			return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+		} else if options.GetIfExist() != "error" {
+			return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -55,18 +55,18 @@ func (dc Collection) CreateDocument(id string, document interface{}, options *ty
 /*
   Creates the provided documents.
 */
-func (dc Collection) MCreateDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) MCreateDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreate", options)
 }
 
 /*
   Creates or replaces the provided documents.
 */
-func (dc Collection) MCreateOrReplaceDocument(documents []types.Document, options *types.Options) (types.KuzzleSearchResult, error) {
+func (dc Collection) MCreateOrReplaceDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
 }
 
-func performMultipleCreate(dc Collection, documents []types.Document, action string, options *types.Options) (types.KuzzleSearchResult, error) {
+func performMultipleCreate(dc Collection, documents []types.Document, action string, options types.QueryOptions) (types.KuzzleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	type CreationDocument struct {

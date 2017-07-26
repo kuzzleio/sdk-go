@@ -12,7 +12,7 @@ import (
 
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -28,7 +28,7 @@ func TestSearch(t *testing.T) {
 	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -57,7 +57,7 @@ func TestSearchWithScroll(t *testing.T) {
 	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -76,7 +76,11 @@ func TestSearchWithScroll(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, &types.Options{From: 2, Size: 4, Scroll: "1m"})
+	opts := types.NewQueryOptions()
+	opts.SetFrom(2)
+	opts.SetSize(4)
+	opts.SetScroll("1m")
+	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, opts)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, "f00b4r", res.ScrollId)

@@ -12,7 +12,7 @@ import (
 
 func TestFetchDocumentEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.FetchDocument: document id required"}}
 		},
 	}
@@ -24,7 +24,7 @@ func TestFetchDocumentEmptyId(t *testing.T) {
 
 func TestFetchDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -42,7 +42,7 @@ func TestFetchDocument(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -65,7 +65,7 @@ func TestFetchDocument(t *testing.T) {
 
 func TestMGetDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.MGetDocument: please provide at least one id of document to retrieve"}}
 		},
 	}
@@ -77,7 +77,7 @@ func TestMGetDocumentEmptyIds(t *testing.T) {
 
 func TestMGetDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -96,7 +96,7 @@ func TestMGetDocument(t *testing.T) {
 	ids := []string{"foo", "bar"}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 

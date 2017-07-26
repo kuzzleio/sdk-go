@@ -9,11 +9,10 @@ import (
 /*
  * Get credential information of the specified strategy for the current user.
  */
-func (k Kuzzle) GetMyCredentials(strategy string, options *types.Options) (json.RawMessage, error) {
+func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.GetMyCredentials: strategy is required")
 	}
-
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -22,7 +21,7 @@ func (k Kuzzle) GetMyCredentials(strategy string, options *types.Options) (json.
 		Strategy:   strategy,
 	}
 
-	go k.Query(query, nil, result)
+	go k.Query(query, options, result)
 
 	res := <-result
 

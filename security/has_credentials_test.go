@@ -12,7 +12,7 @@ import (
 
 func TestHasCredentialsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
@@ -30,7 +30,7 @@ func TestHasCredentialsQueryError(t *testing.T) {
 
 func TestHasCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
 		},
 	}
@@ -42,7 +42,7 @@ func TestHasCredentialsEmptyStrategy(t *testing.T) {
 
 func TestHasCredentialsEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
 		},
 	}
@@ -54,7 +54,7 @@ func TestHasCredentialsEmptyKuid(t *testing.T) {
 
 func TestHasCredentials(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)

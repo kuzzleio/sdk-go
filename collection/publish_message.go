@@ -13,7 +13,7 @@ import (
     - volatile (object, default: null):
       Additional information passed to notifications to other users
 */
-func (dc Collection) PublishMessage(document interface{}, options *types.Options) (types.RealtimeResponse, error) {
+func (dc Collection) PublishMessage(document interface{}, options types.QueryOptions) (types.RealtimeResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

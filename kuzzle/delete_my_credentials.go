@@ -9,7 +9,7 @@ import (
 /*
  * Delete credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) DeleteMyCredentials(strategy string, options *types.Options) (*types.AckResponse, error) {
+func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (*types.AckResponse, error) {
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.DeleteMyCredentials: strategy is required")
 	}
@@ -30,7 +30,7 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options *types.Options) (*t
 	res := <-result
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
 	ack := &types.AckResponse{}

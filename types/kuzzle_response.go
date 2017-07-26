@@ -156,6 +156,8 @@ type (
 	Role    SecurityDocument
 
 	CredentialFields map[string][]string
+
+	Credentials map[string]interface{}
 )
 
 func (user User) ProfileIDs() []string {

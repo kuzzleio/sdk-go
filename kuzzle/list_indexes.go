@@ -9,7 +9,7 @@ import (
 /*
  * List data indexes
  */
-func (k Kuzzle) ListIndexes(options *types.Options) ([]string, error) {
+func (k Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -17,7 +17,7 @@ func (k Kuzzle) ListIndexes(options *types.Options) ([]string, error) {
 		Action:     "list",
 	}
 
-	go k.Query(query, nil, result)
+	go k.Query(query, options, result)
 
 	res := <-result
 

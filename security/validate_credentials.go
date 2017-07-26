@@ -9,7 +9,7 @@ import (
 /*
  * Create credentials of the specified strategy for the given user.
  */
-func (s Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options *types.Options) (bool, error) {
+func (s Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
 		return false, errors.New("Security.ValidateCredentials: strategy is required")
 	}

@@ -15,7 +15,7 @@ type SecurityRole struct {
 /*
   Retrieves a Role using its provided unique id.
 */
-func (sr SecurityRole) Fetch(id string, options *types.Options) (types.Role, error) {
+func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role, error) {
 	if id == "" {
 		return types.Role{}, errors.New("Security.Role.Fetch: role id required")
 	}
@@ -44,7 +44,7 @@ func (sr SecurityRole) Fetch(id string, options *types.Options) (types.Role, err
 /*
   Create a new Role in Kuzzle.
 */
-func (sr SecurityRole) Create(id string, controllers types.Controllers, options *types.Options) (types.Role, error) {
+func (sr SecurityRole) Create(id string, controllers types.Controllers, options types.QueryOptions) (types.Role, error) {
 	if id == "" {
 		return types.Role{}, errors.New("Security.Role.Create: role id required")
 	}
@@ -52,10 +52,10 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 	action := "createRole"
 
 	if options != nil {
-		if options.IfExist == "replace" {
+		if options.GetIfExist() == "replace" {
 			action = "createOrReplaceRole"
-		} else if options.IfExist != "error" {
-			return types.Role{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+		} else if options.GetIfExist() != "error" {
+			return types.Role{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -84,7 +84,7 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 /*
   Update a Role in Kuzzle.
 */
-func (sr SecurityRole) Update(id string, controllers types.Controllers, options *types.Options) (types.Role, error) {
+func (sr SecurityRole) Update(id string, controllers types.Controllers, options types.QueryOptions) (types.Role, error) {
 	if id == "" {
 		return types.Role{}, errors.New("Security.Role.Update: role id required")
 	}
@@ -117,7 +117,7 @@ func (sr SecurityRole) Update(id string, controllers types.Controllers, options 
  * There is a small delay between role deletion and their deletion in our advanced search layer, usually a couple of seconds.
  * This means that a role that has just been deleted will still be returned by this function.
  */
-func (sr SecurityRole) Delete(id string, options *types.Options) (string, error) {
+func (sr SecurityRole) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Security.Role.Delete: role id required")
 	}

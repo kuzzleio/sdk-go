@@ -9,7 +9,7 @@ import (
 /*
   Create a new empty data collection, with no associated mapping.
 */
-func (dc Collection) Create(options *types.Options) (*types.AckResponse, error) {
+func (dc Collection) Create(options types.QueryOptions) (types.AckResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -23,10 +23,10 @@ func (dc Collection) Create(options *types.Options) (*types.AckResponse, error) 
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := &types.AckResponse{}
+	ack := types.AckResponse{}
 	json.Unmarshal(res.Result, &ack)
 
 	return ack, nil

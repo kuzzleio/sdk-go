@@ -15,7 +15,7 @@ type SecurityProfile struct {
 /*
   Retrieves a Profile using its provided unique id.
 */
-func (sp SecurityProfile) Fetch(id string, options *types.Options) (types.Profile, error) {
+func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (types.Profile, error) {
 	if id == "" {
 		return types.Profile{}, errors.New("Security.Profile.Fetch: profile id required")
 	}
@@ -44,7 +44,7 @@ func (sp SecurityProfile) Fetch(id string, options *types.Options) (types.Profil
 /*
   Create a new Profile in Kuzzle.
 */
-func (sp SecurityProfile) Create(id string, policies types.Policies, options *types.Options) (types.Profile, error) {
+func (sp SecurityProfile) Create(id string, policies types.Policies, options types.QueryOptions) (types.Profile, error) {
 	if id == "" {
 		return types.Profile{}, errors.New("Security.Profile.Create: profile id required")
 	}
@@ -52,10 +52,10 @@ func (sp SecurityProfile) Create(id string, policies types.Policies, options *ty
 	action := "createProfile"
 
 	if options != nil {
-		if options.IfExist == "replace" {
+		if options.GetIfExist() == "replace" {
 			action = "createOrReplaceProfile"
-		} else if options.IfExist != "error" {
-			return types.Profile{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist))
+		} else if options.GetIfExist() != "error" {
+			return types.Profile{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -84,7 +84,7 @@ func (sp SecurityProfile) Create(id string, policies types.Policies, options *ty
 /*
   Update a Profile in Kuzzle.
 */
-func (sp SecurityProfile) Update(id string, policies types.Policies, options *types.Options) (types.Profile, error) {
+func (sp SecurityProfile) Update(id string, policies types.Policies, options types.QueryOptions) (types.Profile, error) {
 	if id == "" {
 		return types.Profile{}, errors.New("Security.Profile.Update: profile id required")
 	}
@@ -117,7 +117,7 @@ func (sp SecurityProfile) Update(id string, policies types.Policies, options *ty
  * There is a small delay between profile deletion and their deletion in our advanced search layer, usually a couple of seconds.
  * This means that a profile that has just been deleted will still be returned by this function.
  */
-func (sp SecurityProfile) Delete(id string, options *types.Options) (string, error) {
+func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Security.Profile.Delete: profile id required")
 	}

@@ -12,11 +12,11 @@ type SecurityUser struct {
 }
 
 /*
-  Retrieves an User using its provided unique kuid.
+  Retrieves an User using its provided unique id.
 */
-func (su SecurityUser) Fetch(kuid string, options *types.Options) (types.User, error) {
-	if kuid == "" {
-		return types.User{}, errors.New("Security.User.Fetch: user kuid required")
+func (su SecurityUser) Fetch(id string, options types.QueryOptions) (types.User, error) {
+	if id == "" {
+		return types.User{}, errors.New("Security.User.Fetch: user id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -24,7 +24,7 @@ func (su SecurityUser) Fetch(kuid string, options *types.Options) (types.User, e
 	query := types.KuzzleRequest{
 		Controller: "security",
 		Action:     "getUser",
-		Id:         kuid,
+		Id:         id,
 	}
 	go su.Kuzzle.Query(query, options, ch)
 
@@ -43,7 +43,7 @@ func (su SecurityUser) Fetch(kuid string, options *types.Options) (types.User, e
 /*
   Create a new User in Kuzzle.
 */
-func (su SecurityUser) Create(kuid string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Create(kuid string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if kuid == "" {
 		return types.User{}, errors.New("Security.User.Create: user kuid required")
 	}
@@ -86,7 +86,7 @@ func (su SecurityUser) Create(kuid string, content types.UserData, options *type
 /*
   Create a new restricted User in Kuzzle.
 */
-func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if kuid == "" {
 		return types.User{}, errors.New("Security.User.CreateRestrictedUser: user kuid required")
 	}
@@ -128,7 +128,7 @@ func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData,
 /*
   Replace an User in Kuzzle.
 */
-func (su SecurityUser) Replace(kuid string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Replace(kuid string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if kuid == "" {
 		return types.User{}, errors.New("Security.User.Replace: user kuid required")
 	}
@@ -165,7 +165,7 @@ func (su SecurityUser) Replace(kuid string, content types.UserData, options *typ
 /*
   Update an User in Kuzzle.
 */
-func (su SecurityUser) Update(kuid string, content types.UserData, options *types.Options) (types.User, error) {
+func (su SecurityUser) Update(kuid string, content types.UserData, options types.QueryOptions) (types.User, error) {
 	if kuid == "" {
 		return types.User{}, errors.New("Security.User.Update: user kuid required")
 	}
@@ -205,7 +205,7 @@ func (su SecurityUser) Update(kuid string, content types.UserData, options *type
   There is a small delay between user deletion and their deletion in our advanced search layer, usually a couple of seconds.
   This means that a user that has just been deleted will still be returned by this function.
 */
-func (su SecurityUser) Delete(kuid string, options *types.Options) (string, error) {
+func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, error) {
 	if kuid == "" {
 		return "", errors.New("Security.User.Delete: user kuid required")
 	}

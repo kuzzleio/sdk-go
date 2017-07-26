@@ -9,7 +9,7 @@ import (
 /*
  * Get an array of strategy's fieldnames for each strategies
  */
-func (s Security) GetAllCredentialFields(options *types.Options) (types.CredentialFields, error) {
+func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.CredentialFields, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{

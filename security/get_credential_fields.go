@@ -9,7 +9,7 @@ import (
 /*
  * Get an array of strategy's fieldnames
  */
-func (s Security) GetCredentialFields(strategy string, options *types.Options) ([]string, error) {
+func (s Security) GetCredentialFields(strategy string, options types.QueryOptions) ([]string, error) {
 	if strategy == "" {
 		return make([]string, 0), errors.New("Security.GetCredentialFields: strategy is required")
 	}

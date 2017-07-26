@@ -7,8 +7,10 @@ import (
 	"sync"
 )
 
+const version = "0.1"
+
 type IKuzzle interface {
-	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, *types.Options)
+	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, types.QueryOptions)
 }
 
 type Kuzzle struct {
@@ -23,10 +25,11 @@ type Kuzzle struct {
 	defaultIndex string
 	jwt          string
 	headers      map[string]interface{}
+	version      string
 }
 
 // Kuzzle constructor
-func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error) {
+func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
 	var err error
 
 	if c == nil {
@@ -34,24 +37,26 @@ func NewKuzzle(c connection.Connection, options *types.Options) (*Kuzzle, error)
 	}
 
 	if options == nil {
-		options = types.DefaultOptions()
+		options = types.NewOptions()
 	}
 
 	k := &Kuzzle{
 		mu:      &sync.Mutex{},
 		socket:  c,
-		headers: options.Headers,
+		headers: options.GetHeaders(),
+		version: version,
 	}
 
-	if options.Headers != nil {
-		k.headers = options.Headers
+	headers := options.GetHeaders()
+	if headers != nil {
+		k.headers = headers
 	}
 
 	k.State = k.socket.GetState()
 
-	k.defaultIndex = options.DefaultIndex
+	k.defaultIndex = options.GetDefaultIndex()
 
-	if options.Connect == types.Auto {
+	if options.GetConnect() == types.Auto {
 		err = k.Connect()
 	}
 

@@ -12,7 +12,7 @@ import (
 
 func TestCountError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
 		},
 	}
@@ -28,7 +28,7 @@ func TestCount(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options *types.Options) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			res := result{Count: 10}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
@@ -37,5 +37,5 @@ func TestCount(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").Count(nil, nil)
-	assert.Equal(t, 10, *res)
+	assert.Equal(t, 10, res)
 }

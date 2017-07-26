@@ -10,7 +10,7 @@ import (
 /*
  * Update credentials of the specified strategy for the given user.
  */
-func (s Security) UpdateCredentials(strategy string, kuid string, credentials interface{}, options *types.Options) (map[string]interface{}, error) {
+func (s Security) UpdateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
 		return nil, errors.New("Security.UpdateCredentials: strategy is required")
 	}

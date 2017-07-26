@@ -9,7 +9,7 @@ import (
 /*
  * Get credential information of the specified strategy for the given user.
  */
-func (s Security) GetCredentials(strategy string, kuid string, options *types.Options) (json.RawMessage, error) {
+func (s Security) GetCredentials(strategy string, kuid string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, errors.New("Security.GetCredentials: strategy is required")
 	}

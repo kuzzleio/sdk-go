@@ -9,7 +9,7 @@ import (
 /*
   Retrieves the current specifications of the collection.
 */
-func (dc Collection) GetSpecifications(options *types.Options) (types.KuzzleSpecificationsResult, error) {
+func (dc Collection) GetSpecifications(options types.QueryOptions) (types.KuzzleSpecificationsResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -35,7 +35,7 @@ func (dc Collection) GetSpecifications(options *types.Options) (types.KuzzleSpec
 /*
   Searches specifications across indexes/collections according to the provided filters.
 */
-func (dc Collection) SearchSpecifications(filters interface{}, options *types.Options) (types.KuzzleSpecificationSearchResult, error) {
+func (dc Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -47,10 +47,11 @@ func (dc Collection) SearchSpecifications(filters interface{}, options *types.Op
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
-		if options.Scroll != "" {
-			query.Scroll = options.Scroll
+		query.From = options.GetFrom()
+		query.Size = options.GetSize()
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
 		}
 	}
 
@@ -71,7 +72,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options *types.Op
 /*
   Retrieves next result of a specification search with scroll query.
 */
-func (dc Collection) ScrollSpecifications(scrollId string, options *types.Options) (types.KuzzleSpecificationSearchResult, error) {
+func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
 	if scrollId == "" {
 		return types.KuzzleSpecificationSearchResult{}, errors.New("Collection.ScrollSpecifications: scroll id required")
 	}
@@ -85,8 +86,9 @@ func (dc Collection) ScrollSpecifications(scrollId string, options *types.Option
 	}
 
 	if options != nil {
-		if options.Scroll != "" {
-			query.Scroll = options.Scroll
+		scroll := options.GetScroll()
+		if scroll != "" {
+			query.Scroll = scroll
 		}
 	}
 
@@ -107,7 +109,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options *types.Option
 /*
   Validates the provided specifications.
 */
-func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidation, options *types.Options) (types.ValidResponse, error) {
+func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.ValidResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	specificationsData := types.KuzzleSpecifications{
@@ -140,7 +142,7 @@ func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidatio
 /*
   Updates the current specifications of this collection.
 */
-func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation, options *types.Options) (types.KuzzleSpecifications, error) {
+func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.KuzzleSpecifications, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	specificationsData := types.KuzzleSpecifications{
@@ -173,7 +175,7 @@ func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation,
 /*
   Deletes the current specifications of this collection.
 */
-func (dc Collection) DeleteSpecifications(options *types.Options) (types.AckResponse, error) {
+func (dc Collection) DeleteSpecifications(options types.QueryOptions) (types.AckResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
