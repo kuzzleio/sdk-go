@@ -15,3 +15,22 @@ type KuzzleRequest struct {
 	Strategy   string      `json:"strategy"`
 	ExpiresIn  int         `json:"expiresIn"`
 }
+
+type UserCredentials map[string]struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type UserData struct {
+	ProfileIds  []string               `json:"profileIds"`
+	Content     map[string]interface{} `json:"content"`
+	Credentials UserCredentials        `json:"credentials"`
+}
+
+type Policy struct {
+	RoleId string `json:"roleId"`
+}
+
+type Policies struct {
+	Policies []Policy `json:"policies"`
+}
