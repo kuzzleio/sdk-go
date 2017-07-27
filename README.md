@@ -61,6 +61,11 @@ To run the tests you can simply execute the coverage.sh script
 ./coverage.sh
 ```
 
+You can also get html coverage by running
+```sh
+./coverage.sh --html
+```
+
 ## License
 
 [Apache 2](LICENSE.md)
