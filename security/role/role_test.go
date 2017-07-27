@@ -288,3 +288,77 @@ func TestDelete(t *testing.T) {
 
 	assert.Equal(t, id, res)
 }
+
+
+func TestSearchError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	_, err := security.NewSecurity(k).Role.Search(nil, nil)
+	assert.NotNil(t, err)
+}
+
+func TestSearch(t *testing.T) {
+	hits := make([]types.Role, 1)
+	hits[0] = types.Role{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)}
+	var results = types.KuzzleSearchRolesResult{Total: 42, Hits: hits}
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "searchRoles", parsedQuery.Action)
+
+			res := types.KuzzleSearchRolesResult{Total: results.Total, Hits: results.Hits}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, _ := security.NewSecurity(k).Role.Search(nil, nil)
+	assert.Equal(t, results.Total, res.Total)
+	assert.Equal(t, hits, res.Hits)
+	assert.Equal(t, res.Hits[0].Id, "role42")
+	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`))
+	assert.Equal(t, res.Hits[0].Controllers()["*"].Actions["*"], true)
+}
+
+func TestSearchWithOptions(t *testing.T) {
+	hits := make([]types.Role, 1)
+	hits[0] = types.Role{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)}
+	var results = types.KuzzleSearchRolesResult{Total: 42, Hits: hits}
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "searchRoles", parsedQuery.Action)
+
+			res := types.KuzzleSearchRolesResult{Total: results.Total, Hits: results.Hits}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	opts := types.NewQueryOptions()
+	opts.SetFrom(2)
+	opts.SetSize(4)
+
+	res, _ := security.NewSecurity(k).Role.Search(nil, opts)
+	assert.Equal(t, results.Total, res.Total)
+	assert.Equal(t, hits, res.Hits)
+	assert.Equal(t, res.Hits[0].Id, "role42")
+	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`))
+	assert.Equal(t, res.Hits[0].Controllers()["*"].Actions["*"], true)
+}
+
