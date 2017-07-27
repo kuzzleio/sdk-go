@@ -262,4 +262,3 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]typ
 
 	return userRights.UserRights, nil
 }
-
