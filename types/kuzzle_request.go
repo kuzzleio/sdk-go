@@ -18,3 +18,4 @@ type KuzzleRequest struct {
 }
 
 type VolatileData map[string]interface{}
+
