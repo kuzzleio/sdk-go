@@ -231,7 +231,6 @@ func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, 
 	return shardResponse.Id, nil
 }
 
-
 /*
   Executes a search on Users according to filters.
 */

@@ -41,7 +41,6 @@ func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (types.Pr
 	return profile, nil
 }
 
-
 /*
   Create a new Profile in Kuzzle.
 */
@@ -144,7 +143,6 @@ func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string,
 	return shardResponse.Id, nil
 }
 
-
 /*
   Executes a search on Profiles according to filters.
 */
@@ -210,4 +208,3 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (t
 
 	return searchResult, nil
 }
-

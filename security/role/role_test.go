@@ -289,7 +289,6 @@ func TestDelete(t *testing.T) {
 	assert.Equal(t, id, res)
 }
 
-
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -361,4 +360,3 @@ func TestSearchWithOptions(t *testing.T) {
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`))
 	assert.Equal(t, res.Hits[0].Controllers()["*"].Actions["*"], true)
 }
-
