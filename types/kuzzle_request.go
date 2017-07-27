@@ -19,15 +19,10 @@ type KuzzleRequest struct {
 
 type VolatileData map[string]interface{}
 
-type UserCredentials map[string]struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 type UserData struct {
 	ProfileIds  []string               `json:"profileIds"`
 	Content     map[string]interface{} `json:"content"`
-	Credentials UserCredentials        `json:"credentials"`
+	Credentials map[string]interface{} `json:"credentials"`
 }
 
 type Policy struct {

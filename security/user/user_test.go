@@ -116,7 +116,10 @@ func TestCreate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	type UserCredentials map[string]interface{}
+	cred := UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Create(id, ud, nil)
 
@@ -181,7 +184,10 @@ func TestCreateRestricted(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	type UserCredentials map[string]interface{}
+	cred := UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
 
@@ -246,7 +252,10 @@ func TestReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	type UserCredentials map[string]interface{}
+	cred := UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Replace(id, ud, nil)
 
@@ -311,7 +320,10 @@ func TestUpdate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	type UserCredentials map[string]interface{}
+	cred := UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Update(id, ud, nil)
 

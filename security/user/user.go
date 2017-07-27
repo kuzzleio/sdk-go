@@ -57,8 +57,8 @@ func (su SecurityUser) Create(kuid string, content types.UserData, options types
 		ud[key] = value
 	}
 	type createBody struct {
-		Content     userData              `json:"content"`
-		Credentials types.UserCredentials `json:"credentials"`
+		Content     userData               `json:"content"`
+		Credentials map[string]interface{} `json:"credentials"`
 	}
 
 	body := createBody{Content: ud, Credentials: content.Credentials}
@@ -99,8 +99,8 @@ func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData,
 		ud[key] = value
 	}
 	type createBody struct {
-		Content     userData              `json:"content"`
-		Credentials types.UserCredentials `json:"credentials"`
+		Content     userData               `json:"content"`
+		Credentials map[string]interface{} `json:"credentials"`
 	}
 
 	body := createBody{Content: ud, Credentials: content.Credentials}
