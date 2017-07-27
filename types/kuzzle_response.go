@@ -85,8 +85,8 @@ type (
 	}
 
 	AckResponse struct {
-		Acknowledged       bool
-		ShardsAcknowledged bool
+		Acknowledged       bool `json:"acknowledged"`
+		ShardsAcknowledged bool `json:"shardsAcknowledged"`
 	}
 
 	Document KuzzleResult
@@ -155,7 +155,8 @@ type (
 	Profile SecurityDocument
 	Role    SecurityDocument
 
-	CredentialFields map[string][]string
+	CredentialStrategyFields []string
+	CredentialFields map[string]CredentialStrategyFields
 
 	Credentials map[string]interface{}
 
