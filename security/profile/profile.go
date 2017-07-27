@@ -208,4 +208,3 @@ func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string,
 
 	return shardResponse.Id, nil
 }
-

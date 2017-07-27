@@ -178,4 +178,3 @@ func (sr SecurityRole) Delete(id string, options types.QueryOptions) (string, er
 
 	return shardResponse.Id, nil
 }
-

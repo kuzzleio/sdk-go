@@ -440,4 +440,3 @@ func TestDelete(t *testing.T) {
 
 	assert.Equal(t, id, res)
 }
-

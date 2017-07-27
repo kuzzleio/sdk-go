@@ -363,4 +363,3 @@ func (su SecurityUser) IsActionAllowed(rights []types.UserRights, controller str
 
 	return "denied", nil
 }
-
