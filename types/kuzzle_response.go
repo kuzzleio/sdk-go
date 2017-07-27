@@ -57,6 +57,11 @@ type (
 		Fields KuzzleValidationFields `json:"fields"`
 	}
 
+	KuzzleFieldMapping map[string]struct {
+		Type   string `json:"type"`
+		Fields json.RawMessage `json:"fields"`
+	}
+
 	KuzzleSpecifications map[string]map[string]struct {
 		Strict bool                   `json:"strict"`
 		Fields KuzzleValidationFields `json:"fields"`
