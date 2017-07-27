@@ -19,6 +19,8 @@ type KuzzleRequest struct {
 
 type VolatileData map[string]interface{}
 
+type UserCredentials map[string]interface{}
+
 type UserData struct {
 	ProfileIds  []string               `json:"profileIds"`
 	Content     map[string]interface{} `json:"content"`

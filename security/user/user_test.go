@@ -116,8 +116,8 @@ func TestCreate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	type UserCredentials map[string]interface{}
-	cred := UserCredentials{}
+
+	cred := types.UserCredentials{}
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
@@ -185,7 +185,7 @@ func TestCreateRestricted(t *testing.T) {
 
 	type UserContent map[string]interface{}
 	type UserCredentials map[string]interface{}
-	cred := UserCredentials{}
+	cred := types.UserCredentials{}
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
 
@@ -253,7 +253,7 @@ func TestReplace(t *testing.T) {
 
 	type UserContent map[string]interface{}
 	type UserCredentials map[string]interface{}
-	cred := UserCredentials{}
+	cred := types.UserCredentials{}
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
@@ -320,8 +320,8 @@ func TestUpdate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	type UserCredentials map[string]interface{}
-	cred := UserCredentials{}
+
+	cred := types.UserCredentials{}
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
