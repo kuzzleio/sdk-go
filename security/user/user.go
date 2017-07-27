@@ -328,3 +328,38 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]typ
 
 	return userRights.UserRights, nil
 }
+
+/*
+  Indicates whether an action is allowed, denied or conditional based on user rights provided as the first argument.
+  An action is defined as a couple of action and controller (mandatory), plus an index and a collection(optional).
+*/
+func (su SecurityUser) IsActionAllowed(rights []types.UserRights, controller string, action string, index string, collection string) (string, error) {
+	if rights == nil {
+		return "", errors.New("Security.User.IsActionAllowed: Rights parameter is mandatory")
+	}
+	if controller == "" {
+		return "", errors.New("Security.User.IsActionAllowed: Controller parameter is mandatory")
+	}
+	if action == "" {
+		return "", errors.New("Security.User.IsActionAllowed: Action parameter is mandatory")
+	}
+
+	filteredUserRights := []types.UserRights{}
+
+	for _, ur := range rights {
+		if (ur.Controller == controller || ur.Controller == "*") && (ur.Action == action || ur.Action == "*") && (ur.Index == index || ur.Index == "*") && (ur.Collection == collection || ur.Collection == "*") {
+			filteredUserRights = append(filteredUserRights, ur)
+		}
+	}
+
+	for _, ur := range filteredUserRights {
+		if ur.Value == "allowed" {
+			return "allowed", nil
+		}
+		if ur.Value == "conditional" {
+			return "conditional", nil
+		}
+	}
+
+	return "denied", nil
+}
