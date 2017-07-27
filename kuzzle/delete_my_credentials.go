@@ -9,9 +9,9 @@ import (
 /*
  * Delete credentials of the specified strategy for the current user.
  */
-func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (*types.AckResponse, error) {
+func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (types.AckResponse, error) {
 	if strategy == "" {
-		return nil, errors.New("Kuzzle.DeleteMyCredentials: strategy is required")
+		return types.AckResponse{}, errors.New("Kuzzle.DeleteMyCredentials: strategy is required")
 	}
 
 	type body struct {
@@ -30,10 +30,10 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions)
 	res := <-result
 
 	if res.Error.Message != "" {
-		return &types.AckResponse{}, errors.New(res.Error.Message)
+		return types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := &types.AckResponse{}
+	ack := types.AckResponse{}
 	json.Unmarshal(res.Result, &ack)
 
 	return ack, nil

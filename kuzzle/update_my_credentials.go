@@ -14,6 +14,7 @@ func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, op
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.UpdateMyCredentials: strategy is required")
 	}
+
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
