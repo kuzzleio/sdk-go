@@ -5,9 +5,10 @@ import (
 	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
+
 /*
   Delete all keys from the database
- */
+*/
 func (ms Ms) Flushdb(options types.QueryOptions) (string, error) {
 	result := make(chan types.KuzzleResponse)
 

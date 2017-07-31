@@ -8,7 +8,7 @@ import (
 
 /*
   Set an expiration timestamp to a key
- */
+*/
 func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Expireat: key required")
@@ -23,7 +23,7 @@ func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (in
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "expireat",
-		Id:					key,
+		Id:         key,
 		Body:       &body{Timestamp: timestamp},
 	}
 

@@ -8,7 +8,7 @@ import (
 
 /*
   Counts the number of set bits (population counting)
- */
+*/
 func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Bitcount: key required")

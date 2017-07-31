@@ -8,7 +8,7 @@ import (
 
 /*
   Set an expiration timeout on a key
- */
+*/
 func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Expire: key required")
@@ -23,7 +23,7 @@ func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, e
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "expire",
-		Id:					key,
+		Id:         key,
 		Body:       &body{Seconds: seconds},
 	}
 

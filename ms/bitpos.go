@@ -8,7 +8,7 @@ import (
 
 /*
   Returns the position of the first bit set to 1 or 0 in a string, or in a substring
- */
+*/
 func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Bitcount: key required")
@@ -20,7 +20,7 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 		Controller: "ms",
 		Action:     "bitpos",
 		Id:         key,
-		Bit: 				bit,
+		Bit:        bit,
 	}
 
 	if options != nil {

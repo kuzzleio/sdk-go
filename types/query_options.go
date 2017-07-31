@@ -108,7 +108,6 @@ func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	return qo
 }
 
-
 func (qo queryOptions) GetStart() int {
 	return qo.start
 }

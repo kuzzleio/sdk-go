@@ -8,7 +8,7 @@ import (
 
 /*
   Decrements the value of a key by 1
- */
+*/
 func (ms Ms) Decr(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Decr: key required")

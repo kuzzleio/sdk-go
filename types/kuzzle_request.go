@@ -15,9 +15,12 @@ type KuzzleRequest struct {
 	Strategy   string       `json:"strategy,omitempty"`
 	ExpiresIn  int          `json:"expiresIn"`
 	Volatile   VolatileData `json:"volatile"`
-	Start      int          `json:"start"`
-	End        int          `json:"end"`
-	Bit 			 int					`json:"bit"`
+	Start      int          `json:"start,omitempty"`
+	End        int          `json:"end,omitempty"`
+	Bit        int          `json:"bit,omitempty"`
+	Member1    string       `json:"member1,omitempty"`
+	Member2    string       `json:"member2,omitempty"`
+	Members    []string     `json:"members,omitempty"`
 }
 
 type VolatileData map[string]interface{}
@@ -39,7 +42,7 @@ type Policies struct {
 }
 
 type GeoPoint struct {
-	Lon float64 `json:"lon"`
-	Lat float64 `json:"lat"`
-	Name string `json:"name"`
+	Lon  float64 `json:"lon"`
+	Lat  float64 `json:"lat"`
+	Name string  `json:"name"`
 }

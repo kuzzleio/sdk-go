@@ -8,7 +8,7 @@ import (
 
 /*
   Delete keys
- */
+*/
 func (ms Ms) Del(keys []string, options types.QueryOptions) (int, error) {
 	result := make(chan types.KuzzleResponse)
 
