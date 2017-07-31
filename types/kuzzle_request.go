@@ -18,9 +18,12 @@ type KuzzleRequest struct {
 	Start      int          `json:"start,omitempty"`
 	End        int          `json:"end,omitempty"`
 	Bit        int          `json:"bit,omitempty"`
+	Member     string       `json:"member,omitempty"`
 	Member1    string       `json:"member1,omitempty"`
 	Member2    string       `json:"member2,omitempty"`
 	Members    []string     `json:"members,omitempty"`
+	Keys       []string     `json:"keys,omitempty"`
+	Cursor     *int         `json:"cursor,omitempty"`
 }
 
 type VolatileData map[string]interface{}
