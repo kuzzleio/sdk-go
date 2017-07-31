@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/kuzzleio/sdk-go/types"
-	"fmt"
 	"strconv"
 )
 
@@ -28,23 +27,22 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 
 	res := <-result
 
-	fmt.Println(string(res.Result))
-
 	if res.Error.Message != "" {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]string
 	json.Unmarshal(res.Result, &stringResults)
 
-	var returnedResults [][]float64
+	returnedResults := make([][]float64, len(stringResults))
 
 	for i := 0; i < len(stringResults); i++ {
+		returnedResults[i] = make([]float64, 2)
 		for j := 0; j < 2; j++ {
-			tmp, err := strconv.ParseFloat(stringResults[j][0], 64)
+			tmp, err := strconv.ParseFloat(stringResults[i][j], 64)
 			if err != nil {
 				return nil, err
 			}
-			returnedResults[j][0] = tmp
+			returnedResults[i][j] = tmp
 		}
 	}
 
