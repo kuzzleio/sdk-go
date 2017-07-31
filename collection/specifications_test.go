@@ -123,7 +123,7 @@ func TestSearchSpecifications(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetFrom(2)
 	opts.SetSize(4)
-	opts.SetScrollId("1m")
+	opts.SetScroll("1m")
 
 	res, _ := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, opts)
 	assert.Equal(t, "f00b4r", res.ScrollId)
