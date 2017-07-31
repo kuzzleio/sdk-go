@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (ms Ms) Append(key string, value string, options types.QueryOptions) (int64, error) {
+func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Append: key required")
 	}
@@ -20,8 +20,8 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int64
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "append",
-		Id:					key,
-		Body: 		  &body{Value: value},
+		Id:         key,
+		Body:       &body{Value: value},
 	}
 	go ms.Kuzzle.Query(query, nil, result)
 
@@ -30,7 +30,7 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int64
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
-	var appendResult int64
+	var appendResult int
 	json.Unmarshal(res.Result, &appendResult)
 
 	return appendResult, nil

@@ -15,6 +15,8 @@ type KuzzleRequest struct {
 	Strategy   string       `json:"strategy,omitempty"`
 	ExpiresIn  int          `json:"expiresIn"`
 	Volatile   VolatileData `json:"volatile"`
+	Start      int          `json:"start"`
+	End        int          `json:"end"`
 }
 
 type VolatileData map[string]interface{}

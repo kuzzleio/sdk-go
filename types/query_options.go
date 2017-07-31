@@ -17,6 +17,10 @@ type QueryOptions interface {
 	SetRefresh(string) *queryOptions
 	GetIfExist() string
 	SetIfExist(string) *queryOptions
+	GetStart() int
+	SetStart(int) *queryOptions
+	GetEnd() int
+	SetEnd(int) *queryOptions
 }
 
 type queryOptions struct {
@@ -28,6 +32,8 @@ type queryOptions struct {
 	volatile VolatileData
 	refresh  string
 	ifExist  string
+	start    int
+	end      int
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -99,6 +105,25 @@ func (qo queryOptions) GetIfExist() string {
 
 func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	qo.ifExist = ifExist
+	return qo
+}
+
+
+func (qo queryOptions) GetStart() int {
+	return qo.start
+}
+
+func (qo *queryOptions) SetStart(start int) *queryOptions {
+	qo.start = start
+	return qo
+}
+
+func (qo queryOptions) GetEnd() int {
+	return qo.end
+}
+
+func (qo *queryOptions) SetEnd(end int) *queryOptions {
+	qo.end = end
 	return qo
 }
 
