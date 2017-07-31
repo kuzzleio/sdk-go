@@ -6,6 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+/*
+  Performs a bitwise operation between multiple keys (containing string values) and stores the result in the destination key.
+ */
 func (ms Ms) Bitop(key string, operation string, keys []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Bitop: key required")
@@ -31,8 +34,8 @@ func (ms Ms) Bitop(key string, operation string, keys []string, options types.Qu
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
-	var bitopResult int
-	json.Unmarshal(res.Result, &bitopResult)
+	var returnedResult int
+	json.Unmarshal(res.Result, &returnedResult)
 
-	return bitopResult, nil
+	return returnedResult, nil
 }

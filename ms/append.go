@@ -5,7 +5,9 @@ import (
 	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
-
+/*
+  Append a value to a key
+ */
 func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Append: key required")
@@ -30,8 +32,8 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, 
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
-	var appendResult int
-	json.Unmarshal(res.Result, &appendResult)
+	var returnedResult int
+	json.Unmarshal(res.Result, &returnedResult)
 
-	return appendResult, nil
+	return returnedResult, nil
 }

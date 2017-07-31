@@ -6,6 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+/*
+  Counts the number of set bits (population counting)
+ */
 func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Bitcount: key required")
@@ -36,8 +39,8 @@ func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
-	var countResult int
-	json.Unmarshal(res.Result, &countResult)
+	var returnedResult int
+	json.Unmarshal(res.Result, &returnedResult)
 
-	return countResult, nil
+	return returnedResult, nil
 }

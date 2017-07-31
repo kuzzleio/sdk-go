@@ -17,6 +17,7 @@ type KuzzleRequest struct {
 	Volatile   VolatileData `json:"volatile"`
 	Start      int          `json:"start"`
 	End        int          `json:"end"`
+	Bit 			 int					`json:"bit"`
 }
 
 type VolatileData map[string]interface{}
@@ -35,4 +36,10 @@ type Policy struct {
 
 type Policies struct {
 	Policies []Policy `json:"policies"`
+}
+
+type GeoPoint struct {
+	Lon float64 `json:"lon"`
+	Lat float64 `json:"lat"`
+	Name string `json:"name"`
 }
