@@ -105,5 +105,6 @@ func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size: 10,
+		ifExist: "error",
 	}
 }
