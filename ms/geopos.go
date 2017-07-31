@@ -10,7 +10,7 @@ import (
 /*
   Return the longitude/latitude values for the provided key's members
 */
-func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([][]float64, error) {
+func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]types.GeoPoint, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Geopos: key required")
 	}
@@ -33,17 +33,23 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 	var stringResults [][]string
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([][]float64, len(stringResults))
+	returnedResults := make([]types.GeoPoint, len(stringResults))
 
 	for i := 0; i < len(stringResults); i++ {
-		returnedResults[i] = make([]float64, 2)
-		for j := 0; j < 2; j++ {
-			tmp, err := strconv.ParseFloat(stringResults[i][j], 64)
-			if err != nil {
-				return nil, err
-			}
-			returnedResults[i][j] = tmp
+		returnedResults[i] = types.GeoPoint{}
+		tmp, err := strconv.ParseFloat(stringResults[i][0], 64)
+		if err != nil {
+			return nil, err
 		}
+		returnedResults[i].Lon = tmp
+
+		tmp, err = strconv.ParseFloat(stringResults[i][1], 64)
+		if err != nil {
+			return nil, err
+		}
+		returnedResults[i].Lat = tmp
+
+		returnedResults[i].Name = members[i]
 	}
 
 	return returnedResults, nil
