@@ -29,6 +29,7 @@ type KuzzleRequest struct {
 	Options    []interface{} `json:"options,omitempty"`
 	Keys       []string      `json:"keys,omitempty"`
 	Cursor     *int          `json:"cursor,omitempty"`
+	Subcommand string        `json:"subcommand,omitempty"`
 }
 
 type VolatileData map[string]interface{}
@@ -53,4 +54,9 @@ type GeoPoint struct {
 	Lon  float64 `json:"lon"`
 	Lat  float64 `json:"lat"`
 	Name string  `json:"name"`
+}
+
+type MSKeyValue struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
