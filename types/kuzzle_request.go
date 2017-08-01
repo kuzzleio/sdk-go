@@ -16,6 +16,7 @@ type KuzzleRequest struct {
 	ExpiresIn  int           `json:"expiresIn"`
 	Volatile   VolatileData  `json:"volatile"`
 	Start      int           `json:"start,omitempty"`
+	Stop       int           `json:"stop,omitempty"`
 	End        int           `json:"end,omitempty"`
 	Bit        int           `json:"bit,omitempty"`
 	Member     string        `json:"member,omitempty"`
@@ -33,6 +34,8 @@ type KuzzleRequest struct {
 	Field      string        `json:"field,omitempty"`
 	Fields     []string      `json:"fields,omitempty"`
 	Subcommand string        `json:"subcommand,omitempty"`
+	Pattern    string        `json:"pattern,omitempty"`
+	Idx        int					 `json:"idx, omitempty"`
 }
 
 type VolatileData map[string]interface{}
