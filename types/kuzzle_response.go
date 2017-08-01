@@ -188,8 +188,8 @@ type (
 
 	GeoradiusPointWithCoord struct {
 		Name string
-		Lon float64
-		Lat float64
+		Lon  float64
+		Lat  float64
 	}
 
 	GeoradiusPointWithDist struct {
@@ -199,8 +199,8 @@ type (
 
 	GeoradiusPointWithCoordAndDist struct {
 		Name string
-		Lon float64
-		Lat float64
+		Lon  float64
+		Lat  float64
 		Dist float64
 	}
 )

@@ -40,8 +40,8 @@ type queryOptions struct {
 	ifExist  string
 	start    int
 	end      int
-	count		 int
-	sort string
+	count    int
+	sort     string
 	match    string
 }
 
