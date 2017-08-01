@@ -29,9 +29,10 @@ type KuzzleRequest struct {
 	Options    []interface{} `json:"options,omitempty"`
 	Keys       []string      `json:"keys,omitempty"`
 	Cursor     *int          `json:"cursor,omitempty"`
-	Offset		 int					 `json:"offset,omitempty"`
-	Field   	 string				 `json:"field,omitempty"`
-	Fields   	 []string			 `json:"fields,omitempty"`
+	Offset     int           `json:"offset,omitempty"`
+	Field      string        `json:"field,omitempty"`
+	Fields     []string      `json:"fields,omitempty"`
+	Subcommand string        `json:"subcommand,omitempty"`
 }
 
 type VolatileData map[string]interface{}
@@ -60,5 +61,10 @@ type GeoPoint struct {
 
 type MsHashField struct {
 	Field string `json:"field"`
+	Value string `json:"value"`
+}
+
+type MSKeyValue struct {
+	Key   string `json:"key"`
 	Value string `json:"value"`
 }
