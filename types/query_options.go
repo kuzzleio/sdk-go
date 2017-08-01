@@ -25,6 +25,8 @@ type QueryOptions interface {
 	SetCount(int) *queryOptions
 	GetSort() string
 	SetSort(string) *queryOptions
+	GetMatch() string
+	SetMatch(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -40,6 +42,7 @@ type queryOptions struct {
 	end      int
 	count		 int
 	sort string
+	match    string
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -147,6 +150,15 @@ func (qo queryOptions) GetSort() string {
 
 func (qo *queryOptions) SetSort(sort string) *queryOptions {
 	qo.sort = sort
+	return qo
+}
+
+func (qo queryOptions) GetMatch() string {
+	return qo.match
+}
+
+func (qo *queryOptions) SetMatch(match string) *queryOptions {
+	qo.match = match
 	return qo
 }
 
