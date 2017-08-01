@@ -13,7 +13,7 @@ func (ms Ms) Exists(keys []string, options types.QueryOptions) (int, error) {
 	result := make(chan types.KuzzleResponse)
 
 	type body struct {
-		Keys []string `json:"value"`
+		Keys []string `json:"keys"`
 	}
 
 	query := types.KuzzleRequest{
