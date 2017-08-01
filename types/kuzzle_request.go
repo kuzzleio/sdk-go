@@ -1,26 +1,31 @@
 package types
 
 type KuzzleRequest struct {
-	RequestId  string       `json:"requestId,omitempty"`
-	Controller string       `json:"controller,omitempty"`
-	Action     string       `json:"action,omitempty"`
-	Index      string       `json:"index,omitempty"`
-	Collection string       `json:"collection,omitempty"`
-	Body       interface{}  `json:"body"`
-	Id         string       `json:"_id,omitempty"`
-	From       int          `json:"from"`
-	Size       int          `json:"size"`
-	Scroll     string       `json:"scroll,omitempty"`
-	ScrollId   string       `json:"scrollId,omitempty"`
-	Strategy   string       `json:"strategy,omitempty"`
-	ExpiresIn  int          `json:"expiresIn"`
-	Volatile   VolatileData `json:"volatile"`
-	Start      int          `json:"start,omitempty"`
-	End        int          `json:"end,omitempty"`
-	Bit        int          `json:"bit,omitempty"`
-	Member1    string       `json:"member1,omitempty"`
-	Member2    string       `json:"member2,omitempty"`
-	Members    []string     `json:"members,omitempty"`
+	RequestId  string        `json:"requestId,omitempty"`
+	Controller string        `json:"controller,omitempty"`
+	Action     string        `json:"action,omitempty"`
+	Index      string        `json:"index,omitempty"`
+	Collection string        `json:"collection,omitempty"`
+	Body       interface{}   `json:"body"`
+	Id         string        `json:"_id,omitempty"`
+	From       int           `json:"from"`
+	Size       int           `json:"size"`
+	Scroll     string        `json:"scroll,omitempty"`
+	ScrollId   string        `json:"scrollId,omitempty"`
+	Strategy   string        `json:"strategy,omitempty"`
+	ExpiresIn  int           `json:"expiresIn"`
+	Volatile   VolatileData  `json:"volatile"`
+	Start      int           `json:"start,omitempty"`
+	End        int           `json:"end,omitempty"`
+	Bit        int           `json:"bit,omitempty"`
+	Member1    string        `json:"member1,omitempty"`
+	Member2    string        `json:"member2,omitempty"`
+	Members    []string      `json:"members,omitempty"`
+	Lon				 float64			 `json:"lon,omitempty"`
+	Lat				 float64			 `json:"lat,omitempty"`
+	Distance	 float64			 `json:"distance,omitempty"`
+	Unit			 string				 `json:"unit,omitempty"`
+	Options    []interface{} `json:"options,omitempty"`
 }
 
 type VolatileData map[string]interface{}

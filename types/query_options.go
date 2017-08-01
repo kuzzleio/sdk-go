@@ -21,6 +21,10 @@ type QueryOptions interface {
 	SetStart(int) *queryOptions
 	GetEnd() int
 	SetEnd(int) *queryOptions
+	GetCount() int
+	SetCount(int) *queryOptions
+	GetSort() string
+	SetSort(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -34,6 +38,8 @@ type queryOptions struct {
 	ifExist  string
 	start    int
 	end      int
+	count		 int
+	sort string
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -123,6 +129,24 @@ func (qo queryOptions) GetEnd() int {
 
 func (qo *queryOptions) SetEnd(end int) *queryOptions {
 	qo.end = end
+	return qo
+}
+
+func (qo queryOptions) GetCount() int {
+	return qo.count
+}
+
+func (qo *queryOptions) SetCount(count int) *queryOptions {
+	qo.count = count
+	return qo
+}
+
+func (qo queryOptions) GetSort() string {
+	return qo.sort
+}
+
+func (qo *queryOptions) SetSort(sort string) *queryOptions {
+	qo.sort = sort
 	return qo
 }
 
