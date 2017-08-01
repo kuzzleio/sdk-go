@@ -14,6 +14,9 @@ func (ms Ms) Hset(key string, field string, value string, options types.QueryOpt
 	if key == "" {
 		return 0, errors.New("Ms.Hset: key required")
 	}
+	if field == "" {
+		return 0, errors.New("Ms.Hset: field required")
+	}
 
 	result := make(chan types.KuzzleResponse)
 
@@ -26,7 +29,7 @@ func (ms Ms) Hset(key string, field string, value string, options types.QueryOpt
 		Controller: "ms",
 		Action:     "hset",
 		Id:         key,
-		Body:       &body{Value: value, Field: field},
+		Body: 			&body{Field: field, Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
