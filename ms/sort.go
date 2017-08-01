@@ -29,6 +29,7 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 	if res.Error.Message != "" {
 		return []interface{}{}, errors.New(res.Error.Message)
 	}
+
 	var returnedResult []interface{}
 	json.Unmarshal(res.Result, &returnedResult)
 

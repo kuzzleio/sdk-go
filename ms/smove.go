@@ -41,6 +41,7 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
+
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 

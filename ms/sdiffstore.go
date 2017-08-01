@@ -43,6 +43,7 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
+	
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 

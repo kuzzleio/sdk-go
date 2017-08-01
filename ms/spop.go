@@ -29,6 +29,7 @@ func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 	if res.Error.Message != "" {
 		return "", errors.New(res.Error.Message)
 	}
+
 	var returnedResult interface{}
 	json.Unmarshal(res.Result, &returnedResult)
 

@@ -34,6 +34,7 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 	if res.Error.Message != "" {
 		return "", errors.New(res.Error.Message)
 	}
+
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)
 
