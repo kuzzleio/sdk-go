@@ -29,6 +29,8 @@ type KuzzleRequest struct {
 	Options    []interface{} `json:"options,omitempty"`
 	Keys       []string      `json:"keys,omitempty"`
 	Cursor     *int          `json:"cursor,omitempty"`
+	Offset		 int					 `json:"offset,omitempty"`
+	Field   	 string				 `json:"field,omitempty"`
 }
 
 type VolatileData map[string]interface{}
