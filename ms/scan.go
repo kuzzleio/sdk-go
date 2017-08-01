@@ -6,11 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-type ScanResponse struct {
-	Cursor int      `json:"cursor"`
-	Values []string `json:"values"`
-}
-
 /*
   Iterates incrementally the set of keys in the database using a cursor.
 
@@ -18,7 +13,7 @@ type ScanResponse struct {
 	To get the next page of results, simply re-send the identical request with the updated cursor position provided in the result set.
 	The scan terminates when the next position cursor returned by the server is 0.
 */
-func (ms Ms) Scan(cursor *int, options types.QueryOptions) (ScanResponse, error) {
+func (ms Ms) Scan(cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
 	result := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -32,10 +27,10 @@ func (ms Ms) Scan(cursor *int, options types.QueryOptions) (ScanResponse, error)
 	res := <-result
 
 	if res.Error.Message != "" {
-		return ScanResponse{}, errors.New(res.Error.Message)
+		return types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 
-	var scanResponse = ScanResponse{}
+	var scanResponse = types.MSScanResponse{}
 	json.Unmarshal(res.Result, &scanResponse)
 
 	return scanResponse, nil

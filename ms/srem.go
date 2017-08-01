@@ -14,7 +14,7 @@ func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOption
 		return 0, errors.New("Ms.Srem: key required")
 	}
 	if len(valuesToRemove) == 0 {
-		return 0, errors.New("Ms.Srem: please provide at least one value to remove from the set")
+		return 0, errors.New("Ms.Srem: please provide at least one value to remove")
 	}
 
 	result := make(chan types.KuzzleResponse)

@@ -203,6 +203,11 @@ type (
 		Lat  float64
 		Dist float64
 	}
+
+	MSScanResponse struct {
+		Cursor int      `json:"cursor"`
+		Values []string `json:"values"`
+	}
 )
 
 func (user User) ProfileIDs() []string {
