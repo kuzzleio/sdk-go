@@ -1,6 +1,8 @@
 package ms
 
-import "github.com/kuzzleio/sdk-go/kuzzle"
+import (
+	"github.com/kuzzleio/sdk-go/kuzzle"
+)
 
 type Ms struct {
 	Kuzzle *kuzzle.Kuzzle
