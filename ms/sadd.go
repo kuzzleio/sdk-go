@@ -14,7 +14,7 @@ func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int,
 		return 0, errors.New("Ms.Sadd: key required")
 	}
 	if len(values) == 0 {
-		return 0, errors.New("Ms.Sadd: please provide at least one key")
+		return 0, errors.New("Ms.Sadd: please provide at least one value")
 	}
 
 	result := make(chan types.KuzzleResponse)
