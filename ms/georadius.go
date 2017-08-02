@@ -17,7 +17,7 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 		}
 
 		if options.GetSort() != "" {
-			opts = append(opts, "sort")
+			opts = append(opts, options.GetSort())
 		}
 	}
 
@@ -168,7 +168,7 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 
 func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
-		return nil, errors.New("Ms.GeoradiusWithDist: key required")
+		return nil, errors.New("Ms.GeoradiusWithCoordAndDist: key required")
 	}
 
 	result := make(chan types.KuzzleResponse)

@@ -32,7 +32,7 @@ func TestGeodistError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geodist("", "bar", "barbar", qo)
+	_, err := memoryStorage.Geodist("foo", "bar", "barbar", qo)
 
 	assert.NotNil(t, err)
 }
