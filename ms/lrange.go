@@ -20,7 +20,7 @@ func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions)
 		Controller: "ms",
 		Action:     "lrange",
 		Id:         key,
-		Start:			start,
+		Start:			&start,
 		Stop: 			stop,
 	}
 

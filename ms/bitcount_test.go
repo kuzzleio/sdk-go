@@ -69,7 +69,7 @@ func TestBitcountOptions(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "bitcount", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, parsedQuery.Start)
+			assert.Equal(t, 1, *parsedQuery.Start)
 			assert.Equal(t, 2, parsedQuery.End)
 
 			r, _ := json.Marshal(1)
