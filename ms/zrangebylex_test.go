@@ -81,3 +81,28 @@ func TestZrangeByLex(t *testing.T) {
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
+
+func TestZrangeByLexWithLimits(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "zrangebylex", parsedQuery.Action)
+			assert.Equal(t, []int{0, 1}, options.GetLimit())
+			assert.Equal(t, []interface{}([]interface{}{"withscores"}), parsedQuery.Options)
+
+			r, _ := json.Marshal([]string{"bar", "rab"})
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetLimit([]int{0, 1})
+	res, _ := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+
+	assert.Equal(t, []string{"bar", "rab"}, res)
+}

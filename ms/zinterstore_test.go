@@ -69,3 +69,29 @@ func TestZinterStore(t *testing.T) {
 
 	assert.Equal(t, 2, res)
 }
+
+func TestZinterStoreWithOptions(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "zinterstore", parsedQuery.Action)
+			assert.Equal(t, "sum", options.GetAggregate())
+			assert.Equal(t, []int{1, 2}, options.GetWeights())
+
+			r, _ := json.Marshal(2)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetAggregate("sum")
+	qo.SetWeights([]int{1, 2})
+	res, _ := memoryStorage.ZinterStore("foo", []string{"bar", "rab"}, qo)
+
+	assert.Equal(t, 2, res)
+}

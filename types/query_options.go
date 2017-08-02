@@ -37,27 +37,33 @@ type QueryOptions interface {
 	SetXx(bool) *queryOptions
 	GetLimit() []int
 	SetLimit([]int) *queryOptions
+	GetAggregate() string
+	SetAggregate(string) *queryOptions
+	GetWeights() []int
+	SetWeights([]int) *queryOptions
 }
 
 type queryOptions struct {
-	queuable bool
-	from     int
-	size     int
-	scroll   string
-	scrollId string
-	volatile VolatileData
-	refresh  string
-	ifExist  string
-	start    int
-	end      int
-	count    int
-	sort     string
-	match    string
-	ch       bool
-	incr     bool
-	nx       bool
-	xx       bool
-	limit    []int
+	queuable  bool
+	from      int
+	size      int
+	scroll    string
+	scrollId  string
+	volatile  VolatileData
+	refresh   string
+	ifExist   string
+	start     int
+	end       int
+	count     int
+	sort      string
+	match     string
+	ch        bool
+	incr      bool
+	nx        bool
+	xx        bool
+	limit     []int
+	aggregate string
+	weights   []int
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -219,6 +225,24 @@ func (qo queryOptions) GetLimit() []int {
 
 func (qo *queryOptions) SetLimit(limit []int) *queryOptions {
 	qo.limit = limit
+	return qo
+}
+
+func (qo queryOptions) GetAggregate() string {
+	return qo.aggregate
+}
+
+func (qo *queryOptions) SetAggregate(aggregate string) *queryOptions {
+	qo.aggregate = aggregate
+	return qo
+}
+
+func (qo queryOptions) GetWeights() []int {
+	return qo.weights
+}
+
+func (qo *queryOptions) SetWeights(weights []int) *queryOptions {
+	qo.weights = weights
 	return qo
 }
 
