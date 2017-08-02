@@ -11,7 +11,7 @@ import (
 */
 func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Bitcount: key required")
+		return 0, errors.New("Ms.Bitpos: key required")
 	}
 
 	result := make(chan types.KuzzleResponse)
