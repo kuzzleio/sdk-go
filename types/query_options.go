@@ -27,6 +27,16 @@ type QueryOptions interface {
 	SetSort(string) *queryOptions
 	GetMatch() string
 	SetMatch(string) *queryOptions
+	GetCh() bool
+	SetCh(bool) *queryOptions
+	GetIncr() bool
+	SetIncr(bool) *queryOptions
+	GetNx() bool
+	SetNx(bool) *queryOptions
+	GetXx() bool
+	SetXx(bool) *queryOptions
+	GetLimit() []int
+	SetLimit([]int) *queryOptions
 }
 
 type queryOptions struct {
@@ -43,6 +53,11 @@ type queryOptions struct {
 	count    int
 	sort     string
 	match    string
+	ch       bool
+	incr     bool
+	nx       bool
+	xx       bool
+	limit    []int
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -159,6 +174,51 @@ func (qo queryOptions) GetMatch() string {
 
 func (qo *queryOptions) SetMatch(match string) *queryOptions {
 	qo.match = match
+	return qo
+}
+
+func (qo queryOptions) GetCh() bool {
+	return qo.ch
+}
+
+func (qo *queryOptions) SetCh(ch bool) *queryOptions {
+	qo.ch = ch
+	return qo
+}
+
+func (qo queryOptions) GetIncr() bool {
+	return qo.incr
+}
+
+func (qo *queryOptions) SetIncr(incr bool) *queryOptions {
+	qo.incr = incr
+	return qo
+}
+
+func (qo queryOptions) GetNx() bool {
+	return qo.nx
+}
+
+func (qo *queryOptions) SetNx(nx bool) *queryOptions {
+	qo.nx = nx
+	return qo
+}
+
+func (qo queryOptions) GetXx() bool {
+	return qo.xx
+}
+
+func (qo *queryOptions) SetXx(xx bool) *queryOptions {
+	qo.xx = xx
+	return qo
+}
+
+func (qo queryOptions) GetLimit() []int {
+	return qo.limit
+}
+
+func (qo *queryOptions) SetLimit(limit []int) *queryOptions {
+	qo.limit = limit
 	return qo
 }
 

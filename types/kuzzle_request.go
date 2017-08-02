@@ -15,7 +15,7 @@ type KuzzleRequest struct {
 	Strategy   string        `json:"strategy,omitempty"`
 	ExpiresIn  int           `json:"expiresIn"`
 	Volatile   VolatileData  `json:"volatile"`
-	Start      int           `json:"start,omitempty"`
+	Start      *int          `json:"start,omitempty"`
 	Stop       int           `json:"stop,omitempty"`
 	End        int           `json:"end,omitempty"`
 	Bit        int           `json:"bit,omitempty"`
@@ -35,7 +35,10 @@ type KuzzleRequest struct {
 	Fields     []string      `json:"fields,omitempty"`
 	Subcommand string        `json:"subcommand,omitempty"`
 	Pattern    string        `json:"pattern,omitempty"`
-	Idx        int					 `json:"idx, omitempty"`
+	Idx        int           `json:"idx, omitempty"`
+	Min        string        `json:"min,omitempty"`
+	Max        string        `json:"max,omitempty"`
+	Limit      string        `json:"limit,omitempty"`
 }
 
 type VolatileData map[string]interface{}
@@ -70,4 +73,9 @@ type MsHashField struct {
 type MSKeyValue struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
+}
+
+type MSSortedSet struct {
+	Score  float64 `json:"score"`
+	Member string  `json:"member"`
 }
