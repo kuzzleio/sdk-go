@@ -13,6 +13,9 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 	if key == "" {
 		return 0, errors.New("Ms.Hincrby: key required")
 	}
+	if field == "" {
+		return 0, errors.New("Ms.Hincrby: field required")
+	}
 
 	result := make(chan types.KuzzleResponse)
 

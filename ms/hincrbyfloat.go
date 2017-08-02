@@ -14,6 +14,9 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 	if key == "" {
 		return 0, errors.New("Ms.Hincrbyfloat: key required")
 	}
+	if field == "" {
+		return 0, errors.New("Ms.Hincrbyfloat: field required")
+	}
 
 	result := make(chan types.KuzzleResponse)
 
