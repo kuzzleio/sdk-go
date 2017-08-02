@@ -12,7 +12,7 @@ import (
 */
 func (ms Ms) Incrby(key string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Incr: key required")
+		return 0, errors.New("Ms.Incrby: key required")
 	}
 
 	result := make(chan types.KuzzleResponse)

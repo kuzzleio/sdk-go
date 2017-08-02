@@ -13,7 +13,7 @@ import (
 */
 func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Incr: key required")
+		return 0, errors.New("Ms.Incrbyfloat: key required")
 	}
 
 	result := make(chan types.KuzzleResponse)

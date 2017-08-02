@@ -11,7 +11,7 @@ import (
 */
 func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Hval: key required")
+		return nil, errors.New("Ms.Hvals: key required")
 	}
 
 	result := make(chan types.KuzzleResponse)

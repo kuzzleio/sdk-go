@@ -11,10 +11,10 @@ import (
 */
 func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Hget: key required")
+		return 0, errors.New("Ms.Hstrlen: key required")
 	}
 	if field == "" {
-		return 0, errors.New("Ms.Hget: field required")
+		return 0, errors.New("Ms.Hstrlen: field required")
 	}
 
 	result := make(chan types.KuzzleResponse)
