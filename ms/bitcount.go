@@ -24,7 +24,8 @@ func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 
 	if options != nil {
 		if options.GetStart() != 0 {
-			query.Start = options.GetStart()
+			var start = options.GetStart()
+			query.Start = &start
 		}
 
 		if options.GetEnd() != 0 {

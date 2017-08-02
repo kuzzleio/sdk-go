@@ -20,7 +20,7 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 		Controller: "ms",
 		Action:     "getrange",
 		Id:         key,
-		Start:      start,
+		Start:      &start,
 		End:        end,
 	}
 
