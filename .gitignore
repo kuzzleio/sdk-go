@@ -1,3 +1,6 @@
 .cover
 .idea
 main.go
+
+# Custom test file
+test.go

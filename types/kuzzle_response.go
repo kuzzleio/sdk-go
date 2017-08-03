@@ -118,6 +118,20 @@ type (
 		Timestamp         int            `json:"timestamp"`
 	}
 
+	ShardResponse struct {
+		Found   bool   `json:"found"`
+		Index   string `json:"_index"`
+		Type    string `json:"_type"`
+		Id      string `json:"_id"`
+		Version int    `json:"_version"`
+		Result  string `json:"result"`
+		Shards  struct {
+			Total      int `json:"total"`
+			Successful int `json:"successful"`
+			Failed     int `json:"failed"`
+		} `json:"_shards"`
+	}
+
 	Rights struct {
 		Controller string `json:"controller"`
 		Action     string `json:"action"`
@@ -133,7 +147,7 @@ type (
 
 	Shards struct {
 		Total      int `json:"total"`
-		Successful int `json:successful`
+		Successful int `json:"successful"`
 		Failed     int `json:"failed"`
 	}
 
@@ -142,15 +156,27 @@ type (
 		Type string `json:"type"`
 	}
 
+	Controller struct {
+		Actions map[string]bool `json:"actions"`
+	}
+
+	Controllers struct {
+		Controllers map[string]Controller `json:"controllers"`
+	}
+
 	SecurityDocument struct {
 		Id     string          `json:"_id"`
 		Source json.RawMessage `json:"_source"`
 		Meta   KuzzleMeta      `json:"_meta"`
 	}
 
-	User        SecurityDocument
-	Profile     SecurityDocument
-	Role        SecurityDocument
+	User    SecurityDocument
+	Profile SecurityDocument
+	Role    SecurityDocument
+
+	CredentialStrategyFields []string
+	CredentialFields         map[string]CredentialStrategyFields
+
 	Credentials map[string]interface{}
 
 	UserRights struct {

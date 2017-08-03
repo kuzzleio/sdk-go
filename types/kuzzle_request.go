@@ -28,3 +28,19 @@ type SubscribeQuery struct {
 }
 
 type VolatileData map[string]interface{}
+
+type UserCredentials map[string]interface{}
+
+type UserData struct {
+	ProfileIds  []string               `json:"profileIds"`
+	Content     map[string]interface{} `json:"content"`
+	Credentials map[string]interface{} `json:"credentials"`
+}
+
+type Policy struct {
+	RoleId string `json:"roleId"`
+}
+
+type Policies struct {
+	Policies []Policy `json:"policies"`
+}

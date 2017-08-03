@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-workdir=.cover
+workdir=$(pwd)/.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(kuzzle connection collection security)
+dirs=(kuzzle connection collection security security/profile security/role security/user)
 
 generate_cover_data() {
     rm -rf "$workdir"
     mkdir "$workdir"
 
     for pkg in ${dirs[@]}; do
-        go test -covermode="$mode" -coverprofile="$workdir/$pkg.cover" "./$pkg"
+        go test -covermode="$mode" -coverprofile="$workdir/$(basename $pkg).cover" "./$pkg"
     done
 
     echo "mode: $mode" >"$profile"
