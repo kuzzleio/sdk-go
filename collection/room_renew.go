@@ -18,10 +18,6 @@ func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- 
 	now := time.Now()
 	now = now.Add(-room.lastRenewal * time.Millisecond)
 
-	/*if Room.lastRenewal > 0 && now.Before(Room.renewalDelay) {
-		return
-	}*/
-
 	if filters != nil {
 		room.filters = filters
 	}
@@ -77,7 +73,6 @@ func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- 
 		}
 
 		delete(room.pendingSubscriptions, room.id)
-		// Room.lastRenewal = time.Now()
 
 		resRoom := NewRoom(room.collection, nil)
 		json.Unmarshal(res.Result, &resRoom)

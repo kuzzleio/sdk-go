@@ -20,8 +20,6 @@ type Room struct {
 	subscribeToSelf bool            `json:"subscribeToSelf"`
 
 	collection                  Collection                      `json:"-"`
-	lastRenewal                 time.Duration                   `json:"-"`
-	renewalDelay                time.Duration                   `json:"-"`
 	RealtimeNotificationChannel chan<- types.KuzzleNotification `json:"-"`
 	subscribeResponseChan       chan<- types.SubscribeResponse
 
@@ -45,7 +43,6 @@ func NewRoom(c Collection, opts types.RoomOptions) *Room {
 		opts = types.NewRoomOptions()
 	}
 	r := &Room{
-		renewalDelay:         500 * time.Millisecond,
 		scope:                opts.GetScope(),
 		state:                opts.GetState(),
 		user:                 opts.GetUser(),
