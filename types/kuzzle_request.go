@@ -34,3 +34,9 @@ type Policy struct {
 type Policies struct {
 	Policies []Policy `json:"policies"`
 }
+
+type SearchFilters struct {
+	Query        interface{}   `json:"query,omitempty"`
+	Sort         []interface{} `json:"sort,omitempty"`
+	Aggregations interface{}   `json:"aggregations,omitempty"`
+}
