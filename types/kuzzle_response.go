@@ -80,7 +80,7 @@ type (
 	}
 
 	KuzzleFieldMapping map[string]struct {
-		Type   string `json:"type"`
+		Type   string          `json:"type"`
 		Fields json.RawMessage `json:"fields"`
 	}
 
