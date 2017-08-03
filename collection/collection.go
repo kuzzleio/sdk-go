@@ -24,6 +24,6 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 func (dc Collection) CollectionDocument() CollectionDocument {
 	return CollectionDocument{
 		Collection: dc,
-		Document: types.Document{Source: []byte(`{}`)},
+		Document:   types.Document{Source: []byte(`{}`)},
 	}
 }

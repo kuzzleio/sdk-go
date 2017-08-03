@@ -2,13 +2,13 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
 )
 
 func TestGetMappingError(t *testing.T) {
@@ -54,7 +54,7 @@ func TestGetMapping(t *testing.T) {
 	assert.Equal(t, collection.CollectionMapping{
 		Mapping: types.KuzzleFieldMapping{
 			"foo": {
-				Type: "text",
+				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},

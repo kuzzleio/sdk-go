@@ -1,11 +1,11 @@
 package collection_test
 
 import (
-	"testing"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
-	"github.com/stretchr/testify/assert"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestSetHeaders(t *testing.T) {

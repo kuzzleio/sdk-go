@@ -1,9 +1,9 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
-	"errors"
 	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
 
@@ -35,7 +35,7 @@ func (documentContent DocumentContent) ToString() string {
 
   If this is a new document, will create it in Kuzzle and the id property will be made available.
   Otherwise, will replace the latest version of the document in Kuzzle by the current content of this object.
- */
+*/
 func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocument, error) {
 	if cd.Document.Id == "" {
 		return CollectionDocument{}, errors.New("CollectionDocument.Save: missing document id")
@@ -52,7 +52,7 @@ func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocumen
 		Body:       cd.Document.Source,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -65,7 +65,7 @@ func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocumen
 
 /*
   Replaces the document with the latest version stored in Kuzzle.
- */
+*/
 func (cd CollectionDocument) Refresh(options types.QueryOptions) (CollectionDocument, error) {
 	if cd.Document.Id == "" {
 		return CollectionDocument{}, errors.New("CollectionDocument.Refresh: missing document id")
@@ -81,7 +81,7 @@ func (cd CollectionDocument) Refresh(options types.QueryOptions) (CollectionDocu
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 	if res.Error.Message != "" {
@@ -98,7 +98,7 @@ func (cd CollectionDocument) Refresh(options types.QueryOptions) (CollectionDocu
 
 /*
   Sets the document id.
- */
+*/
 func (cd CollectionDocument) SetDocumentId(id string) CollectionDocument {
 	if id != "" {
 		cd.Document.Id = id
@@ -111,7 +111,7 @@ func (cd CollectionDocument) SetDocumentId(id string) CollectionDocument {
   Replaces the current document content with provided data.
   Changes made by this function won’t be applied until the save method is called.
   If replace is set to true, the entire content will be replaced, otherwise, only existing and new fields will be impacted.
- */
+*/
 func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) CollectionDocument {
 	if replace {
 		cd.Document.Source, _ = json.Marshal(content)
@@ -134,14 +134,14 @@ func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) C
 
   If the replace argument is set to true, replaces the current headers with the provided ones.
   Otherwise, appends the content to the current headers, only replacing already existing values.
- */
+*/
 func (cd *CollectionDocument) SetHeaders(content map[string]interface{}, replace bool) {
-	cd.Collection.kuzzle.SetHeaders(content, replace)
+	cd.Collection.Kuzzle.SetHeaders(content, replace)
 }
 
 /*
   Sends the content of the document as a realtime message.
- */
+*/
 func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -165,7 +165,7 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 		},
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -182,7 +182,7 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 
 /*
   Checks if the document exists in Kuzzle.
- */
+*/
 func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
 	if cd.Document.Id == "" {
 		return false, errors.New("CollectionDocument.Exists: missing document id")
@@ -198,7 +198,7 @@ func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -213,7 +213,7 @@ func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
 
 /*
   Deletes the document in Kuzzle.
- */
+*/
 func (cd CollectionDocument) Delete(options types.QueryOptions) (string, error) {
 	if cd.Document.Id == "" {
 		return "", errors.New("CollectionDocument.Delete: missing document id")
@@ -229,7 +229,7 @@ func (cd CollectionDocument) Delete(options types.QueryOptions) (string, error) 
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
