@@ -26,7 +26,7 @@ type queryOptions struct {
 	scroll   string
 	scrollId string
 	volatile VolatileData
-	refresh  string
+	refresh  string `json:"refresh"`
 	ifExist  string
 }
 
@@ -105,5 +105,6 @@ func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size: 10,
+		ifExist: "error",
 	}
 }

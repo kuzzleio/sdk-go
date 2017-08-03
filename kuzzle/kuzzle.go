@@ -117,3 +117,6 @@ func (k Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
 func (k Kuzzle) UnregisterRoom(roomId string) {
 	k.socket.UnregisterRoom(roomId)
 }
+func (k Kuzzle) GetHeaders() map[string]interface{} {
+	return k.headers
+}

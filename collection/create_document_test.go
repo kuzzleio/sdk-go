@@ -12,10 +12,6 @@ import (
 )
 
 func TestCreateDocumentError(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -23,15 +19,11 @@ func TestCreateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").CreateDocument("id", Document{Title: "yolo"}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").CreateDocument("id", types.Document{Source: []byte(`{"title":"yolo"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateDocumentWrongOptionError(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{}
@@ -42,15 +34,11 @@ func TestCreateDocumentWrongOptionError(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("unknown")
 
-	_, err := newCollection.CreateDocument("id", Document{Title: "yolo"}, opts)
+	_, err := newCollection.CreateDocument("id", types.Document{Source: []byte(`{"title":"yolo"}`)}, opts)
 	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
 
 func TestCreateDocument(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	id := "myId"
 
 	c := &internal.MockedConnection{
@@ -64,24 +52,23 @@ func TestCreateDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["Title"])
+			var body = make(map[string]interface{}, 0)
+			body["title"] = "yolo"
 
-			res := types.Document{Id: id, Source: []byte(`{"title": "yolo"}`)}
+			assert.Equal(t, body, parsedQuery.Body)
+
+			res := types.Document{Id: id, Source: []byte(`{"title":"yolo"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").CreateDocument(id, Document{Title: "yolo"}, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").CreateDocument(id, types.Document{Source: []byte(`{"title":"yolo"}`)}, nil)
 	assert.Equal(t, id, res.Id)
 }
 
 func TestCreateDocumentReplace(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -89,7 +76,7 @@ func TestCreateDocumentReplace(t *testing.T) {
 
 			assert.Equal(t, "createOrReplace", parsedQuery.Action)
 
-			res := types.Document{Id: "id", Source: []byte(`{"title": "yolo"}`)}
+			res := types.Document{Id: "id", Source: []byte(`{"Title":"yolo"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -99,14 +86,10 @@ func TestCreateDocumentReplace(t *testing.T) {
 	newCollection := collection.NewCollection(k, "collection", "index")
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("replace")
-	newCollection.CreateDocument("id", Document{Title: "yolo"}, opts)
+	newCollection.CreateDocument("id", types.Document{Source: []byte(`{"Title":"yolo"}`)}, opts)
 }
 
 func TestCreateDocumentCreate(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -114,7 +97,7 @@ func TestCreateDocumentCreate(t *testing.T) {
 
 			assert.Equal(t, "create", parsedQuery.Action)
 
-			res := types.Document{Id: "id", Source: []byte(`{"title": "yolo"}`)}
+			res := types.Document{Id: "id", Source: []byte(`{"Title":"yolo"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -125,7 +108,7 @@ func TestCreateDocumentCreate(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("error")
 
-	newCollection.CreateDocument("id", Document{Title: "yolo"}, opts)
+	newCollection.CreateDocument("id", types.Document{Source: []byte(`{"Title":"yolo"}`)}, opts)
 }
 
 func TestMCreateDocumentError(t *testing.T) {
