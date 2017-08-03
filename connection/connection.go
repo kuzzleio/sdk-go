@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+//export Connection
 type Connection interface {
 	AddListener(event int, channel chan<- interface{})
 	Connect() (bool, error)
@@ -17,5 +18,5 @@ type Connection interface {
 	UnregisterRoom(string)
 	GetRequestHistory() *map[string]time.Time
 	RenewSubscriptions()
-	GetRooms() map[string]map[string]types.IRoom
+	GetRooms() types.RoomList
 }

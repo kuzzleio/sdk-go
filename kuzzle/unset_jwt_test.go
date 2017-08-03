@@ -30,8 +30,8 @@ func TestUnsetJwt(t *testing.T) {
 
 			return types.KuzzleResponse{Result: marsh}
 		},
-		MockGetRooms: func() map[string]map[string]types.IRoom {
-			rooms := make(map[string]map[string]types.IRoom)
+		MockGetRooms: func() types.RoomList {
+			rooms := make(types.RoomList)
 
 			room := make(map[string]types.IRoom)
 			newRoom := internal.MockedRoom{

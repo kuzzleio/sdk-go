@@ -27,7 +27,7 @@ type webSocket struct {
 
 	listenChan     chan []byte
 	channelsResult map[string]chan<- types.KuzzleResponse // todo use sync.Map when go-1.9 will be released
-	subscriptions  map[string]map[string]types.IRoom      // todo use sync.Map when go-1.9 will be released
+	subscriptions  types.RoomList                         // todo use sync.Map when go-1.9 will be released
 	lastUrl        string
 	host           string
 	wasConnected   bool
@@ -81,7 +81,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		offlineQueue:          make([]types.QueryObject, 0),
 		queueMaxSize:          opts.GetQueueMaxSize(),
 		channelsResult:        make(map[string]chan<- types.KuzzleResponse),
-		subscriptions:         make(map[string]map[string]types.IRoom),
+		subscriptions:         make(types.RoomList),
 		eventListeners:        make(map[int]chan<- interface{}),
 		RequestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.GetAutoQueue(),
@@ -456,6 +456,6 @@ func (ws webSocket) RenewSubscriptions() {
 	}
 }
 
-func (ws webSocket) GetRooms() map[string]map[string]types.IRoom {
+func (ws webSocket) GetRooms() types.RoomList {
 	return ws.subscriptions
 }

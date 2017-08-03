@@ -13,3 +13,5 @@ type SubscribeResponse struct {
 	Room  IRoom
 	Error error
 }
+
+type RoomList map[string]map[string]IRoom
