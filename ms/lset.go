@@ -18,14 +18,14 @@ func (ms Ms) Lset(key string, index int, value string, options types.QueryOption
 
 	type body struct {
 		Value string `json:"value"`
-		Index int `json:"index"`
+		Index int    `json:"index"`
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lset",
 		Id:         key,
-		Body:  			&body{Value: value, Index: index},
+		Body:       &body{Value: value, Index: index},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

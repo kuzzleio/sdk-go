@@ -22,14 +22,14 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 
 	type body struct {
 		Value float64 `json:"value"`
-		Field string `json:"field"`
+		Field string  `json:"field"`
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hincrbyfloat",
 		Id:         key,
-		Body: 		  &body{Value: value, Field: field},
+		Body:       &body{Value: value, Field: field},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

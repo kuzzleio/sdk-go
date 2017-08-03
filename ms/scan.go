@@ -19,7 +19,7 @@ func (ms Ms) Scan(cursor *int, options types.QueryOptions) (types.MSScanResponse
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "scan",
-		Cursor: 		cursor,
+		Cursor:     cursor,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

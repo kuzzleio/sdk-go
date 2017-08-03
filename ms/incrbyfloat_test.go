@@ -2,13 +2,13 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
-	"fmt"
 )
 
 func TestIncrbyfloatEmptyKey(t *testing.T) {
@@ -46,7 +46,7 @@ func TestIncrbyfloat(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "incrbyfloat", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface {})["value"].(float64))
+			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface{})["value"].(float64))
 
 			r, _ := json.Marshal("3.14")
 			return types.KuzzleResponse{Result: r}

@@ -23,7 +23,7 @@ func (ms Ms) Hexists(key string, field string, options types.QueryOptions) (int,
 		Controller: "ms",
 		Action:     "hexists",
 		Id:         key,
-		Field:			field,
+		Field:      field,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

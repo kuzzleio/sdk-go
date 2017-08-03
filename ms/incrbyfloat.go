@@ -26,7 +26,7 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 		Controller: "ms",
 		Action:     "incrbyfloat",
 		Id:         key,
-		Body:				&body{Value: value},
+		Body:       &body{Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, nil, result)

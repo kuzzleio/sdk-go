@@ -20,7 +20,7 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 	result := make(chan types.KuzzleResponse)
 
 	type body struct {
-		Value int `json:"value"`
+		Value int    `json:"value"`
 		Field string `json:"field"`
 	}
 
@@ -28,7 +28,7 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 		Controller: "ms",
 		Action:     "hincrby",
 		Id:         key,
-		Body: 		  &body{Value: value, Field: field},
+		Body:       &body{Value: value, Field: field},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

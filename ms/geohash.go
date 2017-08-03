@@ -19,7 +19,7 @@ func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) (
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geohash",
-		Id: 				key,
+		Id:         key,
 		Members:    members,
 	}
 	go ms.Kuzzle.Query(query, nil, result)

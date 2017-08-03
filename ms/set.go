@@ -1,9 +1,9 @@
 package ms
 
 import (
-"encoding/json"
-"errors"
-"github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*

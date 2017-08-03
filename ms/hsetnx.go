@@ -28,7 +28,7 @@ func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryO
 		Controller: "ms",
 		Action:     "hsetnx",
 		Id:         key,
-		Body: 			&body{Field: field, Value: value},
+		Body:       &body{Field: field, Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

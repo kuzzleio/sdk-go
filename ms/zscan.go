@@ -26,7 +26,7 @@ func (ms Ms) Zscan(key string, cursor *int, options types.QueryOptions) (types.M
 		Controller: "ms",
 		Action:     "zscan",
 		Id:         key,
-		Cursor: 		cursor,
+		Cursor:     cursor,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

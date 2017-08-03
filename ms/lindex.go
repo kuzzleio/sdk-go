@@ -20,7 +20,7 @@ func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, 
 		Controller: "ms",
 		Action:     "lindex",
 		Id:         key,
-		Idx:  			index,
+		Idx:        index,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

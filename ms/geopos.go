@@ -20,7 +20,7 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geopos",
-		Id: 				key,
+		Id:         key,
 		Members:    members,
 	}
 	go ms.Kuzzle.Query(query, nil, result)

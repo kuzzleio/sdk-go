@@ -25,7 +25,7 @@ func (ms Ms) Incrby(key string, value int, options types.QueryOptions) (int, err
 		Controller: "ms",
 		Action:     "incrby",
 		Id:         key,
-		Body:				&body{Value: value},
+		Body:       &body{Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, nil, result)

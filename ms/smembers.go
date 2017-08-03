@@ -29,7 +29,7 @@ func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) 
 	if res.Error.Message != "" {
 		return []string{}, errors.New(res.Error.Message)
 	}
-	
+
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 

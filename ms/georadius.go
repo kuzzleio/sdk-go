@@ -45,11 +45,11 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
-		Id: 				key,
-		Lon:				lon,
-		Lat: 				lat,
-		Distance:		distance,
-		Unit: 			unit,
+		Id:         key,
+		Lon:        lon,
+		Lat:        lat,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, false, false)
@@ -77,11 +77,11 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
-		Id: 				key,
-		Lon:				lon,
-		Lat: 				lat,
-		Distance:		distance,
-		Unit: 			unit,
+		Id:         key,
+		Lon:        lon,
+		Lat:        lat,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, true, false)
@@ -131,11 +131,11 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
-		Id: 				key,
-		Lon:				lon,
-		Lat: 				lat,
-		Distance:		distance,
-		Unit: 			unit,
+		Id:         key,
+		Lon:        lon,
+		Lat:        lat,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, false, true)
@@ -176,11 +176,11 @@ func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, dis
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
-		Id: 				key,
-		Lon:				lon,
-		Lat: 				lat,
-		Distance:		distance,
-		Unit: 			unit,
+		Id:         key,
+		Lon:        lon,
+		Lat:        lat,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, true, true)

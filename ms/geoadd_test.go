@@ -2,13 +2,13 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
-	"fmt"
 )
 
 func TestGeoaddEmptyKey(t *testing.T) {
@@ -46,9 +46,9 @@ func TestGeoadd(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "geoadd", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, "Montpellier", parsedQuery.Body.(map[string]interface {})["points"].([]interface{})[0].(map[string]interface{})["name"].(string))
-			assert.Equal(t, float64(43.6075274), parsedQuery.Body.(map[string]interface {})["points"].([]interface{})[0].(map[string]interface{})["lon"].(float64))
-			assert.Equal(t, float64(3.9128795), parsedQuery.Body.(map[string]interface {})["points"].([]interface{})[0].(map[string]interface{})["lat"].(float64))
+			assert.Equal(t, "Montpellier", parsedQuery.Body.(map[string]interface{})["points"].([]interface{})[0].(map[string]interface{})["name"].(string))
+			assert.Equal(t, float64(43.6075274), parsedQuery.Body.(map[string]interface{})["points"].([]interface{})[0].(map[string]interface{})["lon"].(float64))
+			assert.Equal(t, float64(3.9128795), parsedQuery.Body.(map[string]interface{})["points"].([]interface{})[0].(map[string]interface{})["lat"].(float64))
 
 			r, _ := json.Marshal(1)
 			return types.KuzzleResponse{Result: r}

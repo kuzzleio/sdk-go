@@ -23,7 +23,7 @@ func (ms Ms) Geoadd(key string, points []types.GeoPoint, options types.QueryOpti
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geoadd",
-		Id: 				key,
+		Id:         key,
 		Body:       &body{Points: points},
 	}
 	go ms.Kuzzle.Query(query, nil, result)

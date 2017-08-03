@@ -18,14 +18,14 @@ func (ms Ms) Lrem(key string, count int, value string, options types.QueryOption
 
 	type body struct {
 		Value string `json:"value"`
-		Count int `json:"count"`
+		Count int    `json:"count"`
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lrem",
 		Id:         key,
-		Body:  			&body{Value: value, Count: count},
+		Body:       &body{Value: value, Count: count},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

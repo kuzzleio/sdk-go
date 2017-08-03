@@ -23,7 +23,7 @@ func (ms Ms) Hget(key string, field string, options types.QueryOptions) (string,
 		Controller: "ms",
 		Action:     "hget",
 		Id:         key,
-		Field:			field,
+		Field:      field,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

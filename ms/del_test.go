@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
 )
 
@@ -33,8 +33,8 @@ func TestDel(t *testing.T) {
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "del", parsedQuery.Action)
-			assert.Equal(t, "some", parsedQuery.Body.(map[string]interface {})["keys"].([]interface{})[0].(string))
-			assert.Equal(t, "keys", parsedQuery.Body.(map[string]interface {})["keys"].([]interface{})[1].(string))
+			assert.Equal(t, "some", parsedQuery.Body.(map[string]interface{})["keys"].([]interface{})[0].(string))
+			assert.Equal(t, "keys", parsedQuery.Body.(map[string]interface{})["keys"].([]interface{})[1].(string))
 
 			r, _ := json.Marshal(1)
 			return types.KuzzleResponse{Result: r}

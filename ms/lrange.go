@@ -20,8 +20,8 @@ func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions)
 		Controller: "ms",
 		Action:     "lrange",
 		Id:         key,
-		Start:			&start,
-		Stop: 			stop,
+		Start:      &start,
+		Stop:       stop,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

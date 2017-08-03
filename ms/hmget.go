@@ -20,7 +20,7 @@ func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]s
 		Controller: "ms",
 		Action:     "hmget",
 		Id:         key,
-		Fields: 		fields,
+		Fields:     fields,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

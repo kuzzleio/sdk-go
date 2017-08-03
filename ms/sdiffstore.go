@@ -25,8 +25,8 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 	result := make(chan types.KuzzleResponse)
 
 	type body struct {
-		Keys []string `json:"keys"`
-		Destination string `json:"destination"`
+		Keys        []string `json:"keys"`
+		Destination string   `json:"destination"`
 	}
 
 	query := types.KuzzleRequest{
@@ -43,7 +43,7 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 	if res.Error.Message != "" {
 		return 0, errors.New(res.Error.Message)
 	}
-	
+
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 

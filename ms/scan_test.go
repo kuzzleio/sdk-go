@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
 )
 

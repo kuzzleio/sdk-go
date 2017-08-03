@@ -20,7 +20,7 @@ func (ms Ms) Sscan(key string, cursor *int, options types.QueryOptions) (types.M
 		Controller: "ms",
 		Action:     "sscan",
 		Id:         key,
-		Cursor: 		cursor,
+		Cursor:     cursor,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

@@ -20,10 +20,10 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
-		Id: 				key,
+		Id:         key,
 		Member:     member,
-		Distance:		distance,
-		Unit: 			unit,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, false, false)
@@ -51,10 +51,10 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
-		Id: 				key,
+		Id:         key,
 		Member:     member,
-		Distance:		distance,
-		Unit: 			unit,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, true, false)
@@ -104,10 +104,10 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
-		Id: 				key,
+		Id:         key,
 		Member:     member,
-		Distance:		distance,
-		Unit: 			unit,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, false, true)
@@ -148,10 +148,10 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
-		Id: 				key,
+		Id:         key,
 		Member:     member,
-		Distance:		distance,
-		Unit: 			unit,
+		Distance:   distance,
+		Unit:       unit,
 	}
 
 	assignGeoradiusOptions(&query, options, true, true)

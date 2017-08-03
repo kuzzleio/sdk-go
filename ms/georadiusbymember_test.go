@@ -2,13 +2,13 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
-	"fmt"
 )
 
 func TestGeoradiusbymemberEmptyKey(t *testing.T) {
@@ -178,8 +178,6 @@ func TestGeoradiusbymemberWithCoordLatConvError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-
-
 func TestGeoradiusbymemberWithCoord(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -219,7 +217,7 @@ func TestGeoradiusbymemberWithCoord(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithCoord("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoord{{Name:"Montpellier", Lon:43.6075274, Lat:3.9128795}}, res)
+	assert.Equal(t, []types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func TestGeoradiusbymemberWithDistEmptyKey(t *testing.T) {
@@ -323,9 +321,8 @@ func TestGeoradiusbymemberWithDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithDist("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithDist{{Name:"Montpellier", Dist: 125}}, res)
+	assert.Equal(t, []types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
 }
-
 
 func TestGeoradiusbymemberWithCoordAndDistEmptyKey(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
@@ -484,7 +481,6 @@ func TestGeoradiusbymemberWithCoordAndDistLatConvError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-
 func TestGeoradiusbymemberWithCoordAndDist(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -526,5 +522,5 @@ func TestGeoradiusbymemberWithCoordAndDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithCoordAndDist("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoordAndDist{{Name:"Montpellier", Dist: 125, Lon:43.6075274, Lat:3.9128795}}, res)
+	assert.Equal(t, []types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
 }

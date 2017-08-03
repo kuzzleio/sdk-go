@@ -25,8 +25,8 @@ func (ms Ms) Hscan(key string, cursor *int, options types.QueryOptions) (HscanRe
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hscan",
-		Id: 		    key,
-		Cursor: 		cursor,
+		Id:         key,
+		Cursor:     cursor,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

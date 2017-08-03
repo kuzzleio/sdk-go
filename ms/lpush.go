@@ -26,7 +26,7 @@ func (ms Ms) Lpush(key string, values []string, options types.QueryOptions) (int
 		Controller: "ms",
 		Action:     "lpush",
 		Id:         key,
-		Body: 			&body{Values: values},
+		Body:       &body{Values: values},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

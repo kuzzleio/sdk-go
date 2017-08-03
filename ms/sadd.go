@@ -27,7 +27,7 @@ func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int,
 		Controller: "ms",
 		Action:     "sadd",
 		Id:         key,
-		Body:    		&body{Members: values},
+		Body:       &body{Members: values},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

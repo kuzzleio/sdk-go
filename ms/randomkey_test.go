@@ -1,12 +1,12 @@
 package ms_test
 
 import (
-	"github.com/stretchr/testify/assert"
+	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/types"
-	"encoding/json"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/types"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 

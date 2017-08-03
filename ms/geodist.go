@@ -19,7 +19,7 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geodist",
-		Id: 				key,
+		Id:         key,
 		Member1:    member1,
 		Member2:    member2,
 	}

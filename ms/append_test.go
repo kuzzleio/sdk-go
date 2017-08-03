@@ -2,13 +2,13 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"testing"
-	"fmt"
 )
 
 func TestAppendEmptyKey(t *testing.T) {
@@ -46,7 +46,7 @@ func TestAppend(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "append", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, "bar", parsedQuery.Body.(map[string]interface {})["value"].(string))
+			assert.Equal(t, "bar", parsedQuery.Body.(map[string]interface{})["value"].(string))
 
 			r, _ := json.Marshal(1)
 			return types.KuzzleResponse{Result: r}

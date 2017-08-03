@@ -29,7 +29,7 @@ func (ms Ms) Hset(key string, field string, value string, options types.QueryOpt
 		Controller: "ms",
 		Action:     "hset",
 		Id:         key,
-		Body: 			&body{Field: field, Value: value},
+		Body:       &body{Field: field, Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

@@ -18,15 +18,15 @@ func (ms Ms) Linsert(key string, position string, pivot string, value string, op
 
 	type body struct {
 		Position string `json:"position"`
-		Pivot string `json:"pivot"`
-		Value string `json:"value"`
+		Pivot    string `json:"pivot"`
+		Value    string `json:"value"`
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "linsert",
 		Id:         key,
-		Body: 	    &body{Position: position, Pivot: pivot, Value: value},
+		Body:       &body{Position: position, Pivot: pivot, Value: value},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

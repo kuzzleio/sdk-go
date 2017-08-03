@@ -3,10 +3,10 @@ package ms
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 /*

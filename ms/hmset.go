@@ -24,7 +24,7 @@ func (ms Ms) Hmset(key string, entries []types.MsHashField, options types.QueryO
 		Controller: "ms",
 		Action:     "hmset",
 		Id:         key,
-		Body: 		  &body{Entries: entries},
+		Body:       &body{Entries: entries},
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
