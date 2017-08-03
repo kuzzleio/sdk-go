@@ -15,9 +15,6 @@ import (
  * Unsubscribes first if this Room was already listening to events.
  */
 func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- types.KuzzleNotification, subscribeResponseChan chan<- types.SubscribeResponse) {
-	now := time.Now()
-	now = now.Add(-room.lastRenewal * time.Millisecond)
-
 	if filters != nil {
 		room.filters = filters
 	}

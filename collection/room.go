@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
-	"time"
 )
 
 type Room struct {
