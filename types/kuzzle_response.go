@@ -26,6 +26,10 @@ type (
 		Error     MessageError `json:"error"`
 	}
 
+	IKuzzleResult interface {
+		SourceToMap()
+	}
+
 	KuzzleResult struct {
 		Id      string          `json:"_id"`
 		Meta    KuzzleMeta      `json:"_meta"`
@@ -74,6 +78,11 @@ type (
 	KuzzleValidation struct {
 		Strict bool                   `json:"strict"`
 		Fields KuzzleValidationFields `json:"fields"`
+	}
+
+	KuzzleFieldMapping map[string]struct {
+		Type   string `json:"type"`
+		Fields json.RawMessage `json:"fields"`
 	}
 
 	KuzzleSpecifications map[string]map[string]struct {
@@ -263,4 +272,13 @@ func (role Role) Controllers() map[string]struct {
 	json.Unmarshal(role.Source, &controllers)
 
 	return controllers.Controllers
+}
+
+func (sr KuzzleResult) SourceToMap() map[string]interface{} {
+	type SourceMap map[string]interface{}
+	sourceMap := SourceMap{}
+
+	json.Unmarshal(sr.Source, &sourceMap)
+
+	return sourceMap
 }
