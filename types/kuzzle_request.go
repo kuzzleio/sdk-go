@@ -79,3 +79,9 @@ type MSSortedSet struct {
 	Score  float64 `json:"score"`
 	Member string  `json:"member"`
 }
+
+type SearchFilters struct {
+	Query        interface{}   `json:"query,omitempty"`
+	Sort         []interface{} `json:"sort,omitempty"`
+	Aggregations interface{}   `json:"aggregations,omitempty"`
+}

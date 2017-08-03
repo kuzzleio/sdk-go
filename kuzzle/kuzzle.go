@@ -106,3 +106,7 @@ func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
 func (k Kuzzle) GetJwt() string {
 	return k.jwt
 }
+
+func (k Kuzzle) GetHeaders() map[string]interface{} {
+	return k.headers
+}
