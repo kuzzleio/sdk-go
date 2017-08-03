@@ -1,6 +1,9 @@
 package connection
 
-import "github.com/kuzzleio/sdk-go/types"
+import (
+	"github.com/kuzzleio/sdk-go/types"
+	"time"
+)
 
 type Connection interface {
 	AddListener(event int, channel chan<- interface{})
@@ -10,4 +13,9 @@ type Connection interface {
 	GetOfflineQueue() *[]types.QueryObject
 	GetState() *int
 	EmitEvent(int, interface{})
+	RegisterRoom(string, string, types.IRoom)
+	UnregisterRoom(string)
+	GetRequestHistory() *map[string]time.Time
+	RenewSubscriptions()
+	GetRooms() map[string]map[string]types.IRoom
 }

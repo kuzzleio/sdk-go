@@ -118,7 +118,7 @@ func TestSearchWithScroll(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
- 			json.Unmarshal(query, parsedQuery)
+			json.Unmarshal(query, parsedQuery)
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "searchUsers", parsedQuery.Action)
@@ -258,4 +258,3 @@ func TestGetRights(t *testing.T) {
 
 	assert.Equal(t, expectedRights, res)
 }
-

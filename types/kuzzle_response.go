@@ -37,6 +37,7 @@ type (
 		RequestId string          `json:"requestId"`
 		Result    json.RawMessage `json:"result"`
 		RoomId    string          `json:"room"`
+		Channel   string          `json:"channel"`
 		Error     MessageError    `json:"error"`
 	}
 

@@ -38,7 +38,7 @@ func (dc Collection) CreateDocument(id string, document interface{}, options typ
 		Body:       document,
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -93,7 +93,7 @@ func performMultipleCreate(dc Collection, documents []types.Document, action str
 		Action:     action,
 		Body:       &body{docs},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

@@ -30,7 +30,7 @@ func (dc Collection) Search(filters interface{}, options types.QueryOptions) (ty
 		}
 	}
 
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

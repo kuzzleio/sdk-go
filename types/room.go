@@ -1,13 +1,15 @@
 package types
 
-import "encoding/json"
+type IRoom interface {
+	Renew(filters interface{}, realtimeNotificationChannel chan<- KuzzleNotification, subscribeResponseChan chan<- SubscribeResponse)
+	Unsubscribe()
+	GetRealtimeChannel() chan<- KuzzleNotification
+	GetResponseChannel() chan<- SubscribeResponse
+	GetRoomId() string
+	GetFilters() interface{}
+}
 
-type Room struct {
-	RoomId          string          `json:"room"`
-	Channel         string          `json:"channel"`
-	Result          json.RawMessage `json:"result"`
-	Scope           string          `json:"scope"`
-	State           string          `json:"state"`
-	User            string          `json:"user"`
-	SubscribeToSelf bool            `json:"subscribeToSelf"`
+type SubscribeResponse struct {
+	Room  IRoom
+	Error error
 }

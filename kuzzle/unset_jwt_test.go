@@ -1,39 +1,57 @@
 package kuzzle
 
 import (
-  "testing"
-  "github.com/kuzzleio/sdk-go/internal"
-  "encoding/json"
-  "github.com/kuzzleio/sdk-go/types"
-  "github.com/stretchr/testify/assert"
+	"encoding/json"
+	"github.com/kuzzleio/sdk-go/internal"
+	"github.com/kuzzleio/sdk-go/types"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestUnsetJwt(t *testing.T) {
-  c := &internal.MockedConnection{
-    MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-      request := types.KuzzleRequest{}
-      json.Unmarshal(query, &request)
+	var k *Kuzzle
+	renewcalled := false
 
-      assert.Equal(t, "auth", request.Controller)
-      assert.Equal(t, "login", request.Action)
-      assert.Equal(t, 0, request.ExpiresIn)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			request := types.KuzzleRequest{}
+			json.Unmarshal(query, &request)
 
-      type loginResult struct {
-        Jwt string `json:"jwt"`
-      }
+			assert.Equal(t, "auth", request.Controller)
+			assert.Equal(t, "login", request.Action)
+			assert.Equal(t, 0, request.ExpiresIn)
 
-      loginRes := loginResult{"token"}
-      marsh, _ := json.Marshal(loginRes)
+			type loginResult struct {
+				Jwt string `json:"jwt"`
+			}
 
-      return types.KuzzleResponse{Result: marsh}
-    },
-  }
+			loginRes := loginResult{"token"}
+			marsh, _ := json.Marshal(loginRes)
 
-  k, _ := NewKuzzle(c, nil)
+			return types.KuzzleResponse{Result: marsh}
+		},
+		MockGetRooms: func() map[string]map[string]types.IRoom {
+			rooms := make(map[string]map[string]types.IRoom)
 
-  res, _ :=k.Login("local", nil, nil)
-  assert.Equal(t, "token", res)
-  assert.Equal(t, "token", k.jwt)
-  k.UnsetJwt()
-  assert.Equal(t, "", k.jwt)
+			room := make(map[string]types.IRoom)
+			newRoom := internal.MockedRoom{
+				MockedRenew: func() {
+					renewcalled = true
+				},
+			}
+
+			room["id"] = newRoom
+			rooms["roomId"] = room
+			return rooms
+		},
+	}
+
+	k, _ = NewKuzzle(c, nil)
+
+	res, _ := k.Login("local", nil, nil)
+	assert.Equal(t, "token", res)
+	assert.Equal(t, "token", k.jwt)
+	k.UnsetJwt()
+	assert.Equal(t, "", k.jwt)
+	assert.Equal(t, true, renewcalled)
 }
