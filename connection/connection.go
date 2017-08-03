@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-//export Connection
 type Connection interface {
 	AddListener(event int, channel chan<- interface{})
 	Connect() (bool, error)
