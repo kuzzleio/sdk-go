@@ -23,7 +23,7 @@ func (dc Collection) DeleteDocument(id string, options types.QueryOptions) (stri
 		Action:     "delete",
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -58,7 +58,7 @@ func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) (
 		Action:     "mDelete",
 		Body:       &body{Ids: ids},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

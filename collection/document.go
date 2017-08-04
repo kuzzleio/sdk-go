@@ -52,7 +52,7 @@ func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocumen
 		Body:       cd.Document.Source,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -81,7 +81,7 @@ func (cd CollectionDocument) Refresh(options types.QueryOptions) (CollectionDocu
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 	if res.Error.Message != "" {
@@ -136,7 +136,7 @@ func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) C
   Otherwise, appends the content to the current headers, only replacing already existing values.
 */
 func (cd *CollectionDocument) SetHeaders(content map[string]interface{}, replace bool) {
-	cd.Collection.kuzzle.SetHeaders(content, replace)
+	cd.Collection.Kuzzle.SetHeaders(content, replace)
 }
 
 /*
@@ -165,7 +165,7 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 		},
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -198,7 +198,7 @@ func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -229,7 +229,7 @@ func (cd CollectionDocument) Delete(options types.QueryOptions) (string, error) 
 		Id:         cd.Document.Id,
 	}
 
-	go cd.Collection.kuzzle.Query(query, options, ch)
+	go cd.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

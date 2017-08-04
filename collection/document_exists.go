@@ -23,7 +23,7 @@ func (dc Collection) DocumentExists(id string, options types.QueryOptions) (bool
 		Action:     "exists",
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

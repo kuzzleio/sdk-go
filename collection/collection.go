@@ -6,7 +6,7 @@ import (
 )
 
 type Collection struct {
-	kuzzle            *kuzzle.Kuzzle
+	Kuzzle            *kuzzle.Kuzzle
 	index, collection string
 	subscribeCallback interface{}
 	collectionMapping CollectionMapping
@@ -16,7 +16,7 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 	return &Collection{
 		index:             index,
 		collection:        collection,
-		kuzzle:            kuzzle,
+		Kuzzle:            kuzzle,
 		collectionMapping: CollectionMapping{},
 	}
 }

@@ -18,7 +18,7 @@ func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, 
 		Controller: "collection",
 		Action:     "getMapping",
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

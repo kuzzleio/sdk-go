@@ -6,7 +6,7 @@ package collection
   Otherwise, it appends the content to the current headers, only replacing already existing values
 */
 func (dc Collection) SetHeaders(content map[string]interface{}, replace bool) Collection {
-	dc.kuzzle.SetHeaders(content, replace)
+	dc.Kuzzle.SetHeaders(content, replace)
 
 	return dc
 }

@@ -15,6 +15,16 @@ type KuzzleRequest struct {
 	Strategy   string       `json:"strategy,omitempty"`
 	ExpiresIn  int          `json:"expiresIn"`
 	Volatile   VolatileData `json:"volatile"`
+	Scope      string       `json:"scope"`
+	State      string       `json:"state"`
+	User       string       `json:"user"`
+}
+
+type SubscribeQuery struct {
+	Scope string      `json:"scope"`
+	State string      `json:"state"`
+	User  string      `json:"user"`
+	Body  interface{} `json:"body"`
 }
 
 type VolatileData map[string]interface{}
