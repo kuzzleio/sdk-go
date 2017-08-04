@@ -31,6 +31,9 @@ func (documentContent DocumentContent) ToString() string {
 	return string(s)
 }
 
+/*
+  Helper function to initialize a document into CollectionDocument using fetch query.
+ */
 func (cd CollectionDocument) Fetch(id string, ) (CollectionDocument, error) {
 	if id == "" {
 		return cd, errors.New("CollectionDocument.Fetch: missing document id")
