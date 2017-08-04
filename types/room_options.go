@@ -5,6 +5,7 @@ type roomOptions struct {
 	state           string
 	user            string
 	subscribeToSelf bool
+	volatile        VolatileData
 }
 
 type RoomOptions interface {
@@ -16,6 +17,8 @@ type RoomOptions interface {
 	SetUser(string) *roomOptions
 	GetSubscribeToSelf() bool
 	SetSubscribeToSelf(bool) *roomOptions
+	GetVolatile() VolatileData
+	SetVolatile(VolatileData) *roomOptions
 }
 
 func (ro roomOptions) GetScope() string {
@@ -51,6 +54,15 @@ func (ro roomOptions) GetSubscribeToSelf() bool {
 
 func (ro *roomOptions) SetSubscribeToSelf(subscribeToSelf bool) *roomOptions {
 	ro.subscribeToSelf = subscribeToSelf
+	return ro
+}
+
+func (ro roomOptions) GetVolatile() VolatileData {
+	return ro.volatile
+}
+
+func (ro *roomOptions) SetVolatile(volatile VolatileData) *roomOptions {
+	ro.volatile = volatile
 	return ro
 }
 

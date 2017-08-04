@@ -24,7 +24,7 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 		Body:       document,
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -72,7 +72,7 @@ func (dc Collection) MReplaceDocument(documents []types.Document, options types.
 		Action:     "mReplace",
 		Body:       &body{docs},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

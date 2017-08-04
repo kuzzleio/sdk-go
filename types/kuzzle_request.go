@@ -15,6 +15,9 @@ type KuzzleRequest struct {
 	Strategy   string        `json:"strategy,omitempty"`
 	ExpiresIn  int           `json:"expiresIn"`
 	Volatile   VolatileData  `json:"volatile"`
+	Scope      string        `json:"scope"`
+	State      string        `json:"state"`
+	User       string        `json:"user"`
 	Start      *int          `json:"start,omitempty"`
 	Stop       int           `json:"stop,omitempty"`
 	End        int           `json:"end,omitempty"`
@@ -39,6 +42,13 @@ type KuzzleRequest struct {
 	Min        string        `json:"min,omitempty"`
 	Max        string        `json:"max,omitempty"`
 	Limit      string        `json:"limit,omitempty"`
+}
+
+type SubscribeQuery struct {
+	Scope string      `json:"scope"`
+	State string      `json:"state"`
+	User  string      `json:"user"`
+	Body  interface{} `json:"body"`
 }
 
 type VolatileData map[string]interface{}

@@ -23,7 +23,7 @@ func (dc Collection) PublishMessage(document interface{}, options types.QueryOpt
 		Action:     "publish",
 		Body:       document,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

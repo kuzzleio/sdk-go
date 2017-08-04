@@ -8,7 +8,7 @@ const (
 	LoginAttempt
 	NetworkError
 	OfflineQueuePop
-	OfflieQueuePush
+	OfflineQueuePush
 	QueryError
 	Reconnected
 	JwtExpired

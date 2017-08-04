@@ -248,7 +248,7 @@ func (qo *queryOptions) SetWeights(weights []int) *queryOptions {
 
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
-		size: 10,
+		size:    10,
 		ifExist: "error",
 	}
 }

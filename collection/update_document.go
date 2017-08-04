@@ -24,7 +24,7 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 		Body:       document,
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -72,7 +72,7 @@ func (dc Collection) MUpdateDocument(documents []types.Document, options types.Q
 		Action:     "mUpdate",
 		Body:       &body{docs},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

@@ -6,5 +6,9 @@ package kuzzle
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	//todo unsbuscribe every room
+	for _, rooms := range k.socket.GetRooms() {
+		for _, room := range rooms {
+			room.Renew(room.GetFilters(), room.GetRealtimeChannel(), room.GetResponseChannel())
+		}
+	}
 }

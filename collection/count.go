@@ -26,7 +26,7 @@ func (dc Collection) Count(filters interface{}, options types.QueryOptions) (int
 		Action:     "count",
 		Body:       filters,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

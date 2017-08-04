@@ -2,13 +2,13 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -54,7 +54,6 @@ func TestDocumentSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cd := collection.NewCollection(k, "collection", "index").CollectionDocument()
 
-
 	var headers = make(map[string]interface{}, 0)
 
 	assert.Equal(t, headers, k.GetHeaders())
@@ -78,7 +77,6 @@ func TestDocumentSetHeaders(t *testing.T) {
 func TestDocumentSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cd := collection.NewCollection(k, "collection", "index").CollectionDocument()
-
 
 	var headers = make(map[string]interface{}, 0)
 
@@ -198,7 +196,7 @@ func TestDocumentRefresh(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 
 	documentSource := collection.DocumentContent{
-		"name": "Anakin",
+		"name":     "Anakin",
 		"function": "Padawan",
 	}
 
@@ -217,7 +215,7 @@ func TestDocumentRefresh(t *testing.T) {
 	assert.NotEqual(t, documentSource["function"], ic["function"])
 }
 
-func TestCollectionDocumentExistsEmptyId(t *testing.T) {
+func TestDocumentExistsEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	_, err := dc.CollectionDocument().Exists(nil)
@@ -226,7 +224,7 @@ func TestCollectionDocumentExistsEmptyId(t *testing.T) {
 	assert.Equal(t, "CollectionDocument.Exists: missing document id", fmt.Sprint(err))
 }
 
-func TestCollectionDocumentExistsError(t *testing.T) {
+func TestDocumentExistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -239,7 +237,7 @@ func TestCollectionDocumentExistsError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCollectionDocumentExists(t *testing.T) {
+func TestDocumentExists(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
