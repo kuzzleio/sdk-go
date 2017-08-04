@@ -215,7 +215,7 @@ func TestDocumentRefresh(t *testing.T) {
 	assert.NotEqual(t, documentSource["function"], ic["function"])
 }
 
-func TestDocumentExistsEmptyId(t *testing.T) {
+func TestCollectionDocumentExistsEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	_, err := dc.CollectionDocument().Exists(nil)
@@ -224,7 +224,7 @@ func TestDocumentExistsEmptyId(t *testing.T) {
 	assert.Equal(t, "CollectionDocument.Exists: missing document id", fmt.Sprint(err))
 }
 
-func TestDocumentExistsError(t *testing.T) {
+func TestCollectionDocumentExistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -237,7 +237,7 @@ func TestDocumentExistsError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestDocumentExists(t *testing.T) {
+func TestCollectionDocumentExists(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
