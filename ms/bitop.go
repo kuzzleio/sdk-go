@@ -27,7 +27,7 @@ func (ms Ms) Bitop(key string, operation string, keys []string, options types.Qu
 		Id:         key,
 		Body:       &body{Operation: operation, Keys: keys},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

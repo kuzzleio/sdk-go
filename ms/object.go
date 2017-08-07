@@ -25,7 +25,7 @@ func (ms Ms) Object(key string, subcommand string, options types.QueryOptions) (
 		Id:         key,
 		Subcommand: subcommand,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

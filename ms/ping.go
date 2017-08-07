@@ -16,7 +16,7 @@ func (ms Ms) Ping(options types.QueryOptions) (string, error) {
 		Controller: "ms",
 		Action:     "ping",
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

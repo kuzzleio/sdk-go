@@ -29,7 +29,7 @@ func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (i
 		Id:         key,
 		Body:       &body{Elements: elements},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

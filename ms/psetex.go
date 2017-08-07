@@ -30,7 +30,7 @@ func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOption
 		Id:         key,
 		Body:       &body{Value: value, Milliseconds: ttl},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

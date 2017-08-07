@@ -25,7 +25,7 @@ func (ms Ms) MsetNx(entries []types.MSKeyValue, options types.QueryOptions) (int
 		Action:     "msetnx",
 		Body:       &body{Entries: entries},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

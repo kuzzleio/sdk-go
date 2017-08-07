@@ -29,7 +29,7 @@ func (ms Ms) Rpushx(key string, value string, options types.QueryOptions) (int, 
 		Id:         key,
 		Body:       &body{Value: value},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

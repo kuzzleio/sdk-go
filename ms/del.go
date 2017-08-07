@@ -22,7 +22,7 @@ func (ms Ms) Del(keys []string, options types.QueryOptions) (int, error) {
 		Body:       &body{Keys: keys},
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

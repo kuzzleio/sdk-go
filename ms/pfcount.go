@@ -25,7 +25,7 @@ func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 		Action:     "pfcount",
 		Keys:       keys,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

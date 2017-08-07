@@ -21,7 +21,7 @@ func (ms Ms) Pttl(key string, options types.QueryOptions) (int, error) {
 		Action:     "pttl",
 		Id:         key,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

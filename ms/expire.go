@@ -27,7 +27,7 @@ func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, e
 		Body:       &body{Seconds: seconds},
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

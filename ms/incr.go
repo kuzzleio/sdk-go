@@ -23,7 +23,7 @@ func (ms Ms) Incr(key string, options types.QueryOptions) (int, error) {
 		Id:         key,
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

@@ -29,7 +29,7 @@ func (ms Ms) Rpush(source string, values []string, options types.QueryOptions) (
 		Id:         source,
 		Body:       &body{Values: values},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

@@ -22,7 +22,7 @@ func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) (
 		Id:         key,
 		Members:    members,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

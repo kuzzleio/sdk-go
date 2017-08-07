@@ -26,7 +26,7 @@ func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, erro
 		Id:         key,
 		Body:       &body{Milliseconds: ttl},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

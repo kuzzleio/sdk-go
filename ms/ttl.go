@@ -25,7 +25,7 @@ func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 		Action:     "ttl",
 		Id:         key,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

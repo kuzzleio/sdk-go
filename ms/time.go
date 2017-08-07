@@ -16,7 +16,7 @@ func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
 		Controller: "ms",
 		Action:     "time",
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

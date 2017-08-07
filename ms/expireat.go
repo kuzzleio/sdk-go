@@ -27,7 +27,7 @@ func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (in
 		Body:       &body{Timestamp: timestamp},
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

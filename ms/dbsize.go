@@ -16,7 +16,7 @@ func (ms Ms) Dbsize(options types.QueryOptions) (int, error) {
 		Controller: "ms",
 		Action:     "dbsize",
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

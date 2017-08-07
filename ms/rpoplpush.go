@@ -29,7 +29,7 @@ func (ms Ms) RpoplPush(source string, destination string, options types.QueryOpt
 		Action:     "rpoplpush",
 		Body:       &body{Source: source, Destination: destination},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

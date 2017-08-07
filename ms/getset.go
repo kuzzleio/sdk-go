@@ -26,7 +26,7 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 		Id:         key,
 		Body:       &body{Value: value},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

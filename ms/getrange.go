@@ -24,7 +24,7 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 		End:        end,
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

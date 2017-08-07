@@ -28,7 +28,7 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 
 	assignGeoradiusOptions(&query, options, false, false)
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
@@ -59,7 +59,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 
 	assignGeoradiusOptions(&query, options, true, false)
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
@@ -112,7 +112,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 
 	assignGeoradiusOptions(&query, options, false, true)
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
@@ -156,7 +156,7 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 
 	assignGeoradiusOptions(&query, options, true, true)
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

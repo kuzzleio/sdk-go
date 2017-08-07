@@ -21,7 +21,7 @@ func (ms Ms) Mget(keys []string, options types.QueryOptions) ([]string, error) {
 		Action:     "mget",
 		Keys:       keys,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

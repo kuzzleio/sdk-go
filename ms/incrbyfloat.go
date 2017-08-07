@@ -29,7 +29,7 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 		Body:       &body{Value: value},
 	}
 
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

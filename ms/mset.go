@@ -25,7 +25,7 @@ func (ms Ms) Mset(entries []types.MSKeyValue, options types.QueryOptions) (strin
 		Action:     "mset",
 		Body:       &body{Entries: entries},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

@@ -29,7 +29,7 @@ func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (stri
 		Id:         key,
 		Body:       &body{NewKey: newkey},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

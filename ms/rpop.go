@@ -25,7 +25,7 @@ func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 		Action:     "rpop",
 		Id:         key,
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

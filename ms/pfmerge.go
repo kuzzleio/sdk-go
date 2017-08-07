@@ -29,7 +29,7 @@ func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (
 		Id:         key,
 		Body:       &body{Sources: sources},
 	}
-	go ms.Kuzzle.Query(query, nil, result)
+	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
