@@ -41,6 +41,7 @@ type (
 		RequestId string          `json:"requestId"`
 		Result    json.RawMessage `json:"result"`
 		RoomId    string          `json:"room"`
+		Channel   string          `json:"channel"`
 		Error     MessageError    `json:"error"`
 	}
 
@@ -80,7 +81,7 @@ type (
 	}
 
 	KuzzleFieldMapping map[string]struct {
-		Type   string `json:"type"`
+		Type   string          `json:"type"`
 		Fields json.RawMessage `json:"fields"`
 	}
 

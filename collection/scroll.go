@@ -21,7 +21,7 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (types.
 		Action:     "scroll",
 		ScrollId:   scrollId,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

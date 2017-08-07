@@ -18,7 +18,7 @@ func (dc Collection) Create(options types.QueryOptions) (types.AckResponse, erro
 		Controller: "collection",
 		Action:     "create",
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

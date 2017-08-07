@@ -18,7 +18,7 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (types.Kuzzle
 		Controller: "collection",
 		Action:     "getSpecifications",
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -55,7 +55,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 		}
 	}
 
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -92,7 +92,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 		}
 	}
 
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -125,7 +125,7 @@ func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidatio
 		Action:     "validateSpecifications",
 		Body:       specificationsData,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -158,7 +158,7 @@ func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation,
 		Action:     "updateSpecifications",
 		Body:       specificationsData,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -184,7 +184,7 @@ func (dc Collection) DeleteSpecifications(options types.QueryOptions) (types.Ack
 		Controller: "collection",
 		Action:     "deleteSpecifications",
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

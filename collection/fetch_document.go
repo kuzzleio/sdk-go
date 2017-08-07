@@ -23,7 +23,7 @@ func (dc Collection) FetchDocument(id string, options types.QueryOptions) (types
 		Action:     "get",
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -58,7 +58,7 @@ func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (typ
 		Action:     "mGet",
 		Body:       &body{Ids: ids},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
