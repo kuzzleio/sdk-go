@@ -22,6 +22,16 @@ func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]typ
 		Index:      index,
 	}
 
+	if options != nil {
+		if options.GetType() != "" {
+			type body struct {
+				Type string `json:"type"`
+			}
+
+			query.Body = &body{Type: options.GetType()}
+		}
+	}
+
 	type collections struct {
 		Collections []types.CollectionsList `json:"collections"`
 	}

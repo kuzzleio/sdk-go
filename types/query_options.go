@@ -41,6 +41,8 @@ type QueryOptions interface {
 	SetAggregate(string) *queryOptions
 	GetWeights() []int
 	SetWeights([]int) *queryOptions
+	GetType() string
+	SetType(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -64,6 +66,7 @@ type queryOptions struct {
 	limit     []int
 	aggregate string
 	weights   []int
+	colType   string // type would conflict with the Golang keyword
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -243,6 +246,15 @@ func (qo queryOptions) GetWeights() []int {
 
 func (qo *queryOptions) SetWeights(weights []int) *queryOptions {
 	qo.weights = weights
+	return qo
+}
+
+func (qo queryOptions) GetType() string {
+	return qo.colType
+}
+
+func (qo *queryOptions) SetType(colType string) *queryOptions {
+	qo.colType = colType
 	return qo
 }
 

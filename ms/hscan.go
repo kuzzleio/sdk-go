@@ -29,6 +29,16 @@ func (ms Ms) Hscan(key string, cursor *int, options types.QueryOptions) (HscanRe
 		Cursor:     cursor,
 	}
 
+	if options != nil {
+		if options.GetCount() != 0 {
+			query.Count = options.GetCount()
+		}
+
+		if options.GetMatch() != "" {
+			query.Match = options.GetMatch()
+		}
+	}
+
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result

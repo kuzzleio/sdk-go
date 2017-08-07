@@ -42,6 +42,8 @@ type KuzzleRequest struct {
 	Min        string        `json:"min,omitempty"`
 	Max        string        `json:"max,omitempty"`
 	Limit      string        `json:"limit,omitempty"`
+	Count      int					 `json:"count,omitempty"`
+	Match      string        `json:"match,omitempty"`
 }
 
 type SubscribeQuery struct {
