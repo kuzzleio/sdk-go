@@ -25,13 +25,26 @@ func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryO
 
 	type body struct {
 		Elements []types.MSSortedSet `json:"elements"`
+		Nx bool `json:"nx,omitempty"`
+		Xx bool `json:"xx,omitempty"`
+		Ch bool `json:"ch,omitempty"`
+		Incr bool `json:"incr,omitempty"`
+	}
+
+	bodyContent := body{Elements: elements}
+
+	if options != nil {
+		bodyContent.Nx = options.GetNx()
+		bodyContent.Xx = options.GetXx()
+		bodyContent.Ch = options.GetCh()
+		bodyContent.Incr = options.GetIncr()
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zadd",
 		Id:         key,
-		Body:       &body{Elements: elements},
+		Body:       &bodyContent,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

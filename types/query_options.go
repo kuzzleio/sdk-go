@@ -35,6 +35,10 @@ type QueryOptions interface {
 	SetNx(bool) *queryOptions
 	GetXx() bool
 	SetXx(bool) *queryOptions
+	GetEx() int
+	SetEx(int) *queryOptions
+	GetPx() int
+	SetPx(int) *queryOptions
 	GetLimit() []int
 	SetLimit([]int) *queryOptions
 	GetAggregate() string
@@ -63,6 +67,8 @@ type queryOptions struct {
 	incr      bool
 	nx        bool
 	xx        bool
+	ex        int
+	px        int
 	limit     []int
 	aggregate string
 	weights   []int
@@ -210,6 +216,24 @@ func (qo queryOptions) GetNx() bool {
 
 func (qo *queryOptions) SetNx(nx bool) *queryOptions {
 	qo.nx = nx
+	return qo
+}
+
+func (qo queryOptions) GetEx() int {
+	return qo.ex
+}
+
+func (qo *queryOptions) SetEx(ex int) *queryOptions {
+	qo.ex = ex
+	return qo
+}
+
+func (qo queryOptions) GetPx() int {
+	return qo.px
+}
+
+func (qo *queryOptions) SetPx(px int) *queryOptions {
+	qo.px = px
 	return qo
 }
 

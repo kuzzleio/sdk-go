@@ -18,13 +18,32 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 
 	type body struct {
 		Value interface{} `json:"value"`
+		Ex int `json:"ex,omitempty"`
+		Px int `json:"px,omitempty"`
+		Nx bool `json:"nx"`
+		Xx bool `json:"xx"`
+	}
+
+	bodyContent := body{Value: value}
+
+	if options != nil {
+		if options.GetEx() != 0 {
+			bodyContent.Ex = options.GetEx()
+		}
+
+		if options.GetPx() != 0 {
+			bodyContent.Px = options.GetPx()
+		}
+
+		bodyContent.Nx = options.GetNx()
+		bodyContent.Xx = options.GetXx()
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "set",
 		Id:         key,
-		Body:       &body{Value: value},
+		Body:       &bodyContent,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
