@@ -17,6 +17,8 @@ type QueryOptions interface {
 	SetRefresh(string) *queryOptions
 	GetIfExist() string
 	SetIfExist(string) *queryOptions
+	GetRetryOnConflict() int
+	SetRetryOnConflict(int) *queryOptions
 	GetStart() int
 	SetStart(int) *queryOptions
 	GetEnd() int
@@ -68,6 +70,7 @@ type queryOptions struct {
 	volatile  VolatileData
 	refresh   string
 	ifExist   string
+	retryOnConflict int
 	start     int
 	end       int
 	count     int
@@ -159,6 +162,15 @@ func (qo queryOptions) GetIfExist() string {
 
 func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	qo.ifExist = ifExist
+	return qo
+}
+
+func (qo queryOptions) GetRetryOnConflict() int {
+	return qo.retryOnConflict
+}
+
+func (qo *queryOptions) SetRetryOnConflict(retryOnConflict int) *queryOptions {
+	qo.retryOnConflict = retryOnConflict
 	return qo
 }
 
@@ -341,7 +353,6 @@ func (qo *queryOptions) SetUnit(unit string) *queryOptions {
 	qo.unit = unit
 	return qo
 }
-
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size:    10,

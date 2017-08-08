@@ -57,6 +57,11 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 		out["scrollId"] = scrollId
 	}
 
+	retryOnConflict := options.GetRetryOnConflict()
+	if retryOnConflict > 0 {
+		out["retryOnConflict"] = retryOnConflict
+	}
+
 	finalRequest, err := json.Marshal(out)
 
 	if err != nil {

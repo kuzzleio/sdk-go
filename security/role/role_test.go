@@ -352,6 +352,7 @@ func TestSearchWithOptions(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetFrom(2)
 	opts.SetSize(4)
+	opts.SetScroll("1m")
 
 	res, _ := security.NewSecurity(k).Role.Search(nil, opts)
 	assert.Equal(t, results.Total, res.Total)
