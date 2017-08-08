@@ -23,6 +23,11 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 		Member1:    member1,
 		Member2:    member2,
 	}
+
+	if options.GetUnit() != "" {
+		query.Unit = options.GetUnit()
+	}
+
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result

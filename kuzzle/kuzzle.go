@@ -6,6 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"sync"
 	"time"
+	"github.com/kuzzleio/sdk-go/event"
 )
 
 const version = "0.1"
@@ -70,30 +71,27 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 func (k *Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
-		//if k.lastUrl != k.Host {
-		//  k.wasConnected = false
-		//  k.lastUrl = k.Host
-		//}
+		if k.lastUrl != k.Host {
+		  k.wasConnected = false
+		  k.lastUrl = k.Host
+		}
 
 		if wasConnected {
 			if k.jwt != "" {
-				// todo avoid import cycle (kuzzle)
-				//go func() {
-				//	res, err := kuzzle.CheckToken(k, k.jwt)
-				//
-				//	if err != nil {
-				//		k.jwt = ""
-				//		k.emitEvent(event.jwtExpired, nil)
-				//		k.Reconnect()
-				//		return
-				//	}
-				//
-				//	if !res.Valid {
-				//		k.jwt = ""
-				//		k.emitEvent(event.jwtExpired, nil)
-				//	}
-				//	k.Reconnect()
-				//}()
+				go func() {
+					res, err := k.CheckToken(k.jwt)
+
+					if err != nil {
+						k.jwt = ""
+						k.socket.EmitEvent(event.JwtExpired, nil)
+						return
+					}
+
+					if !res.Valid {
+						k.jwt = ""
+						k.socket.EmitEvent(event.JwtExpired, nil)
+					}
+				}()
 			}
 		}
 		return nil
