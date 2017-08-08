@@ -18,10 +18,10 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 
 	type body struct {
 		Value interface{} `json:"value"`
-		Ex int `json:"ex,omitempty"`
-		Px int `json:"px,omitempty"`
-		Nx bool `json:"nx"`
-		Xx bool `json:"xx"`
+		Ex    int         `json:"ex,omitempty"`
+		Px    int         `json:"px,omitempty"`
+		Nx    bool        `json:"nx"`
+		Xx    bool        `json:"xx"`
 	}
 
 	bodyContent := body{Value: value}

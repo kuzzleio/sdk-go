@@ -25,10 +25,10 @@ func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryO
 
 	type body struct {
 		Elements []types.MSSortedSet `json:"elements"`
-		Nx bool `json:"nx,omitempty"`
-		Xx bool `json:"xx,omitempty"`
-		Ch bool `json:"ch,omitempty"`
-		Incr bool `json:"incr,omitempty"`
+		Nx       bool                `json:"nx,omitempty"`
+		Xx       bool                `json:"xx,omitempty"`
+		Ch       bool                `json:"ch,omitempty"`
+		Incr     bool                `json:"incr,omitempty"`
 	}
 
 	bodyContent := body{Elements: elements}

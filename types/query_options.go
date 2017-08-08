@@ -47,6 +47,16 @@ type QueryOptions interface {
 	SetWeights([]int) *queryOptions
 	GetType() string
 	SetType(string) *queryOptions
+	GetBy() string
+	SetBy(string) *queryOptions
+	GetDirection() string
+	SetDirection(string) *queryOptions
+	GetGet() []string
+	SetGet([]string) *queryOptions
+	GetAlpha() bool
+	SetAlpha(bool) *queryOptions
+	GetUnit() string
+	SetUnit(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -56,7 +66,7 @@ type queryOptions struct {
 	scroll    string
 	scrollId  string
 	volatile  VolatileData
-	refresh   string `json:"refresh"`
+	refresh   string
 	ifExist   string
 	start     int
 	end       int
@@ -73,6 +83,11 @@ type queryOptions struct {
 	aggregate string
 	weights   []int
 	colType   string // type would conflict with the Golang keyword
+	by         string
+	direction  string
+	get        []string
+	alpha      bool
+	unit       string
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -279,6 +294,51 @@ func (qo queryOptions) GetType() string {
 
 func (qo *queryOptions) SetType(colType string) *queryOptions {
 	qo.colType = colType
+	return qo
+}
+
+func (qo *queryOptions) GetBy() string {
+	return qo.by
+}
+
+func (qo *queryOptions) SetBy(by string) *queryOptions {
+	qo.by = by
+	return qo
+}
+
+func (qo *queryOptions) GetDirection() string {
+	return qo.direction
+}
+
+func (qo *queryOptions) SetDirection(direction string) *queryOptions {
+	qo.direction = direction
+	return qo
+}
+
+func (qo *queryOptions) GetGet() []string {
+	return qo.get
+}
+
+func (qo *queryOptions) SetGet(get []string) *queryOptions {
+	qo.get = get
+	return qo
+}
+
+func (qo *queryOptions) GetAlpha() bool {
+	return qo.alpha
+}
+
+func (qo *queryOptions) SetAlpha(alpha bool) *queryOptions {
+	qo.alpha = alpha
+	return qo
+}
+
+func (qo *queryOptions) GetUnit() string {
+	return qo.unit
+}
+
+func (qo *queryOptions) SetUnit(unit string) *queryOptions {
+	qo.unit = unit
 	return qo
 }
 

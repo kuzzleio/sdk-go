@@ -22,6 +22,12 @@ func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 		Id:         key,
 	}
 
+	if options != nil {
+		if options.GetCount() != 0 {
+			query.Count = options.GetCount()
+		}
+	}
+
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result

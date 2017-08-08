@@ -23,6 +23,16 @@ func (ms Ms) Sscan(key string, cursor *int, options types.QueryOptions) (types.M
 		Cursor:     cursor,
 	}
 
+	if options != nil {
+		if options.GetCount() != 0 {
+			query.Count = options.GetCount()
+		}
+
+		if options.GetMatch() != "" {
+			query.Match = options.GetMatch()
+		}
+	}
+
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result

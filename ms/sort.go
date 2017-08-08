@@ -22,6 +22,36 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 		Id:         key,
 	}
 
+	if options != nil {
+		type body struct {
+			Limit []int `json:"limit,omitempty"`
+			By         string        `json:"by,omitempty"`
+			Direction  string        `json:"direction,omitempty"`
+			Get        []string      `json:"get,omitempty"`
+			Alpha      bool          `json:"alpha,omitempty"`
+		}
+
+		bodyContent := &body{}
+
+		if options.GetBy() != "" {
+			bodyContent.By = options.GetBy()
+		}
+
+		if options.GetDirection() != "" {
+			bodyContent.Direction = options.GetDirection()
+		}
+
+		if options.GetGet() != nil {
+			bodyContent.Get = options.GetGet()
+		}
+
+		if options.GetLimit() != nil {
+			bodyContent.Limit = options.GetLimit()
+		}
+
+		bodyContent.Alpha = options.GetAlpha()
+	}
+
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
