@@ -39,13 +39,11 @@ func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, 
 		indexMappings := result[dc.index].Mappings
 
 		if _, ok := indexMappings[dc.collection]; ok {
-			dc.collectionMapping.Mapping = indexMappings[dc.collection].Properties
+			return CollectionMapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
 		} else {
 			return CollectionMapping{}, errors.New("No mapping found for collection " + dc.collection)
 		}
 	} else {
 		return CollectionMapping{}, errors.New("No mapping found for index " + dc.index)
 	}
-
-	return dc.collectionMapping, nil
 }
