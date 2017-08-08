@@ -17,6 +17,8 @@ type QueryOptions interface {
 	SetRefresh(string) *queryOptions
 	GetIfExist() string
 	SetIfExist(string) *queryOptions
+	GetRetryOnConflict() int
+	SetRetryOnConflict(int) *queryOptions
 	GetStart() int
 	SetStart(int) *queryOptions
 	GetEnd() int
@@ -44,26 +46,27 @@ type QueryOptions interface {
 }
 
 type queryOptions struct {
-	queuable  bool
-	from      int
-	size      int
-	scroll    string
-	scrollId  string
-	volatile  VolatileData
-	refresh   string `json:"refresh"`
-	ifExist   string
-	start     int
-	end       int
-	count     int
-	sort      string
-	match     string
-	ch        bool
-	incr      bool
-	nx        bool
-	xx        bool
-	limit     []int
-	aggregate string
-	weights   []int
+	queuable        bool
+	from            int
+	size            int
+	scroll          string
+	scrollId        string
+	volatile        VolatileData
+	refresh         string `json:"refresh"`
+	ifExist         string
+	retryOnConflict int
+	start           int
+	end             int
+	count           int
+	sort            string
+	match           string
+	ch              bool
+	incr            bool
+	nx              bool
+	xx              bool
+	limit           []int
+	aggregate       string
+	weights         []int
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -135,6 +138,15 @@ func (qo queryOptions) GetIfExist() string {
 
 func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	qo.ifExist = ifExist
+	return qo
+}
+
+func (qo queryOptions) GetRetryOnConflict() int {
+	return qo.retryOnConflict
+}
+
+func (qo *queryOptions) SetRetryOnConflict(retryOnConflict int) *queryOptions {
+	qo.retryOnConflict = retryOnConflict
 	return qo
 }
 
