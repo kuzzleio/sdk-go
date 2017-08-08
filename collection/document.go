@@ -3,9 +3,9 @@ package collection
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
-	"fmt"
 )
 
 type IDocument interface {
@@ -34,7 +34,7 @@ func (documentContent DocumentContent) ToString() string {
 /*
   Helper function to initialize a document into CollectionDocument using fetch query.
  */
-func (cd CollectionDocument) Fetch(id string, ) (CollectionDocument, error) {
+func (cd CollectionDocument) Fetch(id string) (CollectionDocument, error) {
 	if id == "" {
 		return cd, errors.New("CollectionDocument.Fetch: missing document id")
 	}
