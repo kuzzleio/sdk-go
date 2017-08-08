@@ -23,13 +23,25 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 
 	type body struct {
 		Keys []string `json:"keys"`
+		Weights []int `json:"weight,omitempty"`
+		Aggregate string `json:"aggregate,omitempty"`
+	}
+
+	bodyContent := body{Keys: keys}
+
+	if len(options.GetWeights()) > 0 {
+		bodyContent.Weights = options.GetWeights()
+	}
+
+	if options.GetAggregate() != "" {
+		bodyContent.Aggregate = options.GetAggregate()
 	}
 
 	query := types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zunionstore",
 		Id:         destination,
-		Body:       &body{Keys: keys},
+		Body:       &bodyContent,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
