@@ -70,6 +70,7 @@ func TestUpdateDocument(t *testing.T) {
 			assert.Equal(t, "update", parsedQuery.Action)
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, 10, options.GetRetryOnConflict())
 			assert.Equal(t, id, parsedQuery.Id)
 
 			assert.Equal(t, "Jedi Knight", parsedQuery.Body.(map[string]interface{})["Function"])
@@ -80,8 +81,10 @@ func TestUpdateDocument(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	qo := types.NewQueryOptions()
+	qo.SetRetryOnConflict(10)
 
-	res, _ := collection.NewCollection(k, "collection", "index").UpdateDocument(id, updatePart, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").UpdateDocument(id, updatePart, qo)
 
 	assert.Equal(t, id, res.Id)
 
