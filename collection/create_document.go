@@ -17,7 +17,7 @@ import (
            - resolves with an error if set to "error".
            - replaces the existing document if set to "replace"
 */
-func (dc Collection) CreateDocument(id string, document interface{}, options types.QueryOptions) (*types.Document, error) {
+func (dc Collection) CreateDocument(id string, document types.Document, options types.QueryOptions) (types.Document, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	action := "create"
@@ -26,7 +26,7 @@ func (dc Collection) CreateDocument(id string, document interface{}, options typ
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplace"
 		} else if options.GetIfExist() != "error" {
-			return nil, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return types.Document{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -35,19 +35,19 @@ func (dc Collection) CreateDocument(id string, document interface{}, options typ
 		Index:      dc.index,
 		Controller: "document",
 		Action:     action,
-		Body:       document,
+		Body:       document.Source,
 		Id:         id,
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return nil, errors.New(res.Error.Message)
+		return types.Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := &types.Document{}
-	json.Unmarshal(res.Result, documentResponse)
+	documentResponse := types.Document{}
+	json.Unmarshal(res.Result, &documentResponse)
 
 	return documentResponse, nil
 }
@@ -93,7 +93,7 @@ func performMultipleCreate(dc Collection, documents []types.Document, action str
 		Action:     action,
 		Body:       &body{docs},
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

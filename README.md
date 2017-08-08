@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master)](https://travis-ci.org/kuzzleio/sdk-go) [![codecov.io](http://codecov.io/github/kuzzleio/sdk-php/coverage.svg?branch=master)](http://codecov.io/github/kuzzleio/sdk-go?branch=master)
+[![Build Status](https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master)](https://travis-ci.org/kuzzleio/sdk-go) [![codecov.io](http://codecov.io/github/kuzzleio/sdk-php/coverage.svg?branch=master)](http://codecov.io/github/kuzzleio/sdk-go?branch=master) [![GoDoc](https://godoc.org/github.com/kuzzleio/sdk-go?status.svg)](https://godoc.org/github.com/kuzzleio/sdk-go)
 
 Official Kuzzle GO SDK
 ======
@@ -28,15 +28,43 @@ https://github.com/kuzzleio/kuzzle-sdk/issues
 
 ## Installation
 
-__TO BE COMPLETED__
+````sh
+go get github.com/kuzzleio/sdk-go
+````
 
 ## Basic usage
 
-__TO BE COMPLETED__
+````go
+func main() {
+    ws := connection.NewWebSocket("localhost:7512", nil)
+    k, err := kuzzle.NewKuzzle(ws, nil)
+    if err != nil {
+        panic(err)
+    }
+
+    res, err := k.GetAllStatistics(nil)
+    if err != nil {
+        panic(err)
+    }
+    for _, v := range res {
+        println(v.CompletedRequests["websocket"])
+    }
+}
+
+
+````
 
 ## <a name="tests"></a> Running Tests
 
-__TO BE COMPLETED__
+To run the tests you can simply execute the coverage.sh script
+```sh
+./coverage.sh
+```
+
+You can also get html coverage by running
+```sh
+./coverage.sh --html
+```
 
 ## License
 

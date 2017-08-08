@@ -3,9 +3,9 @@ package role
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
-	"fmt"
 )
 
 type SecurityRole struct {
@@ -148,10 +148,10 @@ func (sr SecurityRole) Update(id string, controllers types.Controllers, options 
 }
 
 /*
- * Delete a Role in Kuzzle.
- *
- * There is a small delay between role deletion and their deletion in our advanced search layer, usually a couple of seconds.
- * This means that a role that has just been deleted will still be returned by this function.
+  Delete a Role in Kuzzle.
+
+  There is a small delay between role deletion and their deletion in our advanced search layer, usually a couple of seconds.
+  This means that a role that has just been deleted will still be returned by this function.
 */
 func (sr SecurityRole) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {

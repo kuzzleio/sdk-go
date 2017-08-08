@@ -15,19 +15,26 @@ type KuzzleRequest struct {
 	Strategy   string       `json:"strategy,omitempty"`
 	ExpiresIn  int          `json:"expiresIn"`
 	Volatile   VolatileData `json:"volatile"`
+	Scope      string       `json:"scope"`
+	State      string       `json:"state"`
+	User       string       `json:"user"`
+}
+
+type SubscribeQuery struct {
+	Scope string      `json:"scope"`
+	State string      `json:"state"`
+	User  string      `json:"user"`
+	Body  interface{} `json:"body"`
 }
 
 type VolatileData map[string]interface{}
 
-type UserCredentials map[string]struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
+type UserCredentials map[string]interface{}
 
 type UserData struct {
-	ProfileIds []string `json:"profileIds"`
-	Content map[string]interface{} `json:"content"`
-	Credentials UserCredentials `json:"credentials"`
+	ProfileIds  []string               `json:"profileIds"`
+	Content     map[string]interface{} `json:"content"`
+	Credentials UserCredentials        `json:"credentials"`
 }
 
 type Policy struct {

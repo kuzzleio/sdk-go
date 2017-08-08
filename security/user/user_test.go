@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestFetchEmptyId(t *testing.T) {
+func TestFetchEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.User.Fetch: user id required"}}
@@ -250,7 +250,9 @@ func TestCreate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Create(id, ud, nil)
 
@@ -315,7 +317,9 @@ func TestCreateRestricted(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
 
@@ -380,7 +384,9 @@ func TestReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Replace(id, ud, nil)
 
@@ -445,7 +451,9 @@ func TestUpdate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	type UserContent map[string]interface{}
-	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: types.UserCredentials{"local": {Username: "username", Password: "password"}}}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
 	res, _ := security.NewSecurity(k).User.Update(id, ud, nil)
 
@@ -600,7 +608,7 @@ func TestIsActionAllowedResultAllowed(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
 	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller:"wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"})
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "such-action", "much-index", "very-collection")
 
@@ -611,7 +619,7 @@ func TestIsActionAllowedResultConditional(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
 	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller:"wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "conditional"})
+	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "conditional"})
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "action", "much-index", "very-collection")
 
@@ -622,7 +630,7 @@ func TestIsActionAllowedResultDenied(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
 	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller:"wow-controller.", Action: "action-such", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+	userRights = append(userRights, types.UserRights{Controller: "wow-controller.", Action: "action-such", Index: "much-index", Collection: "very-collection", Value: "allowed"})
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "action", "much-index", "very-collection")
 

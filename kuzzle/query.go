@@ -7,7 +7,7 @@ import (
 )
 
 // This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
+func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
 	requestId := uuid.NewV4().String()
 
 	query.RequestId = requestId
@@ -57,16 +57,25 @@ func (k Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, res
 		out["scrollId"] = scrollId
 	}
 
+	retryOnConflict := options.GetRetryOnConflict()
+	if retryOnConflict > 0 {
+		out["retryOnConflict"] = retryOnConflict
+	}
+
 	finalRequest, err := json.Marshal(out)
 
 	if err != nil {
-		responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+		if responseChannel != nil {
+			responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+		}
 		return
 	}
 
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
 	if err != nil {
-		responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+		if responseChannel != nil {
+			responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+		}
 		return
 	}
 }

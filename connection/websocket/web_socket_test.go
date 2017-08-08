@@ -1,4 +1,4 @@
-package connection
+package websocket
 
 import (
 	"github.com/kuzzleio/sdk-go/event"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestRemoveAllListeners(t *testing.T) {
-	c := WebSocket{eventListeners: make(map[int]chan<- interface{})}
+	c := webSocket{eventListeners: make(map[int]chan<- interface{})}
 	c.Connect()
 	c.AddListener(event.LoginAttempt, nil)
 	c.AddListener(event.Disconnected, nil)
@@ -17,7 +17,7 @@ func TestRemoveAllListeners(t *testing.T) {
 }
 
 func TestRemoveListener(t *testing.T) {
-	c := WebSocket{eventListeners: make(map[int]chan<- interface{})}
+	c := webSocket{eventListeners: make(map[int]chan<- interface{})}
 	c.AddListener(event.LoginAttempt, make(chan interface{}))
 	c.AddListener(event.Disconnected, make(chan interface{}))
 	assert.Equal(t, 2, len(c.eventListeners))

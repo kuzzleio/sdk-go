@@ -24,6 +24,17 @@ func TestCreateMyCredentialsQueryError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestCreateMyCredentialsEmptyStrategy(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	_, err := k.CreateMyCredentials("", nil, nil)
+	assert.NotNil(t, err)
+}
+
 func TestCreateMyCredentials(t *testing.T) {
 	type myCredentials struct {
 		Username string `json:"username"`

@@ -18,7 +18,7 @@ func (dc Collection) Truncate(options types.QueryOptions) (types.AckResponse, er
 		Controller: "collection",
 		Action:     "truncate",
 	}
-	go dc.kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

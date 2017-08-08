@@ -5,6 +5,7 @@ import (
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/types"
 	"sync"
+	"time"
 )
 
 const version = "0.1"
@@ -18,14 +19,15 @@ type Kuzzle struct {
 	socket connection.Connection
 	State  *int
 
-	wasConnected bool
-	lastUrl      string
-	message      chan []byte
-	mu           *sync.Mutex
-	defaultIndex string
-	jwt          string
-	headers      map[string]interface{}
-	version      string
+	wasConnected   bool
+	lastUrl        string
+	message        chan []byte
+	mu             *sync.Mutex
+	defaultIndex   string
+	jwt            string
+	headers        map[string]interface{}
+	version        string
+	RequestHistory *map[string]time.Time
 }
 
 // Kuzzle constructor
@@ -46,6 +48,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 		headers: options.GetHeaders(),
 		version: version,
 	}
+	k.RequestHistory = k.socket.GetRequestHistory()
 
 	headers := options.GetHeaders()
 	if headers != nil {
@@ -105,4 +108,12 @@ func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
 
 func (k Kuzzle) GetJwt() string {
 	return k.jwt
+}
+
+func (k Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
+	k.socket.RegisterRoom(roomId, id, room)
+}
+
+func (k Kuzzle) UnregisterRoom(roomId string) {
+	k.socket.UnregisterRoom(roomId)
 }

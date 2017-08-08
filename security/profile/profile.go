@@ -3,9 +3,9 @@ package profile
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
-	"fmt"
 )
 
 type SecurityProfile struct {
@@ -178,10 +178,9 @@ func (sp SecurityProfile) Update(id string, policies types.Policies, options typ
 }
 
 /*
- * Delete a Profile in Kuzzle.
- *
- * There is a small delay between profile deletion and their deletion in our advanced search layer, usually a couple of seconds.
- * This means that a profile that has just been deleted will still be returned by this function.
+  Delete a Profile in Kuzzle.
+  There is a small delay between profile deletion and their deletion in our advanced search layer, usually a couple of seconds.
+  This means that a profile that has just been deleted will still be returned by this function.
 */
 func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {

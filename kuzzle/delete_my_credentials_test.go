@@ -20,16 +20,22 @@ func TestDeleteMyCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.DeleteMyCredentials("local", nil, nil)
+	_, err := k.DeleteMyCredentials("local", nil)
+	assert.NotNil(t, err)
+}
+
+func TestDeleteMyCredentialsEmptyStrategy(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	_, err := k.DeleteMyCredentials("", nil)
 	assert.NotNil(t, err)
 }
 
 func TestDeleteMyCredentials(t *testing.T) {
-	type myCredentials struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			type ackResult struct {
@@ -49,7 +55,7 @@ func TestDeleteMyCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.DeleteMyCredentials("local", myCredentials{"foo", "bar"}, nil)
+	res, _ := k.DeleteMyCredentials("local", nil)
 
 	assert.Equal(t, true, res.Acknowledged)
 	assert.Equal(t, true, res.ShardsAcknowledged)
