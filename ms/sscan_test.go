@@ -66,3 +66,34 @@ func TestSscan(t *testing.T) {
 
 	assert.Equal(t, scanResponse, res)
 }
+
+func TestSscanWithOptions(t *testing.T) {
+	scanResponse := types.MSScanResponse{
+		Cursor: 10,
+		Values: []string{"foo", "bar"},
+	}
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "sscan", parsedQuery.Action)
+
+			r, _ := json.Marshal(scanResponse)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetCount(42)
+	qo.SetMatch("*")
+
+	cursor := 10
+	res, _ := memoryStorage.Sscan("foo", &cursor, qo)
+
+	assert.Equal(t, scanResponse, res)
+}

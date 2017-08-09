@@ -50,6 +50,8 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 		}
 
 		bodyContent.Alpha = options.GetAlpha()
+
+		query.Body = bodyContent
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

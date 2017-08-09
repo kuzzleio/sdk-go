@@ -58,3 +58,30 @@ func TestSet(t *testing.T) {
 
 	assert.Equal(t, "OK", res)
 }
+
+func TestSetWithOptions(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "set", parsedQuery.Action)
+
+			r, _ := json.Marshal("OK")
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetEx(42)
+	qo.SetNx(true)
+	qo.SetPx(42)
+	qo.SetXx(true)
+
+	res, _ := memoryStorage.Set("foo", []string{"bar", "rab"}, qo)
+
+	assert.Equal(t, "OK", res)
+}

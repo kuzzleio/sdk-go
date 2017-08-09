@@ -58,3 +58,27 @@ func TestSpop(t *testing.T) {
 
 	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
 }
+
+func TestSpopWithOptions(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "spop", parsedQuery.Action)
+
+			r, _ := json.Marshal([]string{"you", "removed", "me", "thats", "rude.."})
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetCount(42)
+
+	res, _ := memoryStorage.Spop("foo", qo)
+
+	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+}

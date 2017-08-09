@@ -100,3 +100,37 @@ func TestHscan(t *testing.T) {
 
 	assert.Equal(t, MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
 }
+
+func TestHscanWithOptions(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "ms", parsedQuery.Controller)
+			assert.Equal(t, "hscan", parsedQuery.Action)
+			assert.Equal(t, "foo", parsedQuery.Id)
+			assert.Equal(t, 1, *parsedQuery.Cursor)
+
+			var result []interface{}
+			values := []string{"some", "results"}
+
+			result = append(result, "12")
+			result = append(result, values)
+
+			r, _ := json.Marshal(result)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetCount(42)
+	qo.SetMatch("*")
+
+	cursor := 1
+	res, _ := memoryStorage.Hscan("foo", &cursor, qo)
+
+	assert.Equal(t, MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
+}
