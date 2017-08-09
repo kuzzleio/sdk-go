@@ -26,10 +26,6 @@ type (
 		Error     MessageError `json:"error"`
 	}
 
-	IKuzzleResult interface {
-		SourceToMap()
-	}
-
 	KuzzleResult struct {
 		Id      string          `json:"_id"`
 		Meta    KuzzleMeta      `json:"_meta"`
@@ -43,12 +39,6 @@ type (
 		RoomId    string          `json:"room"`
 		Channel   string          `json:"channel"`
 		Error     MessageError    `json:"error"`
-	}
-
-	KuzzleSearchResult struct {
-		Hits     []KuzzleResult `json:"hits"`
-		Total    int            `json:"total"`
-		ScrollId string         `json:"_scroll_id"`
 	}
 
 	KuzzleSearchUsersResult struct {

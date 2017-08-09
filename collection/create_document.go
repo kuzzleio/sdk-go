@@ -55,18 +55,18 @@ func (dc Collection) CreateDocument(id string, document types.Document, options 
 /*
   Creates the provided documents.
 */
-func (dc Collection) MCreateDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MCreateDocument(documents []types.Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreate", options)
 }
 
 /*
   Creates or replaces the provided documents.
 */
-func (dc Collection) MCreateOrReplaceDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MCreateOrReplaceDocument(documents []types.Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
 }
 
-func performMultipleCreate(dc Collection, documents []types.Document, action string, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func performMultipleCreate(dc Collection, documents []types.Document, action string, options types.QueryOptions) (KuzzleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	type CreationDocument struct {
@@ -98,10 +98,10 @@ func performMultipleCreate(dc Collection, documents []types.Document, action str
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	return result, nil

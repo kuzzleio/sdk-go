@@ -46,7 +46,8 @@ type Policies struct {
 }
 
 type SearchFilters struct {
-	Query        interface{}   `json:"query,omitempty"`
-	Sort         []interface{} `json:"sort,omitempty"`
-	Aggregations interface{}   `json:"aggregations,omitempty"`
+	Query        interface{}          `json:"query,omitempty"`
+	Sort         []map[string]string  `json:"sort,omitempty"`
+	Aggregations interface{}          `json:"aggregations,omitempty"`
+	SearchAfter  []interface{}        `json:"search_after,omitempty"`
 }

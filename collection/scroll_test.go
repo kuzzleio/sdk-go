@@ -42,7 +42,7 @@ func TestScroll(t *testing.T) {
 
 	hits := make([]types.KuzzleResult, 1)
 	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
-	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
+	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {

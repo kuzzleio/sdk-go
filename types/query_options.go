@@ -28,7 +28,7 @@ type queryOptions struct {
 	scroll          string
 	scrollId        string
 	volatile        VolatileData
-	refresh         string `json:"refresh"`
+	refresh         string
 	ifExist         string
 	retryOnConflict int
 }
