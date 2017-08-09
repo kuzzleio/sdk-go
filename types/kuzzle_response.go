@@ -119,14 +119,6 @@ type (
 
 	Document KuzzleResult
 
-	Statistics struct {
-		CompletedRequests map[string]int `json:"completedRequests"`
-		Connections       map[string]int `json:"connections"`
-		FailedRequests    map[string]int `json:"failedRequests"`
-		OngoingRequests   map[string]int `json:"ongoingRequests"`
-		Timestamp         int            `json:"timestamp"`
-	}
-
 	ShardResponse struct {
 		Found   bool   `json:"found"`
 		Index   string `json:"_index"`
@@ -134,11 +126,15 @@ type (
 		Id      string `json:"_id"`
 		Version int    `json:"_version"`
 		Result  string `json:"result"`
-		Shards  struct {
-			Total      int `json:"total"`
-			Successful int `json:"successful"`
-			Failed     int `json:"failed"`
-		} `json:"_shards"`
+		Shards  Shards `json:"_shards"`
+	}
+
+	Statistics struct {
+		CompletedRequests map[string]int `json:"completedRequests"`
+		Connections       map[string]int `json:"connections"`
+		FailedRequests    map[string]int `json:"failedRequests"`
+		OngoingRequests   map[string]int `json:"ongoingRequests"`
+		Timestamp         int            `json:"timestamp"`
 	}
 
 	Rights struct {
