@@ -52,7 +52,7 @@ func TestFetchDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.Document{Id: id, Source: []byte(`{"foo": "bar"}`)}
+			res := types.Document{Id: id, Content: []byte(`{"foo": "bar"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -89,8 +89,8 @@ func TestMGetDocumentError(t *testing.T) {
 
 func TestMGetDocument(t *testing.T) {
 	hits := make([]types.KuzzleResult, 2)
-	hits[0] = types.KuzzleResult{Id: "foo", Source: json.RawMessage(`{"title":"foo"}`)}
-	hits[1] = types.KuzzleResult{Id: "bar", Source: json.RawMessage(`{"title":"bar"}`)}
+	hits[0] = types.KuzzleResult{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)}
+	hits[1] = types.KuzzleResult{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)}
 	var results = types.KuzzleSearchResult{Total: 2, Hits: hits}
 
 	ids := []string{"foo", "bar"}

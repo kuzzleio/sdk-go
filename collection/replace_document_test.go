@@ -62,7 +62,7 @@ func TestReplaceDocument(t *testing.T) {
 
 			assert.Equal(t, "jonathan", parsedQuery.Body.(map[string]interface{})["Title"])
 
-			res := types.Document{Id: id, Source: []byte(`{"title": "jonathan"}`)}
+			res := types.Document{Id: id, Content: []byte(`{"title": "jonathan"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -89,8 +89,8 @@ func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 
 func TestMReplaceDocumentError(t *testing.T) {
 	documents := []types.Document{
-		{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-		{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
@@ -106,8 +106,8 @@ func TestMReplaceDocumentError(t *testing.T) {
 
 func TestMReplaceDocument(t *testing.T) {
 	documents := []types.Document{
-		{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-		{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
@@ -121,8 +121,8 @@ func TestMReplaceDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
 			results := []types.KuzzleResult{
-				{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-				{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
 			res := types.KuzzleSearchResult{
@@ -140,6 +140,6 @@ func TestMReplaceDocument(t *testing.T) {
 
 	for index, doc := range res.Hits {
 		assert.Equal(t, documents[index].Id, doc.Id)
-		assert.Equal(t, documents[index].Source, doc.Source)
+		assert.Equal(t, documents[index].Content, doc.Content)
 	}
 }

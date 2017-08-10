@@ -33,7 +33,7 @@ type (
 	KuzzleResult struct {
 		Id      string          `json:"_id"`
 		Meta    KuzzleMeta      `json:"_meta"`
-		Source  json.RawMessage `json:"_source"`
+		Content json.RawMessage `json:"_source"`
 		Version int             `json:"_version"`
 	}
 
@@ -274,7 +274,7 @@ func (sr KuzzleResult) SourceToMap() map[string]interface{} {
 	type SourceMap map[string]interface{}
 	sourceMap := SourceMap{}
 
-	json.Unmarshal(sr.Source, &sourceMap)
+	json.Unmarshal(sr.Content, &sourceMap)
 
 	return sourceMap
 }

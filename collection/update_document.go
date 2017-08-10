@@ -61,7 +61,7 @@ func (dc Collection) MUpdateDocument(documents []types.Document, options types.Q
 	for _, doc := range documents {
 		docs = append(docs, CreationDocument{
 			Id:   doc.Id,
-			Body: doc.Source,
+			Body: doc.Content,
 		})
 	}
 

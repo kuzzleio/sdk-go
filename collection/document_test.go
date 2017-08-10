@@ -16,9 +16,9 @@ func TestDocumentSetContent(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 
 	cd := dc.CollectionDocument()
-	cd.Document.Source = []byte(`{"foo":"bar","subfield":{"john":"smith"}}`)
+	cd.Document.Content = []byte(`{"foo":"bar","subfield":{"john":"smith"}}`)
 
-	assert.Equal(t, json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"smith"}}`)), cd.Document.Source)
+	assert.Equal(t, json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"smith"}}`)), cd.Document.Content)
 
 	cd = cd.SetContent(collection.DocumentContent{
 		"subfield": collection.DocumentContent{
@@ -26,7 +26,7 @@ func TestDocumentSetContent(t *testing.T) {
 		},
 	}, false)
 
-	assert.Equal(t, string(json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"cena"}}`))), string(cd.Document.Source))
+	assert.Equal(t, string(json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"cena"}}`))), string(cd.Document.Content))
 }
 
 func TestDocumentSetContentReplace(t *testing.T) {
@@ -34,9 +34,9 @@ func TestDocumentSetContentReplace(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 
 	cd := dc.CollectionDocument()
-	cd.Document.Source = []byte(`{"foo":"bar","subfield":{"john":"smith"}}`)
+	cd.Document.Content = []byte(`{"foo":"bar","subfield":{"john":"smith"}}`)
 
-	assert.Equal(t, json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"smith"}}`)), cd.Document.Source)
+	assert.Equal(t, json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"smith"}}`)), cd.Document.Content)
 
 	cd = cd.SetContent(collection.DocumentContent{
 		"subfield": collection.DocumentContent{
@@ -47,7 +47,7 @@ func TestDocumentSetContentReplace(t *testing.T) {
 		},
 	}, true)
 
-	assert.Equal(t, string(json.RawMessage([]byte(`{"subfield":{"john":"cena","subsubfield":{"hi":"there"}}}`))), string(cd.Document.Source))
+	assert.Equal(t, string(json.RawMessage([]byte(`{"subfield":{"john":"cena","subsubfield":{"hi":"there"}}}`))), string(cd.Document.Content))
 }
 
 func TestDocumentSetHeaders(t *testing.T) {
@@ -134,7 +134,7 @@ func TestDocumentSave(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.Document{Id: id, Source: []byte(`{"foo":"bar"}`)}
+			res := types.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -142,13 +142,13 @@ func TestDocumentSave(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 
-	documentSource := collection.DocumentContent{"foo": "bar"}
+	documentContent := collection.DocumentContent{"foo": "bar"}
 
-	cd, _ := dc.CollectionDocument().SetDocumentId(id).SetContent(documentSource, true).Save(nil)
+	cd, _ := dc.CollectionDocument().SetDocumentId(id).SetContent(documentContent, true).Save(nil)
 
 	assert.Equal(t, id, cd.Document.Id)
 	assert.Equal(t, dc, &cd.Collection)
-	assert.Equal(t, documentSource.ToString(), string(cd.Document.Source))
+	assert.Equal(t, documentContent.ToString(), string(cd.Document.Content))
 }
 
 func TestDocumentRefreshEmptyId(t *testing.T) {
@@ -187,7 +187,7 @@ func TestDocumentRefresh(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.Document{Id: id, Source: []byte(`{"name":"Anakin","function":"Jedi"}`)}
+			res := types.Document{Id: id, Content: []byte(`{"name":"Anakin","function":"Jedi"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -195,24 +195,24 @@ func TestDocumentRefresh(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 
-	documentSource := collection.DocumentContent{
+	documentContent := collection.DocumentContent{
 		"name":     "Anakin",
 		"function": "Padawan",
 	}
 
-	cd, _ := dc.CollectionDocument().SetDocumentId(id).SetContent(documentSource, true).Refresh(nil)
+	cd, _ := dc.CollectionDocument().SetDocumentId(id).SetContent(documentContent, true).Refresh(nil)
 
 	result := types.Document{}
-	json.Unmarshal(cd.Document.Source, &result.Source)
+	json.Unmarshal(cd.Document.Content, &result.Content)
 
 	ic := collection.DocumentContent{}
-	json.Unmarshal(result.Source, &ic)
+	json.Unmarshal(result.Content, &ic)
 
 	assert.Equal(t, id, cd.Document.Id)
 	assert.Equal(t, dc, &cd.Collection)
-	assert.Equal(t, "Padawan", documentSource["function"])
+	assert.Equal(t, "Padawan", documentContent["function"])
 	assert.Equal(t, "Jedi", ic["function"])
-	assert.NotEqual(t, documentSource["function"], ic["function"])
+	assert.NotEqual(t, documentContent["function"], ic["function"])
 }
 
 func TestDocumentPublishError(t *testing.T) {

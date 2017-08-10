@@ -35,7 +35,7 @@ func (dc Collection) CreateDocument(id string, document types.Document, options 
 		Index:      dc.index,
 		Controller: "document",
 		Action:     action,
-		Body:       document.Source,
+		Body:       document.Content,
 		Id:         id,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
@@ -82,7 +82,7 @@ func performMultipleCreate(dc Collection, documents []types.Document, action str
 	for _, doc := range documents {
 		docs = append(docs, CreationDocument{
 			Id:   doc.Id,
-			Body: doc.Source,
+			Body: doc.Content,
 		})
 	}
 

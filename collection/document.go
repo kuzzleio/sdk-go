@@ -49,7 +49,7 @@ func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocumen
 		Controller: "document",
 		Action:     "createOrReplace",
 		Id:         cd.Document.Id,
-		Body:       cd.Document.Source,
+		Body:       cd.Document.Content,
 	}
 
 	go cd.Collection.Kuzzle.Query(query, options, ch)
@@ -114,16 +114,16 @@ func (cd CollectionDocument) SetDocumentId(id string) CollectionDocument {
 */
 func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) CollectionDocument {
 	if replace {
-		cd.Document.Source, _ = json.Marshal(content)
+		cd.Document.Content, _ = json.Marshal(content)
 	} else {
 		source := DocumentContent{}
-		json.Unmarshal(cd.Document.Source, &source)
+		json.Unmarshal(cd.Document.Content, &source)
 
 		for attr, value := range content {
 			source[attr] = value
 		}
 
-		cd.Document.Source, _ = json.Marshal(source)
+		cd.Document.Content, _ = json.Marshal(source)
 	}
 
 	return cd
@@ -160,7 +160,7 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 		Body: message{
 			Id:      cd.Document.Id,
 			Version: cd.Document.Version,
-			Body:    cd.Document.Source,
+			Body:    cd.Document.Content,
 			Meta:    cd.Document.Meta,
 		},
 	}

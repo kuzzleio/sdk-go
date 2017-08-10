@@ -75,7 +75,7 @@ func TestUpdateDocument(t *testing.T) {
 
 			assert.Equal(t, "Jedi Knight", parsedQuery.Body.(map[string]interface{})["Function"])
 
-			res := types.Document{Id: id, Source: []byte(`{"Name":"Anakin","Function":"Jedi Knight"}`)}
+			res := types.Document{Id: id, Content: []byte(`{"Name":"Anakin","Function":"Jedi Knight"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -89,7 +89,7 @@ func TestUpdateDocument(t *testing.T) {
 	assert.Equal(t, id, res.Id)
 
 	var result InitialContent
-	json.Unmarshal(res.Source, &result)
+	json.Unmarshal(res.Content, &result)
 
 	assert.Equal(t, initialContent.Name, result.Name)
 	assert.NotEqual(t, initialContent.Function, result.Name)
@@ -112,8 +112,8 @@ func TestMUpdateDocumentEmptyDocuments(t *testing.T) {
 
 func TestMUpdateDocumentError(t *testing.T) {
 	documents := []types.Document{
-		{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-		{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
@@ -129,8 +129,8 @@ func TestMUpdateDocumentError(t *testing.T) {
 
 func TestMUpdateDocument(t *testing.T) {
 	documents := []types.Document{
-		{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-		{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
@@ -144,8 +144,8 @@ func TestMUpdateDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
 			results := []types.KuzzleResult{
-				{Id: "foo", Source: []byte(`{"title":"Foo"}`)},
-				{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
+				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
 			res := types.KuzzleSearchResult{
@@ -163,6 +163,6 @@ func TestMUpdateDocument(t *testing.T) {
 
 	for index, doc := range res.Hits {
 		assert.Equal(t, documents[index].Id, doc.Id)
-		assert.Equal(t, documents[index].Source, doc.Source)
+		assert.Equal(t, documents[index].Content, doc.Content)
 	}
 }

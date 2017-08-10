@@ -61,7 +61,7 @@ func (dc Collection) MReplaceDocument(documents []types.Document, options types.
 	for _, doc := range documents {
 		docs = append(docs, CreationDocument{
 			Id:   doc.Id,
-			Body: doc.Source,
+			Body: doc.Content,
 		})
 	}
 

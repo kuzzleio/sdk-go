@@ -24,7 +24,7 @@ func TestSearchError(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
+	hits[0] = types.KuzzleResult{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
 	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -48,12 +48,12 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
 }
 
 func TestSearchWithScroll(t *testing.T) {
 	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
+	hits[0] = types.KuzzleResult{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
 	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -85,5 +85,5 @@ func TestSearchWithScroll(t *testing.T) {
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
 }
