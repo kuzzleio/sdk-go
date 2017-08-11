@@ -43,7 +43,6 @@ func (d Document) SourceToMap() map[string]interface{} {
 	return sourceMap
 }
 
-
 /*
   Saves the document into Kuzzle.
 

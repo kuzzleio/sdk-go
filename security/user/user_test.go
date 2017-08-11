@@ -118,7 +118,7 @@ func TestSearchWithScroll(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
- 			json.Unmarshal(query, parsedQuery)
+			json.Unmarshal(query, parsedQuery)
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "searchUsers", parsedQuery.Action)
@@ -507,7 +507,7 @@ func TestDelete(t *testing.T) {
 			assert.Equal(t, "deleteUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.ShardResponse{Id: id, }
+			res := types.ShardResponse{Id: id}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},

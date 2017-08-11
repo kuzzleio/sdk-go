@@ -22,7 +22,7 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 
 func (dc Collection) Document() Document {
 	return Document{
-		Content: []byte(`{}`),
+		Content:    []byte(`{}`),
 		collection: dc,
 	}
 }

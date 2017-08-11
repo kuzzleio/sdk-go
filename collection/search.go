@@ -7,9 +7,9 @@ import (
 )
 
 type KuzzleSearchResult struct {
-Hits     []Document `json:"hits"`
-Total    int        `json:"total"`
-ScrollId string     `json:"_scroll_id"`
+	Hits     []Document `json:"hits"`
+	Total    int        `json:"total"`
+	ScrollId string     `json:"_scroll_id"`
 }
 
 /*

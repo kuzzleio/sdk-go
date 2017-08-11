@@ -20,11 +20,11 @@ type (
 	}
 
 	KuzzleResult struct {
-		Id         string           `json:"_id"`
-		Meta       KuzzleMeta       `json:"_meta"`
-		Content    json.RawMessage  `json:"_source"`
-		Version    int              `json:"_version"`
-		Collection string           `json:"collection"`
+		Id         string          `json:"_id"`
+		Meta       KuzzleMeta      `json:"_meta"`
+		Content    json.RawMessage `json:"_source"`
+		Version    int             `json:"_version"`
+		Collection string          `json:"collection"`
 	}
 
 	KuzzleNotification struct {
