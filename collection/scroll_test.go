@@ -36,13 +36,13 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int                  `json:"total"`
-		Hits  []types.KuzzleResult `json:"hits"`
+		Total int                   `json:"total"`
+		Hits  []collection.Document `json:"hits"`
 	}
 
-	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
-	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
+	hits := make([]collection.Document, 1)
+	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {

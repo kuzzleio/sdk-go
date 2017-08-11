@@ -6,10 +6,16 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+type KuzzleSearchResult struct {
+Hits     []Document `json:"hits"`
+Total    int        `json:"total"`
+ScrollId string     `json:"_scroll_id"`
+}
+
 /*
   Searches documents in the given Collection, using provided filters and option.
 */
-func (dc Collection) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) Search(filters interface{}, options types.QueryOptions) (KuzzleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -35,11 +41,15 @@ func (dc Collection) Search(filters interface{}, options types.QueryOptions) (ty
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := types.KuzzleSearchResult{}
-	json.Unmarshal(res.Result, &searchResult)
+	result := KuzzleSearchResult{}
+	json.Unmarshal(res.Result, &result)
 
-	return searchResult, nil
+	for _, d := range result.Hits {
+		d.collection = dc
+	}
+
+	return result, nil
 }

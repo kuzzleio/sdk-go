@@ -17,9 +17,13 @@ type IDocument interface {
 	Delete()
 }
 
-type CollectionDocument struct {
-	Collection Collection `json:"-"`
-	Document   types.Document
+type Document struct {
+	Id         string           `json:"_id"`
+	Meta       types.KuzzleMeta `json:"_meta"`
+	Content    json.RawMessage  `json:"_source"`
+	Version    int              `json:"_version"`
+	Collection string           `json:"collection"`
+	collection Collection       `json:"-"`
 }
 
 type DocumentContent map[string]interface{}
@@ -30,81 +34,88 @@ func (documentContent DocumentContent) ToString() string {
 	return string(s)
 }
 
+func (d Document) SourceToMap() map[string]interface{} {
+	type SourceMap map[string]interface{}
+	sourceMap := SourceMap{}
+
+	json.Unmarshal(d.Content, &sourceMap)
+
+	return sourceMap
+}
+
+
 /*
   Saves the document into Kuzzle.
 
   If this is a new document, will create it in Kuzzle and the id property will be made available.
   Otherwise, will replace the latest version of the document in Kuzzle by the current content of this object.
 */
-func (cd CollectionDocument) Save(options types.QueryOptions) (CollectionDocument, error) {
-	if cd.Document.Id == "" {
-		return CollectionDocument{}, errors.New("CollectionDocument.Save: missing document id")
+func (d Document) Save(options types.QueryOptions) (Document, error) {
+	if d.Id == "" {
+		return Document{}, errors.New("Document.Save: missing document id")
 	}
 
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
-		Index:      cd.Collection.index,
-		Collection: cd.Collection.collection,
+		Index:      d.collection.index,
+		Collection: d.collection.collection,
 		Controller: "document",
 		Action:     "createOrReplace",
-		Id:         cd.Document.Id,
-		Body:       cd.Document.Content,
+		Id:         d.Id,
+		Body:       d.Content,
 	}
 
-	go cd.Collection.Kuzzle.Query(query, options, ch)
+	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return CollectionDocument{}, errors.New(res.Error.Message)
+		return Document{}, errors.New(res.Error.Message)
 	}
 
-	return cd, nil
+	return d, nil
 }
 
 /*
   Replaces the document with the latest version stored in Kuzzle.
 */
-func (cd CollectionDocument) Refresh(options types.QueryOptions) (CollectionDocument, error) {
-	if cd.Document.Id == "" {
-		return CollectionDocument{}, errors.New("CollectionDocument.Refresh: missing document id")
+func (d Document) Refresh(options types.QueryOptions) (Document, error) {
+	if d.Id == "" {
+		return Document{}, errors.New("Document.Refresh: missing document id")
 	}
 
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
-		Index:      cd.Collection.index,
-		Collection: cd.Collection.collection,
+		Index:      d.collection.index,
+		Collection: d.collection.collection,
 		Controller: "document",
 		Action:     "get",
-		Id:         cd.Document.Id,
+		Id:         d.Id,
 	}
 
-	go cd.Collection.Kuzzle.Query(query, options, ch)
+	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 	if res.Error.Message != "" {
-		return CollectionDocument{}, errors.New(res.Error.Message)
+		return Document{}, errors.New(res.Error.Message)
 	}
 
-	document := types.Document{Id: cd.Document.Id}
-	json.Unmarshal(res.Result, &document)
+	json.Unmarshal(res.Result, &d)
 
-	cd.Document = document
-
-	return cd, nil
+	return d, nil
 }
 
 /*
   Sets the document id.
 */
-func (cd CollectionDocument) SetDocumentId(id string) CollectionDocument {
+func (d Document) SetDocumentId(id string) Document {
 	if id != "" {
-		cd.Document.Id = id
+		d.Id = id
 	}
 
-	return cd
+	return d
 }
 
 /*
@@ -112,21 +123,21 @@ func (cd CollectionDocument) SetDocumentId(id string) CollectionDocument {
   Changes made by this function won’t be applied until the save method is called.
   If replace is set to true, the entire content will be replaced, otherwise, only existing and new fields will be impacted.
 */
-func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) CollectionDocument {
+func (d Document) SetContent(content DocumentContent, replace bool) Document {
 	if replace {
-		cd.Document.Content, _ = json.Marshal(content)
+		d.Content, _ = json.Marshal(content)
 	} else {
 		source := DocumentContent{}
-		json.Unmarshal(cd.Document.Content, &source)
+		json.Unmarshal(d.Content, &source)
 
 		for attr, value := range content {
 			source[attr] = value
 		}
 
-		cd.Document.Content, _ = json.Marshal(source)
+		d.Content, _ = json.Marshal(source)
 	}
 
-	return cd
+	return d
 }
 
 /*
@@ -135,14 +146,14 @@ func (cd CollectionDocument) SetContent(content DocumentContent, replace bool) C
   If the replace argument is set to true, replaces the current headers with the provided ones.
   Otherwise, appends the content to the current headers, only replacing already existing values.
 */
-func (cd *CollectionDocument) SetHeaders(content map[string]interface{}, replace bool) {
-	cd.Collection.Kuzzle.SetHeaders(content, replace)
+func (d *Document) SetHeaders(content map[string]interface{}, replace bool) {
+	d.collection.Kuzzle.SetHeaders(content, replace)
 }
 
 /*
   Sends the content of the document as a realtime message.
 */
-func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
+func (d Document) Publish(options types.QueryOptions) (bool, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	type message struct {
@@ -153,19 +164,19 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 	}
 
 	query := types.KuzzleRequest{
-		Index:      cd.Collection.index,
-		Collection: cd.Collection.collection,
+		Index:      d.collection.index,
+		Collection: d.collection.collection,
 		Controller: "realtime",
 		Action:     "publish",
 		Body: message{
-			Id:      cd.Document.Id,
-			Version: cd.Document.Version,
-			Body:    cd.Document.Content,
-			Meta:    cd.Document.Meta,
+			Id:      d.Id,
+			Version: d.Version,
+			Body:    d.Content,
+			Meta:    d.Meta,
 		},
 	}
 
-	go cd.Collection.Kuzzle.Query(query, options, ch)
+	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -183,22 +194,22 @@ func (cd CollectionDocument) Publish(options types.QueryOptions) (bool, error) {
 /*
   Checks if the document exists in Kuzzle.
 */
-func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
-	if cd.Document.Id == "" {
-		return false, errors.New("CollectionDocument.Exists: missing document id")
+func (d Document) Exists(options types.QueryOptions) (bool, error) {
+	if d.Id == "" {
+		return false, errors.New("Document.Exists: missing document id")
 	}
 
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
-		Index:      cd.Collection.index,
-		Collection: cd.Collection.collection,
+		Index:      d.collection.index,
+		Collection: d.collection.collection,
 		Controller: "document",
 		Action:     "exists",
-		Id:         cd.Document.Id,
+		Id:         d.Id,
 	}
 
-	go cd.Collection.Kuzzle.Query(query, options, ch)
+	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -214,22 +225,22 @@ func (cd CollectionDocument) Exists(options types.QueryOptions) (bool, error) {
 /*
   Deletes the document in Kuzzle.
 */
-func (cd CollectionDocument) Delete(options types.QueryOptions) (string, error) {
-	if cd.Document.Id == "" {
-		return "", errors.New("CollectionDocument.Delete: missing document id")
+func (d Document) Delete(options types.QueryOptions) (string, error) {
+	if d.Id == "" {
+		return "", errors.New("Document.Delete: missing document id")
 	}
 
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
-		Index:      cd.Collection.index,
-		Collection: cd.Collection.collection,
+		Index:      d.collection.index,
+		Collection: d.collection.collection,
 		Controller: "document",
 		Action:     "delete",
-		Id:         cd.Document.Id,
+		Id:         d.Id,
 	}
 
-	go cd.Collection.Kuzzle.Query(query, options, ch)
+	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -237,7 +248,7 @@ func (cd CollectionDocument) Delete(options types.QueryOptions) (string, error) 
 		return "", errors.New(res.Error.Message)
 	}
 
-	document := types.Document{}
+	document := Document{collection: d.collection}
 	json.Unmarshal(res.Result, &document)
 
 	return document.Id, nil

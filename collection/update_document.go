@@ -9,9 +9,9 @@ import (
 /*
   Updates a document in Kuzzle.
 */
-func (dc Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (types.Document, error) {
+func (dc Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
 	if id == "" {
-		return types.Document{}, errors.New("Collection.UpdateDocument: document id required")
+		return Document{}, errors.New("Collection.UpdateDocument: document id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -29,10 +29,10 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Document{}, errors.New(res.Error.Message)
+		return Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := types.Document{}
+	documentResponse := Document{collection: dc}
 	json.Unmarshal(res.Result, &documentResponse)
 
 	return documentResponse, nil
@@ -41,9 +41,9 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 /*
   Update the provided documents.
 */
-func (dc Collection) MUpdateDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MUpdateDocument(documents []Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if len(documents) == 0 {
-		return types.KuzzleSearchResult{}, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
+		return KuzzleSearchResult{}, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -77,11 +77,15 @@ func (dc Collection) MUpdateDocument(documents []types.Document, options types.Q
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
+
+	for _, d := range result.Hits {
+		d.collection = dc
+	}
 
 	return result, nil
 }

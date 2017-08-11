@@ -9,9 +9,9 @@ import (
 /*
   Replaces a document in Kuzzle.
 */
-func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (types.Document, error) {
+func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
 	if id == "" {
-		return types.Document{}, errors.New("Collection.ReplaceDocument: document id required")
+		return Document{}, errors.New("Collection.ReplaceDocument: document id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -29,21 +29,21 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Document{}, errors.New(res.Error.Message)
+		return Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := types.Document{}
-	json.Unmarshal(res.Result, &documentResponse)
+	d := Document{collection: dc}
+	json.Unmarshal(res.Result, &d)
 
-	return documentResponse, nil
+	return d, nil
 }
 
 /*
   Replace the provided documents.
 */
-func (dc Collection) MReplaceDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MReplaceDocument(documents []Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if len(documents) == 0 {
-		return types.KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
+		return KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -77,11 +77,15 @@ func (dc Collection) MReplaceDocument(documents []types.Document, options types.
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
+
+	for _, d := range result.Hits {
+		d.collection = dc
+	}
 
 	return result, nil
 }
