@@ -60,7 +60,7 @@ type UserCredentials map[string]interface{}
 type UserData struct {
 	ProfileIds  []string               `json:"profileIds"`
 	Content     map[string]interface{} `json:"content"`
-	Credentials map[string]interface{} `json:"credentials"`
+	Credentials UserCredentials        `json:"credentials"`
 }
 
 type Policy struct {
