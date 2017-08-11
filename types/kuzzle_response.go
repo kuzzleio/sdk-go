@@ -191,6 +191,29 @@ type (
 		Collection string `json:"collection"`
 		Value      string `json:"value"`
 	}
+
+	GeoradiusPointWithCoord struct {
+		Name string
+		Lon  float64
+		Lat  float64
+	}
+
+	GeoradiusPointWithDist struct {
+		Name string
+		Dist float64
+	}
+
+	GeoradiusPointWithCoordAndDist struct {
+		Name string
+		Lon  float64
+		Lat  float64
+		Dist float64
+	}
+
+	MSScanResponse struct {
+		Cursor int      `json:"cursor"`
+		Values []string `json:"values"`
+	}
 )
 
 func (user User) ProfileIDs() []string {

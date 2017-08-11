@@ -215,6 +215,53 @@ func TestDocumentRefresh(t *testing.T) {
 	assert.NotEqual(t, documentSource["function"], ic["function"])
 }
 
+func TestCollectionDocumentExistsEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.CollectionDocument().Exists(nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "CollectionDocument.Exists: missing document id", fmt.Sprint(err))
+}
+
+func TestCollectionDocumentExistsError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.CollectionDocument().SetDocumentId("myId").Exists(nil)
+
+	assert.NotNil(t, err)
+}
+
+func TestCollectionDocumentExists(t *testing.T) {
+	id := "myId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "exists", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			r, _ := json.Marshal(true)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	exists, _ := dc.CollectionDocument().SetDocumentId("myId").Exists(nil)
+
+	assert.Equal(t, true, exists)
+}
+
 func TestDocumentPublishError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {

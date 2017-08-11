@@ -19,6 +19,46 @@ type QueryOptions interface {
 	SetIfExist(string) *queryOptions
 	GetRetryOnConflict() int
 	SetRetryOnConflict(int) *queryOptions
+	GetStart() int
+	SetStart(int) *queryOptions
+	GetEnd() int
+	SetEnd(int) *queryOptions
+	GetCount() int
+	SetCount(int) *queryOptions
+	GetSort() string
+	SetSort(string) *queryOptions
+	GetMatch() string
+	SetMatch(string) *queryOptions
+	GetCh() bool
+	SetCh(bool) *queryOptions
+	GetIncr() bool
+	SetIncr(bool) *queryOptions
+	GetNx() bool
+	SetNx(bool) *queryOptions
+	GetXx() bool
+	SetXx(bool) *queryOptions
+	GetEx() int
+	SetEx(int) *queryOptions
+	GetPx() int
+	SetPx(int) *queryOptions
+	GetLimit() []int
+	SetLimit([]int) *queryOptions
+	GetAggregate() string
+	SetAggregate(string) *queryOptions
+	GetWeights() []int
+	SetWeights([]int) *queryOptions
+	GetType() string
+	SetType(string) *queryOptions
+	GetBy() string
+	SetBy(string) *queryOptions
+	GetDirection() string
+	SetDirection(string) *queryOptions
+	GetGet() []string
+	SetGet([]string) *queryOptions
+	GetAlpha() bool
+	SetAlpha(bool) *queryOptions
+	GetUnit() string
+	SetUnit(string) *queryOptions
 }
 
 type queryOptions struct {
@@ -28,9 +68,29 @@ type queryOptions struct {
 	scroll          string
 	scrollId        string
 	volatile        VolatileData
-	refresh         string `json:"refresh"`
+	refresh         string
 	ifExist         string
 	retryOnConflict int
+	start           int
+	end             int
+	count           int
+	sort            string
+	match           string
+	ch              bool
+	incr            bool
+	nx              bool
+	xx              bool
+	ex              int
+	px              int
+	limit           []int
+	aggregate       string
+	weights         []int
+	colType         string // type would conflict with the Golang keyword
+	by              string
+	direction       string
+	get             []string
+	alpha           bool
+	unit            string
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -114,6 +174,185 @@ func (qo *queryOptions) SetRetryOnConflict(retryOnConflict int) *queryOptions {
 	return qo
 }
 
+func (qo queryOptions) GetStart() int {
+	return qo.start
+}
+
+func (qo *queryOptions) SetStart(start int) *queryOptions {
+	qo.start = start
+	return qo
+}
+
+func (qo queryOptions) GetEnd() int {
+	return qo.end
+}
+
+func (qo *queryOptions) SetEnd(end int) *queryOptions {
+	qo.end = end
+	return qo
+}
+
+func (qo queryOptions) GetCount() int {
+	return qo.count
+}
+
+func (qo *queryOptions) SetCount(count int) *queryOptions {
+	qo.count = count
+	return qo
+}
+
+func (qo queryOptions) GetSort() string {
+	return qo.sort
+}
+
+func (qo *queryOptions) SetSort(sort string) *queryOptions {
+	qo.sort = sort
+	return qo
+}
+
+func (qo queryOptions) GetMatch() string {
+	return qo.match
+}
+
+func (qo *queryOptions) SetMatch(match string) *queryOptions {
+	qo.match = match
+	return qo
+}
+
+func (qo queryOptions) GetCh() bool {
+	return qo.ch
+}
+
+func (qo *queryOptions) SetCh(ch bool) *queryOptions {
+	qo.ch = ch
+	return qo
+}
+
+func (qo queryOptions) GetIncr() bool {
+	return qo.incr
+}
+
+func (qo *queryOptions) SetIncr(incr bool) *queryOptions {
+	qo.incr = incr
+	return qo
+}
+
+func (qo queryOptions) GetNx() bool {
+	return qo.nx
+}
+
+func (qo *queryOptions) SetNx(nx bool) *queryOptions {
+	qo.nx = nx
+	return qo
+}
+
+func (qo queryOptions) GetEx() int {
+	return qo.ex
+}
+
+func (qo *queryOptions) SetEx(ex int) *queryOptions {
+	qo.ex = ex
+	return qo
+}
+
+func (qo queryOptions) GetPx() int {
+	return qo.px
+}
+
+func (qo *queryOptions) SetPx(px int) *queryOptions {
+	qo.px = px
+	return qo
+}
+
+func (qo queryOptions) GetXx() bool {
+	return qo.xx
+}
+
+func (qo *queryOptions) SetXx(xx bool) *queryOptions {
+	qo.xx = xx
+	return qo
+}
+
+func (qo queryOptions) GetLimit() []int {
+	return qo.limit
+}
+
+func (qo *queryOptions) SetLimit(limit []int) *queryOptions {
+	qo.limit = limit
+	return qo
+}
+
+func (qo queryOptions) GetAggregate() string {
+	return qo.aggregate
+}
+
+func (qo *queryOptions) SetAggregate(aggregate string) *queryOptions {
+	qo.aggregate = aggregate
+	return qo
+}
+
+func (qo queryOptions) GetWeights() []int {
+	return qo.weights
+}
+
+func (qo *queryOptions) SetWeights(weights []int) *queryOptions {
+	qo.weights = weights
+	return qo
+}
+
+func (qo queryOptions) GetType() string {
+	return qo.colType
+}
+
+func (qo *queryOptions) SetType(colType string) *queryOptions {
+	qo.colType = colType
+	return qo
+}
+
+func (qo *queryOptions) GetBy() string {
+	return qo.by
+}
+
+func (qo *queryOptions) SetBy(by string) *queryOptions {
+	qo.by = by
+	return qo
+}
+
+func (qo *queryOptions) GetDirection() string {
+	return qo.direction
+}
+
+func (qo *queryOptions) SetDirection(direction string) *queryOptions {
+	qo.direction = direction
+	return qo
+}
+
+func (qo *queryOptions) GetGet() []string {
+	return qo.get
+}
+
+func (qo *queryOptions) SetGet(get []string) *queryOptions {
+	qo.get = get
+	return qo
+}
+
+func (qo *queryOptions) GetAlpha() bool {
+	return qo.alpha
+}
+
+func (qo *queryOptions) SetAlpha(alpha bool) *queryOptions {
+	qo.alpha = alpha
+	return qo
+}
+
+func (qo *queryOptions) GetUnit() string {
+	return qo.unit
+}
+
+func (qo *queryOptions) SetUnit(unit string) *queryOptions {
+	qo.unit = unit
+	return qo
+}
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size:    10,
