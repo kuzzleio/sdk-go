@@ -24,11 +24,11 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 
 	if options != nil {
 		type body struct {
-			Limit []int `json:"limit,omitempty"`
-			By         string        `json:"by,omitempty"`
-			Direction  string        `json:"direction,omitempty"`
-			Get        []string      `json:"get,omitempty"`
-			Alpha      bool          `json:"alpha,omitempty"`
+			Limit     []int    `json:"limit,omitempty"`
+			By        string   `json:"by,omitempty"`
+			Direction string   `json:"direction,omitempty"`
+			Get       []string `json:"get,omitempty"`
+			Alpha     bool     `json:"alpha,omitempty"`
 		}
 
 		bodyContent := &body{}

@@ -22,9 +22,9 @@ func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryO
 	result := make(chan types.KuzzleResponse)
 
 	type body struct {
-		Keys []string `json:"keys"`
-		Weights []int `json:"weight,omitempty"`
-		Aggregate string `json:"aggregate,omitempty"`
+		Keys      []string `json:"keys"`
+		Weights   []int    `json:"weight,omitempty"`
+		Aggregate string   `json:"aggregate,omitempty"`
 	}
 
 	bodyContent := body{Keys: keys}

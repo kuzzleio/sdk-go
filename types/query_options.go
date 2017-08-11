@@ -62,35 +62,35 @@ type QueryOptions interface {
 }
 
 type queryOptions struct {
-	queuable  bool
-	from      int
-	size      int
-	scroll    string
-	scrollId  string
-	volatile  VolatileData
-	refresh   string
-	ifExist   string
+	queuable        bool
+	from            int
+	size            int
+	scroll          string
+	scrollId        string
+	volatile        VolatileData
+	refresh         string
+	ifExist         string
 	retryOnConflict int
-	start     int
-	end       int
-	count     int
-	sort      string
-	match     string
-	ch        bool
-	incr      bool
-	nx        bool
-	xx        bool
-	ex        int
-	px        int
-	limit     []int
-	aggregate string
-	weights   []int
-	colType   string // type would conflict with the Golang keyword
-	by         string
-	direction  string
-	get        []string
-	alpha      bool
-	unit       string
+	start           int
+	end             int
+	count           int
+	sort            string
+	match           string
+	ch              bool
+	incr            bool
+	nx              bool
+	xx              bool
+	ex              int
+	px              int
+	limit           []int
+	aggregate       string
+	weights         []int
+	colType         string // type would conflict with the Golang keyword
+	by              string
+	direction       string
+	get             []string
+	alpha           bool
+	unit            string
 }
 
 func (qo queryOptions) GetQueuable() bool {

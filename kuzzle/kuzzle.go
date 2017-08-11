@@ -3,10 +3,10 @@ package kuzzle
 import (
 	"errors"
 	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
 	"sync"
 	"time"
-	"github.com/kuzzleio/sdk-go/event"
 )
 
 const version = "0.1"
@@ -72,8 +72,8 @@ func (k *Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
 		if k.lastUrl != k.Host {
-		  k.wasConnected = false
-		  k.lastUrl = k.Host
+			k.wasConnected = false
+			k.lastUrl = k.Host
 		}
 
 		if wasConnected {
