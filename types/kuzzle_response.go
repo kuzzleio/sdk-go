@@ -37,6 +37,7 @@ type (
 	IKuzzleResult interface {
 		SourceToMap()
 	}
+
 	KuzzleResponse struct {
 		RequestId string          `json:"requestId"`
 		Result    json.RawMessage `json:"result"`
@@ -182,6 +183,29 @@ type (
 		Index      string `json:"index"`
 		Collection string `json:"collection"`
 		Value      string `json:"value"`
+	}
+
+	GeoradiusPointWithCoord struct {
+		Name string
+		Lon  float64
+		Lat  float64
+	}
+
+	GeoradiusPointWithDist struct {
+		Name string
+		Dist float64
+	}
+
+	GeoradiusPointWithCoordAndDist struct {
+		Name string
+		Lon  float64
+		Lat  float64
+		Dist float64
+	}
+
+	MSScanResponse struct {
+		Cursor int      `json:"cursor"`
+		Values []string `json:"values"`
 	}
 )
 

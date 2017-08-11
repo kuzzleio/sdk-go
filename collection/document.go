@@ -3,6 +3,7 @@ package collection
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -41,6 +42,51 @@ func (d Document) SourceToMap() map[string]interface{} {
 	json.Unmarshal(d.Content, &sourceMap)
 
 	return sourceMap
+}
+
+/*
+  Helper function to initialize a document into Document using fetch query.
+ */
+func (d Document) Fetch(id string) (Document, error) {
+	if id == "" {
+		return d, errors.New("Document.Fetch: missing document id")
+	}
+
+	doc, err := d.collection.FetchDocument(id, nil)
+
+	if err != nil {
+		return d, errors.New("Document.Fetch: an error occurred: " + fmt.Sprint(err))
+	}
+
+	d.Id = doc.Id
+	d.Meta = doc.Meta
+	d.Content = doc.Content
+	d.Version = doc.Version
+	d.Collection = doc.Collection
+	d.collection = doc.collection
+
+	return d, nil
+}
+
+/*
+  Listens to events concerning this document. Has no effect if the document does not have an ID
+  (i.e. if the document has not yet been created as a persisted document).
+ */
+func (d Document) Subscribe(options types.RoomOptions, ch chan<- types.KuzzleNotification) chan types.SubscribeResponse {
+	if d.Id == "" {
+		errorResponse := make(chan types.SubscribeResponse, 1)
+		errorResponse <- types.SubscribeResponse{Error: errors.New("Document.Subscribe: cannot subscribe to a document if no ID has been provided")}
+
+		return errorResponse
+	}
+
+	filters := map[string]map[string][]string{
+		"ids": {
+			"values": []string{d.Id},
+		},
+	}
+
+	return d.collection.Subscribe(filters, options, ch)
 }
 
 /*

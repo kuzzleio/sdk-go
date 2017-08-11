@@ -8,7 +8,6 @@ type Collection struct {
 	Kuzzle            *kuzzle.Kuzzle
 	index, collection string
 	subscribeCallback interface{}
-	collectionMapping CollectionMapping
 }
 
 func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection {
@@ -16,7 +15,6 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 		index:             index,
 		collection:        collection,
 		Kuzzle:            kuzzle,
-		collectionMapping: CollectionMapping{},
 	}
 }
 

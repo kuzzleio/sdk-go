@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/state"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -96,6 +97,117 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 
 	assert.Equal(t, newHeaders, k.GetHeaders())
 	assert.NotEqual(t, headers, k.GetHeaders())
+}
+
+
+func TestDocumentFetchEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.Document().Fetch("")
+
+	assert.Equal(t, "Document.Fetch: missing document id", fmt.Sprint(err))
+}
+
+func TestDocumentFetchError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Not found"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.Document().Fetch("docId")
+
+	assert.Equal(t, "Document.Fetch: an error occurred: Not found", fmt.Sprint(err))
+}
+
+func TestDocumentFetch(t *testing.T) {
+	id := "docid"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "get", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := collection.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	d, _ := dc.Document().Fetch(id)
+
+	assert.Equal(t, id, d.Id)
+	assert.Equal(t, []byte(`{"foo":"bar"}`), d.Content)
+}
+
+func TestDocumentSubscribeEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	cd := dc.Document()
+
+	ch := make(chan types.KuzzleNotification)
+	res := <- cd.Subscribe(types.NewRoomOptions(), ch)
+
+	assert.Nil(t, res.Room)
+	assert.Equal(t, "Document.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
+}
+
+func TestDocumentSubscribe(t *testing.T) {
+	id := "docId"
+	var k *kuzzle.Kuzzle
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			// Fetch query
+			if parsedQuery.Controller == "document" {
+				assert.Equal(t, "get", parsedQuery.Action)
+				assert.Equal(t, "index", parsedQuery.Index)
+				assert.Equal(t, "collection", parsedQuery.Collection)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := collection.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
+				r, _ := json.Marshal(res)
+
+				return types.KuzzleResponse{Result: r}
+			}
+
+			// Subscribe query
+			assert.Equal(t, "realtime", parsedQuery.Controller)
+			assert.Equal(t, "subscribe", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, map[string]interface {}(map[string]interface {}{"ids":map[string]interface {}{"values":[]interface {}{"docId"}}}), parsedQuery.Body)
+			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+			room.RoomId = "42"
+
+			marshed, _ := json.Marshal(room)
+
+			return types.KuzzleResponse{Result: marshed}
+		},
+	}
+	k, _ = kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+	dc := collection.NewCollection(k, "collection", "index")
+	cd, _ := dc.Document().Fetch(id)
+
+	ch := make(chan types.KuzzleNotification)
+	subRes := cd.Subscribe(types.NewRoomOptions(), ch)
+	r := <-subRes
+
+	assert.Nil(t, r.Error)
+	assert.NotNil(t, r.Room)
+	assert.Equal(t, "42", r.Room.GetRoomId())
 }
 
 func TestDocumentSaveEmptyId(t *testing.T) {
@@ -211,6 +323,53 @@ func TestDocumentRefresh(t *testing.T) {
 	assert.Equal(t, "Padawan", documentContent["function"])
 	assert.Equal(t, "Jedi", ic["function"])
 	assert.NotEqual(t, documentContent["function"], ic["function"])
+}
+
+func TestCollectionDocumentExistsEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.Document().Exists(nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "Document.Exists: missing document id", fmt.Sprint(err))
+}
+
+func TestCollectionDocumentExistsError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.Document().SetDocumentId("myId").Exists(nil)
+
+	assert.NotNil(t, err)
+}
+
+func TestCollectionDocumentExists(t *testing.T) {
+	id := "myId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "exists", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			r, _ := json.Marshal(true)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	exists, _ := dc.Document().SetDocumentId("myId").Exists(nil)
+
+	assert.Equal(t, true, exists)
 }
 
 func TestDocumentPublishError(t *testing.T) {

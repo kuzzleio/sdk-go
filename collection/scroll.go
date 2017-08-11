@@ -29,12 +29,15 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (Kuzzle
 		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := KuzzleSearchResult{}
-	json.Unmarshal(res.Result, &result)
+	searchResult := KuzzleSearchResult{
+		Collection: dc,
+		Options: options,
+	}
+	json.Unmarshal(res.Result, &searchResult)
 
-	for _, d := range result.Hits {
+	for _, d := range searchResult.Hits {
 		d.collection = dc
 	}
 
-	return result, nil
+	return searchResult, nil
 }

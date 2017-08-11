@@ -12,10 +12,6 @@ import (
 )
 
 func TestGetMappingError(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -28,10 +24,6 @@ func TestGetMappingError(t *testing.T) {
 }
 
 func TestGetMapping(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -58,14 +50,11 @@ func TestGetMapping(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
+		Collection: *cl,
 	}, res)
 }
 
 func TestGetMappingUnknownIndex(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -90,10 +79,6 @@ func TestGetMappingUnknownIndex(t *testing.T) {
 }
 
 func TestGetMappingUnknownCollection(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}

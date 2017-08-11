@@ -18,13 +18,14 @@ func TestSearchError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").Search(nil, nil)
+	_, err := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestSearch(t *testing.T) {
 	hits := make([]collection.Document, 1)
 	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+
 	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -44,7 +45,7 @@ func TestSearch(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
@@ -80,7 +81,7 @@ func TestSearchWithScroll(t *testing.T) {
 	opts.SetFrom(2)
 	opts.SetSize(4)
 	opts.SetScroll("1m")
-	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, opts)
+	res, _ := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, opts)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, "f00b4r", res.ScrollId)
