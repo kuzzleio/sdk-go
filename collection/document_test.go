@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/state"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -96,6 +97,116 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 
 	assert.Equal(t, newHeaders, k.GetHeaders())
 	assert.NotEqual(t, headers, k.GetHeaders())
+}
+
+
+func TestDocumentFetchEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.CollectionDocument().Fetch("")
+
+	assert.Equal(t, "CollectionDocument.Fetch: missing document id", fmt.Sprint(err))
+}
+
+func TestDocumentFetchError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Not found"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	_, err := dc.CollectionDocument().Fetch("docId")
+
+	assert.Equal(t, "CollectionDocument.Fetch: an error occurred: Not found", fmt.Sprint(err))
+}
+
+func TestDocumentFetch(t *testing.T) {
+	id := "docid"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "get", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := types.Document{Id: id, Source: []byte(`{"foo":"bar"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	cd, _ := dc.CollectionDocument().Fetch(id)
+
+	assert.Equal(t, types.Document{Id: id, Source: []byte(`{"foo":"bar"}`)}, cd.Document)
+}
+
+func TestDocumentSubscribeEmptyId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	cd := dc.CollectionDocument()
+
+	ch := make(chan types.KuzzleNotification)
+	res := <- cd.Subscribe(types.NewRoomOptions(), ch)
+
+	assert.Nil(t, res.Room)
+	assert.Equal(t, "CollectionDocument.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
+}
+
+func TestDocumentSubscribe(t *testing.T) {
+	id := "docId"
+	var k *kuzzle.Kuzzle
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			// Fetch query
+			if parsedQuery.Controller == "document" {
+				assert.Equal(t, "get", parsedQuery.Action)
+				assert.Equal(t, "index", parsedQuery.Index)
+				assert.Equal(t, "collection", parsedQuery.Collection)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := types.Document{Id: id, Source: []byte(`{"foo":"bar"}`)}
+				r, _ := json.Marshal(res)
+
+				return types.KuzzleResponse{Result: r}
+			}
+
+			// Subscribe query
+			assert.Equal(t, "realtime", parsedQuery.Controller)
+			assert.Equal(t, "subscribe", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, map[string]interface {}(map[string]interface {}{"ids":map[string]interface {}{"values":[]interface {}{"docId"}}}), parsedQuery.Body)
+			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+			room.RoomId = "42"
+
+			marshed, _ := json.Marshal(room)
+
+			return types.KuzzleResponse{Result: marshed}
+		},
+	}
+	k, _ = kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+	dc := collection.NewCollection(k, "collection", "index")
+	cd, _ := dc.CollectionDocument().Fetch(id)
+
+	ch := make(chan types.KuzzleNotification)
+	subRes := cd.Subscribe(types.NewRoomOptions(), ch)
+	r := <-subRes
+
+	assert.Nil(t, r.Error)
+	assert.NotNil(t, r.Room)
+	assert.Equal(t, "42", r.Room.GetRoomId())
 }
 
 func TestDocumentSaveEmptyId(t *testing.T) {
