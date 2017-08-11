@@ -143,9 +143,10 @@ func TestDocumentFetch(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	d, _ := dc.Document().Fetch(id)
+	r := collection.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
 
-	assert.Equal(t, id, d.Id)
-	assert.Equal(t, []byte(`{"foo":"bar"}`), d.Content)
+	assert.Equal(t, r.Id, d.Id)
+	assert.Equal(t, r.Content, d.Content)
 }
 
 func TestDocumentSubscribeEmptyId(t *testing.T) {
@@ -199,10 +200,10 @@ func TestDocumentSubscribe(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
-	cd, _ := dc.Document().Fetch(id)
+	d, _ := dc.Document().Fetch(id)
 
 	ch := make(chan types.KuzzleNotification)
-	subRes := cd.Subscribe(types.NewRoomOptions(), ch)
+	subRes := d.Subscribe(types.NewRoomOptions(), ch)
 	r := <-subRes
 
 	assert.Nil(t, r.Error)

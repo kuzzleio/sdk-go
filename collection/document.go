@@ -58,7 +58,7 @@ func (d Document) Fetch(id string) (Document, error) {
 		return d, errors.New("Document.Fetch: an error occurred: " + fmt.Sprint(err))
 	}
 
-	d.Id = doc.Id
+	d.Id = id
 	d.Meta = doc.Meta
 	d.Content = doc.Content
 	d.Version = doc.Version
