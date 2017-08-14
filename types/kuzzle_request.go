@@ -37,8 +37,15 @@ type UserData struct {
 	Credentials UserCredentials        `json:"credentials"`
 }
 
+type PolicyRestriction struct {
+	Index       string   `json:"index"`
+	Collections []string `json:"collections,omitempty"`
+}
+
 type Policy struct {
-	RoleId string `json:"roleId"`
+	RoleId             string              `json:"roleId"`
+	RestrictedTo       []PolicyRestriction `json:"restrictedTo,omitempty"`
+	AllowInternalIndex bool                `json:"allowInternalIndex,omitempty"`
 }
 
 type Policies struct {

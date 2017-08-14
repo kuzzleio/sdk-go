@@ -51,24 +51,6 @@ type (
 		ScrollId string         `json:"_scroll_id"`
 	}
 
-	KuzzleSearchUsersResult struct {
-		Hits     []User `json:"hits"`
-		Total    int    `json:"total"`
-		ScrollId string `json:"scrollId"`
-	}
-
-	KuzzleSearchProfilesResult struct {
-		Hits     []Profile `json:"hits"`
-		Total    int       `json:"total"`
-		ScrollId string    `json:"scrollId"`
-	}
-
-	KuzzleSearchRolesResult struct {
-		Hits     []Role `json:"hits"`
-		Total    int    `json:"total"`
-		ScrollId string `json:"scrollId"`
-	}
-
 	KuzzleValidationFields map[string]struct {
 		Type         string `json:"type"`
 		Mandatory    bool   `json:"mandatory"`
@@ -169,16 +151,6 @@ type (
 		Controllers map[string]Controller `json:"controllers"`
 	}
 
-	SecurityDocument struct {
-		Id     string          `json:"_id"`
-		Source json.RawMessage `json:"_source"`
-		Meta   KuzzleMeta      `json:"_meta"`
-	}
-
-	User    SecurityDocument
-	Profile SecurityDocument
-	Role    SecurityDocument
-
 	CredentialStrategyFields []string
 	CredentialFields         map[string]CredentialStrategyFields
 
@@ -191,84 +163,13 @@ type (
 		Collection string `json:"collection"`
 		Value      string `json:"value"`
 	}
+
+	User struct {
+		Id     string          `json:"_id"`
+		Source json.RawMessage `json:"_source"`
+		Meta   KuzzleMeta      `json:"_meta"`
+	}
 )
-
-func (user User) ProfileIDs() []string {
-	type profileIds struct {
-		ProfileIds []string `json:"profileIds"`
-	}
-
-	var content = profileIds{}
-	json.Unmarshal(user.Source, &content)
-
-	return content.ProfileIds
-}
-
-func (user User) Content(key string) interface{} {
-	type Fields map[string]interface{}
-
-	var content = Fields{}
-	json.Unmarshal(user.Source, &content)
-
-	if key == "" {
-		return content
-	}
-
-	return content[key]
-}
-
-func (user User) ContentMap(keys ...string) map[string]interface{} {
-	type Fields map[string]interface{}
-
-	var content = Fields{}
-	json.Unmarshal(user.Source, &content)
-
-	if len(keys) == 0 {
-		return content
-	}
-
-	values := make(map[string]interface{})
-
-	for _, key := range keys {
-		values[key] = content[key]
-	}
-
-	return values
-}
-
-func (profile Profile) Policies() []string {
-	type Policies struct {
-		Policies []struct {
-			RoleId string `json:"roleId"`
-		} `json:"policies"`
-	}
-
-	var policies = Policies{}
-	json.Unmarshal(profile.Source, &policies)
-
-	roleIDs := []string{}
-
-	for _, role := range policies.Policies {
-		roleIDs = append(roleIDs, role.RoleId)
-	}
-
-	return roleIDs
-}
-
-func (role Role) Controllers() map[string]struct {
-	Actions map[string]bool `json:"actions"`
-} {
-	type Controllers struct {
-		Controllers map[string]struct {
-			Actions map[string]bool `json:"actions"`
-		} `json:"controllers"`
-	}
-
-	var controllers = Controllers{}
-	json.Unmarshal(role.Source, &controllers)
-
-	return controllers.Controllers
-}
 
 func (sr KuzzleResult) SourceToMap() map[string]interface{} {
 	type SourceMap map[string]interface{}
