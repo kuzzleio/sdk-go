@@ -11,5 +11,5 @@ func (k Kuzzle) GetHeaders() map[string]interface{} {
   Returns a specific header using its key.
 */
 func (k Kuzzle) GetHeader(key string) interface{} {
-	return k.headers[key]
+	return k.GetHeaders()[key]
 }

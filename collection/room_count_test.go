@@ -36,6 +36,6 @@ func TestRoomCount(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+	res, _ := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil).Count()
 	assert.Equal(t, 10, res)
 }
