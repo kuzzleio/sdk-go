@@ -31,7 +31,7 @@ func (dc Collection) FetchDocument(id string, options types.QueryOptions) (Docum
 		return Document{}, errors.New(res.Error.Message)
 	}
 
-	document := Document{}
+	document := Document{collection: dc}
 	json.Unmarshal(res.Result, &document)
 
 	return document, nil
