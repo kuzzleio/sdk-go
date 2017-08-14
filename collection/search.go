@@ -9,7 +9,7 @@ import (
 /*
   Searches documents in the given Collection, using provided filters and option.
 */
-func (dc Collection) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) Search(filters types.SearchFilters, options types.QueryOptions) (KuzzleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -35,10 +35,14 @@ func (dc Collection) Search(filters interface{}, options types.QueryOptions) (ty
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := types.KuzzleSearchResult{}
+	searchResult := KuzzleSearchResult{
+		Collection: dc,
+		Options: options,
+		Filters: filters,
+	}
 	json.Unmarshal(res.Result, &searchResult)
 
 	return searchResult, nil

@@ -40,9 +40,9 @@ func (dc Collection) FetchDocument(id string, options types.QueryOptions) (types
 /*
   Get specific documents according to given IDs.
 */
-func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if len(ids) == 0 {
-		return types.KuzzleSearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
+		return KuzzleSearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -63,10 +63,10 @@ func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (typ
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	return result, nil

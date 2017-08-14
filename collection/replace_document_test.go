@@ -125,7 +125,7 @@ func TestMReplaceDocument(t *testing.T) {
 				{Id: "bar", Source: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := types.KuzzleSearchResult{
+			res := collection.KuzzleSearchResult{
 				Total: 2,
 				Hits:  results,
 			}

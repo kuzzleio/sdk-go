@@ -91,7 +91,7 @@ func TestMGetDocument(t *testing.T) {
 	hits := make([]types.KuzzleResult, 2)
 	hits[0] = types.KuzzleResult{Id: "foo", Source: json.RawMessage(`{"title":"foo"}`)}
 	hits[1] = types.KuzzleResult{Id: "bar", Source: json.RawMessage(`{"title":"bar"}`)}
-	var results = types.KuzzleSearchResult{Total: 2, Hits: hits}
+	var results = collection.KuzzleSearchResult{Total: 2, Hits: hits}
 
 	ids := []string{"foo", "bar"}
 
@@ -106,7 +106,7 @@ func TestMGetDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, []interface{}{"foo", "bar"}, parsedQuery.Body.(map[string]interface{})["ids"])
 
-			res := types.KuzzleSearchResult{Total: results.Total, Hits: results.Hits}
+			res := collection.KuzzleSearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},

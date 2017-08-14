@@ -41,9 +41,9 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 /*
   Replace the provided documents.
 */
-func (dc Collection) MReplaceDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MReplaceDocument(documents []types.Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if len(documents) == 0 {
-		return types.KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
+		return KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -77,10 +77,10 @@ func (dc Collection) MReplaceDocument(documents []types.Document, options types.
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	return result, nil

@@ -9,9 +9,9 @@ import (
 /*
   A "scroll" option can be passed to search queries, creating persistent paginated results.
 */
-func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if scrollId == "" {
-		return types.KuzzleSearchResult{}, errors.New("Collection.Scroll: scroll id required")
+		return KuzzleSearchResult{}, errors.New("Collection.Scroll: scroll id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -26,10 +26,13 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (types.
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := types.KuzzleSearchResult{}
+	searchResult := KuzzleSearchResult{
+		Collection: dc,
+		Options: options,
+	}
 	json.Unmarshal(res.Result, &searchResult)
 
 	return searchResult, nil

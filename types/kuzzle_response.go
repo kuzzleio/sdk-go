@@ -26,10 +26,6 @@ type (
 		Error     MessageError `json:"error"`
 	}
 
-	IKuzzleResult interface {
-		SourceToMap()
-	}
-
 	KuzzleResult struct {
 		Id      string          `json:"_id"`
 		Meta    KuzzleMeta      `json:"_meta"`
@@ -168,6 +164,29 @@ type (
 		Id     string          `json:"_id"`
 		Source json.RawMessage `json:"_source"`
 		Meta   KuzzleMeta      `json:"_meta"`
+	}
+
+	GeoradiusPointWithCoord struct {
+		Name string
+		Lon  float64
+		Lat  float64
+	}
+
+	GeoradiusPointWithDist struct {
+		Name string
+		Dist float64
+	}
+
+	GeoradiusPointWithCoordAndDist struct {
+		Name string
+		Lon  float64
+		Lat  float64
+		Dist float64
+	}
+
+	MSScanResponse struct {
+		Cursor int      `json:"cursor"`
+		Values []string `json:"values"`
 	}
 )
 

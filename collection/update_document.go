@@ -41,9 +41,9 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 /*
   Update the provided documents.
 */
-func (dc Collection) MUpdateDocument(documents []types.Document, options types.QueryOptions) (types.KuzzleSearchResult, error) {
+func (dc Collection) MUpdateDocument(documents []types.Document, options types.QueryOptions) (KuzzleSearchResult, error) {
 	if len(documents) == 0 {
-		return types.KuzzleSearchResult{}, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
+		return KuzzleSearchResult{}, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -77,10 +77,10 @@ func (dc Collection) MUpdateDocument(documents []types.Document, options types.Q
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return KuzzleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := types.KuzzleSearchResult{}
+	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	return result, nil
