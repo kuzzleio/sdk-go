@@ -35,10 +35,6 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 	json.Unmarshal(jsonRequest, &out)
 	k.addHeaders(&out, query)
 
-	if options == nil {
-		options = types.NewQueryOptions()
-	}
-
 	refresh := options.GetRefresh()
 	if refresh != "" {
 		out["refresh"] = refresh
