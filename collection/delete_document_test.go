@@ -52,7 +52,7 @@ func TestDeleteDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.Document{Id: id}
+			res := collection.Document{Id: id}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},

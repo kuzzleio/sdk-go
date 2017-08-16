@@ -45,5 +45,9 @@ func (dc Collection) Search(filters types.SearchFilters, options types.QueryOpti
 	}
 	json.Unmarshal(res.Result, &searchResult)
 
+	for _, d := range searchResult.Hits {
+		d.collection = dc
+	}
+
 	return searchResult, nil
 }

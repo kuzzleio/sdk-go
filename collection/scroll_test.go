@@ -36,12 +36,12 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int                  `json:"total"`
-		Hits  []types.KuzzleResult `json:"hits"`
+		Total int                   `json:"total"`
+		Hits  []collection.Document `json:"hits"`
 	}
 
-	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
+	hits := make([]collection.Document, 1)
+	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
 	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -63,5 +63,5 @@ func TestScroll(t *testing.T) {
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
 }

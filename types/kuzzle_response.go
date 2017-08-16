@@ -19,18 +19,19 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
+	KuzzleResult struct {
+		Id         string          `json:"_id"`
+		Meta       KuzzleMeta      `json:"_meta"`
+		Content    json.RawMessage `json:"_source"`
+		Version    int             `json:"_version"`
+		Collection string          `json:"collection"`
+	}
+
 	KuzzleNotification struct {
 		RequestId string       `json:"requestId"`
 		Result    KuzzleResult `json:"result"`
 		RoomId    string       `json:"room"`
 		Error     MessageError `json:"error"`
-	}
-
-	KuzzleResult struct {
-		Id      string          `json:"_id"`
-		Meta    KuzzleMeta      `json:"_meta"`
-		Source  json.RawMessage `json:"_source"`
-		Version int             `json:"_version"`
 	}
 
 	KuzzleResponse struct {
@@ -39,12 +40,6 @@ type (
 		RoomId    string          `json:"room"`
 		Channel   string          `json:"channel"`
 		Error     MessageError    `json:"error"`
-	}
-
-	KuzzleSearchResult struct {
-		Hits     []KuzzleResult `json:"hits"`
-		Total    int            `json:"total"`
-		ScrollId string         `json:"_scroll_id"`
 	}
 
 	KuzzleValidationFields map[string]struct {
@@ -94,8 +89,6 @@ type (
 		Acknowledged       bool `json:"acknowledged"`
 		ShardsAcknowledged bool `json:"shardsAcknowledged"`
 	}
-
-	Document KuzzleResult
 
 	ShardResponse struct {
 		Found   bool   `json:"found"`
@@ -189,12 +182,3 @@ type (
 		Values []string `json:"values"`
 	}
 )
-
-func (sr KuzzleResult) SourceToMap() map[string]interface{} {
-	type SourceMap map[string]interface{}
-	sourceMap := SourceMap{}
-
-	json.Unmarshal(sr.Source, &sourceMap)
-
-	return sourceMap
-}

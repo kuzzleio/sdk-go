@@ -31,7 +31,7 @@ func (dc Collection) DeleteDocument(id string, options types.QueryOptions) (stri
 		return "", errors.New(res.Error.Message)
 	}
 
-	document := types.Document{}
+	document := Document{collection: dc}
 	json.Unmarshal(res.Result, &document)
 
 	return document.Id, nil

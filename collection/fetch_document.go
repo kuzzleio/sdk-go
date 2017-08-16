@@ -9,9 +9,9 @@ import (
 /*
   Retrieves a Document using its provided unique id.
 */
-func (dc Collection) FetchDocument(id string, options types.QueryOptions) (types.Document, error) {
+func (dc Collection) FetchDocument(id string, options types.QueryOptions) (Document, error) {
 	if id == "" {
-		return types.Document{}, errors.New("Collection.FetchDocument: document id required")
+		return Document{}, errors.New("Collection.FetchDocument: document id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -28,10 +28,10 @@ func (dc Collection) FetchDocument(id string, options types.QueryOptions) (types
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Document{}, errors.New(res.Error.Message)
+		return Document{}, errors.New(res.Error.Message)
 	}
 
-	document := types.Document{}
+	document := Document{collection: dc}
 	json.Unmarshal(res.Result, &document)
 
 	return document, nil
@@ -68,6 +68,10 @@ func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (Kuz
 
 	result := KuzzleSearchResult{}
 	json.Unmarshal(res.Result, &result)
+
+	for _, d := range result.Hits {
+		d.collection = dc
+	}
 
 	return result, nil
 }

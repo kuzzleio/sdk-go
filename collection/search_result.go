@@ -7,7 +7,7 @@ import (
 
 type KuzzleSearchResult struct {
 	Collection Collection
-	Hits       []types.KuzzleResult `json:"hits"`
+	Hits       []Document           `json:"hits"`
 	Total      int                  `json:"total"`
 	ScrollId   string               `json:"_scroll_id"`
 	Options    types.QueryOptions
