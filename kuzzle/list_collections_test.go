@@ -70,7 +70,7 @@ func TestListCollections(t *testing.T) {
 	assert.Equal(t, "stored", res[1].Type)
 }
 
-func TestListCollectionsWiithOptions(t *testing.T) {
+func TestListCollectionsWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
