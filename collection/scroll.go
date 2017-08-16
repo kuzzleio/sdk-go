@@ -35,5 +35,9 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (Kuzzle
 	}
 	json.Unmarshal(res.Result, &searchResult)
 
+	for _, d := range searchResult.Hits {
+		d.collection = dc
+	}
+
 	return searchResult, nil
 }

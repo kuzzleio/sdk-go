@@ -71,9 +71,9 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []types.KuzzleResult{
-					{Id: "product1", Source: []byte(`{"label":"Foo1","price":1200}`)},
-					{Id: "product2", Source: []byte(`{"label":"Foo2","price":800}`)},
+				results := []collection.Document{
+					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
+					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
@@ -97,9 +97,9 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "1m", parsedQuery.Scroll)
 				assert.Equal(t, "f00b4r", parsedQuery.ScrollId)
 
-				results := []types.KuzzleResult{
-					{Id: "product3", Source: []byte(`{"label":"Foo3","price":400}`)},
-					{Id: "product4", Source: []byte(`{"label":"Foo4","price":200}`)},
+				results := []collection.Document{
+					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
+					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
 
 				res := collection.KuzzleSearchResult{
@@ -152,9 +152,9 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []types.KuzzleResult{
-					{Id: "product1", Source: []byte(`{"label":"Foo1","price":"1200"}`)},
-					{Id: "product2", Source: []byte(`{"label":"Foo2","price":"800"}`)},
+				results := []collection.Document{
+					{Id: "product1", Content: []byte(`{"label":"Foo1","price":"1200"}`)},
+					{Id: "product2", Content: []byte(`{"label":"Foo2","price":"800"}`)},
 				}
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
@@ -178,9 +178,9 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "collection", parsedQuery.Collection)
 				assert.Equal(t, []interface {}([]interface {}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
 
-				results := []types.KuzzleResult{
-					{Id: "product3", Source: []byte(`{"label":"Foo3","price":"400"}`)},
-					{Id: "product4", Source: []byte(`{"label":"Foo4","price":"200"}`)},
+				results := []collection.Document{
+					{Id: "product3", Content: []byte(`{"label":"Foo3","price":"400"}`)},
+					{Id: "product4", Content: []byte(`{"label":"Foo4","price":"200"}`)},
 				}
 
 				res := collection.KuzzleSearchResult{
@@ -227,9 +227,9 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []types.KuzzleResult{
-					{Id: "product1", Source: []byte(`{"label":"Foo1","price":1200}`)},
-					{Id: "product2", Source: []byte(`{"label":"Foo2","price":800}`)},
+				results := []collection.Document{
+					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
+					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
@@ -252,9 +252,9 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []types.KuzzleResult{
-					{Id: "product3", Source: []byte(`{"label":"Foo3","price":400}`)},
-					{Id: "product4", Source: []byte(`{"label":"Foo4","price":200}`)},
+				results := []collection.Document{
+					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
+					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
 
 				res := collection.KuzzleSearchResult{
