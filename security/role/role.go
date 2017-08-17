@@ -26,7 +26,7 @@ type RoleSearchResult struct {
 
 /*
   Replaces the content of the Role object.
- */
+*/
 func (r *Role) SetContent(controllers types.Controllers) Role {
 	r.Source, _ = json.Marshal(controllers)
 
@@ -35,7 +35,7 @@ func (r *Role) SetContent(controllers types.Controllers) Role {
 
 /*
   Creates or replaces the role in Kuzzle's database layer.
- */
+*/
 func (r Role) Save(options types.QueryOptions) (Role, error) {
 	if options == nil {
 		options = types.NewQueryOptions()
@@ -46,14 +46,14 @@ func (r Role) Save(options types.QueryOptions) (Role, error) {
 
 /*
   Performs a partial content update on this object.
- */
+*/
 func (r Role) Update(content types.Controllers, options types.QueryOptions) (Role, error) {
-	return r.SR.Update(r.Id , content, options)
+	return r.SR.Update(r.Id, content, options)
 }
 
 /*
   Deletes this profile from Kuzzle.
- */
+*/
 func (r Role) Delete(options types.QueryOptions) (string, error) {
 	return r.SR.Delete(r.Id, options)
 }

@@ -46,7 +46,7 @@ func (d Document) SourceToMap() map[string]interface{} {
 
 /*
   Helper function to initialize a document into Document using fetch query.
- */
+*/
 func (d Document) Fetch(id string) (Document, error) {
 	if id == "" {
 		return d, errors.New("Document.Fetch: missing document id")
@@ -71,7 +71,7 @@ func (d Document) Fetch(id string) (Document, error) {
 /*
   Listens to events concerning this document. Has no effect if the document does not have an ID
   (i.e. if the document has not yet been created as a persisted document).
- */
+*/
 func (d Document) Subscribe(options types.RoomOptions, ch chan<- types.KuzzleNotification) chan types.SubscribeResponse {
 	if d.Id == "" {
 		errorResponse := make(chan types.SubscribeResponse, 1)

@@ -6,10 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/security/role"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/security/role"
 )
 
 func TestRoleSetContent(t *testing.T) {
@@ -125,7 +125,7 @@ func TestRoleUpdate(t *testing.T) {
 
 	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
-	updatedRole, _ := r.Update(newContent,nil)
+	updatedRole, _ := r.Update(newContent, nil)
 
 	assert.Equal(t, newContent.Controllers, updatedRole.Controllers())
 }

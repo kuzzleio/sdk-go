@@ -34,7 +34,7 @@ func (p *Profile) AddPolicy(policy types.Policy) Profile {
 
 /*
   Returns this profile associated role policies.
- */
+*/
 func (p Profile) GetPolicies() []types.Policy {
 	policies := types.Policies{}
 	json.Unmarshal(p.Source, &policies)
@@ -44,7 +44,7 @@ func (p Profile) GetPolicies() []types.Policy {
 
 /*
   Replaces the roles policies associated to the profile.
- */
+*/
 func (p *Profile) SetPolicies(policies []types.Policy) Profile {
 	content := map[string]interface{}{}
 	json.Unmarshal(p.Source, content)
@@ -58,7 +58,7 @@ func (p *Profile) SetPolicies(policies []types.Policy) Profile {
 
 /*
   Replaces the content of the Profile object.
- */
+*/
 func (p *Profile) SetContent(data json.RawMessage) Profile {
 	p.Source = data
 
@@ -69,7 +69,7 @@ func (p *Profile) SetContent(data json.RawMessage) Profile {
 
 /*
   Creates or replaces the profile in Kuzzle.
- */
+*/
 func (p Profile) Save(options types.QueryOptions) (Profile, error) {
 	if options == nil {
 		options = types.NewQueryOptions()
@@ -87,7 +87,7 @@ func (p Profile) Update(policies []types.Policy, options types.QueryOptions) (Pr
 
 /*
   Deletes this profile from Kuzzle.
- */
+*/
 func (p Profile) Delete(options types.QueryOptions) (string, error) {
 	return p.SP.Delete(p.Id, options)
 }

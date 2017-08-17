@@ -1,9 +1,9 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
-	"errors"
 	"encoding/json"
+	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type ICollectionMapping interface {
@@ -20,7 +20,7 @@ type CollectionMapping struct {
 
 /*
   Applies the new mapping to the data collection.
- */
+*/
 func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -50,7 +50,7 @@ func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping
   Replaces the current content with the mapping stored in Kuzzle.
 
   Calling this function will discard any uncommitted changes. You can commit changes by calling the “apply” function
- */
+*/
 func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMapping, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -96,7 +96,7 @@ func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMappi
   Adds or updates a field mapping.
 
   Changes made by this function won’t be applied until you call the apply method
- */
+*/
 func (cm CollectionMapping) Set(mappings types.KuzzleFieldMapping) CollectionMapping {
 	for field, mapping := range mappings {
 		cm.Mapping[field] = mapping
@@ -110,7 +110,7 @@ func (cm CollectionMapping) Set(mappings types.KuzzleFieldMapping) CollectionMap
 
   If the replace argument is set to true, replace the current headers with the provided content.
   Otherwise, it appends the content to the current headers, only replacing already existing values
- */
+*/
 func (cm CollectionMapping) SetHeaders(content map[string]interface{}, replace bool) CollectionMapping {
 	cm.Collection.SetHeaders(content, replace)
 

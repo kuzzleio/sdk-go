@@ -1,22 +1,22 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"errors"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type KuzzleSearchResult struct {
 	Collection Collection
-	Hits       []Document           `json:"hits"`
-	Total      int                  `json:"total"`
-	ScrollId   string               `json:"_scroll_id"`
+	Hits       []Document `json:"hits"`
+	Total      int        `json:"total"`
+	ScrollId   string     `json:"_scroll_id"`
 	Options    types.QueryOptions
 	Filters    types.SearchFilters
 }
 
 func (ksr KuzzleSearchResult) FetchNext() (KuzzleSearchResult, error) {
 	if ksr.ScrollId != "" {
-		var options= ksr.Options
+		var options = ksr.Options
 		options.SetFrom(0)
 		options.SetSize(0)
 
@@ -25,23 +25,23 @@ func (ksr KuzzleSearchResult) FetchNext() (KuzzleSearchResult, error) {
 
 	if ksr.Options != nil {
 		if ksr.Options.GetSize() != 0 && len(ksr.Filters.Sort) > 0 {
-			var filters= ksr.Filters
+			var filters = ksr.Filters
 
 			for _, sortRules := range filters.Sort {
 				for field := range sortRules {
-					var source= ksr.Hits[len(ksr.Hits)-1].SourceToMap()
+					var source = ksr.Hits[len(ksr.Hits)-1].SourceToMap()
 					filters.SearchAfter = append(filters.SearchAfter, source[field])
 				}
 			}
 
-			var options= ksr.Options
+			var options = ksr.Options
 			options.SetFrom(0)
 
 			return ksr.Collection.Search(filters, options)
 		}
 
 		if ksr.Options.GetSize() != 0 {
-			var options= ksr.Options
+			var options = ksr.Options
 			options.SetFrom(ksr.Options.GetFrom() + ksr.Options.GetSize())
 
 			if options.GetFrom() >= ksr.Total {

@@ -2,15 +2,15 @@ package user_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/security/profile"
 	"github.com/kuzzleio/sdk-go/security/user"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/security/profile"
-	"fmt"
 )
 
 func TestUserSetContent(t *testing.T) {
@@ -93,7 +93,7 @@ func TestUserAddProfile(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.AddProfile(profile.Profile{Id:"adminNew"})
+	u.AddProfile(profile.Profile{Id: "adminNew"})
 
 	assert.Equal(t, []string{"admin", "other", "adminNew"}, u.UserData().ProfileIds)
 }
@@ -723,7 +723,7 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int          `json:"total"`
+		Total int         `json:"total"`
 		Hits  []user.User `json:"hits"`
 	}
 

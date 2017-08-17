@@ -12,9 +12,9 @@ type Collection struct {
 
 func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection {
 	return &Collection{
-		index:             index,
-		collection:        collection,
-		Kuzzle:            kuzzle,
+		index:      index,
+		collection: collection,
+		Kuzzle:     kuzzle,
 	}
 }
 

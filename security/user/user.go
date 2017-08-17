@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/types"
 	"github.com/kuzzleio/sdk-go/security/profile"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type SecurityUser struct {
@@ -27,9 +27,9 @@ type UserSearchResult struct {
 
 /*
   Updating an user will have no impact until the create or replace method is called.
- */
+*/
 func (u *User) SetContent(data types.UserData) User {
-	u.Source , _= json.Marshal(data)
+	u.Source, _ = json.Marshal(data)
 
 	return *u
 }
@@ -37,7 +37,7 @@ func (u *User) SetContent(data types.UserData) User {
 /*
   Updating user credentials will have no impact until the create method is called.
   The credentials to send depends entirely on the authentication plugin and strategy you want to create credentials for.
- */
+*/
 func (u *User) SetCredentials(credentials types.UserCredentials) User {
 	userData := u.UserData()
 	userData.Credentials = credentials
@@ -47,7 +47,7 @@ func (u *User) SetCredentials(credentials types.UserCredentials) User {
 
 /*
   Updating an user will have no impact until the create or replace method is called.
- */
+*/
 func (u *User) AddProfile(profile profile.Profile) User {
 	userData := u.UserData()
 	userData.ProfileIds = append(userData.ProfileIds, profile.Id)
@@ -57,7 +57,7 @@ func (u *User) AddProfile(profile profile.Profile) User {
 
 /*
   Gets the associated Profile instances from the Kuzzle API, using the profile identifiers attached to this user (see getProfileIds).
- */
+*/
 func (u User) GetProfiles(options types.QueryOptions) ([]profile.Profile, error) {
 	fetchedProfiles := []profile.Profile{}
 
@@ -80,14 +80,14 @@ func (u User) GetProfiles(options types.QueryOptions) ([]profile.Profile, error)
 
 /*
   Returns the list of profile identifiers associated to this user.
- */
+*/
 func (u User) GetProfileIds() []string {
 	return u.UserData().ProfileIds
 }
 
 /*
   Updating an user will have no impact until the create or replace method is called.
- */
+*/
 func (u *User) SetProfiles(profiles []profile.Profile) User {
 	profileIds := []string{}
 
@@ -103,35 +103,35 @@ func (u *User) SetProfiles(profiles []profile.Profile) User {
 
 /*
   Create the user in kuzzle. Credentials can be created during the process by using setCredentials beforehand.
- */
+*/
 func (u User) Create(options types.QueryOptions) (User, error) {
 	return u.SU.Create(u.Id, u.UserData(), options)
 }
 
 /*
   Saves this user as restricted into Kuzzle.
- */
+*/
 func (u User) SaveRestricted(options types.QueryOptions) (User, error) {
 	return u.SU.CreateRestrictedUser(u.Id, u.UserData(), options)
 }
 
 /*
   Replaces the user in kuzzle.
- */
+*/
 func (u User) Replace(options types.QueryOptions) (User, error) {
 	return u.SU.Replace(u.Id, u.UserData(), options)
 }
 
 /*
   Performs a partial update on an existing user.
- */
+*/
 func (u User) Update(content types.UserData, options types.QueryOptions) (User, error) {
 	return u.SU.Update(u.Id, content, options)
 }
 
 /*
   Deletes the user in Kuzzle.
- */
+*/
 func (u User) Delete(options types.QueryOptions) (string, error) {
 	return u.SU.Delete(u.Id, options)
 }

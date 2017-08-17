@@ -6,10 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/security/profile"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/security/profile"
 )
 
 func TestProfileAddPolicy(t *testing.T) {
@@ -34,9 +34,9 @@ func TestProfileAddPolicy(t *testing.T) {
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
 	policy := types.Policy{
-		RoleId: "roleId",
+		RoleId:             "roleId",
 		AllowInternalIndex: true,
-		RestrictedTo: []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}},
+		RestrictedTo:       []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}},
 	}
 
 	p.AddPolicy(policy)
