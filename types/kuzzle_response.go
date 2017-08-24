@@ -19,6 +19,14 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
+	KuzzleResult struct {
+		Id         string          `json:"_id"`
+		Meta       KuzzleMeta      `json:"_meta"`
+		Content    json.RawMessage `json:"_source"`
+		Version    int             `json:"_version"`
+		Collection string          `json:"collection"`
+	}
+
 	KuzzleNotification struct {
 		RequestId string       `json:"requestId"`
 		Result    KuzzleResult `json:"result"`
@@ -30,25 +38,12 @@ type (
 		SourceToMap()
 	}
 
-	KuzzleResult struct {
-		Id      string          `json:"_id"`
-		Meta    KuzzleMeta      `json:"_meta"`
-		Source  json.RawMessage `json:"_source"`
-		Version int             `json:"_version"`
-	}
-
 	KuzzleResponse struct {
 		RequestId string          `json:"requestId"`
 		Result    json.RawMessage `json:"result"`
 		RoomId    string          `json:"room"`
 		Channel   string          `json:"channel"`
 		Error     MessageError    `json:"error"`
-	}
-
-	KuzzleSearchResult struct {
-		Hits     []KuzzleResult `json:"hits"`
-		Total    int            `json:"total"`
-		ScrollId string         `json:"_scroll_id"`
 	}
 
 	KuzzleSearchUsersResult struct {
@@ -116,8 +111,6 @@ type (
 		Acknowledged       bool `json:"acknowledged"`
 		ShardsAcknowledged bool `json:"shardsAcknowledged"`
 	}
-
-	Document KuzzleResult
 
 	ShardResponse struct {
 		Found   bool   `json:"found"`
@@ -190,6 +183,29 @@ type (
 		Index      string `json:"index"`
 		Collection string `json:"collection"`
 		Value      string `json:"value"`
+	}
+
+	GeoradiusPointWithCoord struct {
+		Name string
+		Lon  float64
+		Lat  float64
+	}
+
+	GeoradiusPointWithDist struct {
+		Name string
+		Dist float64
+	}
+
+	GeoradiusPointWithCoordAndDist struct {
+		Name string
+		Lon  float64
+		Lat  float64
+		Dist float64
+	}
+
+	MSScanResponse struct {
+		Cursor int      `json:"cursor"`
+		Values []string `json:"values"`
 	}
 )
 
@@ -268,13 +284,4 @@ func (role Role) Controllers() map[string]struct {
 	json.Unmarshal(role.Source, &controllers)
 
 	return controllers.Controllers
-}
-
-func (sr KuzzleResult) SourceToMap() map[string]interface{} {
-	type SourceMap map[string]interface{}
-	sourceMap := SourceMap{}
-
-	json.Unmarshal(sr.Source, &sourceMap)
-
-	return sourceMap
 }

@@ -18,14 +18,15 @@ func TestSearchError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").Search(nil, nil)
+	_, err := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestSearch(t *testing.T) {
-	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
-	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
+	hits := make([]collection.Document, 1)
+	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+
+	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -37,24 +38,24 @@ func TestSearch(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleSearchResult{Total: results.Total, Hits: results.Hits}
+			res := collection.KuzzleSearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
 }
 
 func TestSearchWithScroll(t *testing.T) {
-	hits := make([]types.KuzzleResult, 1)
-	hits[0] = types.KuzzleResult{Id: "doc42", Source: json.RawMessage(`{"foo":"bar"}`)}
-	var results = types.KuzzleSearchResult{Total: 42, Hits: hits}
+	hits := make([]collection.Document, 1)
+	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	var results = collection.KuzzleSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -69,7 +70,7 @@ func TestSearchWithScroll(t *testing.T) {
 			assert.Equal(t, 4, parsedQuery.Size)
 			assert.Equal(t, "1m", parsedQuery.Scroll)
 
-			res := types.KuzzleSearchResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
+			res := collection.KuzzleSearchResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -80,10 +81,10 @@ func TestSearchWithScroll(t *testing.T) {
 	opts.SetFrom(2)
 	opts.SetSize(4)
 	opts.SetScroll("1m")
-	res, _ := collection.NewCollection(k, "collection", "index").Search(nil, opts)
+	res, _ := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, opts)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
 }

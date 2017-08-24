@@ -12,11 +12,11 @@ type Room struct {
 	RequestId       string          `json:"RequestId"`
 	RoomId          string          `json:"roomId"`
 	Channel         string          `json:"channel"`
-	result          json.RawMessage `json:"result"`
-	scope           string          `json:"scope"`
-	state           string          `json:"state"`
-	user            string          `json:"user"`
-	subscribeToSelf bool            `json:"subscribeToSelf"`
+	result          json.RawMessage `json:"-"`
+	scope           string          `json:"-"`
+	state           string          `json:"-"`
+	user            string          `json:"-"`
+	subscribeToSelf bool            `json:"-"`
 
 	collection                  Collection                      `json:"-"`
 	RealtimeNotificationChannel chan<- types.KuzzleNotification `json:"-"`
