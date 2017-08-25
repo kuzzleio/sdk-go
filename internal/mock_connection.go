@@ -4,8 +4,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/mock"
 	"time"
-	"fmt"
-	"reflect"
 )
 
 var OfflineQueue []types.QueryObject
