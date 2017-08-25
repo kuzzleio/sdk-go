@@ -5,7 +5,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"sync"
 	"time"
 )
 
@@ -23,7 +22,6 @@ type Kuzzle struct {
 	wasConnected   bool
 	lastUrl        string
 	message        chan []byte
-	mu             *sync.Mutex
 	defaultIndex   string
 	jwt            string
 	headers        map[string]interface{}
@@ -44,7 +42,6 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	}
 
 	k := &Kuzzle{
-		mu:      &sync.Mutex{},
 		socket:  c,
 		headers: options.GetHeaders(),
 		version: version,

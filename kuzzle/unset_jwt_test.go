@@ -31,17 +31,17 @@ func TestUnsetJwt(t *testing.T) {
 			return types.KuzzleResponse{Result: marsh}
 		},
 		MockGetRooms: func() types.RoomList {
-			rooms := make(types.RoomList)
+			rooms := types.RoomList{}
 
-			room := make(map[string]types.IRoom)
+			room := types.RoomList{}
 			newRoom := internal.MockedRoom{
 				MockedRenew: func() {
 					renewcalled = true
 				},
 			}
 
-			room["id"] = newRoom
-			rooms["roomId"] = room
+			room.Store("id", newRoom)
+			rooms.Store("roomId", room)
 			return rooms
 		},
 	}

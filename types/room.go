@@ -1,5 +1,7 @@
 package types
 
+import "sync"
+
 type IRoom interface {
 	Renew(filters interface{}, realtimeNotificationChannel chan<- KuzzleNotification, subscribeResponseChan chan<- SubscribeResponse)
 	Unsubscribe()
@@ -14,4 +16,4 @@ type SubscribeResponse struct {
 	Error error
 }
 
-type RoomList map[string]map[string]IRoom
+type RoomList = sync.Map

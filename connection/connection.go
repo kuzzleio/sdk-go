@@ -17,5 +17,5 @@ type Connection interface {
 	UnregisterRoom(string)
 	GetRequestHistory() *map[string]time.Time
 	RenewSubscriptions()
-	GetRooms() types.RoomList
+	GetRooms() *types.RoomList
 }

@@ -4,6 +4,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/mock"
 	"time"
+	"fmt"
+	"reflect"
 )
 
 var OfflineQueue []types.QueryObject
@@ -62,6 +64,9 @@ func (c MockedConnection) GetRequestHistory() *map[string]time.Time {
 
 func (c MockedConnection) RenewSubscriptions() {}
 
-func (c MockedConnection) GetRooms() types.RoomList {
-	return c.MockGetRooms()
+func (c MockedConnection) GetRooms() *types.RoomList {
+	v := c.MockGetRooms()
+
+	fmt.Printf("%s\n", reflect.TypeOf(&v))
+	return &v
 }

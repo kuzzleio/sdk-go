@@ -1,14 +1,23 @@
 package kuzzle
 
+import (
+	"sync"
+	"github.com/kuzzleio/sdk-go/types"
+)
+
 /*
  * Unset the authentication token and cancel all subscriptions
  */
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	for _, rooms := range k.socket.GetRooms() {
-		for _, room := range rooms {
-			room.Renew(room.GetFilters(), room.GetRealtimeChannel(), room.GetResponseChannel())
-		}
-	}
+	k.socket.GetRooms().Range(func(key, value interface{}) bool {
+		value.(*sync.Map).Range(func(key, value interface{}) bool {
+			value.(types.IRoom).Renew(value.(types.IRoom).GetFilters(), value.(types.IRoom).GetRealtimeChannel(), value.(types.IRoom).GetResponseChannel())
+
+			return true
+		})
+
+		return true
+	})
 }
