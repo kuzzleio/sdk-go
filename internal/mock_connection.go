@@ -67,6 +67,5 @@ func (c MockedConnection) RenewSubscriptions() {}
 func (c MockedConnection) GetRooms() *types.RoomList {
 	v := c.MockGetRooms()
 
-	fmt.Printf("%s\n", reflect.TypeOf(&v))
 	return &v
 }
