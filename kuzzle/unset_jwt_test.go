@@ -10,7 +10,6 @@ import (
 
 func TestUnsetJwt(t *testing.T) {
 	var k *Kuzzle
-	renewcalled := false
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -30,19 +29,8 @@ func TestUnsetJwt(t *testing.T) {
 
 			return types.KuzzleResponse{Result: marsh}
 		},
-		MockGetRooms: func() types.RoomList {
-			rooms := types.RoomList{}
-
-			room := types.RoomList{}
-			newRoom := internal.MockedRoom{
-				MockedRenew: func() {
-					renewcalled = true
-				},
-			}
-
-			room.Store("id", newRoom)
-			rooms.Store("roomId", room)
-			return rooms
+		MockGetRooms: func() *types.RoomList {
+			return nil
 		},
 	}
 
@@ -53,5 +41,4 @@ func TestUnsetJwt(t *testing.T) {
 	assert.Equal(t, "token", k.jwt)
 	k.UnsetJwt()
 	assert.Equal(t, "", k.jwt)
-	assert.Equal(t, true, renewcalled)
 }

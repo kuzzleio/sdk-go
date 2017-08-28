@@ -12,7 +12,7 @@ type MockedConnection struct {
 	mock.Mock
 	MockSend      func([]byte, types.QueryOptions) types.KuzzleResponse
 	MockEmitEvent func(int, interface{})
-	MockGetRooms  func() types.RoomList
+	MockGetRooms  func() *types.RoomList
 }
 
 func (c MockedConnection) Send(query []byte, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse, requestId string) error {
@@ -65,5 +65,5 @@ func (c MockedConnection) RenewSubscriptions() {}
 func (c MockedConnection) GetRooms() *types.RoomList {
 	v := c.MockGetRooms()
 
-	return &v
+	return v
 }
