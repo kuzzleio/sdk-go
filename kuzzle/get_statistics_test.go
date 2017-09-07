@@ -21,7 +21,7 @@ func TestGetStatisticsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.GetStatistics(nil)
+	_, err := k.GetStatistics(nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -50,7 +50,7 @@ func TestGetStatistics(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.GetStatistics(nil)
+	res, _ := k.GetStatistics(nil, nil)
 
 	assert.Equal(t, 42, res.CompletedRequests["websocket"])
 }

@@ -10,7 +10,9 @@ import (
 func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
 	requestId := uuid.NewV4().String()
 
-	query.RequestId = requestId
+	if query.RequestId == "" {
+		query.RequestId = requestId
+	}
 
 	type body struct{}
 

@@ -141,7 +141,7 @@ type (
 	}
 
 	CredentialStrategyFields []string
-	CredentialFields         map[string]CredentialStrategyFields
+	CredentialFields map[string]CredentialStrategyFields
 
 	Credentials map[string]interface{}
 

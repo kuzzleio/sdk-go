@@ -35,8 +35,12 @@ func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.Que
 		return false, errors.New(res.Error.Message)
 	}
 
-	var r bool
+	type autoRefreshResponse struct {
+		Response bool `json:"response"`
+	}
+
+	var r autoRefreshResponse
 	json.Unmarshal(res.Result, &r)
 
-	return r, nil
+	return r.Response, nil
 }
