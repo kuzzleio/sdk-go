@@ -147,7 +147,6 @@ type (
 		Strategies []string        `json:"strategies"`
 	}
 
-	User    SecurityDocument
 	Profile SecurityDocument
 	Role    SecurityDocument
 
