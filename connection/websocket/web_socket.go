@@ -26,8 +26,8 @@ type webSocket struct {
 	state   int
 
 	listenChan     chan []byte
-	channelsResult map[string]chan<- types.KuzzleResponse // todo use sync.Map when go-1.9 will be released
-	subscriptions  types.RoomList                         // todo use sync.Map when go-1.9 will be released
+	channelsResult sync.Map
+	subscriptions  types.RoomList
 	lastUrl        string
 	host           string
 	wasConnected   bool
@@ -80,8 +80,8 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		queueTTL:              opts.GetQueueTTL(),
 		offlineQueue:          make([]types.QueryObject, 0),
 		queueMaxSize:          opts.GetQueueMaxSize(),
-		channelsResult:        make(map[string]chan<- types.KuzzleResponse),
-		subscriptions:         make(types.RoomList),
+		channelsResult:        sync.Map{},
+		subscriptions:         types.RoomList{},
 		eventListeners:        make(map[int]chan<- interface{}),
 		RequestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.GetAutoQueue(),
@@ -240,19 +240,18 @@ func (ws *webSocket) cleanQueue() {
 }
 
 func (ws *webSocket) RegisterRoom(roomId, id string, room types.IRoom) {
-	ws.mu.Lock()
-	defer ws.mu.Unlock()
-	if ws.subscriptions[roomId] == nil {
-		ws.subscriptions[roomId] = make(map[string]types.IRoom)
+	_, ok := ws.subscriptions.Load(roomId)
+	if !ok {
+		s := &sync.Map{}
+		s.Store(id, room)
+		ws.subscriptions.Store(roomId, s)
 	}
-	ws.subscriptions[roomId][id] = room
 }
 
 func (ws *webSocket) UnregisterRoom(roomId string) {
-	if ws.subscriptions[roomId] != nil {
-		ws.mu.Lock()
-		defer ws.mu.Unlock()
-		delete(ws.subscriptions, roomId)
+	_, ok := ws.subscriptions.Load(roomId)
+	if ok {
+		ws.subscriptions.Delete(roomId)
 	}
 }
 
@@ -268,30 +267,32 @@ func (ws *webSocket) listen() {
 
 		json.Unmarshal(m.Result, &r)
 
-		if m.RoomId != "" && ws.subscriptions[m.RoomId] != nil {
+		s, ok := ws.subscriptions.Load(m.RoomId)
+		if m.RoomId != "" && ok {
 			var notification types.KuzzleNotification
 
 			json.Unmarshal(m.Result, &notification.Result)
-			for _, rooms := range ws.subscriptions[m.RoomId] {
-				channel := rooms.GetRealtimeChannel()
+			s.(*sync.Map).Range(func(key, value interface{}) bool {
+				channel := value.(types.IRoom).GetRealtimeChannel()
 				if channel != nil {
-					rooms.GetRealtimeChannel() <- notification
+					value.(types.IRoom).GetRealtimeChannel() <- notification
 				}
-			}
+				return true
+			})
 		}
 
-		if len(ws.channelsResult) > 0 {
-			if ws.channelsResult[m.RequestId] != nil {
-				if message.Error.Message == "Token expired" {
-					ws.EmitEvent(event.JwtExpired, nil)
-				}
-
-				// If this is a response to a query we simply broadcast the response to the corresponding channel
-				ws.channelsResult[m.RequestId] <- message
-				close(ws.channelsResult[m.RequestId])
-				delete(ws.channelsResult, m.RequestId)
+		c, ok := ws.channelsResult.Load(m.RequestId)
+		if ok {
+			if message.Error.Message == "Token expired" {
+				ws.EmitEvent(event.JwtExpired, nil)
 			}
+
+			// If this is a response to a query we simply broadcast the response to the corresponding channel
+			c.(chan<- types.KuzzleResponse) <- message
+			close(c.(chan<- types.KuzzleResponse))
+			ws.channelsResult.Delete(m.RequestId)
 		}
+		//}
 	}
 }
 
@@ -400,10 +401,10 @@ func (ws *webSocket) emitRequest(query types.QueryObject) error {
 	now := time.Now()
 	now = now.Add(-MAX_EMIT_TIMEOUT * time.Second)
 
+	ws.channelsResult.Store(query.RequestId, query.ResChan)
+
 	ws.mu.Lock()
 	defer ws.mu.Unlock()
-	ws.channelsResult[query.RequestId] = query.ResChan
-
 	err := ws.ws.WriteMessage(websocket.TextMessage, query.Query)
 	if err != nil {
 		return err
@@ -449,13 +450,16 @@ func (ws webSocket) GetRequestHistory() *map[string]time.Time {
 }
 
 func (ws webSocket) RenewSubscriptions() {
-	for _, rooms := range ws.subscriptions {
-		for _, room := range rooms {
-			room.Renew(room.GetFilters(), room.GetRealtimeChannel(), room.GetResponseChannel())
-		}
-	}
+	ws.subscriptions.Range(func(key, value interface{}) bool {
+		value.(*sync.Map).Range(func(key, value interface{}) bool {
+			value.(types.IRoom).Renew(value.(types.IRoom).GetFilters(), value.(types.IRoom).GetRealtimeChannel(), value.(types.IRoom).GetResponseChannel())
+			return true
+		})
+
+		return true
+	})
 }
 
-func (ws webSocket) GetRooms() types.RoomList {
-	return ws.subscriptions
+func (ws webSocket) GetRooms() *types.RoomList {
+	return &ws.subscriptions
 }
