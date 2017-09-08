@@ -140,8 +140,19 @@ type (
 		Controllers map[string]Controller `json:"controllers"`
 	}
 
+	SecurityDocument struct {
+		Id         string          `json:"_id"`
+		Source     json.RawMessage `json:"_source"`
+		Meta       KuzzleMeta      `json:"_meta"`
+		Strategies []string        `json:"strategies"`
+	}
+
+	User    SecurityDocument
+	Profile SecurityDocument
+	Role    SecurityDocument
+
 	CredentialStrategyFields []string
-	CredentialFields map[string]CredentialStrategyFields
+	CredentialFields         map[string]CredentialStrategyFields
 
 	Credentials map[string]interface{}
 

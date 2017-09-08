@@ -22,7 +22,7 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions)
 	query := types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "deleteMyCredentials",
-		Strategy: strategy,
+		Strategy:   strategy,
 	}
 
 	go k.Query(query, options, result)
