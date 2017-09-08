@@ -2,13 +2,565 @@ package user_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/security/profile"
+	"github.com/kuzzleio/sdk-go/security/user"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestUserSetContent(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	newContent := types.UserData{
+		ProfileIds: []string{"adminNew", "otherNew"},
+	}
+
+	u.SetContent(newContent)
+
+	assert.Equal(t, newContent, u.UserData())
+}
+
+func TestUserSetCredentials(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+
+	u.SetCredentials(cred)
+
+	assert.Equal(t, cred, u.UserData().Credentials)
+}
+
+func TestUserAddProfile(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.AddProfile(profile.Profile{Id: "adminNew"})
+
+	assert.Equal(t, []string{"admin", "other", "adminNew"}, u.UserData().ProfileIds)
+}
+
+func TestUserGetProfilesEmptyProfileIds(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":[],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	profiles, _ := u.GetProfiles(nil)
+
+	assert.Equal(t, []profile.Profile{}, profiles)
+}
+
+func TestUserGetProfilesError(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getProfile", parsedQuery.Action)
+			assert.Equal(t, "admin", parsedQuery.Id)
+
+			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	_, err := u.GetProfiles(nil)
+
+	assert.Equal(t, "Unit test error", fmt.Sprint(err))
+}
+
+func TestUserGetProfiles(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getProfile", parsedQuery.Action)
+				assert.Equal(t, "admin", parsedQuery.Id)
+
+				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+
+				res := profile.Profile{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: profile.SecurityProfile{Kuzzle: *k}}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 2 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getProfile", parsedQuery.Action)
+				assert.Equal(t, "other", parsedQuery.Id)
+
+				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+
+				res := profile.Profile{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: profile.SecurityProfile{Kuzzle: *k}}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	profiles, _ := u.GetProfiles(nil)
+
+	assert.Equal(t, []profile.Profile{
+		{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: profile.SecurityProfile{Kuzzle: *k}},
+		{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: profile.SecurityProfile{Kuzzle: *k}},
+	}, profiles)
+}
+
+func TestUserGetProfileIds(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	profileIds := u.GetProfileIds()
+
+	assert.Equal(t, []string{"admin", "other"}, profileIds)
+}
+
+func TestUserSetProfiles(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetProfiles([]profile.Profile{
+		{Id: "adminNew"},
+		{Id: "otherNew"},
+	})
+
+	assert.Equal(t, []string{"adminNew", "otherNew"}, u.UserData().ProfileIds)
+}
+
+func TestUserCreate(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "createUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	createdUser, _ := u.Create(nil)
+
+	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
+}
+
+func TestUserSaveRestricted(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "createRestrictedUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	createdUser, _ := u.SaveRestricted(nil)
+
+	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
+}
+
+func TestUserReplace(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "replaceUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	createdUser, _ := u.Replace(nil)
+
+	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
+}
+
+func TestUserUpdate(t *testing.T) {
+	id := "userId"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "updateUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["adminNew","otherNew"]}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	newContent := types.UserData{ProfileIds: []string{"adminNew", "otherNew"}}
+	updatedUser, _ := u.Update(newContent, nil)
+
+	assert.Equal(t, newContent, updatedUser.UserData())
+}
+
+func TestUserDelete(t *testing.T) {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "deleteUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := types.ShardResponse{Id: id}
+				r, _ := json.Marshal(res)
+				return types.KuzzleResponse{Result: r}
+			}
+
+			return types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	inTheEnd, _ := u.Delete(nil)
+
+	assert.Equal(t, id, inTheEnd)
+}
+
+func TestUserContentEmptyKey(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	assert.Equal(t, nil, u.Content(""))
+	assert.Equal(t, "Jedi", u.Content("function"))
+}
+
+func TestUserContentNonExistingKey(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	assert.Nil(t, u.Content("galaxy"))
+	assert.Equal(t, "Jedi", u.Content("function"))
+}
+
+func TestUserEmptyContentMap(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUser", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			r, _ := json.Marshal(res)
+			return types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	assert.Equal(t, map[string]interface{}{}, u.ContentMap())
+}
 
 func TestFetchEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -46,7 +598,7 @@ func TestFetch(t *testing.T) {
 			assert.Equal(t, "getUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -57,7 +609,7 @@ func TestFetch(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+	assert.Equal(t, []string{"admin", "other"}, res.UserData().ProfileIds)
 
 	assert.Equal(t, "Luke", res.Content("name"))
 	assert.Equal(t, "Jedi", res.Content("function"))
@@ -82,9 +634,9 @@ func TestSearchError(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	hits := make([]types.User, 1)
-	hits[0] = types.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
-	var results = types.KuzzleSearchUsersResult{Total: 42, Hits: hits}
+	hits := make([]user.User, 1)
+	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
+	var results = user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -94,7 +646,7 @@ func TestSearch(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "searchUsers", parsedQuery.Action)
 
-			res := types.KuzzleSearchUsersResult{Total: results.Total, Hits: results.Hits}
+			res := user.UserSearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -106,14 +658,14 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "user42")
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`))
-	assert.Equal(t, res.Hits[0].ProfileIDs(), []string{"admin", "other"})
+	assert.Equal(t, res.Hits[0].UserData().ProfileIds, []string{"admin", "other"})
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
 }
 
 func TestSearchWithScroll(t *testing.T) {
-	hits := make([]types.User, 1)
-	hits[0] = types.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
-	var results = types.KuzzleSearchUsersResult{Total: 42, Hits: hits}
+	hits := make([]user.User, 1)
+	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
+	var results = user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -123,7 +675,7 @@ func TestSearchWithScroll(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "searchUsers", parsedQuery.Action)
 
-			res := types.KuzzleSearchUsersResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
+			res := user.UserSearchResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -141,7 +693,7 @@ func TestSearchWithScroll(t *testing.T) {
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, res.Hits[0].Id, "user42")
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`))
-	assert.Equal(t, res.Hits[0].ProfileIDs(), []string{"admin", "other"})
+	assert.Equal(t, res.Hits[0].UserData().ProfileIds, []string{"admin", "other"})
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
 }
 
@@ -171,13 +723,13 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int          `json:"total"`
-		Hits  []types.User `json:"hits"`
+		Total int         `json:"total"`
+		Hits  []user.User `json:"hits"`
 	}
 
-	hits := make([]types.User, 1)
-	hits[0] = types.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
-	var results = types.KuzzleSearchUsersResult{Total: 42, Hits: hits}
+	hits := make([]user.User, 1)
+	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
+	var results = user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -199,7 +751,7 @@ func TestScroll(t *testing.T) {
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "user42")
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`))
-	assert.Equal(t, res.Hits[0].ProfileIDs(), []string{"admin", "other"})
+	assert.Equal(t, res.Hits[0].UserData().ProfileIds, []string{"admin", "other"})
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
 }
 
@@ -239,7 +791,7 @@ func TestCreate(t *testing.T) {
 			assert.Equal(t, "createUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.User{
+			res := user.User{
 				Id:     id,
 				Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`),
 			}
@@ -258,7 +810,7 @@ func TestCreate(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+	assert.Equal(t, []string{"admin", "other"}, res.UserData().ProfileIds)
 
 	assert.Equal(t, "Luke", res.Content("name"))
 	assert.Equal(t, "Jedi", res.Content("function"))
@@ -306,7 +858,7 @@ func TestCreateRestricted(t *testing.T) {
 			assert.Equal(t, "createRestrictedUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.User{
+			res := user.User{
 				Id:     id,
 				Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`),
 			}
@@ -325,7 +877,7 @@ func TestCreateRestricted(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+	assert.Equal(t, []string{"admin", "other"}, res.UserData().ProfileIds)
 
 	assert.Equal(t, "Luke", res.Content("name"))
 	assert.Equal(t, "Jedi", res.Content("function"))
@@ -373,7 +925,7 @@ func TestReplace(t *testing.T) {
 			assert.Equal(t, "replaceUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.User{
+			res := user.User{
 				Id:     id,
 				Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`),
 			}
@@ -392,7 +944,7 @@ func TestReplace(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+	assert.Equal(t, []string{"admin", "other"}, res.UserData().ProfileIds)
 
 	assert.Equal(t, "Luke", res.Content("name"))
 	assert.Equal(t, "Jedi", res.Content("function"))
@@ -440,7 +992,7 @@ func TestUpdate(t *testing.T) {
 			assert.Equal(t, "updateUser", parsedQuery.Action)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			res := types.User{
+			res := user.User{
 				Id:     id,
 				Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`),
 			}
@@ -459,7 +1011,7 @@ func TestUpdate(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	assert.Equal(t, []string{"admin", "other"}, res.ProfileIDs())
+	assert.Equal(t, []string{"admin", "other"}, res.UserData().ProfileIds)
 
 	assert.Equal(t, "Luke", res.Content("name"))
 	assert.Equal(t, "Jedi", res.Content("function"))

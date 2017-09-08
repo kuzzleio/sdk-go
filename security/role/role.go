@@ -12,12 +12,65 @@ type SecurityRole struct {
 	Kuzzle kuzzle.Kuzzle
 }
 
+type Role struct {
+	Id     string           `json:"_id"`
+	Source json.RawMessage  `json:"_source"`
+	Meta   types.KuzzleMeta `json:"_meta"`
+	SR     SecurityRole
+}
+
+type RoleSearchResult struct {
+	Hits  []Role `json:"hits"`
+	Total int    `json:"total"`
+}
+
+/*
+  Replaces the content of the Role object.
+*/
+func (r *Role) SetContent(controllers types.Controllers) Role {
+	r.Source, _ = json.Marshal(controllers)
+
+	return *r
+}
+
+/*
+  Creates or replaces the role in Kuzzle's database layer.
+*/
+func (r Role) Save(options types.QueryOptions) (Role, error) {
+	if options == nil {
+		options = types.NewQueryOptions()
+	}
+
+	return r.SR.Create(r.Id, types.Controllers{Controllers: r.Controllers()}, options.SetIfExist("replace"))
+}
+
+/*
+  Performs a partial content update on this object.
+*/
+func (r Role) Update(content types.Controllers, options types.QueryOptions) (Role, error) {
+	return r.SR.Update(r.Id, content, options)
+}
+
+/*
+  Deletes this profile from Kuzzle.
+*/
+func (r Role) Delete(options types.QueryOptions) (string, error) {
+	return r.SR.Delete(r.Id, options)
+}
+
+func (r Role) Controllers() map[string]types.Controller {
+	var controllers = types.Controllers{}
+	json.Unmarshal(r.Source, &controllers)
+
+	return controllers.Controllers
+}
+
 /*
   Retrieves a Role using its provided unique id.
 */
-func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role, error) {
+func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (Role, error) {
 	if id == "" {
-		return types.Role{}, errors.New("Security.Role.Fetch: role id required")
+		return Role{}, errors.New("Security.Role.Fetch: role id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -32,10 +85,10 @@ func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role,
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Role{}, errors.New(res.Error.Message)
+		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := types.Role{}
+	role := Role{SR: sr}
 	json.Unmarshal(res.Result, &role)
 
 	return role, nil
@@ -44,7 +97,7 @@ func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (types.Role,
 /*
   Executes a search on Roles according to filters.
 */
-func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (types.KuzzleSearchRolesResult, error) {
+func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (RoleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -68,10 +121,10 @@ func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSearchRolesResult{}, errors.New(res.Error.Message)
+		return RoleSearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := types.KuzzleSearchRolesResult{}
+	searchResult := RoleSearchResult{}
 	json.Unmarshal(res.Result, &searchResult)
 
 	return searchResult, nil
@@ -80,9 +133,9 @@ func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (
 /*
   Create a new Role in Kuzzle.
 */
-func (sr SecurityRole) Create(id string, controllers types.Controllers, options types.QueryOptions) (types.Role, error) {
+func (sr SecurityRole) Create(id string, controllers types.Controllers, options types.QueryOptions) (Role, error) {
 	if id == "" {
-		return types.Role{}, errors.New("Security.Role.Create: role id required")
+		return Role{}, errors.New("Security.Role.Create: role id required")
 	}
 
 	action := "createRole"
@@ -91,7 +144,7 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplaceRole"
 		} else if options.GetIfExist() != "error" {
-			return types.Role{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return Role{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -108,10 +161,10 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Role{}, errors.New(res.Error.Message)
+		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := types.Role{}
+	role := Role{SR: sr}
 	json.Unmarshal(res.Result, &role)
 
 	return role, nil
@@ -120,9 +173,9 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 /*
   Update a Role in Kuzzle.
 */
-func (sr SecurityRole) Update(id string, controllers types.Controllers, options types.QueryOptions) (types.Role, error) {
+func (sr SecurityRole) Update(id string, controllers types.Controllers, options types.QueryOptions) (Role, error) {
 	if id == "" {
-		return types.Role{}, errors.New("Security.Role.Update: role id required")
+		return Role{}, errors.New("Security.Role.Update: role id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -138,10 +191,10 @@ func (sr SecurityRole) Update(id string, controllers types.Controllers, options 
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.Role{}, errors.New(res.Error.Message)
+		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := types.Role{}
+	role := Role{SR: sr}
 	json.Unmarshal(res.Result, &role)
 
 	return role, nil
