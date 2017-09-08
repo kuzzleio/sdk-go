@@ -7,6 +7,7 @@ import (
 
 type Connection interface {
 	AddListener(event int, channel chan<- interface{})
+	RemoveAllListeners(event int)
 	Connect() (bool, error)
 	Send([]byte, types.QueryOptions, chan<- types.KuzzleResponse, string) error
 	Close() error
