@@ -7,6 +7,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
 )
 
 func TestGetMyCredentialsQueryError(t *testing.T) {
@@ -23,6 +24,13 @@ func TestGetMyCredentialsQueryError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	_, err := k.GetMyCredentials("local", nil)
 	assert.NotNil(t, err)
+}
+
+func TestGetMyCredentialsEmptyStrategy(t *testing.T) {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	_, err := k.GetMyCredentials("", nil)
+	assert.Equal(t, "Kuzzle.GetMyCredentials: strategy is required", fmt.Sprint(err))
 }
 
 func TestGetMyCredentials(t *testing.T) {
