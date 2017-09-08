@@ -31,7 +31,7 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (Kuzzle
 
 	searchResult := KuzzleSearchResult{
 		Collection: dc,
-		Options: options,
+		Options:    options,
 	}
 	json.Unmarshal(res.Result, &searchResult)
 

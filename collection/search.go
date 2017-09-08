@@ -40,8 +40,8 @@ func (dc Collection) Search(filters types.SearchFilters, options types.QueryOpti
 
 	searchResult := KuzzleSearchResult{
 		Collection: dc,
-		Options: options,
-		Filters: filters,
+		Options:    options,
+		Filters:    filters,
 	}
 	json.Unmarshal(res.Result, &searchResult)
 

@@ -27,7 +27,7 @@ func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) 
 	query := types.KuzzleRequest{
 		Controller: "server",
 		Action:     "getLastStats",
-		Body: d,
+		Body:       d,
 	}
 
 	go k.Query(query, options, result)

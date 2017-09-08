@@ -2,13 +2,13 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
 )
 
 type ExistsFilter struct {
@@ -52,7 +52,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 
 	var filters = types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-		Sort: sort,
+		Sort:  sort,
 	}
 
 	var options = types.NewQueryOptions()
@@ -134,7 +134,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 
 	var filters = types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-		Sort: sort,
+		Sort:  sort,
 	}
 
 	var options = types.NewQueryOptions()
@@ -176,7 +176,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "search", parsedQuery.Action)
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
-				assert.Equal(t, []interface {}([]interface {}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
+				assert.Equal(t, []interface{}([]interface{}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
 
 				results := []collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":"400"}`)},

@@ -93,8 +93,8 @@ type MSSortedSet struct {
 }
 
 type SearchFilters struct {
-	Query        interface{}          `json:"query,omitempty"`
-	Sort         []map[string]string  `json:"sort,omitempty"`
-	Aggregations interface{}          `json:"aggregations,omitempty"`
-	SearchAfter  []interface{}        `json:"search_after,omitempty"`
+	Query        interface{}         `json:"query,omitempty"`
+	Sort         []map[string]string `json:"sort,omitempty"`
+	Aggregations interface{}         `json:"aggregations,omitempty"`
+	SearchAfter  []interface{}       `json:"search_after,omitempty"`
 }

@@ -6,10 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/state"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -99,7 +99,6 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 	assert.NotEqual(t, headers, k.GetHeaders())
 }
 
-
 func TestDocumentFetchEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -155,7 +154,7 @@ func TestDocumentSubscribeEmptyId(t *testing.T) {
 	cd := dc.Document()
 
 	ch := make(chan types.KuzzleNotification)
-	res := <- cd.Subscribe(types.NewRoomOptions(), ch)
+	res := <-cd.Subscribe(types.NewRoomOptions(), ch)
 
 	assert.Nil(t, res.Room)
 	assert.Equal(t, "Document.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
@@ -188,7 +187,7 @@ func TestDocumentSubscribe(t *testing.T) {
 			assert.Equal(t, "subscribe", parsedQuery.Action)
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
-			assert.Equal(t, map[string]interface {}(map[string]interface {}{"ids":map[string]interface {}{"values":[]interface {}{"docId"}}}), parsedQuery.Body)
+			assert.Equal(t, map[string]interface{}(map[string]interface{}{"ids": map[string]interface{}{"values": []interface{}{"docId"}}}), parsedQuery.Body)
 			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
 
