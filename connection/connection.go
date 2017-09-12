@@ -21,4 +21,5 @@ type Connection interface {
 	GetRooms() *types.RoomList
 	StartQueuing()
 	StopQueuing()
+	ReplayQueue()
 }
