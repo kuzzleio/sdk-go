@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
-	"time"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 )

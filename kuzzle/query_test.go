@@ -1,4 +1,4 @@
-package kuzzle
+package kuzzle_test
 
 import (
 	"encoding/json"
@@ -8,17 +8,18 @@ import (
 	"testing"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func TestQueryDefaultOptions(t *testing.T) {
-	var k *Kuzzle
+	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
-			assert.Equal(t, k.version, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile["sdkVersion"])
 			assert.Equal(t, 0, request.From)
 			assert.Equal(t, 10, request.Size)
 			assert.Equal(t, "", request.Scroll)
@@ -27,7 +28,7 @@ func TestQueryDefaultOptions(t *testing.T) {
 			return types.KuzzleResponse{}
 		},
 	}
-	k, _ = NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 
 	ch := make(chan types.KuzzleResponse)
 	options := types.NewQueryOptions()
@@ -36,14 +37,14 @@ func TestQueryDefaultOptions(t *testing.T) {
 }
 
 func TestQueryWithOptions(t *testing.T) {
-	var k *Kuzzle
+	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
-			assert.Equal(t, k.version, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile["sdkVersion"])
 			assert.Equal(t, 42, request.From)
 			assert.Equal(t, 24, request.Size)
 			assert.Equal(t, "5m", request.Scroll)
@@ -59,7 +60,7 @@ func TestQueryWithOptions(t *testing.T) {
 			return types.KuzzleResponse{}
 		},
 	}
-	k, _ = NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 
 	ch := make(chan types.KuzzleResponse)
 	options := types.NewQueryOptions()
@@ -71,14 +72,13 @@ func TestQueryWithOptions(t *testing.T) {
 	options.SetRefresh("wait_for")
 	options.SetRetryOnConflict(7)
 
-	k.headers = map[string]interface{}{"random": "header"}
 
 	go k.Query(types.KuzzleRequest{}, options, ch)
 	<-ch
 }
 
 func TestQueryWithVolatile(t *testing.T) {
-	var k *Kuzzle
+	var k *kuzzle.Kuzzle
 	var volatileData = types.VolatileData{
 		"modifiedBy": "awesome me",
 		"reason": "it needed to be modified",
@@ -90,12 +90,12 @@ func TestQueryWithVolatile(t *testing.T) {
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, volatileData, request.Volatile)
-			assert.Equal(t, k.version, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile["sdkVersion"])
 
 			return types.KuzzleResponse{}
 		},
 	}
-	k, _ = NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 
 	ch := make(chan types.KuzzleResponse)
 	options := types.NewQueryOptions()
@@ -106,7 +106,7 @@ func TestQueryWithVolatile(t *testing.T) {
 
 func ExampleKuzzle_Query() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := NewKuzzle(conn, nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	request := types.KuzzleRequest{Controller: "server", Action: "now"}
 	resChan := make(chan types.KuzzleResponse)

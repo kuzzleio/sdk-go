@@ -1,4 +1,4 @@
-package kuzzle
+package kuzzle_test
 
 import (
 	"github.com/kuzzleio/sdk-go/internal"
@@ -6,36 +6,35 @@ import (
 	"testing"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func TestGetHeaders(t *testing.T) {
-	k, _ := NewKuzzle(internal.MockedConnection{}, nil)
+	k, _ := kuzzle.NewKuzzle(internal.MockedConnection{}, nil)
 
 	m := make(map[string]interface{})
 	m["foo"] = "bar"
 	k.SetHeaders(m, false)
-	assert.Equal(t, "bar", k.headers["foo"])
 	assert.Equal(t, "bar", k.GetHeader("foo"))
 }
 
 func TestGetHeadersReplace(t *testing.T) {
-	k, _ := NewKuzzle(internal.MockedConnection{}, nil)
+	k, _ := kuzzle.NewKuzzle(internal.MockedConnection{}, nil)
 
 	m := make(map[string]interface{})
 	m["foo"] = "bar"
 	k.SetHeaders(m, false)
-	assert.Equal(t, "bar", k.headers["foo"])
+	assert.Equal(t, "bar", k.GetHeader("foo"))
 	delete(m, "foo")
 	m["oof"] = "bar"
 	k.SetHeaders(m, true)
-	assert.Nil(t, k.headers["foo"])
 	assert.Nil(t, k.GetHeader("foo"))
 	assert.Equal(t, "bar", k.GetHeader("oof"))
 }
 
 func ExampleKuzzle_GetHeaders() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := NewKuzzle(conn, nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	headers := make(map[string]interface{})
 	headers["foo"] = "bar"
@@ -47,7 +46,7 @@ func ExampleKuzzle_GetHeaders() {
 
 func ExampleKuzzle_GetHeader() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := NewKuzzle(conn, nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	headers := make(map[string]interface{})
 	headers["foo"] = "bar"

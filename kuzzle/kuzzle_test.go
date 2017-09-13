@@ -1,10 +1,10 @@
 package kuzzle_test
 
 import (
-	"github.com/kuzzleio/sdk-go/kuzzle"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/types"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func ExampleKuzzle_Connect() {

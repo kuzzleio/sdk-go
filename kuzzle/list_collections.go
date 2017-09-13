@@ -9,7 +9,10 @@ import (
 // Retrieves the list of known data collections contained in a specified index.
 func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]types.CollectionsList, error) {
 	if index == "" {
-		return nil, errors.New("Kuzzle.ListCollections: index required")
+		if k.defaultIndex == "" {
+			return nil, errors.New("Kuzzle.ListCollections: index required")
+		}
+		index = k.defaultIndex
 	}
 
 	result := make(chan types.KuzzleResponse)
