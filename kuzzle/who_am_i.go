@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Gets the rights array for the currently logged user.
+// WhoAmI gets the rights array for the currently logged user.
 func (k Kuzzle) WhoAmI() (*types.User, error) {
 	result := make(chan types.KuzzleResponse)
 

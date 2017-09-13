@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Retrieves the list of known data collections contained in a specified index.
+// ListCollections retrieves the list of known data collections contained in a specified index.
 func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]types.CollectionsList, error) {
 	if index == "" {
 		if k.defaultIndex == "" {

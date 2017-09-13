@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Retrieves information about Kuzzle, its plugins and active services.
+// GetServerInfo retrieves information about Kuzzle, its plugins and active services.
 func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, error) {
 	result := make(chan types.KuzzleResponse)
 

@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Delete credentials of the specified strategy for the current user.
+// DeleteMyCredentials delete credentials of the specified strategy for the current user.
 func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (types.AckResponse, error) {
 	if strategy == "" {
 		return types.AckResponse{}, errors.New("Kuzzle.DeleteMyCredentials: strategy is required")

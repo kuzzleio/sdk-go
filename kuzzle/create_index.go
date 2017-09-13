@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Create a new empty data index, with no associated mapping.
+// CreateIndex create a new empty data index, with no associated mapping.
 func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (types.AckResponse, error) {
 	if index == "" {
 		return types.AckResponse{}, errors.New("Kuzzle.createIndex: index required")

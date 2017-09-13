@@ -5,7 +5,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Logs the user out.
+// Logout logs the user out.
 func (k *Kuzzle) Logout() error {
 	q := types.KuzzleRequest{
 		Controller: "auth",

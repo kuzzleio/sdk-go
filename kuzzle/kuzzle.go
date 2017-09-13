@@ -1,4 +1,4 @@
-// Entry point and main struct for the entire SDK
+// Kuzzle Entry point and main struct for the entire SDK
 package kuzzle
 
 import (
@@ -30,7 +30,7 @@ type Kuzzle struct {
 	RequestHistory *map[string]time.Time
 }
 
-// Kuzzle constructor
+// NewKuzzle is the Kuzzle constructor
 func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
 	var err error
 
@@ -65,7 +65,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	return k, err
 }
 
-// Connects to a Kuzzle instance using the provided host and port.
+// Connect connects to a Kuzzle instance using the provided host and port.
 func (k *Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
@@ -102,7 +102,7 @@ func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
 	return k.socket.GetOfflineQueue()
 }
 
-// Get internal jwtToken used to request kuzzle.
+// GetJwt get internal jwtToken used to request kuzzle.
 func (k Kuzzle) GetJwt() string {
 	return k.jwt
 }
