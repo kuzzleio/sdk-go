@@ -6,6 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestQueryDefaultOptions(t *testing.T) {
@@ -100,4 +102,21 @@ func TestQueryWithVolatile(t *testing.T) {
 	options.SetVolatile(volatileData)
 	go k.Query(types.KuzzleRequest{}, options, ch)
 	<-ch
+}
+
+func ExampleKuzzle_Query() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := NewKuzzle(conn, nil)
+
+	request := types.KuzzleRequest{Controller: "server", Action: "now"}
+	resChan := make(chan types.KuzzleResponse)
+	k.Query(request, nil, resChan)
+
+	now := <- resChan
+	if now.Error.Message != "" {
+		fmt.Println(now.Error.Message)
+		return
+	}
+
+	fmt.Println(now.Result)
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGetServerInfoQueryError(t *testing.T) {
@@ -62,4 +63,17 @@ func TestGetServerInfo(t *testing.T) {
 	var info myServerInfo
 	json.Unmarshal(res, &info)
 	assert.Equal(t, "1.0.1", info.Kuzzle.Version)
+}
+
+func ExampleKuzzle_GetServerInfo() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	res, err := k.GetServerInfo(nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

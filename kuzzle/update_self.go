@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Update the currently authenticated user information.
- */
+// Update the currently authenticated user information.
 func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) (types.User, error) {
 	result := make(chan types.KuzzleResponse)
 

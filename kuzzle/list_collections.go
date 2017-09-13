@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * List data collections
- */
+// Retrieves the list of known data collections contained in a specified index.
 func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]types.CollectionsList, error) {
 	if index == "" {
 		return nil, errors.New("Kuzzle.ListCollections: index required")

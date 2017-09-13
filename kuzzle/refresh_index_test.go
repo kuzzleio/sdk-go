@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRefreshIndexQueryError(t *testing.T) {
@@ -48,4 +50,18 @@ func TestRefreshIndex(t *testing.T) {
 	assert.Equal(t, 10, res.Total)
 	assert.Equal(t, 9, res.Successful)
 	assert.Equal(t, 8, res.Failed)
+}
+
+func ExampleKuzzle_RefreshIndex() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	res, err := k.RefreshIndex("index", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Failed, res.Successful, res.Total)
 }

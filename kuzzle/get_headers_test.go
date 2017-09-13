@@ -4,6 +4,8 @@ import (
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGetHeaders(t *testing.T) {
@@ -29,4 +31,28 @@ func TestGetHeadersReplace(t *testing.T) {
 	assert.Nil(t, k.headers["foo"])
 	assert.Nil(t, k.GetHeader("foo"))
 	assert.Equal(t, "bar", k.GetHeader("oof"))
+}
+
+func ExampleKuzzle_GetHeaders() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := NewKuzzle(conn, nil)
+
+	headers := make(map[string]interface{})
+	headers["foo"] = "bar"
+	k.SetHeaders(headers, false)
+	res := k.GetHeaders()
+
+	fmt.Println(res["foo"])
+}
+
+func ExampleKuzzle_GetHeader() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := NewKuzzle(conn, nil)
+
+	headers := make(map[string]interface{})
+	headers["foo"] = "bar"
+	k.SetHeaders(headers, false)
+	res := k.GetHeader("foo")
+
+	fmt.Println(res)
 }

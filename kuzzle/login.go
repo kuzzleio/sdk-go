@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+// Send login request to kuzzle with credentials.
+// If login success, store the jwtToken into kuzzle object.
 func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
 	if strategy == "" {
 		return "", errors.New("Kuzzle.Login: cannot authenticate to Kuzzle without an authentication strategy")

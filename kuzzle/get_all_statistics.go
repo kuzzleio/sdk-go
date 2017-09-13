@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Get all Kuzzle usage statistics frames
- */
+// Get all Kuzzle usage statistics frames
 func (k Kuzzle) GetAllStatistics(options types.QueryOptions) ([]types.Statistics, error) {
 	result := make(chan types.KuzzleResponse)
 

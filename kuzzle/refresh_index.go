@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Forces the provided data index to refresh on each modification
- */
+// Forces the provided data index to refresh on each modification
 func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (types.Shards, error) {
 	result := make(chan types.KuzzleResponse)
 

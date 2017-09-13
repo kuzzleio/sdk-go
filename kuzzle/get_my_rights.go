@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Gets the rights array for the currently logged user.
- */
+// Gets the rights array for the currently logged user.
 func (k Kuzzle) GetMyRights(options types.QueryOptions) ([]types.Rights, error) {
 	result := make(chan types.KuzzleResponse)
 

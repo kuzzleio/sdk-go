@@ -1,3 +1,4 @@
+// Entry point and main struct for the entire SDK
 package kuzzle
 
 import (
@@ -8,7 +9,7 @@ import (
 	"time"
 )
 
-const version = "0.1"
+const version = "1.0.0"
 
 type IKuzzle interface {
 	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, types.QueryOptions)
@@ -101,6 +102,7 @@ func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
 	return k.socket.GetOfflineQueue()
 }
 
+// Get internal jwtToken used to request kuzzle.
 func (k Kuzzle) GetJwt() string {
 	return k.jwt
 }

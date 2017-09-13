@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Get credential information of the specified strategy for the current user.
- */
+// Get credential information of the specified strategy for the current user.
 func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.GetMyCredentials: strategy is required")

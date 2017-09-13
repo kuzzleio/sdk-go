@@ -36,18 +36,18 @@ go get github.com/kuzzleio/sdk-go
 
 ````go
 func main() {
-    ws := connection.NewWebSocket("localhost:7512", nil)
-    k, err := kuzzle.NewKuzzle(ws, nil)
-    if err != nil {
-        panic(err)
-    }
+    conn := websocket.NewWebSocket("localhost:7512", nil)
+    k, _ := kuzzle.NewKuzzle(conn, nil)
 
     res, err := k.GetAllStatistics(nil)
+
     if err != nil {
-        panic(err)
+        fmt.Println(err.Error())
+        return
     }
-    for _, v := range res {
-        println(v.CompletedRequests["websocket"])
+
+    for _, stat := range res {
+        fmt.Println(stat.Timestamp, stat.FailedRequests, stat.Connections, stat.CompletedRequests, stat.OngoingRequests)
     }
 }
 
