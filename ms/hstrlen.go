@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the string length of a field’s value in a hash.
-*/
+// Hstrlen returns the string length of a field’s value in a hash.
 func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hstrlen: key required")

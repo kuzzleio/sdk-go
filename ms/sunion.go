@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the union of the provided sets of unique values.
-*/
+// Sunion returns the union of the provided sets of unique values.
 func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error) {
 	if len(sets) < 2 {
 		return []string{}, errors.New("Ms.Sunion: please provide at least 2 sets")

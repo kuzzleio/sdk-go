@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Set an expiration timestamp to a key
-*/
+// Expireat sets an expiration timestamp to a key
 func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Expireat: key required")

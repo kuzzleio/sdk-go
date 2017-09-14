@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Checks if member is a member of the set of unique values stored at key.
-*/
+// SisMember checks if member is a member of the set of unique values stored at key.
 func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.SisMember: key required")

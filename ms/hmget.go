@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the values of the specified hash’s fields.
-*/
+// Hmget returns the values of the specified hash’s fields.
 func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Hmget: key required")

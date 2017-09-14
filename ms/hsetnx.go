@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets a field and its value in a hash, only if the field does not already exist.
-*/
+// Hsetnx sets a field and its value in a hash, only if the field does not already exist.
 func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hsetnx: key required")

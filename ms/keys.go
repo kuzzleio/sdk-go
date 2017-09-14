@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns all keys matching the provided pattern.
-*/
+// Keys returns all keys matching the provided pattern.
 func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) {
 	if pattern == "" {
 		return nil, errors.New("Ms.Keys: pattern required")

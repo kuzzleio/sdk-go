@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Remove fields from a hash
-*/
+// Hdel removes fields from a hash
 func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hdel: key required")

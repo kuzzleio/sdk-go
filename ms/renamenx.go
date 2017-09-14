@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Renames a key to newkey, only if newkey does not already exist.
-*/
+// RenameNx renames a key to newkey, only if newkey does not already exist.
 func (ms Ms) RenameNx(key string, newkey string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.RenameNx: key required")

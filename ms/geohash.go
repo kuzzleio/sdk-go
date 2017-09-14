@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Return the geohash values for the provided key's members
-*/
+// Geohash returns the geohash values for the provided key's members
 func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Geohash: key required")

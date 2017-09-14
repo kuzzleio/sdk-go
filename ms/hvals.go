@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns all values contained in a hash.
-*/
+// Hval returns all values contained in a hash.
 func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Hvals: key required")

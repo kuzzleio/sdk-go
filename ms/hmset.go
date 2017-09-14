@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets multiple fields at once in a hash.
-*/
+// Hmset sets multiple fields at once in a hash.
 func (ms Ms) Hmset(key string, entries []types.MsHashField, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Hmset: key required")

@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Appends the specified value at the end of a list, only if the key already exists and if it holds a list.
-*/
+// Rpushx appends the specified value at the end of a list,
+// only if the key already exists and if it holds a list.
 func (ms Ms) Rpushx(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Rpushx: key required")

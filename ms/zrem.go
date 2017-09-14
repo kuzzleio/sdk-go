@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes members from a sorted set.
-*/
+// Zrem removes members from a sorted set.
 func (ms Ms) Zrem(key string, members []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Zrem: key required")

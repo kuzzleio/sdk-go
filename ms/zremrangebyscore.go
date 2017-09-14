@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Removes members from a sorted set with a score between min and max (inclusive by default).
-*/
+// ZremRangeByScore removes members from a sorted set with a score between min and max (inclusive by default).
 func (ms Ms) ZremRangeByScore(key string, min float64, max float64, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.ZremRangeByScore: key required")

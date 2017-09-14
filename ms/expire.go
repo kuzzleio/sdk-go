@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Set an expiration timeout on a key
-*/
+// Expire sets an expiration timeout on a key
 func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Expire: key required")

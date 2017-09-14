@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes the expiration delay or timestamp from a key, making it persistent.
-*/
+// Persist removes the expiration delay or timestamp from a key, making it persistent.
 func (ms Ms) Persist(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Persist: key required")

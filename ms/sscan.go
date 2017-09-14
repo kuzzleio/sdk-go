@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Identical to scan, except that sscan iterates the members held by a set of unique values.
-*/
+// Sscan is identical to scan, except that sscan iterates the members held by a set of unique values.
 func (ms Ms) Sscan(key string, cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
 	if key == "" {
 		return types.MSScanResponse{}, errors.New("Ms.Sscan: key required")

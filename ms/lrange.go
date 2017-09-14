@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the list elements between the start and stop positions (inclusive).
-*/
+// Lrange returns the list elements between the start and stop positions (inclusive).
 func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Lrange: key required")

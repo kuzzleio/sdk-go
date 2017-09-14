@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Creates a key holding the provided value, or overwrites it if it already exists.
-*/
+// Sadd creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Sadd: key required")

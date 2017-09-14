@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the intersection of the provided sets of unique values.
-*/
+// Sinter returns the intersection of the provided sets of unique values.
 func (ms Ms) Sinter(keys []string, options types.QueryOptions) ([]string, error) {
 	if len(keys) == 0 {
 		return []string{}, errors.New("Ms.Sinter: please provide at least one key")

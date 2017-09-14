@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Return all fields and values of a hash
-*/
+// Hgetall returns all fields and values of a hash
 func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Hgetall: key required")

@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the current server time.
-*/
+// Time returns the current server time.
 func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
 	result := make(chan types.KuzzleResponse)
 

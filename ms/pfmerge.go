@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Merges multiple HyperLogLog data structures into an unique HyperLogLog structure stored at key, approximating the cardinality of the union of the source structures.
-*/
+// Pfmerge merges multiple HyperLogLog data structures into an unique HyperLogLog
+// structure stored at key, approximating the cardinality of the union of the source structures.
 func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Pfmerge: key required")

@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Decrements the value of a key by a given value
-*/
+// Decrby decrements the value of a key by a given value
 func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Decrby: key required")

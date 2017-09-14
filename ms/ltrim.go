@@ -6,10 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Trims an existing list so that it will
-  contain only the specified range of elements specified.
-*/
+// Ltrim trims an existing list so that it will
+// contain only the specified range of elements specified.
 func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Ltrim: key required")
