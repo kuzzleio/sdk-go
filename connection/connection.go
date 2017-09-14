@@ -19,5 +19,7 @@ type Connection interface {
 	GetRequestHistory() *map[string]time.Time
 	RenewSubscriptions()
 	GetRooms() *types.RoomList
+	StartQueuing()
+	StopQueuing()
 	ReplayQueue()
 }
