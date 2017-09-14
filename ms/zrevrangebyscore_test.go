@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestZrevRangeByScoreEmptyKey(t *testing.T) {
@@ -89,4 +90,22 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 	expectedResult = append(expectedResult, types.MSSortedSet{Member: "bar", Score: 5})
 
 	assert.Equal(t, expectedResult, res)
+}
+
+func ExampleMs_ZrevRangeByScore() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	qo.SetLimit([]int{0, 1})
+	res, err := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res[0].Member, res[0].Score)
 }

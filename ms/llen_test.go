@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLlenEmptyKey(t *testing.T) {
@@ -58,4 +59,21 @@ func TestLlen(t *testing.T) {
 	res, _ := memoryStorage.Llen("foo", qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_Llen() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Llen("foo", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

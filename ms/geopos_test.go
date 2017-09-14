@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGeoposEmptyKey(t *testing.T) {
@@ -107,4 +108,20 @@ func TestGeoposLatConvError(t *testing.T) {
 	_, err := memoryStorage.Geopos("foo", []string{"members"}, qo)
 
 	assert.NotNil(t, err)
+}
+
+func ExampleMs_Geopos() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Geopos("foo", []string{"members"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res[0].Name, res[0].Lon, res[0].Lat)
 }

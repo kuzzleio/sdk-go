@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestScardEmptyKey(t *testing.T) {
@@ -57,4 +58,21 @@ func TestScard(t *testing.T) {
 	res, _ := memoryStorage.Scard("foo", qo)
 
 	assert.Equal(t, 42, res)
+}
+
+func ExampleMs_Scard() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Scard("foo", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

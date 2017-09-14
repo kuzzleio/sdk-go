@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestIncrbyEmptyKey(t *testing.T) {
@@ -16,7 +17,7 @@ func TestIncrbyEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrby("", 1, qo)
+	_, err := memoryStorage.Incrby("", 42, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Incrby: key required", fmt.Sprint(err))
@@ -32,7 +33,7 @@ func TestIncrbyError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrby("foo", 1, qo)
+	_, err := memoryStorage.Incrby("foo", 42, qo)
 
 	assert.NotNil(t, err)
 }
@@ -46,7 +47,7 @@ func TestIncrby(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "incrby", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface{})["value"].(float64))
+			assert.Equal(t, float64(42), parsedQuery.Body.(map[string]interface{})["value"].(float64))
 
 			r, _ := json.Marshal(1)
 			return types.KuzzleResponse{Result: r}
@@ -56,7 +57,24 @@ func TestIncrby(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Incrby("foo", 2, qo)
+	res, _ := memoryStorage.Incrby("foo", 42, qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_Incrby() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Incrby("foo", 42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

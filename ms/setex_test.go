@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSetExEmptyKey(t *testing.T) {
@@ -57,4 +58,21 @@ func TestSetEx(t *testing.T) {
 	res, _ := memoryStorage.SetEx("foo", "bar", 60, qo)
 
 	assert.Equal(t, "OK", res)
+}
+
+func ExampleMs_SetEx() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.SetEx("foo", "bar", 60, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

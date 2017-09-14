@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestMsetNxEmptyEntries(t *testing.T) {
@@ -65,4 +66,25 @@ func TestMsetNx(t *testing.T) {
 	res, _ := memoryStorage.MsetNx(entries, qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_MsetNx() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	entries := []types.MSKeyValue{}
+	entries = append(entries, types.MSKeyValue{Key: "foo", Value: "bar"})
+	entries = append(entries, types.MSKeyValue{Key: "bar", Value: "foo"})
+
+	res, err := memoryStorage.MsetNx(entries, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

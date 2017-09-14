@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestZinterStoreEmptyDestination(t *testing.T) {
@@ -94,4 +95,23 @@ func TestZinterStoreWithOptions(t *testing.T) {
 	res, _ := memoryStorage.ZinterStore("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, 2, res)
+}
+
+func ExampleMs_ZinterStore() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	qo.SetAggregate("sum")
+	qo.SetWeights([]int{1, 2})
+	res, err := memoryStorage.ZinterStore("foo", []string{"bar", "rab"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

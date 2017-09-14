@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestPexpireAtEmptyKey(t *testing.T) {
@@ -57,4 +58,21 @@ func TestPexpireAt(t *testing.T) {
 	res, _ := memoryStorage.PexpireAt("foo", 1488540242465, qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_PexpireAt() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.PexpireAt("foo", 1488540242465, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestZcountEmptyKey(t *testing.T) {
@@ -57,4 +58,21 @@ func TestZcount(t *testing.T) {
 	res, _ := memoryStorage.Zcount("foo", 0, 10, qo)
 
 	assert.Equal(t, 2, res)
+}
+
+func ExampleMs_Zcount() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Zcount("foo", 0, 10, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

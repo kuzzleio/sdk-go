@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLrangeEmptyKey(t *testing.T) {
@@ -60,4 +61,21 @@ func TestLrange(t *testing.T) {
 	res, _ := memoryStorage.Lrange("foo", 1, 2, qo)
 
 	assert.Equal(t, []string{"some", "results"}, res)
+}
+
+func ExampleMs_Lrange() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Lrange("foo", 1, 2, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

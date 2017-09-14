@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestBitopEmptyKey(t *testing.T) {
@@ -46,7 +47,7 @@ func TestBitop(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "bitop", parsedQuery.Action)
 
-			assert.Equal(t, "operation", parsedQuery.Body.(map[string]interface{})["operation"].(string))
+			assert.Equal(t, "AND", parsedQuery.Body.(map[string]interface{})["operation"].(string))
 			assert.Equal(t, "some", parsedQuery.Body.(map[string]interface{})["keys"].([]interface{})[0].(string))
 			assert.Equal(t, "keys", parsedQuery.Body.(map[string]interface{})["keys"].([]interface{})[1].(string))
 
@@ -58,7 +59,23 @@ func TestBitop(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Bitop("foo", "operation", []string{"some", "keys"}, qo)
+	res, _ := memoryStorage.Bitop("foo", "AND", []string{"some", "keys"}, qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_Bitop() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Bitop("foo", "AND", []string{"some", "keys"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

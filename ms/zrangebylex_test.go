@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestZrangeByLexEmptyKey(t *testing.T) {
@@ -105,4 +106,21 @@ func TestZrangeByLexWithLimits(t *testing.T) {
 	res, _ := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
+}
+
+func ExampleMs_ZrangeByLex() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

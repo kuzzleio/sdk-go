@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSremEmptyKey(t *testing.T) {
@@ -68,4 +69,21 @@ func TestSrem(t *testing.T) {
 	res, _ := memoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, qo)
 
 	assert.Equal(t, 4, res)
+}
+
+func ExampleMs_Srem() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

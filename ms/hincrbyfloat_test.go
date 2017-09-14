@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestHincrbyfloatEmptyKey(t *testing.T) {
@@ -71,4 +72,20 @@ func TestHincrbyfloat(t *testing.T) {
 	res, _ := memoryStorage.Hincrbyfloat("foo", "bar", 42, qo)
 
 	assert.Equal(t, float64(1), res)
+}
+
+func ExampleMs_Hincrbyfloat() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Hincrbyfloat("foo", "bar", 42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

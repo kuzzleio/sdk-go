@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestPsetexEmptyKey(t *testing.T) {
@@ -68,4 +69,21 @@ func TestPsetex(t *testing.T) {
 	res, _ := memoryStorage.Psetex("foo", "bar", 60000, qo)
 
 	assert.Equal(t, "OK", res)
+}
+
+func ExampleMs_Psetex() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Psetex("foo", "bar", 60000, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

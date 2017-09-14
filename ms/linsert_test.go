@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLinsertEmptyKey(t *testing.T) {
@@ -60,4 +61,21 @@ func TestLinsert(t *testing.T) {
 	res, _ := memoryStorage.Linsert("foo", "position", "pivot", "bar", qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_Linsert() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Linsert("foo", "position", "pivot", "bar", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

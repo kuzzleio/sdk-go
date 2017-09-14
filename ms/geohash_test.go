@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGeohashEmptyKey(t *testing.T) {
@@ -60,3 +61,22 @@ func TestGeohash(t *testing.T) {
 
 	assert.Equal(t, []string{"some", "results"}, res)
 }
+
+func ExampleMs_Geohash() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetUnit("km")
+
+	res, err := memoryStorage.Geohash("foo", []string{"some", "members"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
+}
+

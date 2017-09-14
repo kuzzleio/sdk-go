@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestZrevRangeByLexEmptyKey(t *testing.T) {
@@ -105,4 +106,22 @@ func TestZrevRangeByLexWithLimits(t *testing.T) {
 	res, _ := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
+}
+
+func ExampleMs_ZrevRangeByLex() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	qo.SetLimit([]int{0, 1})
+	res, err := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

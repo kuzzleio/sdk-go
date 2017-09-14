@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLindexEmptyKey(t *testing.T) {
@@ -58,4 +59,21 @@ func TestLindex(t *testing.T) {
 	res, _ := memoryStorage.Lindex("foo", 1, qo)
 
 	assert.Equal(t, "result", res)
+}
+
+func ExampleMs_Lindex() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Lindex("foo", 1, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

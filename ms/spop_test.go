@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSpopEmptyKey(t *testing.T) {
@@ -81,4 +82,22 @@ func TestSpopWithOptions(t *testing.T) {
 	res, _ := memoryStorage.Spop("foo", qo)
 
 	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+}
+
+func ExampleMs_Spop() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetCount(42)
+
+	res, err := memoryStorage.Spop("foo", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

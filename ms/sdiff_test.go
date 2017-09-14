@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSdiffEmptyKey(t *testing.T) {
@@ -68,4 +69,21 @@ func TestSdiff(t *testing.T) {
 	res, _ := memoryStorage.Sdiff("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, []string{"diff1", "diff2"}, res)
+}
+
+func ExampleMs_Sdiff() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Sdiff("foo", []string{"bar", "rab"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

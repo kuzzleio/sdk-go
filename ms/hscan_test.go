@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestHscanEmptyKey(t *testing.T) {
@@ -133,4 +134,25 @@ func TestHscanWithOptions(t *testing.T) {
 	res, _ := memoryStorage.Hscan("foo", &cursor, qo)
 
 	assert.Equal(t, MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
+}
+
+func ExampleMs_Hscan() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetCount(42)
+	qo.SetMatch("*")
+
+	cursor := 1
+
+	res, err := memoryStorage.Hscan("foo", &cursor, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Cursor, res.Values, cursor)
 }

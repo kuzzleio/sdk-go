@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSunionEmptySet(t *testing.T) {
@@ -68,4 +69,21 @@ func TestSunion(t *testing.T) {
 	res, _ := memoryStorage.Sunion([]string{"foo", "bar"}, qo)
 
 	assert.Equal(t, []string{"go", "goo", "power", "rangers"}, res)
+}
+
+func ExampleMs_Sunion() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Sunion([]string{"foo", "bar"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

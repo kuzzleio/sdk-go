@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestIncrbyfloatEmptyKey(t *testing.T) {
@@ -16,7 +17,7 @@ func TestIncrbyfloatEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrbyfloat("", 1, qo)
+	_, err := memoryStorage.Incrbyfloat("", 42, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Incrbyfloat: key required", fmt.Sprint(err))
@@ -32,7 +33,7 @@ func TestIncrbyfloatError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrbyfloat("foo", 1, qo)
+	_, err := memoryStorage.Incrbyfloat("foo", 42, qo)
 
 	assert.NotNil(t, err)
 }
@@ -56,7 +57,24 @@ func TestIncrbyfloat(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Incrbyfloat("foo", 2, qo)
+	res, _ := memoryStorage.Incrbyfloat("foo", 42, qo)
 
 	assert.Equal(t, 3.14, res)
+}
+
+func ExampleMs_Incrbyfloat() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+
+	res, err := memoryStorage.Incrbyfloat("foo", 42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
