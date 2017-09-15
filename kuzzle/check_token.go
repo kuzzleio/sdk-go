@@ -6,13 +6,13 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Checks the validity of a JSON Web Token.
 type TokenValidity struct {
 	Valid     bool   `json:"valid"`
 	State     string `json:"state"`
 	ExpiresAt int    `json:"expiresAt"`
 }
 
+// CheckToken checks the validity of a JSON Web Token.
 func (k Kuzzle) CheckToken(token string) (TokenValidity, error) {
 	if token == "" {
 		return TokenValidity{}, errors.New("Kuzzle.CheckToken: token required")

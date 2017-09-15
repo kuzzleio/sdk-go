@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestSetAutoRefreshDefaultIndexNull(t *testing.T) {
@@ -75,4 +77,18 @@ func TestSetAutoRefresh(t *testing.T) {
 	res, _ := k.SetAutoRefresh("index", true, nil)
 
 	assert.Equal(t, true, res)
+}
+
+func ExampleKuzzle_SetAutoRefresh() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	res, err := k.SetAutoRefresh("index", true, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

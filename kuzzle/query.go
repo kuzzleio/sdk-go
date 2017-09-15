@@ -6,7 +6,7 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-// This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
+// Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
 	requestId := uuid.NewV4().String()
 
