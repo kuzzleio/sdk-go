@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestCountError(t *testing.T) {
@@ -38,4 +40,22 @@ func TestCount(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").Count(nil, nil)
 	assert.Equal(t, 10, res)
+}
+
+func ExampleCollection_Count() {
+	type result struct {
+		Count int `json:"count"`
+	}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

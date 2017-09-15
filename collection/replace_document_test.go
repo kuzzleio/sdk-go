@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestReplaceDocumentEmptyId(t *testing.T) {
@@ -73,6 +75,25 @@ func TestReplaceDocument(t *testing.T) {
 	assert.Equal(t, id, res.Id)
 }
 
+func ExampleCollection_ReplaceDocument() {
+	type Document struct {
+		Title string
+	}
+
+	id := "myId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, Document{Title: "jonathan"}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 	documents := []collection.Document{}
 
@@ -125,7 +146,7 @@ func TestMReplaceDocument(t *testing.T) {
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := collection.KuzzleSearchResult{
+			res := collection.SearchResult{
 				Total: 2,
 				Hits:  results,
 			}
@@ -142,4 +163,23 @@ func TestMReplaceDocument(t *testing.T) {
 		assert.Equal(t, documents[index].Id, doc.Id)
 		assert.Equal(t, documents[index].Content, doc.Content)
 	}
+}
+
+func ExampleCollection_MReplaceDocument() {
+	documents := []collection.Document{
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
+	}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MReplaceDocument(documents, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

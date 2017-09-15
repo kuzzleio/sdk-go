@@ -6,10 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Searches documents in the given Collection, using provided filters and option.
-*/
-func (dc Collection) Search(filters types.SearchFilters, options types.QueryOptions) (KuzzleSearchResult, error) {
+// Search documents in the given Collection, using provided filters and option.
+func (dc Collection) Search(filters types.SearchFilters, options types.QueryOptions) (SearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -35,10 +33,10 @@ func (dc Collection) Search(filters types.SearchFilters, options types.QueryOpti
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := KuzzleSearchResult{
+	searchResult := SearchResult{
 		Collection: dc,
 		Options:    options,
 		Filters:    filters,

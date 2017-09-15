@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Retrieves a Document using its provided unique id.
-*/
+// FetchDocument retrieves a Document using its provided unique id.
 func (dc Collection) FetchDocument(id string, options types.QueryOptions) (Document, error) {
 	if id == "" {
 		return Document{}, errors.New("Collection.FetchDocument: document id required")
@@ -37,12 +35,10 @@ func (dc Collection) FetchDocument(id string, options types.QueryOptions) (Docum
 	return document, nil
 }
 
-/*
-  Get specific documents according to given IDs.
-*/
-func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (KuzzleSearchResult, error) {
+// MGetDocument fetches specific documents according to given IDs.
+func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (SearchResult, error) {
 	if len(ids) == 0 {
-		return KuzzleSearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
+		return SearchResult{}, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -63,10 +59,10 @@ func (dc Collection) MGetDocument(ids []string, options types.QueryOptions) (Kuz
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := KuzzleSearchResult{}
+	result := SearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	for _, d := range result.Hits {

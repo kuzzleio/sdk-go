@@ -9,11 +9,9 @@ import (
 	"time"
 )
 
-/*
- * Renew the subscription. Force a resubscription using the same filters
- * if no new ones are provided.
- * Unsubscribes first if this Room was already listening to events.
- */
+// Renew the subscription. Force a resubscription using the same filters
+// if no new ones are provided.
+// Unsubscribes first if this Room was already listening to events.
 func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- types.KuzzleNotification, subscribeResponseChan chan<- types.SubscribeResponse) {
 	if filters != nil {
 		room.filters = filters

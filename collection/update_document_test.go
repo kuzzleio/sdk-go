@@ -148,7 +148,7 @@ func TestMUpdateDocument(t *testing.T) {
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := collection.KuzzleSearchResult{
+			res := collection.SearchResult{
 				Total: 2,
 				Hits:  results,
 			}

@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRenewNotConnected(t *testing.T) {
@@ -85,6 +86,14 @@ func TestRenew(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+
+	NewRoom(*NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
+}
+
+func ExampleRoom_Renew() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 
 	NewRoom(*NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)

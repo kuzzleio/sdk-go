@@ -6,13 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the number of documents matching the provided set of filters.
-
-  There is a small delay between documents creation and their existence in our advanced search layer,
-  usually a couple of seconds.
-  That means that a document that was just been created won’t be returned by this function
-*/
+// Count returns the number of documents matching the provided set of filters.
+// There is a small delay between documents creation and their existence in our advanced search layer,
+// usually a couple of seconds.
+// That means that a document that was just been created won’t be returned by this function
 func (dc Collection) Count(filters interface{}, options types.QueryOptions) (int, error) {
 	type countResult struct {
 		Count int `json:"count"`

@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/**
- * Returns the number of other subscriptions on that room.
- */
+// Count returns the number of other subscriptions on that room.
 func (room *Room) Count() (int, error) {
 	query := types.KuzzleRequest{
 		Controller: "realtime",

@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestDeleteDocumentEmptyId(t *testing.T) {
@@ -63,6 +65,21 @@ func TestDeleteDocument(t *testing.T) {
 	assert.Equal(t, id, res)
 }
 
+func ExampleCollection_DeleteDocument() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	id := "myId"
+
+	res, err := collection.NewCollection(k, "collection", "index").DeleteDocument(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
+}
+
 func TestMDeleteDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -108,4 +125,19 @@ func TestMDeleteDocument(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
 	assert.Equal(t, []string{"foo", "bar"}, res)
+}
+
+func ExampleCollection_MDeleteDocument() {
+	ids := []string{"foo", "bar"}
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

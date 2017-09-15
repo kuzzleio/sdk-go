@@ -10,6 +10,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -28,6 +29,22 @@ func TestDocumentSetContent(t *testing.T) {
 	}, false)
 
 	assert.Equal(t, string(json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"cena"}}`))), string(d.Content))
+}
+
+func ExampleDocument_SetContent() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+
+	d := dc.Document()
+
+	d = d.SetContent(collection.DocumentContent{
+		"subfield": collection.DocumentContent{
+			"john": "cena",
+		},
+	}, false)
+
+	fmt.Println(d.Content)
 }
 
 func TestDocumentSetContentReplace(t *testing.T) {
@@ -74,6 +91,32 @@ func TestDocumentSetHeaders(t *testing.T) {
 	assert.Equal(t, headers, k.GetHeaders())
 	assert.NotEqual(t, newHeaders, k.GetHeaders())
 }
+
+func ExampleDocument_SetHeaders() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	d := collection.NewCollection(k, "collection", "index").Document()
+
+	var headers = make(map[string]interface{}, 0)
+
+	headers["foo"] = "bar"
+	headers["bar"] = "foo"
+
+	d.SetHeaders(headers, true)
+
+	fmt.Println(k.GetHeaders())
+}
+
+func ExampleDocument_SetDocumentId() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	d := collection.NewCollection(k, "collection", "index").Document()
+
+	d.SetDocumentId("newId")
+
+	fmt.Println(d.Id)
+}
+
 
 func TestDocumentSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
@@ -148,6 +191,21 @@ func TestDocumentFetch(t *testing.T) {
 	assert.Equal(t, r.Content, d.Content)
 }
 
+func ExampleDocument_Fetch() {
+	id := "docid"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	res, err := dc.Document().Fetch(id)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestDocumentSubscribeEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -210,6 +268,24 @@ func TestDocumentSubscribe(t *testing.T) {
 	assert.Equal(t, "42", r.Room.GetRoomId())
 }
 
+func ExampleDocument_Subscribe() {
+	id := "docId"
+	var k *kuzzle.Kuzzle
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+	dc := collection.NewCollection(k, "collection", "index")
+	d, _ := dc.Document().Fetch(id)
+
+	ch := make(chan types.KuzzleNotification)
+	subRes := d.Subscribe(types.NewRoomOptions(), ch)
+
+	notification := <-subRes
+
+	fmt.Println(notification.Room.GetRoomId(), notification.Error)
+}
+
 func TestDocumentSaveEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -260,6 +336,24 @@ func TestDocumentSave(t *testing.T) {
 
 	assert.Equal(t, id, d.Id)
 	assert.Equal(t, documentContent.ToString(), string(d.Content))
+}
+
+func ExampleDocument_Save() {
+	id := "myId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+
+	documentContent := collection.DocumentContent{"foo": "bar"}
+
+	res, err := dc.Document().SetDocumentId(id).SetContent(documentContent, true).Save(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
 }
 
 func TestDocumentRefreshEmptyId(t *testing.T) {
@@ -325,6 +419,21 @@ func TestDocumentRefresh(t *testing.T) {
 	assert.NotEqual(t, documentContent["function"], ic["function"])
 }
 
+func ExampleDocument_Refresh() {
+	id := "myId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	res, err := dc.Document().SetDocumentId(id).Refresh(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestCollectionDocumentExistsEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -367,9 +476,24 @@ func TestCollectionDocumentExists(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
-	exists, _ := dc.Document().SetDocumentId("myId").Exists(nil)
+	exists, _ := dc.Document().SetDocumentId(id).Exists(nil)
 
 	assert.Equal(t, true, exists)
+}
+
+func ExampleDocument_Exists() {
+	id := "myId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	res, err := dc.Document().SetDocumentId(id).Exists(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestDocumentPublishError(t *testing.T) {
@@ -402,9 +526,23 @@ func TestDocumentPublish(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
-	result, _ := dc.Document().SetDocumentId("myId").Publish(nil)
+	res, _ := dc.Document().SetDocumentId("myId").Publish(nil)
 
-	assert.Equal(t, true, result)
+	assert.Equal(t, true, res)
+}
+
+func ExampleDocument_Publish() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	res, err := dc.Document().SetDocumentId("myId").Publish(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestDocumentDeleteEmptyId(t *testing.T) {
@@ -449,7 +587,21 @@ func TestDocumentDelete(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
-	result, _ := dc.Document().SetDocumentId("myId").Delete(nil)
+	res, _ := dc.Document().SetDocumentId("myId").Delete(nil)
 
-	assert.Equal(t, id, result)
+	assert.Equal(t, id, res)
+}
+
+func ExampleDocument_Delete() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	dc := collection.NewCollection(k, "collection", "index")
+	res, err := dc.Document().SetDocumentId("myId").Delete(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Replaces a document in Kuzzle.
-*/
+// ReplaceDocument replaces a document in Kuzzle.
 func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
 	if id == "" {
 		return Document{}, errors.New("Collection.ReplaceDocument: document id required")
@@ -38,12 +36,10 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 	return d, nil
 }
 
-/*
-  Replace the provided documents.
-*/
-func (dc Collection) MReplaceDocument(documents []Document, options types.QueryOptions) (KuzzleSearchResult, error) {
+// MReplaceDocument replaces the provided documents.
+func (dc Collection) MReplaceDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
 	if len(documents) == 0 {
-		return KuzzleSearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
+		return SearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -77,10 +73,10 @@ func (dc Collection) MReplaceDocument(documents []Document, options types.QueryO
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := KuzzleSearchResult{}
+	result := SearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	for _, d := range result.Hits {

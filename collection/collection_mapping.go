@@ -18,9 +18,7 @@ type CollectionMapping struct {
 	Collection Collection
 }
 
-/*
-  Applies the new mapping to the data collection.
-*/
+// Apply applies the new mapping to the data collection.
 func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -46,11 +44,8 @@ func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping
 	return cm.Refresh(nil)
 }
 
-/*
-  Replaces the current content with the mapping stored in Kuzzle.
-
-  Calling this function will discard any uncommitted changes. You can commit changes by calling the “apply” function
-*/
+// Refresh Replaces the current content with the mapping stored in Kuzzle.
+// Calling this function will discard any uncommitted changes. You can commit changes by calling the “apply” function
 func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMapping, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -105,12 +100,10 @@ func (cm CollectionMapping) Set(mappings types.KuzzleFieldMapping) CollectionMap
 	return cm
 }
 
-/*
-  This is a helper function returning itself, allowing to easily chain calls.
 
-  If the replace argument is set to true, replace the current headers with the provided content.
-  Otherwise, it appends the content to the current headers, only replacing already existing values
-*/
+// SetHeaders is is a helper function returning itself, allowing to easily chain calls.
+// If the replace argument is set to true, replace the current headers with the provided content.
+// Otherwise, it appends the content to the current headers, only replacing already existing values
 func (cm CollectionMapping) SetHeaders(content map[string]interface{}, replace bool) CollectionMapping {
 	cm.Collection.SetHeaders(content, replace)
 

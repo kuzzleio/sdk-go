@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestPublishMessageError(t *testing.T) {
@@ -52,4 +54,22 @@ func TestPublishMessage(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(Document{Title: "yolo"}, nil)
 	assert.Equal(t, true, res.Published)
+}
+
+func ExampleCollection_PublishMessage() {
+	type Document struct {
+		Title string
+	}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").PublishMessage(Document{Title: "yolo"}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Published)
 }

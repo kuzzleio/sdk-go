@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestFetchDocumentEmptyId(t *testing.T) {
@@ -63,6 +65,21 @@ func TestFetchDocument(t *testing.T) {
 	assert.Equal(t, id, res.Id)
 }
 
+func ExampleCollection_FetchDocument() {
+	id := "myId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").FetchDocument(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestMGetDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -91,7 +108,7 @@ func TestMGetDocument(t *testing.T) {
 	hits := make([]collection.Document, 2)
 	hits[0] = collection.Document{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)}
 	hits[1] = collection.Document{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)}
-	var results = collection.KuzzleSearchResult{Total: 2, Hits: hits}
+	var results = collection.SearchResult{Total: 2, Hits: hits}
 
 	ids := []string{"foo", "bar"}
 
@@ -106,7 +123,7 @@ func TestMGetDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, []interface{}{"foo", "bar"}, parsedQuery.Body.(map[string]interface{})["ids"])
 
-			res := collection.KuzzleSearchResult{Total: results.Total, Hits: results.Hits}
+			res := collection.SearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -116,4 +133,19 @@ func TestMGetDocument(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
 	assert.Equal(t, results.Total, res.Total)
 	assert.Equal(t, hits, res.Hits)
+}
+
+func ExampleCollection_MGetDocument() {
+	ids := []string{"foo", "bar"}
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }
