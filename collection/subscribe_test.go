@@ -3,7 +3,7 @@ package collection
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -28,6 +28,8 @@ func TestSubscribeError(t *testing.T) {
 }
 
 func TestSubscribe(t *testing.T) {
+	var k *kuzzle.Kuzzle
+
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			room := NewRoom(*NewCollection(k, "collection", "index"), nil)
@@ -37,7 +39,7 @@ func TestSubscribe(t *testing.T) {
 			return types.KuzzleResponse{Result: marshed}
 		},
 	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
@@ -47,7 +49,7 @@ func TestSubscribe(t *testing.T) {
 }
 
 func ExampleCollection_Subscribe() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 

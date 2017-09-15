@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -28,6 +28,8 @@ func TestInitRoomWithoutOptions(t *testing.T) {
 }
 
 func TestRoomGetFilters(t *testing.T) {
+	var k *kuzzle.Kuzzle
+
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
@@ -38,7 +40,7 @@ func TestRoomGetFilters(t *testing.T) {
 		},
 	}
 
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
 	type SubscribeFiltersValues struct {
@@ -61,7 +63,7 @@ func TestRoomGetFilters(t *testing.T) {
 }
 
 func ExampleRoom_GetFilters() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
@@ -85,6 +87,8 @@ func ExampleRoom_GetFilters() {
 }
 
 func TestRoomGetRealtimeChannel(t *testing.T) {
+	var k *kuzzle.Kuzzle
+
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
@@ -95,7 +99,7 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 		},
 	}
 
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
 	type SubscribeFiltersValues struct {
@@ -118,7 +122,7 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 }
 
 func ExampleRoom_GetRealtimeChannel() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 

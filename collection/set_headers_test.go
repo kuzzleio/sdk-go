@@ -3,7 +3,7 @@ package collection_test
 import (
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/stretchr/testify/assert"
@@ -22,7 +22,7 @@ func TestSetHeaders(t *testing.T) {
 }
 
 func ExampleCollection_SetHeaders() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	m := make(map[string]interface{})

@@ -2,7 +2,7 @@ package collection
 
 import (
 	"encoding/json"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -92,7 +92,7 @@ func TestRenew(t *testing.T) {
 }
 
 func ExampleRoom_Renew() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 

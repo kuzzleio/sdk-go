@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -97,7 +96,7 @@ func TestCollectionMappingApply(t *testing.T) {
 }
 
 func ExampleCollectionMapping_Apply() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
@@ -256,7 +255,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 }
 
 func ExampleCollectionMapping_Refresh() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	qo := types.NewQueryOptions()
@@ -321,7 +320,7 @@ func TestCollectionMappingSet(t *testing.T) {
 }
 
 func ExampleCollectionMapping_Set() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
@@ -407,7 +406,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 }
 
 func ExampleCollectionMapping_SetHeaders() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 

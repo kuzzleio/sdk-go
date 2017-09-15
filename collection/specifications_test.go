@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -72,7 +72,7 @@ func TestGetSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_GetSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").GetSpecifications(nil)
@@ -148,7 +148,7 @@ func TestSearchSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_SearchSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	opts := types.NewQueryOptions()
@@ -243,7 +243,7 @@ func TestScrollSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_ScrollSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	opts := types.NewQueryOptions()
@@ -309,7 +309,7 @@ func TestValidateSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_ValidateSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	specifications := types.KuzzleValidation{
@@ -399,7 +399,7 @@ func TestUpdateSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_UpdateSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	specifications := types.KuzzleValidation{
@@ -463,7 +463,7 @@ func TestDeleteSpecifications(t *testing.T) {
 }
 
 func ExampleCollection_DeleteSpecifications() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -42,7 +42,7 @@ func TestFetchNextNotPossible(t *testing.T) {
 	_, err := ksr.FetchNext()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "KuzzleSearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
+	assert.Equal(t, "SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
 }
 
 func TestFetchNextWithScroll(t *testing.T) {
@@ -293,7 +293,7 @@ func ExampleSearchResult_FetchNext() {
 	var options = types.NewQueryOptions()
 	options.SetSize(2)
 
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -32,7 +32,7 @@ func TestDocumentSetContent(t *testing.T) {
 }
 
 func ExampleDocument_SetContent() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 
@@ -93,7 +93,7 @@ func TestDocumentSetHeaders(t *testing.T) {
 }
 
 func ExampleDocument_SetHeaders() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := collection.NewCollection(k, "collection", "index").Document()
 
@@ -108,7 +108,7 @@ func ExampleDocument_SetHeaders() {
 }
 
 func ExampleDocument_SetDocumentId() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := collection.NewCollection(k, "collection", "index").Document()
 
@@ -192,7 +192,7 @@ func TestDocumentFetch(t *testing.T) {
 
 func ExampleDocument_Fetch() {
 	id := "docid"
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	res, err := dc.Document().Fetch(id)
@@ -271,7 +271,7 @@ func ExampleDocument_Subscribe() {
 	id := "docId"
 	var k *kuzzle.Kuzzle
 
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
@@ -339,7 +339,7 @@ func TestDocumentSave(t *testing.T) {
 
 func ExampleDocument_Save() {
 	id := "myId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 
@@ -420,7 +420,7 @@ func TestDocumentRefresh(t *testing.T) {
 
 func ExampleDocument_Refresh() {
 	id := "myId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	res, err := dc.Document().SetDocumentId(id).Refresh(nil)
@@ -482,7 +482,7 @@ func TestCollectionDocumentExists(t *testing.T) {
 
 func ExampleDocument_Exists() {
 	id := "myId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	res, err := dc.Document().SetDocumentId(id).Exists(nil)
@@ -531,7 +531,7 @@ func TestDocumentPublish(t *testing.T) {
 }
 
 func ExampleDocument_Publish() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	res, err := dc.Document().SetDocumentId("myId").Publish(nil)
@@ -592,7 +592,7 @@ func TestDocumentDelete(t *testing.T) {
 }
 
 func ExampleDocument_Delete() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	dc := collection.NewCollection(k, "collection", "index")
 	res, err := dc.Document().SetDocumentId("myId").Delete(nil)

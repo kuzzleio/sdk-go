@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -106,7 +106,7 @@ func ExampleCollection_UpdateDocument() {
 	}
 	updatePart := NewContent{"Jedi Knight"}
 
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 	qo.SetRetryOnConflict(10)
@@ -198,7 +198,7 @@ func ExampleCollection_MUpdateDocument(t *testing.T) {
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MUpdateDocument(documents, nil)

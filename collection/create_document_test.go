@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -113,7 +113,7 @@ func TestCreateDocumentCreate(t *testing.T) {
 }
 
 func ExampleCollection_CreateDocument() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	id := "myId"
 
@@ -185,7 +185,7 @@ func TestMCreateDocument(t *testing.T) {
 }
 
 func ExampleCollection_MCreateDocument() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MCreateDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)
@@ -256,7 +256,7 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 }
 
 func ExampleCollection_MCreateOrReplaceDocument() {
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)

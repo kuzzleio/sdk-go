@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -67,7 +67,7 @@ func TestFetchDocument(t *testing.T) {
 
 func ExampleCollection_FetchDocument() {
 	id := "myId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").FetchDocument(id, nil)
@@ -137,7 +137,7 @@ func TestMGetDocument(t *testing.T) {
 
 func ExampleCollection_MGetDocument() {
 	ids := []string{"foo", "bar"}
-	c := websocket.NewWebSocket("localhost:7512", nil)
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
