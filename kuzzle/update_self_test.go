@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestUpdateSelfQueryError(t *testing.T) {
@@ -50,4 +52,31 @@ func TestUpdateSelf(t *testing.T) {
 	res, _ := k.UpdateSelf(q, nil)
 
 	assert.Equal(t, "login", res.Id)
+}
+
+func ExampleKuzzle_UpdateSelf() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	_, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	newCredentials := credentials{"new", "foo"}
+	res, err := k.UpdateSelf(newCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

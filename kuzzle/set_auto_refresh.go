@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * autorefresh status setter for the provided data index name
- */
+// SetAutoRefresh autorefresh status setter for the provided data index name
 func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {

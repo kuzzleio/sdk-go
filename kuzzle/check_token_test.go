@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestCheckTokenTokenNull(t *testing.T) {
@@ -42,4 +44,30 @@ func TestCheckToken(t *testing.T) {
 	}
 	res, _ := k.CheckToken("token")
 	assert.Equal(t, true, res.Valid)
+}
+
+func ExampleKuzzle_CheckToken() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	jwt, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	res, err := k.CheckToken(jwt)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Valid, res.ExpiresAt, res.State)
 }

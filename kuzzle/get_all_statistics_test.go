@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestGetAllStatisticsQueryError(t *testing.T) {
@@ -61,4 +63,20 @@ func TestGetAllStatistics(t *testing.T) {
 	res, _ := k.GetAllStatistics(nil)
 
 	assert.Equal(t, 42, res[0].CompletedRequests["websocket"])
+}
+
+func ExampleKuzzle_GetAllStatistics() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	res, err := k.GetAllStatistics(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	for _, stat := range res {
+		fmt.Println(stat.Timestamp, stat.FailedRequests, stat.Connections, stat.CompletedRequests, stat.OngoingRequests)
+	}
 }
