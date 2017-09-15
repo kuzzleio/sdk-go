@@ -2,14 +2,14 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRandomKeyError(t *testing.T) {
@@ -54,7 +54,6 @@ func ExampleMs_RandomKey() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-
 
 	res, err := memoryStorage.RandomKey(qo)
 

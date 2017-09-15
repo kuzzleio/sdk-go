@@ -1,6 +1,7 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -8,7 +9,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"encoding/json"
 )
 
 func TestInitRoomWithoutOptions(t *testing.T) {
@@ -55,7 +55,7 @@ func TestRoomGetFilters(t *testing.T) {
 
 	*k.State = state.Connected
 	rtc := make(chan types.KuzzleNotification)
-	res := <- cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	assert.Equal(t, filters, res.Room.GetFilters())
 }
@@ -89,8 +89,8 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 	}
 
 	*k.State = state.Connected
-	rtc := make(chan <-types.KuzzleNotification)
-	res := <- cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	rtc := make(chan<- types.KuzzleNotification)
+	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	assert.Equal(t, rtc, res.Room.GetRealtimeChannel())
 }

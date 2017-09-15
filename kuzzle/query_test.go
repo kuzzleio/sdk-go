@@ -79,7 +79,7 @@ func TestQueryWithVolatile(t *testing.T) {
 	var k *Kuzzle
 	var volatileData = types.VolatileData{
 		"modifiedBy": "awesome me",
-		"reason": "it needed to be modified",
+		"reason":     "it needed to be modified",
 	}
 
 	c := &internal.MockedConnection{
