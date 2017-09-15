@@ -100,7 +100,6 @@ func (cm CollectionMapping) Set(mappings types.KuzzleFieldMapping) CollectionMap
 	return cm
 }
 
-
 // SetHeaders is is a helper function returning itself, allowing to easily chain calls.
 // If the replace argument is set to true, replace the current headers with the provided content.
 // Otherwise, it appends the content to the current headers, only replacing already existing values

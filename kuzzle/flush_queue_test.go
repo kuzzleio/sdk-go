@@ -1,12 +1,12 @@
 package kuzzle_test
 
 import (
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestFlushQueue(t *testing.T) {

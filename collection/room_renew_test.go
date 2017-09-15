@@ -2,6 +2,7 @@ package collection
 
 import (
 	"encoding/json"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -9,7 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRenewNotConnected(t *testing.T) {

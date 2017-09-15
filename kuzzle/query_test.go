@@ -2,13 +2,13 @@ package kuzzle_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
-	"fmt"
-	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func TestQueryDefaultOptions(t *testing.T) {
@@ -72,7 +72,6 @@ func TestQueryWithOptions(t *testing.T) {
 	options.SetRefresh("wait_for")
 	options.SetRetryOnConflict(7)
 
-
 	go k.Query(types.KuzzleRequest{}, options, ch)
 	<-ch
 }
@@ -112,7 +111,7 @@ func ExampleKuzzle_Query() {
 	resChan := make(chan types.KuzzleResponse)
 	k.Query(request, nil, resChan)
 
-	now := <- resChan
+	now := <-resChan
 	if now.Error.Message != "" {
 		fmt.Println(now.Error.Message)
 		return

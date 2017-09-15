@@ -7,7 +7,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-
 // Create a new document in Kuzzle.
 // Takes an optional argument object with the following properties:
 //   - volatile (object, default: null):

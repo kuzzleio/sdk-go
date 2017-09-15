@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -116,7 +116,6 @@ func ExampleDocument_SetDocumentId() {
 
 	fmt.Println(d.Id)
 }
-
 
 func TestDocumentSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)

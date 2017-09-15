@@ -1,12 +1,12 @@
 package kuzzle_test
 
 import (
-	"github.com/kuzzleio/sdk-go/internal"
-	"github.com/stretchr/testify/assert"
-	"testing"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestGetHeaders(t *testing.T) {
