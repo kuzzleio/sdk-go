@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -96,6 +98,29 @@ func TestUpdateDocument(t *testing.T) {
 	assert.Equal(t, updatePart.Function, result.Function)
 }
 
+func ExampleCollection_UpdateDocument() {
+	id := "myId"
+
+	type NewContent struct {
+		Function string
+	}
+	updatePart := NewContent{"Jedi Knight"}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	qo := types.NewQueryOptions()
+	qo.SetRetryOnConflict(10)
+
+	res, err := collection.NewCollection(k, "collection", "index").UpdateDocument(id, updatePart, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestMUpdateDocumentEmptyDocuments(t *testing.T) {
 	documents := []collection.Document{}
 
@@ -165,4 +190,23 @@ func TestMUpdateDocument(t *testing.T) {
 		assert.Equal(t, documents[index].Id, doc.Id)
 		assert.Equal(t, documents[index].Content, doc.Content)
 	}
+}
+
+func ExampleCollection_MUpdateDocument(t *testing.T) {
+	documents := []collection.Document{
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
+	}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MUpdateDocument(documents, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

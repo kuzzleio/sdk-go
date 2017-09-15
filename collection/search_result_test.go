@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -282,4 +283,29 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 	tooFarRes, _ := fetchNextRes.FetchNext()
 
 	assert.Equal(t, collection.SearchResult{}, tooFarRes)
+}
+
+func ExampleSearchResult_FetchNext() {
+	var filters = types.SearchFilters{
+		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
+	}
+
+	var options = types.NewQueryOptions()
+	options.SetSize(2)
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	cl := collection.NewCollection(k, "collection", "index")
+
+	ksr, _ := cl.Search(filters, options)
+	fetchNextRes, _ := ksr.FetchNext()
+
+	res, err := fetchNextRes.FetchNext()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

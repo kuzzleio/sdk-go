@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -50,6 +52,23 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, hits, res.Hits)
 	assert.Equal(t, res.Hits[0].Id, "doc42")
 	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
+}
+
+func ExampleCollection_Search() {
+	hits := make([]collection.Document, 1)
+	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestSearchWithScroll(t *testing.T) {
