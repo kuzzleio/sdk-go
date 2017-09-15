@@ -25,16 +25,12 @@ type ProfileSearchResult struct {
 	ScrollId string    `json:"scrollId"`
 }
 
-/*
-  Adds a role to the profile.
-*/
+// AddPolicy adds a role to the profile.
 func (p *Profile) AddPolicy(policy types.Policy) Profile {
 	return p.SetPolicies(append(p.GetPolicies(), policy))
 }
 
-/*
-  Returns this profile associated role policies.
-*/
+// GetPolicies returns this profile associated role policies.
 func (p Profile) GetPolicies() []types.Policy {
 	policies := types.Policies{}
 	json.Unmarshal(p.Source, &policies)
@@ -42,9 +38,7 @@ func (p Profile) GetPolicies() []types.Policy {
 	return policies.Policies
 }
 
-/*
-  Replaces the roles policies associated to the profile.
-*/
+// SetPolicies replaces the roles policies associated to the profile.
 func (p *Profile) SetPolicies(policies []types.Policy) Profile {
 	content := map[string]interface{}{}
 	json.Unmarshal(p.Source, content)
@@ -56,9 +50,7 @@ func (p *Profile) SetPolicies(policies []types.Policy) Profile {
 	return *p
 }
 
-/*
-  Replaces the content of the Profile object.
-*/
+// SetContent replaces the content of the Profile object.
 func (p *Profile) SetContent(data json.RawMessage) Profile {
 	p.Source = data
 
@@ -67,9 +59,7 @@ func (p *Profile) SetContent(data json.RawMessage) Profile {
 	return *p
 }
 
-/*
-  Creates or replaces the profile in Kuzzle.
-*/
+// Save creates or replaces the profile in Kuzzle.
 func (p Profile) Save(options types.QueryOptions) (Profile, error) {
 	if options == nil {
 		options = types.NewQueryOptions()
@@ -78,23 +68,17 @@ func (p Profile) Save(options types.QueryOptions) (Profile, error) {
 	return p.SP.Create(p.Id, types.Policies{Policies: p.GetPolicies()}, options.SetIfExist("replace"))
 }
 
-/*
-  Performs a partial content update on this object.
-*/
+// Update performs a partial content update on this object.
 func (p Profile) Update(policies []types.Policy, options types.QueryOptions) (Profile, error) {
 	return p.SP.Update(p.Id, types.Policies{Policies: policies}, options)
 }
 
-/*
-  Deletes this profile from Kuzzle.
-*/
+// Delete deletes this profile from Kuzzle.
 func (p Profile) Delete(options types.QueryOptions) (string, error) {
 	return p.SP.Delete(p.Id, options)
 }
 
-/*
-  Retrieves a Profile using its provided unique id.
-*/
+// Fetch retrieves a Profile using its provided unique id.
 func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (Profile, error) {
 	if id == "" {
 		return Profile{}, errors.New("Security.Profile.Fetch: profile id required")
@@ -121,9 +105,7 @@ func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (Profile,
 	return profile, nil
 }
 
-/*
-  Executes a search on Profiles according to filters.
-*/
+// Search executes a search on Profiles according to filters.
 func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions) (ProfileSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -157,9 +139,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 	return searchResult, nil
 }
 
-/*
-  Executes a scroll search on Profiles.
-*/
+// Scroll executes a scroll search on Profiles.
 func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (ProfileSearchResult, error) {
 	if scrollId == "" {
 		return ProfileSearchResult{}, errors.New("Security.Profile.Scroll: scroll id required")
@@ -187,9 +167,7 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (P
 	return searchResult, nil
 }
 
-/*
-  Create a new Profile in Kuzzle.
-*/
+// Create a new Profile in Kuzzle.
 func (sp SecurityProfile) Create(id string, policies types.Policies, options types.QueryOptions) (Profile, error) {
 	if id == "" {
 		return Profile{}, errors.New("Security.Profile.Create: profile id required")
@@ -227,9 +205,7 @@ func (sp SecurityProfile) Create(id string, policies types.Policies, options typ
 	return profile, nil
 }
 
-/*
-  Update a Profile in Kuzzle.
-*/
+// Update a Profile in Kuzzle.
 func (sp SecurityProfile) Update(id string, policies types.Policies, options types.QueryOptions) (Profile, error) {
 	if id == "" {
 		return Profile{}, errors.New("Security.Profile.Update: profile id required")
@@ -257,11 +233,9 @@ func (sp SecurityProfile) Update(id string, policies types.Policies, options typ
 	return profile, nil
 }
 
-/*
-  Delete a Profile in Kuzzle.
-  There is a small delay between profile deletion and their deletion in our advanced search layer, usually a couple of seconds.
-  This means that a profile that has just been deleted will still be returned by this function.
-*/
+// Delete a Profile in Kuzzle.
+// There is a small delay between profile deletion and their deletion in our advanced search layer, usually a couple of seconds.
+// This means that a profile that has just been deleted will still be returned by this function.
 func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Security.Profile.Delete: profile id required")

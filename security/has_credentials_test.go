@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestHasCredentialsQueryError(t *testing.T) {
@@ -73,4 +75,18 @@ func TestHasCredentials(t *testing.T) {
 	res, err := s.HasCredentials("local", "someId", nil)
 	assert.Nil(t, err)
 	assert.Equal(t, true, res)
+}
+
+func ExampleSecurity_HasCredentials() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	s := security.NewSecurity(k)
+	res, err := s.HasCredentials("local", "someId", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

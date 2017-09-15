@@ -25,19 +25,17 @@ type UserSearchResult struct {
 	ScrollId string `json:"scrollId"`
 }
 
-/*
-  Updating an user will have no impact until the create or replace method is called.
-*/
+// SetContent updates the Source of the current user
+// Updating an user will have no impact until the create or replace method is called.
 func (u *User) SetContent(data types.UserData) User {
 	u.Source, _ = json.Marshal(data)
 
 	return *u
 }
 
-/*
-  Updating user credentials will have no impact until the create method is called.
-  The credentials to send depends entirely on the authentication plugin and strategy you want to create credentials for.
-*/
+// SetCredentials update the userData of the current user
+// Updating user credentials will have no impact until the create method is called.
+// The credentials to send depends entirely on the authentication plugin and strategy you want to create credentials for.
 func (u *User) SetCredentials(credentials types.UserCredentials) User {
 	userData := u.UserData()
 	userData.Credentials = credentials
@@ -45,9 +43,8 @@ func (u *User) SetCredentials(credentials types.UserCredentials) User {
 	return u.SetContent(userData)
 }
 
-/*
-  Updating an user will have no impact until the create or replace method is called.
-*/
+// AddProfile adds a profile to the current user
+// Updating an user will have no impact until the create or replace method is called.
 func (u *User) AddProfile(profile profile.Profile) User {
 	userData := u.UserData()
 	userData.ProfileIds = append(userData.ProfileIds, profile.Id)
@@ -55,9 +52,7 @@ func (u *User) AddProfile(profile profile.Profile) User {
 	return u.SetContent(userData)
 }
 
-/*
-  Gets the associated Profile instances from the Kuzzle API, using the profile identifiers attached to this user (see getProfileIds).
-*/
+// GetProfiles returns the associated Profile instances from the Kuzzle API, using the profile identifiers attached to this user (see getProfileIds).
 func (u User) GetProfiles(options types.QueryOptions) ([]profile.Profile, error) {
 	fetchedProfiles := []profile.Profile{}
 
@@ -78,16 +73,13 @@ func (u User) GetProfiles(options types.QueryOptions) ([]profile.Profile, error)
 	return fetchedProfiles, nil
 }
 
-/*
-  Returns the list of profile identifiers associated to this user.
-*/
+// GetProfileIds returns the list of profile identifiers associated to this user.
 func (u User) GetProfileIds() []string {
 	return u.UserData().ProfileIds
 }
 
-/*
-  Updating an user will have no impact until the create or replace method is called.
-*/
+// SetProfiles updates the profiles of the current user
+// Updating a user will have no impact until the create or replace method is called.
 func (u *User) SetProfiles(profiles []profile.Profile) User {
 	profileIds := []string{}
 
@@ -101,41 +93,32 @@ func (u *User) SetProfiles(profiles []profile.Profile) User {
 	return u.SetContent(userData)
 }
 
-/*
-  Create the user in kuzzle. Credentials can be created during the process by using setCredentials beforehand.
-*/
+// Create the user in kuzzle. Credentials can be created during the process by using setCredentials beforehand.
 func (u User) Create(options types.QueryOptions) (User, error) {
 	return u.SU.Create(u.Id, u.UserData(), options)
 }
 
-/*
-  Saves this user as restricted into Kuzzle.
-*/
+// SaveRestricted stores the current user as restricted into Kuzzle.
 func (u User) SaveRestricted(options types.QueryOptions) (User, error) {
 	return u.SU.CreateRestrictedUser(u.Id, u.UserData(), options)
 }
 
-/*
-  Replaces the user in kuzzle.
-*/
+// Replace the user in kuzzle.
 func (u User) Replace(options types.QueryOptions) (User, error) {
 	return u.SU.Replace(u.Id, u.UserData(), options)
 }
 
-/*
-  Performs a partial update on an existing user.
-*/
+// Update the user in kuzzle.
 func (u User) Update(content types.UserData, options types.QueryOptions) (User, error) {
 	return u.SU.Update(u.Id, content, options)
 }
 
-/*
-  Deletes the user in Kuzzle.
-*/
+// Delete the user in Kuzzle.
 func (u User) Delete(options types.QueryOptions) (string, error) {
 	return u.SU.Delete(u.Id, options)
 }
 
+// UserData returns the current user's data
 func (u User) UserData() types.UserData {
 	userData := types.UserData{}
 	json.Unmarshal(u.Source, &userData)
@@ -155,10 +138,12 @@ func (u User) UserData() types.UserData {
 	return userData
 }
 
+// Content returns the current user's content
 func (u User) Content(key string) interface{} {
 	return u.UserData().Content[key]
 }
 
+// ContentMap returns the current user's content map
 func (u User) ContentMap(keys ...string) map[string]interface{} {
 	values := make(map[string]interface{})
 
@@ -169,9 +154,7 @@ func (u User) ContentMap(keys ...string) map[string]interface{} {
 	return values
 }
 
-/*
-  Retrieves an User using its provided unique id.
-*/
+// Fetch retrieves an User using its provided unique id.
 func (su SecurityUser) Fetch(id string, options types.QueryOptions) (User, error) {
 	if id == "" {
 		return User{}, errors.New("Security.User.Fetch: user id required")
@@ -198,9 +181,7 @@ func (su SecurityUser) Fetch(id string, options types.QueryOptions) (User, error
 	return u, nil
 }
 
-/*
-  Executes a search on Users according to filters.
-*/
+// Search executes a search on Users according to filters.
 func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (UserSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -234,9 +215,7 @@ func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (
 	return searchResult, nil
 }
 
-/*
-  Executes a scroll search on Users.
-*/
+// Scroll executes a scroll search on Users.
 func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (UserSearchResult, error) {
 	if scrollId == "" {
 		return UserSearchResult{}, errors.New("Security.User.Scroll: scroll id required")
@@ -264,9 +243,7 @@ func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (User
 	return searchResult, nil
 }
 
-/*
-  Create a new User in Kuzzle.
-*/
+// Create a new User in Kuzzle.
 func (su SecurityUser) Create(kuid string, content types.UserData, options types.QueryOptions) (User, error) {
 	if kuid == "" {
 		return User{}, errors.New("Security.User.Create: user kuid required")
@@ -307,9 +284,7 @@ func (su SecurityUser) Create(kuid string, content types.UserData, options types
 	return user, nil
 }
 
-/*
-  Create a new restricted User in Kuzzle.
-*/
+// CreateRestrictedUser creates a new restricted User in Kuzzle.
 func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData, options types.QueryOptions) (User, error) {
 	if kuid == "" {
 		return User{}, errors.New("Security.User.CreateRestrictedUser: user kuid required")
@@ -349,9 +324,7 @@ func (su SecurityUser) CreateRestrictedUser(kuid string, content types.UserData,
 	return user, nil
 }
 
-/*
-  Replace an User in Kuzzle.
-*/
+// Replace an User in Kuzzle.
 func (su SecurityUser) Replace(kuid string, content types.UserData, options types.QueryOptions) (User, error) {
 	if kuid == "" {
 		return User{}, errors.New("Security.User.Replace: user kuid required")
@@ -386,9 +359,7 @@ func (su SecurityUser) Replace(kuid string, content types.UserData, options type
 	return user, nil
 }
 
-/*
-  Update an User in Kuzzle.
-*/
+// Update an User in Kuzzle.
 func (su SecurityUser) Update(kuid string, content types.UserData, options types.QueryOptions) (User, error) {
 	if kuid == "" {
 		return User{}, errors.New("Security.User.Update: user kuid required")
@@ -423,12 +394,9 @@ func (su SecurityUser) Update(kuid string, content types.UserData, options types
 	return user, nil
 }
 
-/*
-  Delete an User in Kuzzle.
-
-  There is a small delay between user deletion and their deletion in our advanced search layer, usually a couple of seconds.
-  This means that a user that has just been deleted will still be returned by this function.
-*/
+// Delete an User in Kuzzle.
+// There is a small delay between user deletion and their deletion in our advanced search layer, usually a couple of seconds.
+// This means that a user that has just been deleted will still be returned by this function.
 func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, error) {
 	if kuid == "" {
 		return "", errors.New("Security.User.Delete: user kuid required")
@@ -455,9 +423,7 @@ func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, 
 	return shardResponse.Id, nil
 }
 
-/*
-  Gets the rights of an User using its provided unique id.
-*/
+// GetRights returns the rights of an User using its provided unique id.
 func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]types.UserRights, error) {
 	if kuid == "" {
 		return []types.UserRights{}, errors.New("Security.User.GetRights: user id required")
@@ -487,10 +453,8 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]typ
 	return userRights.UserRights, nil
 }
 
-/*
-  Indicates whether an action is allowed, denied or conditional based on user rights provided as the first argument.
-  An action is defined as a couple of action and controller (mandatory), plus an index and a collection(optional).
-*/
+// IsActionAllowed indicates whether an action is allowed, denied or conditional based on user rights provided as the first argument.
+// An action is defined as a couple of action and controller (mandatory), plus an index and a collection(optional).
 func (su SecurityUser) IsActionAllowed(rights []types.UserRights, controller string, action string, index string, collection string) (string, error) {
 	if rights == nil {
 		return "", errors.New("Security.User.IsActionAllowed: Rights parameter is mandatory")

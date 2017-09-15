@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Get an array of strategy's fieldnames
- */
+// GetCredentialFields gets an array of strategy's fieldnames
 func (s Security) GetCredentialFields(strategy string, options types.QueryOptions) (types.CredentialStrategyFields, error) {
 	if strategy == "" {
 		return types.CredentialStrategyFields{}, errors.New("Security.GetCredentialFields: strategy is required")

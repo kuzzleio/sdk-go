@@ -14,6 +14,7 @@ type Security struct {
 	User    user.SecurityUser
 }
 
+// NewSecurity returns a new instance of Security
 func NewSecurity(kuzzle *kuzzle.Kuzzle) *Security {
 	return &Security{
 		Kuzzle:  kuzzle,

@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestDeleteCredentialsQueryError(t *testing.T) {
@@ -74,4 +76,18 @@ func TestDeleteCredentials(t *testing.T) {
 
 	assert.Equal(t, true, res.Acknowledged)
 	assert.Equal(t, true, res.ShardsAcknowledged)
+}
+
+func ExampleSecurity_DeleteCredentials() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	s := security.NewSecurity(k)
+	res, err := s.DeleteCredentials("local", "someId", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Acknowledged, res.ShardsAcknowledged)
 }

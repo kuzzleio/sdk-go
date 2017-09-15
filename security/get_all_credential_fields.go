@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Get an array of strategy's fieldnames for each strategies
- */
+// GetAllCredentialFields gets an array of strategy's fieldnames for each strategies
 func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.CredentialFields, error) {
 	ch := make(chan types.KuzzleResponse)
 

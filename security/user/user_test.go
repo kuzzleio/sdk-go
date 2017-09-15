@@ -11,6 +11,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestUserSetContent(t *testing.T) {
@@ -43,6 +44,21 @@ func TestUserSetContent(t *testing.T) {
 	assert.Equal(t, newContent, u.UserData())
 }
 
+func ExampleUser_SetContent() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	newContent := types.UserData{
+		ProfileIds: []string{"adminNew", "otherNew"},
+	}
+
+	u.SetContent(newContent)
+
+	fmt.Println(u.UserData())
+}
+
 func TestUserSetCredentials(t *testing.T) {
 	id := "userId"
 
@@ -72,6 +88,20 @@ func TestUserSetCredentials(t *testing.T) {
 	assert.Equal(t, cred, u.UserData().Credentials)
 }
 
+func ExampleUser_SetCredentials() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+
+	res := u.SetCredentials(cred)
+
+	fmt.Println(res.Id, res.UserData().Credentials)
+}
+
 func TestUserAddProfile(t *testing.T) {
 	id := "userId"
 
@@ -96,6 +126,17 @@ func TestUserAddProfile(t *testing.T) {
 	u.AddProfile(profile.Profile{Id: "adminNew"})
 
 	assert.Equal(t, []string{"admin", "other", "adminNew"}, u.UserData().ProfileIds)
+}
+
+func ExampleUser_AddProfile() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	res := u.AddProfile(profile.Profile{Id: "adminNew"})
+
+	fmt.Println(res.Id, res.UserData().ProfileIds)
 }
 
 func TestUserGetProfilesEmptyProfileIds(t *testing.T) {
@@ -219,6 +260,21 @@ func TestUserGetProfiles(t *testing.T) {
 	}, profiles)
 }
 
+func ExampleUser_GetProfiles() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+	res, err := u.GetProfiles(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res[0].Id, res[0].GetPolicies())
+}
+
 func TestUserGetProfileIds(t *testing.T) {
 	id := "userId"
 
@@ -243,6 +299,17 @@ func TestUserGetProfileIds(t *testing.T) {
 	profileIds := u.GetProfileIds()
 
 	assert.Equal(t, []string{"admin", "other"}, profileIds)
+}
+
+func ExampleUser_GetProfileIds() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	res := u.GetProfileIds()
+
+	fmt.Println(res)
 }
 
 func TestUserSetProfiles(t *testing.T) {
@@ -272,6 +339,20 @@ func TestUserSetProfiles(t *testing.T) {
 	})
 
 	assert.Equal(t, []string{"adminNew", "otherNew"}, u.UserData().ProfileIds)
+}
+
+func ExampleUser_SetProfiles() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	res := u.SetProfiles([]profile.Profile{
+		{Id: "adminNew"},
+		{Id: "otherNew"},
+	})
+
+	fmt.Println(res.UserData().ProfileIds)
 }
 
 func TestUserCreate(t *testing.T) {
@@ -317,6 +398,23 @@ func TestUserCreate(t *testing.T) {
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
 }
 
+func ExampleUser_Create() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	res, err := u.Create(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestUserSaveRestricted(t *testing.T) {
 	id := "userId"
 	callCount := 0
@@ -358,6 +456,23 @@ func TestUserSaveRestricted(t *testing.T) {
 	createdUser, _ := u.SaveRestricted(nil)
 
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
+}
+
+func ExampleUser_SaveRestricted() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	res, err := u.SaveRestricted(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
 }
 
 func TestUserReplace(t *testing.T) {
@@ -403,6 +518,23 @@ func TestUserReplace(t *testing.T) {
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
 }
 
+func ExampleUser_Replace() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	res, err := u.Replace(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestUserUpdate(t *testing.T) {
 	id := "userId"
 	callCount := 0
@@ -446,6 +578,23 @@ func TestUserUpdate(t *testing.T) {
 	assert.Equal(t, newContent, updatedUser.UserData())
 }
 
+func ExampleUser_Update() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	newContent := types.UserData{ProfileIds: []string{"adminNew", "otherNew"}}
+	res, err := u.Update(newContent, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestUserDelete(t *testing.T) {
 	id := "SomeMenJustWantToWatchTheWorldBurn"
 	callCount := 0
@@ -486,6 +635,22 @@ func TestUserDelete(t *testing.T) {
 	inTheEnd, _ := u.Delete(nil)
 
 	assert.Equal(t, id, inTheEnd)
+}
+
+func ExampleUser_Delete() {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
+
+	res, err := u.Delete(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestUserContentEmptyKey(t *testing.T) {
@@ -621,6 +786,21 @@ func TestFetch(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
+func ExampleSecurityUser_Fetch() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).User.Fetch(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -660,6 +840,22 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`))
 	assert.Equal(t, res.Hits[0].UserData().ProfileIds, []string{"admin", "other"})
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
+}
+
+func ExampleSecurityUser_Search() {
+	hits := make([]user.User, 1)
+	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).User.Search(nil, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].UserData().Content)
 }
 
 func TestSearchWithScroll(t *testing.T) {
@@ -755,6 +951,25 @@ func TestScroll(t *testing.T) {
 	assert.Equal(t, res.Hits[0].Content("foo"), "bar")
 }
 
+func ExampleSecurityUser_Scroll() {
+	type response struct {
+		Total int         `json:"total"`
+		Hits  []user.User `json:"hits"`
+	}
+
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).User.Scroll("f00b4r", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].UserData().Content)
+}
+
 func TestCreateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -820,6 +1035,26 @@ func TestCreate(t *testing.T) {
 	contentAsMap["function"] = "Jedi"
 
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
+}
+
+func ExampleSecurityUser_Create() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	type UserContent map[string]interface{}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
+
+	res, err := security.NewSecurity(k).User.Create(id, ud, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
 }
 
 func TestCreateRestrictedEmptyId(t *testing.T) {
@@ -889,6 +1124,26 @@ func TestCreateRestricted(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
+func ExampleSecurityUser_CreateRestrictedUser() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	type UserContent map[string]interface{}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
+
+	res, err := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestReplaceEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -954,6 +1209,26 @@ func TestReplace(t *testing.T) {
 	contentAsMap["function"] = "Jedi"
 
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
+}
+
+func ExampleSecurityUser_Replace() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	type UserContent map[string]interface{}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
+
+	res, err := security.NewSecurity(k).User.Replace(id, ud, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
 }
 
 func TestUpdateEmptyId(t *testing.T) {
@@ -1023,6 +1298,26 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, contentAsMap, res.ContentMap("name", "function"))
 }
 
+func ExampleSecurityUser_Update() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	type UserContent map[string]interface{}
+	cred := types.UserCredentials{}
+	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
+	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
+
+	res, err := security.NewSecurity(k).User.Update(id, ud, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.UserData().Content)
+}
+
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -1069,6 +1364,21 @@ func TestDelete(t *testing.T) {
 	res, _ := security.NewSecurity(k).User.Delete(id, nil)
 
 	assert.Equal(t, id, res)
+}
+
+func ExampleSecurityUser_Delete() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).User.Delete(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestGetRightsEmptyId(t *testing.T) {
@@ -1125,6 +1435,21 @@ func TestGetRights(t *testing.T) {
 	expectedRights = append(expectedRights, types.UserRights{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
 
 	assert.Equal(t, expectedRights, res)
+}
+
+func ExampleSecurityUser_GetRights() {
+	id := "userId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).User.GetRights(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res[0].Index, res[0].Collection, res[0].Controller, res[0].Action, res[0].Value)
 }
 
 func TestIsActionAllowedNilRights(t *testing.T) {
@@ -1187,4 +1512,21 @@ func TestIsActionAllowedResultDenied(t *testing.T) {
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "action", "much-index", "very-collection")
 
 	assert.Equal(t, "denied", res)
+}
+
+func ExampleSecurityUser_IsActionAllowed() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	userRights := []types.UserRights{}
+	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+
+	res, err := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "such-action", "much-index", "very-collection")
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
