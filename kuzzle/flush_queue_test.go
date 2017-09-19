@@ -6,6 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestFlushQueue(t *testing.T) {
@@ -17,4 +18,11 @@ func TestFlushQueue(t *testing.T) {
 
 	k.FlushQueue()
 	assert.Empty(t, *k.GetOfflineQueue())
+}
+
+func ExampleKuzzle_FlushQueue() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	k.FlushQueue()
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestWhoAmIQueryError(t *testing.T) {
@@ -48,4 +50,30 @@ func TestWhoAmI(t *testing.T) {
 	res, _ := k.WhoAmI()
 
 	assert.Equal(t, "id", res.Id)
+}
+
+func ExampleKuzzle_WhoAmI() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	_, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	res, err := k.WhoAmI()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Strategies, res.Meta, res.Source)
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestListCollectionsIndexNull(t *testing.T) {
@@ -109,4 +111,20 @@ func TestListCollectionsWithOptions(t *testing.T) {
 	assert.Equal(t, "collection2", res[1].Name)
 	assert.Equal(t, "stored", res[0].Type)
 	assert.Equal(t, "stored", res[1].Type)
+}
+
+func ExampleKuzzle_ListCollections() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	res, err := k.ListCollections("index", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	for _, collection := range res {
+		fmt.Println(collection.Type, collection.Name)
+	}
 }
