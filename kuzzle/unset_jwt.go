@@ -5,9 +5,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Unset the authentication token and cancel all subscriptions
- */
+// UnsetJwt unset the authentication token and cancel all subscriptions
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 

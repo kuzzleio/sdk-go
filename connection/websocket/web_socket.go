@@ -292,7 +292,6 @@ func (ws *webSocket) listen() {
 			close(c.(chan<- types.KuzzleResponse))
 			ws.channelsResult.Delete(m.RequestId)
 		}
-		//}
 	}
 }
 

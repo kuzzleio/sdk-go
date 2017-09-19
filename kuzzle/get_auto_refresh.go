@@ -6,6 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+// GetAutoRefresh the getAutoRefresh function returns the current autoRefresh status for the given index.
 func (k Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
