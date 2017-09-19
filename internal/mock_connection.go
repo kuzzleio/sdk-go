@@ -67,3 +67,7 @@ func (c MockedConnection) GetRooms() *types.RoomList {
 
 	return v
 }
+
+func (c MockedConnection) RemoveAllListeners(event int) {
+
+}

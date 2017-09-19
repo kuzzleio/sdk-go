@@ -301,12 +301,14 @@ func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
 }
 
 // Removes all listeners, either from all events and close channels
-func (ws *webSocket) RemoveAllListeners() {
+func (ws *webSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
-		if ws.eventListeners[k] != nil {
-			close(ws.eventListeners[k])
+		if event == k || event == -1 {
+			if ws.eventListeners[k] != nil {
+				close(ws.eventListeners[k])
+			}
+			delete(ws.eventListeners, k)
 		}
-		delete(ws.eventListeners, k)
 	}
 }
 
