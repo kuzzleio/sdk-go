@@ -50,12 +50,7 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 		return "", err
 	}
 
-	k.jwt = token.Jwt
-
-	if token.Jwt != "" {
-		k.socket.RenewSubscriptions()
-		k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: true})
-	}
+	k.SetJwt(token.Jwt)
 
 	return token.Jwt, nil
 }
