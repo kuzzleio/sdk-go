@@ -106,6 +106,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 	return ws
 }
 
+//Connect connects to a kuzzle instance
 func (ws *webSocket) Connect() (bool, error) {
 	if !ws.isValidState() {
 		return false, nil
@@ -338,7 +339,7 @@ func (ws *webSocket) FlushQueue() {
 	ws.offlineQueue = ws.offlineQueue[:cap(ws.offlineQueue)]
 }
 
-// Replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+// ReplayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
 func (ws *webSocket) ReplayQueue() {
 	if ws.state != state.Offline && !ws.autoReplay {
 		ws.cleanQueue()
