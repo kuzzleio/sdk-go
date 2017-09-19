@@ -103,6 +103,8 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		ws.autoReplay = true
 		ws.autoResubscribe = true
 	}
+	ws.state = state.Offline
+
 	return ws
 }
 

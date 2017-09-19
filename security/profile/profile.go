@@ -9,7 +9,7 @@ import (
 )
 
 type SecurityProfile struct {
-	Kuzzle kuzzle.Kuzzle
+	Kuzzle *kuzzle.Kuzzle
 }
 
 type Profile struct {
@@ -107,6 +107,7 @@ func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (Profile,
 		Action:     "getProfile",
 		Id:         id,
 	}
+
 	go sp.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
@@ -115,8 +116,9 @@ func (sp SecurityProfile) Fetch(id string, options types.QueryOptions) (Profile,
 		return Profile{}, errors.New(res.Error.Message)
 	}
 
-	profile := Profile{SP: sp}
+	profile := Profile{}
 	json.Unmarshal(res.Result, &profile)
+	profile.SP = sp
 
 	return profile, nil
 }
@@ -221,8 +223,9 @@ func (sp SecurityProfile) Create(id string, policies types.Policies, options typ
 		return Profile{}, errors.New(res.Error.Message)
 	}
 
-	profile := Profile{SP: sp}
+	profile := Profile{}
 	json.Unmarshal(res.Result, &profile)
+	profile.SP = sp
 
 	return profile, nil
 }
@@ -251,8 +254,9 @@ func (sp SecurityProfile) Update(id string, policies types.Policies, options typ
 		return Profile{}, errors.New(res.Error.Message)
 	}
 
-	profile := Profile{SP: sp}
+	profile := Profile{}
 	json.Unmarshal(res.Result, &profile)
+	profile.SP = sp
 
 	return profile, nil
 }
