@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"fmt"
 )
 
 func TestNowQueryError(t *testing.T) {
@@ -38,4 +40,17 @@ func TestNow(t *testing.T) {
 
 	res, _ := k.Now(nil)
 	assert.Equal(t, 1500646351073, res)
+}
+
+func ExampleKuzzle_Now() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	now, err := k.Now(nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(now)
 }

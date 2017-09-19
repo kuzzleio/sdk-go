@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLogoutError(t *testing.T) {
@@ -42,4 +44,27 @@ func TestLogout(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	error := k.Logout()
 	assert.Nil(t, error)
+}
+
+func ExampleKuzzle_Logout() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	_, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	err = k.Logout()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestLoginNoStrategy(t *testing.T) {
@@ -66,4 +68,24 @@ func TestLogin(t *testing.T) {
 	expiresIn := 42
 	token, _ := k.Login("local", struct{}{}, &expiresIn)
 	assert.Equal(t, "token", token)
+}
+
+func ExampleKuzzle_Login() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	jwt, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(jwt)
 }

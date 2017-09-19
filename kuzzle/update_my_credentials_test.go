@@ -7,6 +7,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestUpdateMyCredentialsQueryError(t *testing.T) {
@@ -60,4 +62,31 @@ func TestUpdateMyCredentials(t *testing.T) {
 
 	assert.Equal(t, "foo", res["username"])
 	assert.Equal(t, "bar", res["password"])
+}
+
+func ExampleKuzzle_UpdateMyCredentials() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	_, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	newCredentials := credentials{"foo", "new"}
+	res, err := k.UpdateMyCredentials("local", newCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

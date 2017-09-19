@@ -1,4 +1,4 @@
-package kuzzle
+package kuzzle_test
 
 import (
 	"encoding/json"
@@ -6,10 +6,13 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 func TestUnsetJwt(t *testing.T) {
-	var k *Kuzzle
+	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -34,11 +37,32 @@ func TestUnsetJwt(t *testing.T) {
 		},
 	}
 
-	k, _ = NewKuzzle(c, nil)
+	k, _ = kuzzle.NewKuzzle(c, nil)
 
 	res, _ := k.Login("local", nil, nil)
 	assert.Equal(t, "token", res)
-	assert.Equal(t, "token", k.jwt)
+	assert.Equal(t, "token", k.GetJwt())
 	k.UnsetJwt()
-	assert.Equal(t, "", k.jwt)
+	assert.Equal(t, "", k.GetJwt())
+}
+
+func ExampleKuzzle_UnsetJwt() {
+	conn := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+
+	type credentials struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	myCredentials := credentials{"foo", "bar"}
+
+	_, err := k.Login("local", myCredentials, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	k.UnsetJwt()
+	fmt.Println(k.GetJwt())
 }

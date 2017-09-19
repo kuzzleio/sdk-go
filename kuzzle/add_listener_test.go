@@ -13,7 +13,4 @@ func TestAddListener(t *testing.T) {
 	ch := make(chan interface{})
 
 	kuzzle.AddListener(*k, 0, ch)
-
-	//c.AssertCalled(t, "AddListener")
-	//c.AssertNumberOfCalls(t, "AddListener", 1)
 }
