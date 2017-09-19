@@ -74,3 +74,5 @@ func (c MockedConnection) StopQueuing() {}
 func (c MockedConnection) RemoveListener(event int) {}
 
 func (c MockedConnection) ReplayQueue() {}
+func (c MockedConnection) RemoveAllListeners(event int) {
+}
