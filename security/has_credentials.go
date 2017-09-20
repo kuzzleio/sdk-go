@@ -1,9 +1,9 @@
 package security
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
 )
 
 /*
@@ -35,8 +35,8 @@ func (s Security) HasCredentials(strategy string, kuid string, options types.Que
 		return false, errors.New(res.Error.Message)
 	}
 
-	var hasCredentials bool
-	json.Unmarshal(res.Result, &hasCredentials)
+	var r bool
+	json.Unmarshal(res.Result, &r)
 
-	return true, nil
+	return r, nil
 }
