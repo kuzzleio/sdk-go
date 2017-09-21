@@ -44,7 +44,7 @@ func TestGetMapping(t *testing.T) {
 
 	res, _ := cl.GetMapping(nil)
 	assert.Equal(t, collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),

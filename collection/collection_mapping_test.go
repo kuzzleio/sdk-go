@@ -21,7 +21,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
@@ -83,7 +83,7 @@ func TestCollectionMappingApply(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	var fieldMapping = types.KuzzleFieldMapping{
+	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
 			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
@@ -105,7 +105,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
@@ -138,7 +138,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "wrong-index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
@@ -172,7 +172,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	cl := collection.NewCollection(k, "wrong-collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
@@ -206,7 +206,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
@@ -215,7 +215,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 		Collection: *cl,
 	}
 	updatedCm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
@@ -250,7 +250,7 @@ func TestCollectionMappingSet(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	var fieldMapping = types.KuzzleFieldMapping{
+	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
 			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
@@ -274,7 +274,7 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
@@ -308,7 +308,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),

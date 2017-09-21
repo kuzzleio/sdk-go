@@ -28,7 +28,7 @@ func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, 
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties types.KuzzleFieldMapping `json:"properties"`
+			Properties types.KuzzleFieldsMapping `json:"properties"`
 		} `json:"mappings"`
 	}
 

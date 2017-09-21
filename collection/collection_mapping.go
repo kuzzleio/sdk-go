@@ -14,7 +14,7 @@ type ICollectionMapping interface {
 }
 
 type CollectionMapping struct {
-	Mapping    types.KuzzleFieldMapping
+	Mapping    types.KuzzleFieldsMapping
 	Collection Collection
 }
 
@@ -25,7 +25,7 @@ func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping
 	ch := make(chan types.KuzzleResponse)
 
 	type body struct {
-		Properties types.KuzzleFieldMapping `json:"properties"`
+		Properties types.KuzzleFieldsMapping `json:"properties"`
 	}
 
 	query := types.KuzzleRequest{
@@ -70,7 +70,7 @@ func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMappi
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties types.KuzzleFieldMapping `json:"properties"`
+			Properties types.KuzzleFieldsMapping `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -97,7 +97,7 @@ func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMappi
 
   Changes made by this function won’t be applied until you call the apply method
 */
-func (cm CollectionMapping) Set(mappings types.KuzzleFieldMapping) CollectionMapping {
+func (cm CollectionMapping) Set(mappings types.KuzzleFieldsMapping) CollectionMapping {
 	for field, mapping := range mappings {
 		cm.Mapping[field] = mapping
 	}
