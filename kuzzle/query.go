@@ -4,10 +4,16 @@ import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
+	"github.com/kuzzleio/sdk-go/state"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
+	if k.State == nil || *k.State == state.Disconnected || *k.State == state.Offline || *k.State == state.Ready {
+		responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: "This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?"}}
+		return
+	}
+
 	requestId := uuid.NewV4().String()
 
 	if query.RequestId == "" {

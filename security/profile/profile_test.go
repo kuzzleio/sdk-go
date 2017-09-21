@@ -175,7 +175,6 @@ func TestProfileSave(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
-
 	newPolicies := []types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
 		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},

@@ -9,7 +9,7 @@ import (
 )
 
 type SecurityRole struct {
-	Kuzzle kuzzle.Kuzzle
+	Kuzzle *kuzzle.Kuzzle
 }
 
 type Role struct {
@@ -88,8 +88,9 @@ func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (Role, error
 		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := Role{SR: sr}
+	role := Role{}
 	json.Unmarshal(res.Result, &role)
+	role.SR = sr
 
 	return role, nil
 }
@@ -164,8 +165,9 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := Role{SR: sr}
+	role := Role{}
 	json.Unmarshal(res.Result, &role)
+	role.SR = sr
 
 	return role, nil
 }
@@ -194,8 +196,9 @@ func (sr SecurityRole) Update(id string, controllers types.Controllers, options 
 		return Role{}, errors.New(res.Error.Message)
 	}
 
-	role := Role{SR: sr}
+	role := Role{}
 	json.Unmarshal(res.Result, &role)
+	role.SR = sr
 
 	return role, nil
 }

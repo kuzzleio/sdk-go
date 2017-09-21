@@ -9,7 +9,7 @@ import (
 )
 
 type SecurityUser struct {
-	Kuzzle kuzzle.Kuzzle
+	Kuzzle *kuzzle.Kuzzle
 }
 
 type User struct {

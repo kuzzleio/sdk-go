@@ -35,7 +35,7 @@ func (c MockedConnection) Close() error {
 func (c MockedConnection) AddListener(event int, channel chan<- interface{}) {}
 
 func (c MockedConnection) GetState() *int {
-	state := 0
+	state := 2
 	return &state
 }
 
