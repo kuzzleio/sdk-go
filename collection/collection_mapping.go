@@ -15,7 +15,14 @@ type ICollectionMapping interface {
 
 type CollectionMapping struct {
 	Mapping    types.KuzzleFieldsMapping
-	Collection Collection
+	Collection *Collection
+}
+
+func NewCollectionMapping(col *Collection) *CollectionMapping {
+	return &CollectionMapping{
+		Collection: col,
+		Mapping: make(types.KuzzleFieldsMapping),
+	}
 }
 
 /*

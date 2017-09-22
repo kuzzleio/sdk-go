@@ -34,23 +34,26 @@ func TestGetMapping(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(255.0)
 
 	res, _ := cl.GetMapping(nil)
 	assert.Equal(t, collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}, res)
 }
 
@@ -65,7 +68,7 @@ func TestGetMappingUnknownIndex(t *testing.T) {
 			assert.Equal(t, "wrong-index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -89,7 +92,7 @@ func TestGetMappingUnknownCollection(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "wrong-collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},

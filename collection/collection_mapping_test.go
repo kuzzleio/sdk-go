@@ -19,15 +19,17 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Apply(nil)
@@ -82,11 +84,14 @@ func TestCollectionMappingApply(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
 
 	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+			Fields: fields,
 		},
 	}
 
@@ -103,15 +108,18 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -136,15 +144,18 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "wrong-index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -170,15 +181,18 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "wrong-collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -197,31 +211,37 @@ func TestCollectionMappingRefresh(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100)
+	fields2 := make(map[string]interface{})
+	fields2["type"] = interface{}("keyword")
+	fields2["ignore_above"] = interface{}(255.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 	updatedCm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Fields: fields2,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	res, _ := cm.Refresh(nil)
@@ -249,38 +269,37 @@ func TestCollectionMappingSet(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keywords")
+	fields["ignore_above"] = interface{}(100.0)
 
 	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+			Fields: fields,
 		},
 	}
 
 	cm.Set(fieldMapping)
 
-	type FieldsStruct struct {
-		Type        string `json:"type"`
-		IgnoreAbove int    `json:"ignore_above"`
-	}
-	fieldStruct := FieldsStruct{}
-	json.Unmarshal(cm.Mapping["foo"].Fields, &fieldStruct)
-
-	assert.Equal(t, 100, fieldStruct.IgnoreAbove)
+	assert.Equal(t, "keywords", cm.Mapping["foo"].Fields["type"].(string))
 }
 
 func TestCollectionMappingSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	var headers = make(map[string]interface{}, 0)
@@ -306,15 +325,19 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100.0)
+	fields["ignore_above"] = interface{}(100.0)
 
 	cm := collection.CollectionMapping{
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Fields: fields,
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	var headers = make(map[string]interface{}, 0)
