@@ -26,7 +26,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -51,7 +51,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":256}}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return types.KuzzleResponse{Result: r}
 			}
@@ -62,7 +62,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":100}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":100}}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return types.KuzzleResponse{Result: r}
 			}
@@ -73,7 +73,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":100}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":100}}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return types.KuzzleResponse{Result: r}
 			}
@@ -91,7 +91,7 @@ func TestCollectionMappingApply(t *testing.T) {
 	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
-			Fields: fields,
+			Properties: fields,
 		},
 	}
 
@@ -116,7 +116,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -137,7 +137,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 			assert.Equal(t, "wrong-index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":256}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -152,7 +152,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -174,7 +174,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "wrong-collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":256}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -189,7 +189,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -211,7 +211,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -229,7 +229,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -238,7 +238,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields2,
+				Properties: fields2,
 			},
 		},
 		Collection: cl,
@@ -261,7 +261,7 @@ func TestCollectionMappingSet(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":256}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -276,13 +276,13 @@ func TestCollectionMappingSet(t *testing.T) {
 	var fieldMapping = types.KuzzleFieldsMapping{
 		"foo": {
 			Type:   "text",
-			Fields: fields,
+			Properties: fields,
 		},
 	}
 
 	cm.Set(fieldMapping)
 
-	assert.Equal(t, "keywords", cm.Mapping["foo"].Fields["type"].(string))
+	assert.Equal(t, "keywords", cm.Mapping["foo"].Properties["type"].(string))
 }
 
 func TestCollectionMappingSetHeaders(t *testing.T) {
@@ -296,7 +296,7 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -334,7 +334,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,

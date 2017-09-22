@@ -54,8 +54,8 @@ type (
 	}
 
 	KuzzleFieldMapping struct {
-		Type   string                 `json:"type"`
-		Fields map[string]interface{} `json:"fields"`
+		Type   string                 	  `json:"type,omitempty"`
+		Properties map[string]interface{} `json:"properties,omitempty"`
 	}
 
 	KuzzleFieldsMapping map[string]KuzzleFieldMapping

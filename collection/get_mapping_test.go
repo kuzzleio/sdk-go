@@ -34,7 +34,7 @@ func TestGetMapping(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -50,7 +50,7 @@ func TestGetMapping(t *testing.T) {
 		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
-				Fields: fields,
+				Properties: fields,
 			},
 		},
 		Collection: cl,
@@ -68,7 +68,7 @@ func TestGetMappingUnknownIndex(t *testing.T) {
 			assert.Equal(t, "wrong-index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -92,7 +92,7 @@ func TestGetMappingUnknownCollection(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "wrong-collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":255}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","properties":{"type":"keyword","ignore_above":255}}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return types.KuzzleResponse{Result: r}
 		},
