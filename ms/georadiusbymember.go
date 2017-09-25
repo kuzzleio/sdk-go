@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Return the geospatial members of a key inside the provided radius
-*/
+// Georadiusbymember returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Georadiusbymember: key required")
@@ -41,6 +39,7 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 	return returnedResults, nil
 }
 
+// GeoradiusbymemberWithCoord returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoord, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithCoord: key required")
@@ -94,6 +93,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 	return returnedResults, nil
 }
 
+// GeoradiusbymemberWithDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithDist: key required")
@@ -138,6 +138,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 	return returnedResults, nil
 }
 
+// GeoradiusbymemberWithCoordAndDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithCoordAndDist: key required")

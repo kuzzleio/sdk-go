@@ -10,6 +10,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestProfileAddPolicy(t *testing.T) {
@@ -48,6 +49,23 @@ func TestProfileAddPolicy(t *testing.T) {
 	}, p.GetPolicies())
 }
 
+func ExampleProfile_AddPolicy() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	policy := types.Policy{
+		RoleId:             "roleId",
+		AllowInternalIndex: true,
+		RestrictedTo:       []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}},
+	}
+
+	p.AddPolicy(policy)
+
+	fmt.Println(p.GetPolicies())
+}
+
 func TestProfileGetPolicies(t *testing.T) {
 	id := "profileId"
 
@@ -72,6 +90,16 @@ func TestProfileGetPolicies(t *testing.T) {
 	assert.Equal(t, []types.Policy{
 		{RoleId: "admin"},
 		{RoleId: "other"}}, p.GetPolicies())
+}
+
+func ExampleProfile_GetPolicies() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	fmt.Println(p.GetPolicies())
 }
 
 func TestProfileSetPolicies(t *testing.T) {
@@ -105,6 +133,23 @@ func TestProfileSetPolicies(t *testing.T) {
 	assert.Equal(t, newPolicies, p.GetPolicies())
 }
 
+func ExampleProfile_SetPolicies() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	newPolicies := []types.Policy{
+		{RoleId: "newRoleId", AllowInternalIndex: true},
+		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+	}
+
+	p.SetPolicies(newPolicies)
+
+	fmt.Println(p.GetPolicies())
+}
+
 func TestProfileSetContent(t *testing.T) {
 	id := "profileId"
 
@@ -136,6 +181,20 @@ func TestProfileSetContent(t *testing.T) {
 
 	assert.Equal(t, json.RawMessage(newContent), p.Source)
 	assert.Equal(t, expectedPolicies, p.GetPolicies())
+}
+
+func ExampleProfile_SetContent() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	newContent := []byte(`{"policies":[{"roleId":"newRoleId","allowInternalIndex":true},{"roleId":"otherRoleId","restrictedTo":[{"index":"index","collections":["foo","bar"]}]}]}`)
+
+	p.SetContent(newContent)
+
+	fmt.Println(p.Source, p.GetPolicies())
 }
 
 func TestProfileSave(t *testing.T) {
@@ -191,6 +250,32 @@ func TestProfileSave(t *testing.T) {
 	assert.Equal(t, expectedNewProfile.GetPolicies(), newProfile.GetPolicies())
 }
 
+func ExampleProfile_Save() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	newPolicies := []types.Policy{
+		{RoleId: "newRoleId", AllowInternalIndex: true},
+		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+	}
+
+	p.SetContent([]byte(`{"im":"emptyInside"}`))
+	for _, policy := range newPolicies {
+		p.AddPolicy(policy)
+	}
+	res, err := p.Save(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.GetPolicies())
+}
+
 func TestProfileUpdate(t *testing.T) {
 	id := "profileId"
 	expectedUpdatedProfile := profile.Profile{Id: id, Source: []byte(`{"you":"completeMe","policies":[{"roleId":"boringNewRoleId"}]}`)}
@@ -240,6 +325,28 @@ func TestProfileUpdate(t *testing.T) {
 	assert.Equal(t, newPolicies, updatedProfile.GetPolicies())
 }
 
+func ExampleProfile_Update() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	newPolicies := []types.Policy{
+		{RoleId: "boringNewRoleId"},
+	}
+
+	p.SetContent([]byte(`{"you":"completeMe"}`))
+	res, err := p.Update(newPolicies, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.GetPolicies())
+}
+
 func TestProfileDelete(t *testing.T) {
 	id := "SomeMenJustWantToWatchTheWorldBurn"
 	callCount := 0
@@ -280,6 +387,21 @@ func TestProfileDelete(t *testing.T) {
 	inTheEnd, _ := p.Delete(nil)
 
 	assert.Equal(t, id, inTheEnd)
+}
+
+func ExampleProfile_Delete() {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+	res, err := p.Delete(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestFetchEmptyId(t *testing.T) {
@@ -331,6 +453,21 @@ func TestFetch(t *testing.T) {
 	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
+func ExampleSecurityProfile_Fetch() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Profile.Fetch(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.GetPolicies())
+}
+
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -369,6 +506,20 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, "profile42", res.Hits[0].Id)
 	assert.Equal(t, json.RawMessage(`{"policies":[{"roleId":"admin"}]}`), res.Hits[0].Source)
 	assert.Equal(t, "admin", res.Hits[0].GetPolicies()[0].RoleId)
+}
+
+func ExampleSecurityProfile_Search() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Profile.Search(nil, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].GetPolicies())
 }
 
 func TestSearchWithScroll(t *testing.T) {
@@ -462,6 +613,24 @@ func TestScroll(t *testing.T) {
 	assert.Equal(t, "admin", res.Hits[0].GetPolicies()[0].RoleId)
 }
 
+func ExampleSecurityProfile_Scroll() {
+	type response struct {
+		Total int               `json:"total"`
+		Hits  []profile.Profile `json:"hits"`
+	}
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Profile.Scroll("f00b4r", nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].GetPolicies())
+}
+
 func TestCreateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -515,6 +684,24 @@ func TestCreate(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+}
+
+func ExampleSecurityProfile_Create() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	policies := []types.Policy{}
+	policies = append(policies, types.Policy{RoleId: "admin"})
+	policies = append(policies, types.Policy{RoleId: "other"})
+	res, err := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.GetPolicies())
 }
 
 func TestCreateIfExists(t *testing.T) {
@@ -664,6 +851,24 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
+func ExampleSecurityProfile_Update() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	policies := []types.Policy{}
+	policies = append(policies, types.Policy{RoleId: "admin"})
+	policies = append(policies, types.Policy{RoleId: "other"})
+	res, err := security.NewSecurity(k).Profile.Update(id, types.Policies{Policies: policies}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.GetPolicies())
+}
+
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -710,4 +915,19 @@ func TestDelete(t *testing.T) {
 	res, _ := security.NewSecurity(k).Profile.Delete(id, nil)
 
 	assert.Equal(t, id, res)
+}
+
+func ExampleSecurityProfile_Delete() {
+	id := "profileId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Profile.Delete(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

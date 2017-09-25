@@ -10,6 +10,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRoleSetContent(t *testing.T) {
@@ -86,6 +87,24 @@ func TestRoleSave(t *testing.T) {
 	assert.Equal(t, newContent.Controllers, r.Controllers())
 }
 
+func ExampleRole_Save() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	r, _ := security.NewSecurity(k).Role.Fetch(id, nil)
+	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+
+	r.SetContent(newContent)
+	res, err := r.Save(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Controllers())
+}
+
 func TestRoleUpdate(t *testing.T) {
 	id := "roleId"
 	callCount := 0
@@ -130,6 +149,25 @@ func TestRoleUpdate(t *testing.T) {
 	assert.Equal(t, newContent.Controllers, updatedRole.Controllers())
 }
 
+func ExampleRole_Update() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	r, _ := security.NewSecurity(k).Role.Fetch(id, nil)
+
+	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+
+	res, err := r.Update(newContent, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Controllers())
+}
+
 func TestRoleDelete(t *testing.T) {
 	id := "SomeMenJustWantToWatchTheWorldBurn"
 	callCount := 0
@@ -170,6 +208,23 @@ func TestRoleDelete(t *testing.T) {
 	inTheEnd, _ := r.Delete(nil)
 
 	assert.Equal(t, id, inTheEnd)
+}
+
+func ExampleRole_Delete() {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	r, _ := security.NewSecurity(k).Role.Fetch(id, nil)
+
+	res, err := r.Delete(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
 
 func TestFetchEmptyId(t *testing.T) {
@@ -221,6 +276,21 @@ func TestFetch(t *testing.T) {
 	assert.Equal(t, true, res.Controllers()["*"].Actions["*"])
 }
 
+func ExampleSecurityRole_Fetch() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Role.Fetch(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Controllers())
+}
+
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -259,6 +329,19 @@ func TestSearch(t *testing.T) {
 	assert.Equal(t, res.Hits[0].Id, "role42")
 	assert.Equal(t, res.Hits[0].Source, json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`))
 	assert.Equal(t, res.Hits[0].Controllers()["*"].Actions["*"], true)
+}
+
+func ExampleSecurityRole_Search() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	res, err := security.NewSecurity(k).Role.Search(nil, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Controllers())
 }
 
 func TestSearchWithOptions(t *testing.T) {
@@ -344,6 +427,21 @@ func TestCreate(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 	assert.Equal(t, true, res.Controllers()["*"].Actions["*"])
+}
+
+func ExampleSecurityRole_Create() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Role.Create(id, types.Controllers{Controllers: map[string]types.Controller{"*": {Actions: map[string]bool{"*": true}}}}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Controllers())
 }
 
 func TestCreateIfExists(t *testing.T) {
@@ -478,6 +576,21 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, true, res.Controllers()["*"].Actions["*"])
 }
 
+func ExampleSecurityRole_Update() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Role.Update(id, types.Controllers{Controllers: map[string]types.Controller{"*": {Actions: map[string]bool{"*": true}}}}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Controllers())
+}
+
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -524,4 +637,19 @@ func TestDelete(t *testing.T) {
 	res, _ := security.NewSecurity(k).Role.Delete(id, nil)
 
 	assert.Equal(t, id, res)
+}
+
+func ExampleSecurityRole_Delete() {
+	id := "roleId"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := security.NewSecurity(k).Role.Delete(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

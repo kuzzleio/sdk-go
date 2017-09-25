@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the remaining time to live of a key, in milliseconds.
-*/
+// Pttl returns the remaining time to live of a key, in milliseconds.
 func (ms Ms) Pttl(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Pttl: key required")

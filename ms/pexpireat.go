@@ -6,11 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets an expiration timestamp on a key. After the timestamp has been reached, the key will automatically be deleted.
-
-  The timestamp parameter accepts an Epoch time value, in milliseconds.
-*/
+// PexipreAt sets an expiration timestamp on a key.
+// After the timestamp has been reached, the key will automatically be deleted.
+// The timestamp parameter accepts an Epoch time value, in milliseconds.
 func (ms Ms) PexpireAt(key string, timestamp int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.PexpireAt: key required")

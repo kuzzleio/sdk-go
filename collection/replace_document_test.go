@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -73,6 +75,25 @@ func TestReplaceDocument(t *testing.T) {
 	assert.Equal(t, id, res.Id)
 }
 
+func ExampleCollection_ReplaceDocument() {
+	type Document struct {
+		Title string
+	}
+
+	id := "myId"
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, Document{Title: "jonathan"}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 	documents := []collection.Document{}
 
@@ -125,7 +146,7 @@ func TestMReplaceDocument(t *testing.T) {
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := collection.KuzzleSearchResult{
+			res := collection.SearchResult{
 				Total: 2,
 				Hits:  results,
 			}
@@ -142,4 +163,23 @@ func TestMReplaceDocument(t *testing.T) {
 		assert.Equal(t, documents[index].Id, doc.Id)
 		assert.Equal(t, documents[index].Content, doc.Content)
 	}
+}
+
+func ExampleCollection_MReplaceDocument() {
+	documents := []collection.Document{
+		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
+		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
+	}
+
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MReplaceDocument(documents, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

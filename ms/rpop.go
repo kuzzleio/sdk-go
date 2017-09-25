@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes and returns the last element of a list.
-*/
+// Rpop removes and returns the last element of a list.
 func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 	if key == "" {
 		return "", errors.New("Ms.Rpop: key required")

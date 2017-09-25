@@ -6,10 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Increments the number stored at key by 1.
-  If the key does not exist, it is set to 0 before performing the operation.
-*/
+// Incr increments the number stored at key by 1.
+// If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incr(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Incr: key required")

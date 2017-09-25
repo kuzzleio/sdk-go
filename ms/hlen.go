@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Return the number of members of a hash
-*/
+// Hlen returns the number of members of a hash
 func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hlen: key required")

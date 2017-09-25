@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -68,4 +69,20 @@ func TestRename(t *testing.T) {
 	res, _ := memoryStorage.Rename("foo", "bar", qo)
 
 	assert.Equal(t, "OK", res)
+}
+
+func ExampleMs_Rename() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Rename("foo", "bar", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

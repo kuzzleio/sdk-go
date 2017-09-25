@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Retrieves the current mapping of the collection.
-*/
+// GetMapping retrieves the current mapping of the collection.
 func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, error) {
 	ch := make(chan types.KuzzleResponse)
 

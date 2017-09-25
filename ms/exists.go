@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Check if the specified keys exist
-*/
+// Exists checks if the specified keys exist
 func (ms Ms) Exists(keys []string, options types.QueryOptions) (int, error) {
 	result := make(chan types.KuzzleResponse)
 

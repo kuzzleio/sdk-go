@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Return the longitude/latitude values for the provided key's members
-*/
+// Geopos returns the longitude/latitude values for the provided key's members
 func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]types.GeoPoint, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Geopos: key required")

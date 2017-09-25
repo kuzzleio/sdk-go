@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Retrieves the current specifications of the collection.
-*/
+// GetSpecifications retrieves the current specifications of the collection.
 func (dc Collection) GetSpecifications(options types.QueryOptions) (types.KuzzleSpecificationsResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -32,9 +30,7 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (types.Kuzzle
 	return specification, nil
 }
 
-/*
-  Searches specifications across indexes/collections according to the provided filters.
-*/
+// SearchSpecifications searches specifications across indexes/collections according to the provided filters.
 func (dc Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -69,9 +65,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 	return specifications, nil
 }
 
-/*
-  Retrieves next result of a specification search with scroll query.
-*/
+// ScrollSpecifications retrieves next result of a specification search with scroll query.
 func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
 	if scrollId == "" {
 		return types.KuzzleSpecificationSearchResult{}, errors.New("Collection.ScrollSpecifications: scroll id required")
@@ -106,9 +100,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 	return specifications, nil
 }
 
-/*
-  Validates the provided specifications.
-*/
+// ValidateSpecifications validates the provided specifications.
 func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.ValidResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -139,9 +131,7 @@ func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidatio
 	return response, nil
 }
 
-/*
-  Updates the current specifications of this collection.
-*/
+// UpdateSpecifications updates the current specifications of this collection.
 func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.KuzzleSpecifications, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -172,9 +162,7 @@ func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation,
 	return specification, nil
 }
 
-/*
-  Deletes the current specifications of this collection.
-*/
+// DeleteSpecifications deletes the current specifications of this collection.
 func (dc Collection) DeleteSpecifications(options types.QueryOptions) (types.AckResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 

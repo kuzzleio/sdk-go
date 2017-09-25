@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Increments the number stored in a hash field by the provided float value.
-*/
+// Hincrbyfloat increments the number stored in a hash field by the provided float value.
 func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hincrbyfloat: key required")

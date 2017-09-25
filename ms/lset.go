@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets the list element at index with the provided value.
-*/
+// Lset sets the list element at index with the provided value.
 func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Lset: key required")

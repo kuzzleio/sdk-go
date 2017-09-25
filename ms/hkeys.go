@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Return all the field names contained in a hash
-*/
+// Hkeys returns all the field names contained in a hash
 func (ms Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Hkeys: key required")

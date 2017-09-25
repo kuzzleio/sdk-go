@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Moves a member from a set of unique values to another.
-*/
+// Smove moves a member from a set of unique values to another.
 func (ms Ms) Smove(key string, destination string, member string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Smove: key required")

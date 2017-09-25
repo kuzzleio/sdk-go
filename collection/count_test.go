@@ -2,6 +2,7 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -38,4 +39,22 @@ func TestCount(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").Count(nil, nil)
 	assert.Equal(t, 10, res)
+}
+
+func ExampleCollection_Count() {
+	type result struct {
+		Count int `json:"count"`
+	}
+
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

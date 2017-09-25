@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns elements in a sorted set where all members have equal score, using lexicographical ordering. The min and max values are inclusive by default. To change this behavior, please check the full documentation.
-*/
+// ZrangeByLex returns elements in a sorted set where all members have equal score, using lexicographical ordering. The min and max values are inclusive by default. To change this behavior, please check the full documentation.
 func (ms Ms) ZrangeByLex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return []string{}, errors.New("Ms.ZrangeByLex: key required")

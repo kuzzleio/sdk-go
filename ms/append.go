@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Append a value to a key
-*/
+// Append a value to a key
 func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Append: key required")

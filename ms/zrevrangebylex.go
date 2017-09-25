@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Identical to zrangebylex except that the sorted set is traversed in descending order.
-*/
+// ZrevRangeByLex is identical to zrangebylex except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return []string{}, errors.New("Ms.ZrevRangeByLex: key required")

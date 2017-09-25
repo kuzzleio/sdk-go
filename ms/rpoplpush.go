@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes the last element of the list at source and pushes it back at the start of the list at destination.
-*/
+// RpoplPush removes the last element of the list at source and pushes it
+// back at the start of the list at destination.
 func (ms Ms) RpoplPush(source string, destination string, options types.QueryOptions) (interface{}, error) {
 	if source == "" {
 		return "", errors.New("Ms.RpoplPush: source required")

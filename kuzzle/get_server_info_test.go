@@ -3,12 +3,12 @@ package kuzzle_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGetServerInfoQueryError(t *testing.T) {

@@ -6,11 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Computes the union of the provided sets of unique values and stores the result in the destination key.
-
-  If the destination key already exists, it is overwritten.
-*/
+// SunionStore computes the union of the provided sets of unique values and stores the result in the destination key.
+// If the destination key already exists, it is overwritten.
 func (ms Ms) SunionStore(destination string, sets []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
 		return 0, errors.New("Ms.SunionStore: destination required")

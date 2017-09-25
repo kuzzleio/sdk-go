@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes members from a sorted set where all elements have the same score, using lexicographical ordering. The min and max interval are inclusive, see the Redis documentation to change this behavior.
-*/
+// ZremRangeByLex removes members from a sorted set where all elements have the same score, using lexicographical ordering. The min and max interval are inclusive, see the Redis documentation to change this behavior.
 func (ms Ms) ZremRangeByLex(key string, min string, max string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.ZremRangeByLex: key required")

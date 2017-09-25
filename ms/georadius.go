@@ -32,9 +32,7 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 	query.Options = []interface{}(opts)
 }
 
-/*
-  Return the geospatial members of a key inside the provided radius
-*/
+// Georadius returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Georadius: key required")
@@ -67,6 +65,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 	return returnedResults, nil
 }
 
+// GeoradiusWithCoord returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoord, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithCoord: key required")
@@ -121,6 +120,7 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 	return returnedResults, nil
 }
 
+// GeoradiusWithDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithDist: key required")
@@ -166,6 +166,7 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 	return returnedResults, nil
 }
 
+// GeoradiusWithCoordAndDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithCoordAndDist: key required")

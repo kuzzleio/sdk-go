@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the probabilistic cardinality of a HyperLogLog data structure, or of the merged HyperLogLog structures if more than 1 is provided (see pfadd).
-*/
+// Pfcount returns the probabilistic cardinality of a HyperLogLog data structure,
+// or of the merged HyperLogLog structures if more than 1 is provided (see pfadd).
 func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
 		return 0, errors.New("Ms.Pfcount: please provide at least one key")

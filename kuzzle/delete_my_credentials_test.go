@@ -2,13 +2,13 @@ package kuzzle_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestDeleteMyCredentialsQueryError(t *testing.T) {
@@ -80,7 +80,7 @@ func ExampleKuzzle_DeleteMyCredentials() {
 		return
 	}
 
-	res, err := k.DeleteMyCredentials("local",nil)
+	res, err := k.DeleteMyCredentials("local", nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

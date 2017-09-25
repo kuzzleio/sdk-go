@@ -7,16 +7,14 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Create a new document in Kuzzle.
-  Takes an optional argument object with the following properties:
-     - volatile (object, default: null):
-         Additional information passed to notifications to other users
-     - ifExist (string, allowed values: "error" (default), "replace"):
-         If the same document already exists:
-           - resolves with an error if set to "error".
-           - replaces the existing document if set to "replace"
-*/
+// Create a new document in Kuzzle.
+// Takes an optional argument object with the following properties:
+//   - volatile (object, default: null):
+//       Additional information passed to notifications to other users
+//   - ifExist (string, allowed values: "error" (default), "replace"):
+//       If the same document already exists:
+//         - resolves with an error if set to "error".
+//         - replaces the existing document if set to "replace"
 func (dc Collection) CreateDocument(id string, document Document, options types.QueryOptions) (Document, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -55,18 +53,18 @@ func (dc Collection) CreateDocument(id string, document Document, options types.
 /*
   Creates the provided documents.
 */
-func (dc Collection) MCreateDocument(documents []Document, options types.QueryOptions) (KuzzleSearchResult, error) {
+func (dc Collection) MCreateDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreate", options)
 }
 
 /*
   Creates or replaces the provided documents.
 */
-func (dc Collection) MCreateOrReplaceDocument(documents []Document, options types.QueryOptions) (KuzzleSearchResult, error) {
+func (dc Collection) MCreateOrReplaceDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
 }
 
-func performMultipleCreate(dc Collection, documents []Document, action string, options types.QueryOptions) (KuzzleSearchResult, error) {
+func performMultipleCreate(dc Collection, documents []Document, action string, options types.QueryOptions) (SearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	type CreationDocument struct {
@@ -98,10 +96,10 @@ func performMultipleCreate(dc Collection, documents []Document, action string, o
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	result := KuzzleSearchResult{}
+	result := SearchResult{}
 	json.Unmarshal(res.Result, &result)
 
 	for _, d := range result.Hits {

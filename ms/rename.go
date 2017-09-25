@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Renames a key to newkey. If newkey already exists, it is overwritten.
-*/
+// Rename renames a key to newkey. If newkey already exists, it is overwritten.
 func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Rename: key required")

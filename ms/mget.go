@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the values of the provided keys.
-*/
+// Mget returns the values of the provided keys.
 func (ms Ms) Mget(keys []string, options types.QueryOptions) ([]string, error) {
 	if len(keys) == 0 {
 		return []string{}, errors.New("Ms.Mget: please provide at least one key")

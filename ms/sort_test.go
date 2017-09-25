@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -85,4 +86,26 @@ func TestSortWithOptions(t *testing.T) {
 	res, _ := memoryStorage.Sort("foo", qo)
 
 	assert.Equal(t, []interface{}{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
+}
+
+func ExampleMs_Sort() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetAlpha(true)
+	qo.SetBy("bye")
+	qo.SetDirection("DESC")
+	qo.SetGet([]string{"jet", "set"})
+	qo.SetLimit([]int{0, 42})
+
+	res, err := memoryStorage.Sort("foo", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

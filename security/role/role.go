@@ -24,18 +24,14 @@ type RoleSearchResult struct {
 	Total int    `json:"total"`
 }
 
-/*
-  Replaces the content of the Role object.
-*/
+// SetContent replaces the content of the Role object.
 func (r *Role) SetContent(controllers types.Controllers) Role {
 	r.Source, _ = json.Marshal(controllers)
 
 	return *r
 }
 
-/*
-  Creates or replaces the role in Kuzzle's database layer.
-*/
+// Save creates or replaces the role in Kuzzle's database layer.
 func (r Role) Save(options types.QueryOptions) (Role, error) {
 	if options == nil {
 		options = types.NewQueryOptions()
@@ -44,20 +40,17 @@ func (r Role) Save(options types.QueryOptions) (Role, error) {
 	return r.SR.Create(r.Id, types.Controllers{Controllers: r.Controllers()}, options.SetIfExist("replace"))
 }
 
-/*
-  Performs a partial content update on this object.
-*/
+// Update performs a partial content update on this object.
 func (r Role) Update(content types.Controllers, options types.QueryOptions) (Role, error) {
 	return r.SR.Update(r.Id, content, options)
 }
 
-/*
-  Deletes this profile from Kuzzle.
-*/
+// Delete this profile from Kuzzle.
 func (r Role) Delete(options types.QueryOptions) (string, error) {
 	return r.SR.Delete(r.Id, options)
 }
 
+// Controllers returns the role policies
 func (r Role) Controllers() map[string]types.Controller {
 	var controllers = types.Controllers{}
 	json.Unmarshal(r.Source, &controllers)
@@ -65,9 +58,7 @@ func (r Role) Controllers() map[string]types.Controller {
 	return controllers.Controllers
 }
 
-/*
-  Retrieves a Role using its provided unique id.
-*/
+// Fetch retrieves a Role using its provided unique id.
 func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (Role, error) {
 	if id == "" {
 		return Role{}, errors.New("Security.Role.Fetch: role id required")
@@ -95,9 +86,7 @@ func (sr SecurityRole) Fetch(id string, options types.QueryOptions) (Role, error
 	return role, nil
 }
 
-/*
-  Executes a search on Roles according to filters.
-*/
+// Search executes a search on Roles according to filters.
 func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (RoleSearchResult, error) {
 	ch := make(chan types.KuzzleResponse)
 
@@ -131,9 +120,7 @@ func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (
 	return searchResult, nil
 }
 
-/*
-  Create a new Role in Kuzzle.
-*/
+// Create a new Role in Kuzzle.
 func (sr SecurityRole) Create(id string, controllers types.Controllers, options types.QueryOptions) (Role, error) {
 	if id == "" {
 		return Role{}, errors.New("Security.Role.Create: role id required")
@@ -172,9 +159,7 @@ func (sr SecurityRole) Create(id string, controllers types.Controllers, options 
 	return role, nil
 }
 
-/*
-  Update a Role in Kuzzle.
-*/
+// Update a Role in Kuzzle.
 func (sr SecurityRole) Update(id string, controllers types.Controllers, options types.QueryOptions) (Role, error) {
 	if id == "" {
 		return Role{}, errors.New("Security.Role.Update: role id required")
@@ -203,12 +188,9 @@ func (sr SecurityRole) Update(id string, controllers types.Controllers, options 
 	return role, nil
 }
 
-/*
-  Delete a Role in Kuzzle.
-
-  There is a small delay between role deletion and their deletion in our advanced search layer, usually a couple of seconds.
-  This means that a role that has just been deleted will still be returned by this function.
-*/
+// Delete a Role in Kuzzle.
+// There is a small delay between role deletion and their deletion in our advanced search layer, usually a couple of seconds.
+// This means that a role that has just been deleted will still be returned by this function.
 func (sr SecurityRole) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Security.Role.Delete: role id required")

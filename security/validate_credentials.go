@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
- * Create credentials of the specified strategy for the given user.
- */
+// ValidateCredentials validates credentials of the specified strategy for the given user.
 func (s Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
 		return false, errors.New("Security.ValidateCredentials: strategy is required")

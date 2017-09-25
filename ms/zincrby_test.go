@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -68,4 +69,20 @@ func TestZincrBy(t *testing.T) {
 	res, _ := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
 
 	assert.Equal(t, 11.337, res)
+}
+
+func ExampleMs_ZincrBy() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

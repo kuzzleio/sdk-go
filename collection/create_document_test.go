@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -111,6 +112,21 @@ func TestCreateDocumentCreate(t *testing.T) {
 	newCollection.CreateDocument("id", collection.Document{Content: []byte(`{"Title":"yolo"}`)}, opts)
 }
 
+func ExampleCollection_CreateDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	id := "myId"
+
+	res, err := collection.NewCollection(k, "collection", "index").CreateDocument(id, collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Id, res.Collection)
+}
+
 func TestMCreateDocumentError(t *testing.T) {
 	documents := []collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
@@ -149,7 +165,7 @@ func TestMCreateDocument(t *testing.T) {
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := collection.KuzzleSearchResult{
+			res := collection.SearchResult{
 				Total: 2,
 				Hits:  results,
 			}
@@ -166,6 +182,20 @@ func TestMCreateDocument(t *testing.T) {
 		assert.Equal(t, documents[index].Id, doc.Id)
 		assert.Equal(t, documents[index].Content, doc.Content)
 	}
+}
+
+func ExampleCollection_MCreateDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MCreateDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }
 
 func TestMCreateOrReplaceDocumentError(t *testing.T) {
@@ -206,7 +236,7 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
 
-			res := collection.KuzzleSearchResult{
+			res := collection.SearchResult{
 				Total: 2,
 				Hits:  results,
 			}
@@ -223,4 +253,18 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 		assert.Equal(t, documents[index].Id, doc.Id)
 		assert.Equal(t, documents[index].Content, doc.Content)
 	}
+}
+
+func ExampleCollection_MCreateOrReplaceDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

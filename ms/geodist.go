@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Get the distance between two geospatial members of a key (see geoadd)
-*/
+// Geodist gets the distance between two geospatial members of a key (see geoadd)
 func (ms Ms) Geodist(key string, member1 string, member2 string, options types.QueryOptions) (float64, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Geodist: key required")

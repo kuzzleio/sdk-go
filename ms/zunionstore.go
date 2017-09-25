@@ -6,11 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Computes the union of the provided sorted sets and stores the result in the destination key.
-
-  If the destination key already exists, it is overwritten.
-*/
+// ZunionStore computes the union of the provided sorted sets and stores the result in the destination key.
+// If the destination key already exists, it is overwritten.
 func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
 		return 0, errors.New("Ms.ZunionStore: destination required")

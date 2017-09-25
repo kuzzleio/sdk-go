@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Creates a key holding the provided value, or overwrites it if it already exists.
-*/
+// Set creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Set: key required")

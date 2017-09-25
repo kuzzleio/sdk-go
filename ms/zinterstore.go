@@ -6,11 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Computes the intersection of the provided sorted sets and stores the result in the destination key.
-
-  If the destination key already exists, it is overwritten.
-*/
+// ZinterStore computes the intersection of the provided sorted sets and stores the result in the destination key.
+// If the destination key already exists, it is overwritten.
 func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
 		return 0, errors.New("Ms.ZinterStore: destination required")

@@ -6,10 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Prepends the specified value to a list,
-  only if the key already exists and if it holds a list.
-*/
+// Lpushx prepends the specified value to a list,
+// only if the key already exists and if it holds a list.
 func (ms Ms) Lpushx(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Lpushx: key required")

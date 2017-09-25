@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the number of keys in the application database.
-*/
+// Dbsize returns the number of keys in the application database.
 func (ms Ms) Dbsize(options types.QueryOptions) (int, error) {
 	result := make(chan types.KuzzleResponse)
 

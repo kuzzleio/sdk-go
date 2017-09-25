@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the members of a set of unique values.
-*/
+// Smembers returns the members of a set of unique values.
 func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return []string{}, errors.New("Ms.Smembers: key required")

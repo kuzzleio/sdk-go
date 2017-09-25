@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns all keys matching the provided pattern.
-*/
+// Lindex returns all keys matching the provided pattern.
 func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Lindex: key required")

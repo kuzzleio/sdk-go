@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Inspects the low-level properties of a key.
-*/
+// Object inspects the low-level properties of a key.
 func (ms Ms) Object(key string, subcommand string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Object: key required")
