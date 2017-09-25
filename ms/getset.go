@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets a new value for a key and returns its previous value.
-*/
+// Getset sets a new value for a key and returns its previous value.
 func (ms Ms) Getset(key string, value string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Getset: key required")

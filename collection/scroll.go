@@ -6,12 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  A "scroll" option can be passed to search queries, creating persistent paginated results.
-*/
-func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (KuzzleSearchResult, error) {
+// Scroll passes a "scroll" option to search queries, creating persistent paginated results.
+func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (SearchResult, error) {
 	if scrollId == "" {
-		return KuzzleSearchResult{}, errors.New("Collection.Scroll: scroll id required")
+		return SearchResult{}, errors.New("Collection.Scroll: scroll id required")
 	}
 
 	ch := make(chan types.KuzzleResponse)
@@ -26,10 +24,10 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (Kuzzle
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return KuzzleSearchResult{}, errors.New(res.Error.Message)
+		return SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := KuzzleSearchResult{
+	searchResult := SearchResult{
 		Collection: dc,
 		Options:    options,
 	}

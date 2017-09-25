@@ -7,10 +7,8 @@ import (
 	"strconv"
 )
 
-/*
-  Increments the number stored at key by the provided float value.
-  If the key does not exist, it is set to 0 before performing the operation.
-*/
+// Incrbyfloat increments the number stored at key by the provided float value.
+// If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Incrbyfloat: key required")

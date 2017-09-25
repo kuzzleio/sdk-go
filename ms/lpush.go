@@ -6,11 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Prepends the specified values to a list.
-  If the key does not exist, it is created holding
-  an empty list before performing the operation.
-*/
+// Lpush prepends the specified values to a list.
+// If the key does not exist, it is created holding
+// an empty list before performing the operation.
 func (ms Ms) Lpush(key string, values []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Lpush: key required")

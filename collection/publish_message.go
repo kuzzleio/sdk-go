@@ -6,13 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Publish a realtime message
-
-  Takes an optional argument object with the following properties:
-    - volatile (object, default: null):
-      Additional information passed to notifications to other users
-*/
+// PublishMessage publishes a realtime message
+// Takes an optional argument object with the following properties:
+//   - volatile (object, default: null):
+//     Additional information passed to notifications to other users
 func (dc Collection) PublishMessage(document interface{}, options types.QueryOptions) (types.RealtimeResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 

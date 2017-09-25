@@ -2,6 +2,7 @@ package collection
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -85,6 +86,14 @@ func TestRenew(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+
+	NewRoom(*NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
+}
+
+func ExampleRoom_Renew() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 
 	NewRoom(*NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)

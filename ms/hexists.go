@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Check if a field exists in a hash
-*/
+// Hexists check if a field exists in a hash
 func (ms Ms) Hexists(key string, field string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Hexists: key required")

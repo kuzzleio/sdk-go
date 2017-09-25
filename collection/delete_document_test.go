@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -63,6 +65,21 @@ func TestDeleteDocument(t *testing.T) {
 	assert.Equal(t, id, res)
 }
 
+func ExampleCollection_DeleteDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	id := "myId"
+
+	res, err := collection.NewCollection(k, "collection", "index").DeleteDocument(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
+}
+
 func TestMDeleteDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -108,4 +125,19 @@ func TestMDeleteDocument(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
 	assert.Equal(t, []string{"foo", "bar"}, res)
+}
+
+func ExampleCollection_MDeleteDocument() {
+	ids := []string{"foo", "bar"}
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").MDeleteDocument(ids, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

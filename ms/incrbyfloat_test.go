@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -16,7 +17,7 @@ func TestIncrbyfloatEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrbyfloat("", 1, qo)
+	_, err := memoryStorage.Incrbyfloat("", 42, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Incrbyfloat: key required", fmt.Sprint(err))
@@ -32,7 +33,7 @@ func TestIncrbyfloatError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrbyfloat("foo", 1, qo)
+	_, err := memoryStorage.Incrbyfloat("foo", 42, qo)
 
 	assert.NotNil(t, err)
 }
@@ -46,7 +47,7 @@ func TestIncrbyfloat(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "incrbyfloat", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface{})["value"].(float64))
+			assert.Equal(t, float64(42), parsedQuery.Body.(map[string]interface{})["value"].(float64))
 
 			r, _ := json.Marshal("3.14")
 			return types.KuzzleResponse{Result: r}
@@ -56,7 +57,23 @@ func TestIncrbyfloat(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Incrbyfloat("foo", 2, qo)
+	res, _ := memoryStorage.Incrbyfloat("foo", 42, qo)
 
 	assert.Equal(t, 3.14, res)
+}
+
+func ExampleMs_Incrbyfloat() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Incrbyfloat("foo", 42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

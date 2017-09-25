@@ -10,6 +10,7 @@ type Collection struct {
 	subscribeCallback interface{}
 }
 
+// NewCollection instanciates a new collection
 func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection {
 	return &Collection{
 		index:      index,
@@ -18,6 +19,7 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 	}
 }
 
+// Document instanciates a new Document
 func (dc Collection) Document() Document {
 	return Document{
 		Content:    []byte(`{}`),

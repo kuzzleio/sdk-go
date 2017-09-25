@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the number of elements held by a sorted set.
-*/
+// Zcard returns the number of elements held by a sorted set.
 func (ms Ms) Zcard(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Zcard: key required")

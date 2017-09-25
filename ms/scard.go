@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the number of members stored in a set of unique values.
-*/
+// Scard returns the number of members stored in a set of unique values.
 func (ms Ms) Scard(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Scard: key required")

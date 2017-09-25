@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets a key with the provided value, and an expiration delay expressed in seconds. If the key does not exist, it is created beforehand.
-*/
+// SetEx sets a key with the provided value, and an expiration delay expressed in seconds.
+// If the key does not exist, it is created beforehand.
 func (ms Ms) SetEx(key string, value interface{}, ttl int, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.SetEx: key required")

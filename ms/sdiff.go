@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the difference between the set of unique values stored at key and the other provided sets.
-*/
+// Sdiff returns the difference between the set of unique values stored at key and the other provided sets.
 func (ms Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return []string{}, errors.New("Ms.Sdiff: key required")

@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Returns the score of a member in a sorted set.
-*/
+// Zscore returns the score of a member in a sorted set.
 func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (float64, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Zscore: key required")

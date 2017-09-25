@@ -6,10 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns one or more members of a set of unique values, at random.
-  If count is provided and is positive, the returned values are unique. If count is negative, a set member can be returned multiple times.
-*/
+// SrandMember returns one or more members of a set of unique values, at random.
+// If count is provided and is positive, the returned values are unique.
+// If count is negative, a set member can be returned multiple times.
 func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
 		return []string{}, errors.New("Ms.SrandMember: key required")

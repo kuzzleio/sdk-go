@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes members from a set of unique values.
-*/
+// Srem removes members from a set of unique values.
 func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Srem: key required")

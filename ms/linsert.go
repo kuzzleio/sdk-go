@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Inserts a value in a list, either before or after the reference pivot value.
-*/
+// Linsert inserts a value in a list, either before or after the reference pivot value.
 func (ms Ms) Linsert(key string, position string, pivot string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Linsert: key required")

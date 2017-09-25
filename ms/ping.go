@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Pings the memory storage database.
-*/
+// Ping pings the memory storage database.
 func (ms Ms) Ping(options types.QueryOptions) (string, error) {
 	result := make(chan types.KuzzleResponse)
 

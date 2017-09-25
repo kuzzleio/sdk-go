@@ -6,11 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Computes the intersection of the provided sets of unique values and stores the result in the destination key.
-
-  If the destination key already exists, it is overwritten.
-*/
+// SinterStore computes the intersection of the provided sets of unique values and stores
+// the result in the destination key.
+// If the destination key already exists, it is overwritten.
 func (ms Ms) SinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
 		return 0, errors.New("Ms.SinterStore: destination required")

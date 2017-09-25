@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes the first count occurences of elements equal to value from a list.
-*/
+// Lrem removes the first count occurences of elements equal to value from a list.
 func (ms Ms) Lrem(key string, count int, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Lrem: key required")

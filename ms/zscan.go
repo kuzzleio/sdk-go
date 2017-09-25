@@ -12,9 +12,7 @@ type ZScanResponse struct {
 	Values []string
 }
 
-/*
-  Identical to scan, except that zscan iterates the members held by a sorted set.
-*/
+// Zscan is identical to scan, except that zscan iterates the members held by a sorted set.
 func (ms Ms) Zscan(key string, cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
 	if key == "" {
 		return types.MSScanResponse{}, errors.New("Ms.Zscan: key required")

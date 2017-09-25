@@ -1,8 +1,8 @@
 package kuzzle
 
 import (
-	"sync"
 	"github.com/kuzzleio/sdk-go/types"
+	"sync"
 )
 
 // UnsetJwt unset the authentication token and cancel all subscriptions

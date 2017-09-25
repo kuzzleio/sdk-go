@@ -12,9 +12,7 @@ type HscanResponse struct {
 	Values []string
 }
 
-/*
-  Identical to scan, except that hscan iterates the fields contained in a hash.
-*/
+// Hscan is identical to scan, except that hscan iterates the fields contained in a hash.
 func (ms Ms) Hscan(key string, cursor *int, options types.QueryOptions) (HscanResponse, error) {
 	if key == "" {
 		return HscanResponse{}, errors.New("Ms.Hscan: key required")

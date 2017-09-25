@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes and returns one or more elements at random from a set of unique values.
-*/
+// Spop removes and returns one or more elements at random from a set of unique values.
 func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 	if key == "" {
 		return "", errors.New("Ms.Spop: key required")

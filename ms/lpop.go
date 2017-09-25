@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Removes and returns the first element of a list.
-*/
+// Lpop removes and returns the first element of a list.
 func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Lpop: key required")

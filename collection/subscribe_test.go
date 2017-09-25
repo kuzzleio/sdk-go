@@ -2,6 +2,8 @@ package collection
 
 import (
 	"encoding/json"
+	"fmt"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -44,4 +46,16 @@ func TestSubscribe(t *testing.T) {
 
 	r := <-subRes
 	assert.Equal(t, "42", r.Room.GetRoomId())
+}
+
+func ExampleCollection_Subscribe() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	*k.State = state.Connected
+
+	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
+
+	r := <-subRes
+
+	fmt.Println(r.Room.GetRoomId())
 }

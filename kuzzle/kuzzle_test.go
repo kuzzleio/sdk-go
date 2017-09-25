@@ -3,8 +3,8 @@ package kuzzle_test
 import (
 	"fmt"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
-	"github.com/kuzzleio/sdk-go/types"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 func ExampleKuzzle_Connect() {

@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Delete every Documents from the provided Collection.
-*/
+// Truncate delete every Documents from the provided Collection.
 func (dc Collection) Truncate(options types.QueryOptions) (types.AckResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 

@@ -5,7 +5,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-type KuzzleSearchResult struct {
+type SearchResult struct {
 	Collection Collection
 	Hits       []Document `json:"hits"`
 	Total      int        `json:"total"`
@@ -14,7 +14,8 @@ type KuzzleSearchResult struct {
 	Filters    types.SearchFilters
 }
 
-func (ksr KuzzleSearchResult) FetchNext() (KuzzleSearchResult, error) {
+// FetchNext returns a new SearchResult that corresponds to the next result page
+func (ksr SearchResult) FetchNext() (SearchResult, error) {
 	if ksr.ScrollId != "" {
 		var options = ksr.Options
 		options.SetFrom(0)
@@ -45,12 +46,12 @@ func (ksr KuzzleSearchResult) FetchNext() (KuzzleSearchResult, error) {
 			options.SetFrom(ksr.Options.GetFrom() + ksr.Options.GetSize())
 
 			if options.GetFrom() >= ksr.Total {
-				return KuzzleSearchResult{}, nil
+				return SearchResult{}, nil
 			}
 
 			return ksr.Collection.Search(ksr.Filters, options)
 		}
 	}
 
-	return KuzzleSearchResult{}, errors.New("KuzzleSearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters")
+	return SearchResult{}, errors.New("SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters")
 }

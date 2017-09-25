@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -108,4 +109,28 @@ func TestZaddWithOptions(t *testing.T) {
 	res, _ := memoryStorage.Zadd("foo", sortedSet, qo)
 
 	assert.Equal(t, 2, res)
+}
+
+func ExampleMs_Zadd() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	sortedSet := []types.MSSortedSet{}
+	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
+	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+
+	qo.SetCh(true)
+	qo.SetIncr(true)
+	qo.SetNx(true)
+	qo.SetXx(true)
+	res, err := memoryStorage.Zadd("foo", sortedSet, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

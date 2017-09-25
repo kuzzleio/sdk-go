@@ -7,9 +7,7 @@ import (
 	"reflect"
 )
 
-/*
- * Create credentials of the specified strategy for the given user.
- */
+// CreateCredentials creates credential of the specified strategy for the given user.
 func (s Security) CreateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
 		return nil, errors.New("Security.CreateCredentials: strategy is required")

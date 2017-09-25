@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -55,7 +56,23 @@ func TestHmget(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hmget("foo", []string{}, qo)
+	res, _ := memoryStorage.Hmget("foo", []string{"some", "fields"}, qo)
 
 	assert.Equal(t, []string{"some", "result"}, res)
+}
+
+func ExampleMs_Hmget() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Hmget("foo", []string{"some", "fields"}, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

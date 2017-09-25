@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns a random key from the memory storage.
-*/
+// RandomKey returns a random key from the memory storage.
 func (ms Ms) RandomKey(options types.QueryOptions) (string, error) {
 	result := make(chan types.KuzzleResponse)
 

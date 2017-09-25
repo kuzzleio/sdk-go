@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Adds elements to an HyperLogLog data structure.
-*/
+// Pfadd Adds elements to an HyperLogLog data structure.
 func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Pfadd: key required")

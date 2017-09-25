@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -69,6 +71,20 @@ func TestGetSpecifications(t *testing.T) {
 	assert.Equal(t, "Boring value", res.Validation.Fields["foo"].DefaultValue)
 }
 
+func ExampleCollection_GetSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").GetSpecifications(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Index, res.Collection, res.Validation)
+}
+
 func TestSearchSpecificationsError(t *testing.T) {
 	type Document struct {
 		Title string
@@ -129,6 +145,25 @@ func TestSearchSpecifications(t *testing.T) {
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, 1, res.Total)
 	assert.Equal(t, "Value found with search", res.Hits[0].Source.Validation.Fields["foo"].DefaultValue)
+}
+
+func ExampleCollection_SearchSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	opts := types.NewQueryOptions()
+	opts.SetFrom(2)
+	opts.SetSize(4)
+	opts.SetScroll("1m")
+
+	res, err := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, opts)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Source.Index, res.Hits[0].Source.Collection, res.Hits[0].Source.Validation)
 }
 
 func TestScrollSpecificationsEmptyScrollId(t *testing.T) {
@@ -207,6 +242,23 @@ func TestScrollSpecifications(t *testing.T) {
 	assert.Equal(t, "Value found with scroll", res.Hits[0].Source.Validation.Fields["bar"].DefaultValue)
 }
 
+func ExampleCollection_ScrollSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	opts := types.NewQueryOptions()
+	opts.SetScroll("1m")
+
+	res, err := collection.NewCollection(k, "collection", "index").ScrollSpecifications("f00b4r", opts)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Source.Index, res.Hits[0].Source.Collection, res.Hits[0].Source.Validation)
+}
+
 func TestValidateSpecificationsError(t *testing.T) {
 	type Document struct {
 		Title string
@@ -256,6 +308,30 @@ func TestValidateSpecifications(t *testing.T) {
 	assert.Equal(t, true, res.Valid)
 }
 
+func ExampleCollection_ValidateSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	specifications := types.KuzzleValidation{
+		Strict: false,
+		Fields: types.KuzzleValidationFields{
+			"foo": {
+				Mandatory:    true,
+				Type:         "string",
+				DefaultValue: "Exciting value",
+			},
+		},
+	}
+
+	res, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(specifications, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Valid)
+}
 func TestUpdateSpecificationsError(t *testing.T) {
 	type Document struct {
 		Title string
@@ -322,6 +398,31 @@ func TestUpdateSpecifications(t *testing.T) {
 	assert.Equal(t, "Exciting value", res["index"]["collection"].Fields["foo"].DefaultValue)
 }
 
+func ExampleCollection_UpdateSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	specifications := types.KuzzleValidation{
+		Strict: true,
+		Fields: types.KuzzleValidationFields{
+			"foo": {
+				Mandatory:    true,
+				Type:         "string",
+				DefaultValue: "Exciting value",
+			},
+		},
+	}
+
+	res, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(specifications, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res["index"]["collection"].Strict, res["index"]["collection"].Fields)
+}
+
 func TestDeleteSpecificationsError(t *testing.T) {
 	type Document struct {
 		Title string
@@ -359,4 +460,18 @@ func TestDeleteSpecifications(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
 	assert.Equal(t, true, res.Acknowledged)
+}
+
+func ExampleCollection_DeleteSpecifications() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Acknowledged, res.ShardsAcknowledged)
 }

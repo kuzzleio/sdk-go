@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets the provided keys to their respective values. If a key does not exist, it is created. Otherwise, the key’s value is overwritten.
-*/
+// Mset sets the provided keys to their respective values.
+// If a key does not exist, it is created. Otherwise, the key’s value is overwritten.
 func (ms Ms) Mset(entries []types.MSKeyValue, options types.QueryOptions) (string, error) {
 	if len(entries) == 0 {
 		return "", errors.New("Ms.Mset: please provide at least one key/value entry")

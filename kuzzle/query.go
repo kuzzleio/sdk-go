@@ -2,9 +2,9 @@ package kuzzle
 
 import (
 	"encoding/json"
+	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
-	"github.com/kuzzleio/sdk-go/state"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.

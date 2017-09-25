@@ -6,11 +6,9 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Computes the difference between the set of unique values stored at key and the other provided sets, and stores the result in the key stored at destination.
-
-	If the destination key already exists, it is overwritten.
-*/
+// SdiffStore computes the difference between the set of unique values stored at key
+// and the other provided sets, and stores the result in the key stored at destination.
+// If the destination key already exists, it is overwritten.
 func (ms Ms) SdiffStore(key string, sets []string, destination string, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.SdiffStore: key required")

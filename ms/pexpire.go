@@ -6,9 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets a timeout (in milliseconds) on a key. After the timeout has expired, the key will automatically be deleted.
-*/
+// Pexpire sets a timeout (in milliseconds) on a key.
+// After the timeout has expired, the key will automatically be deleted.
 func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Pexpire: key required")

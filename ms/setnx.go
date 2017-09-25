@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Sets a value on a key, only if it does not already exist.
-*/
+// SetNx sets a value on a key, only if it does not already exist.
 func (ms Ms) SetNx(key string, value interface{}, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.SetNx: key required")

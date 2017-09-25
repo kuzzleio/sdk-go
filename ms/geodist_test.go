@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -87,4 +88,22 @@ func TestGeodistWithOptions(t *testing.T) {
 	res, _ := memoryStorage.Geodist("foo", "bar", "barbar", qo)
 
 	assert.Equal(t, float64(42), res)
+}
+
+func ExampleMs_Geodist() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	qo.SetUnit("km")
+
+	res, err := memoryStorage.Geodist("foo", "bar", "barbar", qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

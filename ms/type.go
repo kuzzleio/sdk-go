@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the type of the value held by a key.
-*/
+// Type returns the type of the value held by a key.
 func (ms Ms) Type(key string, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Type: key required")

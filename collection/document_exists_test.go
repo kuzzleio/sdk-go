@@ -2,7 +2,9 @@ package collection_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -60,4 +62,19 @@ func TestDocumentExists(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").DocumentExists(id, nil)
 	assert.Equal(t, true, res)
+}
+
+func ExampleCollection_DocumentExists() {
+	id := "myId"
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res, err := collection.NewCollection(k, "collection", "index").DocumentExists(id, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

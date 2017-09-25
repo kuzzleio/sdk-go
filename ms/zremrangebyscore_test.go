@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -57,4 +58,20 @@ func TestZremRangeByScore(t *testing.T) {
 	res, _ := memoryStorage.ZremRangeByScore("foo", 0, 42.42, qo)
 
 	assert.Equal(t, 42, res)
+}
+
+func ExampleMs_ZremRangeByScore() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.ZremRangeByScore("foo", 0, 42.42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

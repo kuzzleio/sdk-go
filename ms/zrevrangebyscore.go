@@ -7,9 +7,7 @@ import (
 	"strconv"
 )
 
-/*
-  Identical to zrangebyscore except that the sorted set is traversed in descending order.
-*/
+// ZrevRangeByScore is identical to zrangebyscore except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]types.MSSortedSet, error) {
 	if key == "" {
 		return []types.MSSortedSet{}, errors.New("Ms.ZrevRangeByScore: key required")

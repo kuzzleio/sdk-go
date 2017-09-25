@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -26,7 +27,7 @@ func TestFetchNextError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.KuzzleSearchResult{Collection: *cl}
+	ksr := collection.SearchResult{Collection: *cl}
 
 	_, err := ksr.FetchNext()
 
@@ -36,12 +37,12 @@ func TestFetchNextError(t *testing.T) {
 func TestFetchNextNotPossible(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.KuzzleSearchResult{Collection: *cl}
+	ksr := collection.SearchResult{Collection: *cl}
 
 	_, err := ksr.FetchNext()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "KuzzleSearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
+	assert.Equal(t, "SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
 }
 
 func TestFetchNextWithScroll(t *testing.T) {
@@ -79,7 +80,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 				cl := collection.NewCollection(k, "collection", "index")
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total:      4,
 					Hits:       results,
 					ScrollId:   "f00b4r",
@@ -102,7 +103,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total: 4,
 					Hits:  results,
 				}
@@ -160,7 +161,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 				cl := collection.NewCollection(k, "collection", "index")
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total:      4,
 					Hits:       results,
 					Filters:    filters,
@@ -183,7 +184,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":"200"}`)},
 				}
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total: 4,
 					Hits:  results,
 				}
@@ -235,7 +236,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 				cl := collection.NewCollection(k, "collection", "index")
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total:      4,
 					Hits:       results,
 					Filters:    filters,
@@ -257,7 +258,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
 
-				res := collection.KuzzleSearchResult{
+				res := collection.SearchResult{
 					Total:   4,
 					Hits:    results,
 					Options: options,
@@ -281,5 +282,30 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 
 	tooFarRes, _ := fetchNextRes.FetchNext()
 
-	assert.Equal(t, collection.KuzzleSearchResult{}, tooFarRes)
+	assert.Equal(t, collection.SearchResult{}, tooFarRes)
+}
+
+func ExampleSearchResult_FetchNext() {
+	var filters = types.SearchFilters{
+		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
+	}
+
+	var options = types.NewQueryOptions()
+	options.SetSize(2)
+
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	cl := collection.NewCollection(k, "collection", "index")
+
+	ksr, _ := cl.Search(filters, options)
+	fetchNextRes, _ := ksr.FetchNext()
+
+	res, err := fetchNextRes.FetchNext()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
 }

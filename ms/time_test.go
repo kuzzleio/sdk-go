@@ -2,6 +2,8 @@ package ms_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -45,4 +47,20 @@ func TestTime(t *testing.T) {
 	res, _ := memoryStorage.Time(qo)
 
 	assert.Equal(t, []string{"1488791347", "494938"}, res)
+}
+
+func ExampleMs_Time() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Time(qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

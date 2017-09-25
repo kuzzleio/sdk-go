@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns a substring of a key's value (index starts at position 0).
-*/
+// Getrange returns a substring of a key's value (index starts at position 0).
 func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Getrange: key required")

@@ -2,6 +2,8 @@ package security_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
@@ -48,4 +50,18 @@ func TestGetAllCredentialFields(t *testing.T) {
 
 	assert.Equal(t, "username", res["local"][0])
 	assert.Equal(t, "password", res["local"][1])
+}
+
+func ExampleSecurity_GetAllCredentialFields() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	s := security.NewSecurity(k)
+	res, err := s.GetAllCredentialFields(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res["local"])
 }

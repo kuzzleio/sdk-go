@@ -3,6 +3,7 @@ package ms_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
@@ -32,7 +33,7 @@ func TestDecrbyError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Decrby("foo", 1, qo)
+	_, err := memoryStorage.Decrby("foo", 42, qo)
 
 	assert.NotNil(t, err)
 }
@@ -46,7 +47,7 @@ func TestDecrby(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "decrby", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface{})["value"].(float64))
+			assert.Equal(t, float64(42), parsedQuery.Body.(map[string]interface{})["value"].(float64))
 
 			r, _ := json.Marshal(1)
 			return types.KuzzleResponse{Result: r}
@@ -56,7 +57,23 @@ func TestDecrby(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Decrby("foo", 2, qo)
+	res, _ := memoryStorage.Decrby("foo", 42, qo)
 
 	assert.Equal(t, 1, res)
+}
+
+func ExampleMs_Decrby() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	qo := types.NewQueryOptions()
+
+	res, err := memoryStorage.Decrby("foo", 42, qo)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }

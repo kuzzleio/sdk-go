@@ -6,9 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-/*
-  Returns the bit value at offset, in the string value stored in a key.
-*/
+// Getbit returns the bit value at offset, in the string value stored in a key.
 func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Getbit: key required")
