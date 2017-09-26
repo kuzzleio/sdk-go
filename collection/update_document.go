@@ -7,7 +7,7 @@ import (
 )
 
 // UpdateDocument updates a document in Kuzzle.
-func (dc Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
+func (dc Collection) UpdateDocument(id string, document Document, options types.QueryOptions) (Document, error) {
 	if id == "" {
 		return Document{}, errors.New("Collection.UpdateDocument: document id required")
 	}
@@ -19,7 +19,7 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 		Index:      dc.index,
 		Controller: "document",
 		Action:     "update",
-		Body:       document,
+		Body:       document.Content,
 		Id:         id,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
@@ -30,10 +30,10 @@ func (dc Collection) UpdateDocument(id string, document interface{}, options typ
 		return Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := Document{collection: dc}
-	json.Unmarshal(res.Result, &documentResponse)
+	d := Document{collection: dc}
+	json.Unmarshal(res.Result, &d)
 
-	return documentResponse, nil
+	return d, nil
 }
 
 // MUpdateDocument update the provided documents.

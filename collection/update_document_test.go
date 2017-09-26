@@ -13,11 +13,6 @@ import (
 )
 
 func TestUpdateDocumentEmptyId(t *testing.T) {
-	type Document struct {
-		Name     string
-		Function string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.UpdateDocument: document id required"}}
@@ -25,16 +20,11 @@ func TestUpdateDocumentEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").UpdateDocument("", Document{Name: "Obi Wan", Function: "Legend"}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").UpdateDocument("", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateDocumentError(t *testing.T) {
-	type Document struct {
-		Name     string
-		Function string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
@@ -42,26 +32,16 @@ func TestUpdateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").UpdateDocument("id", Document{Name: "Obi Wan", Function: "Legend"}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").UpdateDocument("id", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateDocument(t *testing.T) {
 	id := "myId"
 
-	type InitialContent struct {
-		Name     string
-		Function string
+	type Content struct {
+		Title string `json:"title"`
 	}
-	initialContent := InitialContent{
-		Name:     "Anakin",
-		Function: "Padawan",
-	}
-
-	type NewContent struct {
-		Function string
-	}
-	updatePart := NewContent{"Jedi Knight"}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -75,9 +55,9 @@ func TestUpdateDocument(t *testing.T) {
 			assert.Equal(t, 10, options.GetRetryOnConflict())
 			assert.Equal(t, id, parsedQuery.Id)
 
-			assert.Equal(t, "Jedi Knight", parsedQuery.Body.(map[string]interface{})["Function"])
+			assert.Equal(t, "jonathan", parsedQuery.Body.(map[string]interface{})["title"])
 
-			res := collection.Document{Id: id, Content: []byte(`{"Name":"Anakin","Function":"Jedi Knight"}`)}
+			res := collection.Document{Id: id, Content: []byte(`{"title": "arthur"}`)}
 			r, _ := json.Marshal(res)
 			return types.KuzzleResponse{Result: r}
 		},
@@ -86,32 +66,24 @@ func TestUpdateDocument(t *testing.T) {
 	qo := types.NewQueryOptions()
 	qo.SetRetryOnConflict(10)
 
-	res, _ := collection.NewCollection(k, "collection", "index").UpdateDocument(id, updatePart, qo)
+	res, _ := collection.NewCollection(k, "collection", "index").UpdateDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, qo)
 
 	assert.Equal(t, id, res.Id)
 
-	var result InitialContent
+	var result Content
 	json.Unmarshal(res.Content, &result)
 
-	assert.Equal(t, initialContent.Name, result.Name)
-	assert.NotEqual(t, initialContent.Function, result.Name)
-	assert.Equal(t, updatePart.Function, result.Function)
+	assert.Equal(t, result.Title, "arthur")
 }
 
 func ExampleCollection_UpdateDocument() {
 	id := "myId"
-
-	type NewContent struct {
-		Function string
-	}
-	updatePart := NewContent{"Jedi Knight"}
-
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 	qo.SetRetryOnConflict(10)
 
-	res, err := collection.NewCollection(k, "collection", "index").UpdateDocument(id, updatePart, qo)
+	res, err := collection.NewCollection(k, "collection", "index").UpdateDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -192,7 +164,7 @@ func TestMUpdateDocument(t *testing.T) {
 	}
 }
 
-func ExampleCollection_MUpdateDocument(t *testing.T) {
+func ExampleCollection_MUpdateDocument() {
 	documents := []collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},

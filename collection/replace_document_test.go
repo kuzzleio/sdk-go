@@ -13,9 +13,6 @@ import (
 )
 
 func TestReplaceDocumentEmptyId(t *testing.T) {
-	type Document struct {
-		Title string
-	}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -24,14 +21,11 @@ func TestReplaceDocumentEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("", Document{Title: "jonathan"}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestReplaceDocumentError(t *testing.T) {
-	type Document struct {
-		Title string
-	}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -40,7 +34,7 @@ func TestReplaceDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("id", Document{Title: "jonathan"}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("id", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -62,7 +56,7 @@ func TestReplaceDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			assert.Equal(t, "jonathan", parsedQuery.Body.(map[string]interface{})["Title"])
+			assert.Equal(t, "jonathan", parsedQuery.Body.(map[string]interface{})["title"])
 
 			res := collection.Document{Id: id, Content: []byte(`{"title": "jonathan"}`)}
 			r, _ := json.Marshal(res)
@@ -71,7 +65,7 @@ func TestReplaceDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, Document{Title: "jonathan"}, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.Equal(t, id, res.Id)
 }
 
@@ -84,7 +78,7 @@ func ExampleCollection_ReplaceDocument() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, Document{Title: "jonathan"}, nil)
+	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

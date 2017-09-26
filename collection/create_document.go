@@ -44,10 +44,10 @@ func (dc Collection) CreateDocument(id string, document Document, options types.
 		return Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := Document{collection: dc}
-	json.Unmarshal(res.Result, &documentResponse)
+	d := Document{collection: dc}
+	json.Unmarshal(res.Result, &d)
 
-	return documentResponse, nil
+	return d, nil
 }
 
 /*

@@ -7,7 +7,7 @@ import (
 )
 
 // ReplaceDocument replaces a document in Kuzzle.
-func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
+func (dc Collection) ReplaceDocument(id string, document Document, options types.QueryOptions) (Document, error) {
 	if id == "" {
 		return Document{}, errors.New("Collection.ReplaceDocument: document id required")
 	}
@@ -19,7 +19,7 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 		Index:      dc.index,
 		Controller: "document",
 		Action:     "replace",
-		Body:       document,
+		Body:       document.Content,
 		Id:         id,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
