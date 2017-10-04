@@ -15,14 +15,14 @@ import (
 
 func TestInitRoomWithoutOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	r := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+	r := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
 
 	assert.NotNil(t, r)
 }
@@ -31,12 +31,12 @@ func TestRoomGetFilters(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
 
 			marshed, _ := json.Marshal(room)
-			return types.KuzzleResponse{Result: marshed}
+			return &types.KuzzleResponse{Result: marshed}
 		},
 	}
 
@@ -55,8 +55,8 @@ func TestRoomGetFilters(t *testing.T) {
 		},
 	}
 
-	*k.State = state.Connected
-	rtc := make(chan types.KuzzleNotification)
+	k.State = state.Connected
+	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	assert.Equal(t, filters, res.Room.GetFilters())
@@ -79,8 +79,8 @@ func ExampleRoom_GetFilters() {
 		},
 	}
 
-	*k.State = state.Connected
-	rtc := make(chan types.KuzzleNotification)
+	k.State = state.Connected
+	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	fmt.Println(res)
@@ -90,12 +90,12 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
 
-			marshed, _ := json.Marshal(room)
-			return types.KuzzleResponse{Result: marshed}
+			marshalled, _ := json.Marshal(room)
+			return &types.KuzzleResponse{Result: marshalled}
 		},
 	}
 
@@ -114,8 +114,8 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 		},
 	}
 
-	*k.State = state.Connected
-	rtc := make(chan<- types.KuzzleNotification)
+	k.State = state.Connected
+	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	assert.Equal(t, rtc, res.Room.GetRealtimeChannel())
@@ -138,8 +138,8 @@ func ExampleRoom_GetRealtimeChannel() {
 		},
 	}
 
-	*k.State = state.Connected
-	rtc := make(chan<- types.KuzzleNotification)
+	k.State = state.Connected
+	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 	rtChannel := res.Room.GetRealtimeChannel()
 

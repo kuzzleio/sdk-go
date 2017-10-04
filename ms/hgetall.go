@@ -12,9 +12,9 @@ func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string,
 		return nil, errors.New("Ms.Hgetall: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hgetall",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string,
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	returnedResult := make(map[string]string)

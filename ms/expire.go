@@ -12,13 +12,13 @@ func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, e
 		return 0, errors.New("Ms.Expire: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Seconds int `json:"seconds"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "expire",
 		Id:         key,
@@ -29,7 +29,7 @@ func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (int, e
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

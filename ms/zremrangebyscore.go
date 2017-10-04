@@ -13,14 +13,14 @@ func (ms Ms) ZremRangeByScore(key string, min float64, max float64, options type
 		return 0, errors.New("Ms.ZremRangeByScore: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Min string `json:"min"`
 		Max string `json:"max"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zremrangebyscore",
 		Id:         key,
@@ -31,7 +31,7 @@ func (ms Ms) ZremRangeByScore(key string, min float64, max float64, options type
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

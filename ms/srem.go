@@ -15,13 +15,13 @@ func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOption
 		return 0, errors.New("Ms.Srem: please provide at least one value to remove")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Members interface{} `json:"members"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "srem",
 		Id:         key,
@@ -32,7 +32,7 @@ func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOption
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

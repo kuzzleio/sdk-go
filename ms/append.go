@@ -12,13 +12,13 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, 
 		return 0, errors.New("Ms.Append: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "append",
 		Id:         key,
@@ -28,7 +28,7 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

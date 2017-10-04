@@ -7,10 +7,10 @@ import (
 )
 
 // Create creates a new empty data collection, with no associated mapping.
-func (dc Collection) Create(options types.QueryOptions) (types.AckResponse, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) Create(options types.QueryOptions) (*types.AckResponse, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -20,12 +20,13 @@ func (dc Collection) Create(options types.QueryOptions) (types.AckResponse, erro
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return types.AckResponse{}, errors.New(res.Error.Message)
+	ack := &types.AckResponse{}
+
+	if res.Error != nil {
+		return ack, errors.New(res.Error.Message)
 	}
 
-	ack := types.AckResponse{}
-	json.Unmarshal(res.Result, &ack)
+	json.Unmarshal(res.Result, ack)
 
 	return ack, nil
 }

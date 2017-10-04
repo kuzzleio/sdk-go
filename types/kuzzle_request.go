@@ -18,7 +18,7 @@ type KuzzleRequest struct {
 	Scope      string        `json:"scope"`
 	State      string        `json:"state"`
 	User       string        `json:"user"`
-	Start      *int          `json:"start,omitempty"`
+	Start      int           `json:"start,omitempty"`
 	Stop       int           `json:"stop,omitempty"`
 	End        int           `json:"end,omitempty"`
 	Bit        int           `json:"bit,omitempty"`
@@ -32,7 +32,7 @@ type KuzzleRequest struct {
 	Unit       string        `json:"unit,omitempty"`
 	Options    []interface{} `json:"options,omitempty"`
 	Keys       []string      `json:"keys,omitempty"`
-	Cursor     *int          `json:"cursor,omitempty"`
+	Cursor     int           `json:"cursor,omitempty"`
 	Offset     int           `json:"offset,omitempty"`
 	Field      string        `json:"field,omitempty"`
 	Fields     []string      `json:"fields,omitempty"`
@@ -69,13 +69,13 @@ type PolicyRestriction struct {
 }
 
 type Policy struct {
-	RoleId             string              `json:"roleId"`
-	RestrictedTo       []PolicyRestriction `json:"restrictedTo,omitempty"`
-	AllowInternalIndex bool                `json:"allowInternalIndex,omitempty"`
+	RoleId             string               `json:"roleId"`
+	RestrictedTo       []*PolicyRestriction `json:"restrictedTo,omitempty"`
+	AllowInternalIndex bool                 `json:"allowInternalIndex,omitempty"`
 }
 
 type Policies struct {
-	Policies []Policy `json:"policies"`
+	Policies []*Policy `json:"policies"`
 }
 
 type GeoPoint struct {

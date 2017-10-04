@@ -13,13 +13,13 @@ import (
 
 func TestLogoutError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "logout", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 
@@ -30,14 +30,14 @@ func TestLogoutError(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "logout", request.Action)
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 

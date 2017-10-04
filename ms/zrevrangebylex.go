@@ -18,9 +18,9 @@ func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.Qu
 		return []string{}, errors.New("Ms.ZrevRangeByLex: max required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrevrangebylex",
 		Id:         key,
@@ -28,13 +28,13 @@ func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.Qu
 		Max:        max,
 	}
 
-	assignZrangeOptions(&query, options)
+	assignZrangeOptions(query, options)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []string{}, errors.New(res.Error.Message)
 	}
 

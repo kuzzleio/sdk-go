@@ -13,12 +13,12 @@ import (
 
 func TestListIndexesQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
 			assert.Equal(t, "list", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -28,7 +28,7 @@ func TestListIndexesQueryError(t *testing.T) {
 
 func TestListIndexes(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
@@ -38,16 +38,17 @@ func TestListIndexes(t *testing.T) {
 				Indexes []string `json:"indexes"`
 			}
 
-			list := make([]string, 0)
-			list = append(list, "index1")
-			list = append(list, "index2")
+			list := []string{
+				"index1",
+				"index2",
+			}
 
 			c := indexes{
 				Indexes: list,
 			}
 
 			h, _ := json.Marshal(c)
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

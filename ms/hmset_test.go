@@ -17,7 +17,7 @@ func TestHmsetEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("", []types.MsHashField{}, qo)
+	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Hmset: key required", fmt.Sprint(err))
@@ -25,22 +25,22 @@ func TestHmsetEmptyKey(t *testing.T) {
 
 func TestHmsetError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("foo", []types.MsHashField{}, qo)
+	_, err := memoryStorage.Hmset("foo", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
 }
 
 func TestHmset(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -51,14 +51,14 @@ func TestHmset(t *testing.T) {
 			assert.Equal(t, "bar", parsedQuery.Body.(map[string]interface{})["entries"].([]interface{})[0].(map[string]interface{})["value"].(string))
 
 			r, _ := json.Marshal("result")
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hmset("foo", []types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, _ := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
 
 	assert.Equal(t, "result", res)
 }
@@ -69,7 +69,7 @@ func ExampleMs_Hmset() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hmset("foo", []types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, err := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

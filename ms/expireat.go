@@ -12,13 +12,13 @@ func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (in
 		return 0, errors.New("Ms.Expireat: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Timestamp int `json:"timestamp"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "expireat",
 		Id:         key,
@@ -29,7 +29,7 @@ func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (in
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

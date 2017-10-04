@@ -12,9 +12,9 @@ func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, 
 		return "", errors.New("Ms.Lindex: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lindex",
 		Id:         key,
@@ -25,7 +25,7 @@ func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

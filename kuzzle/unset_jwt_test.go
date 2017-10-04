@@ -15,7 +15,7 @@ func TestUnsetJwt(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
@@ -30,7 +30,7 @@ func TestUnsetJwt(t *testing.T) {
 			loginRes := loginResult{"token"}
 			marsh, _ := json.Marshal(loginRes)
 
-			return types.KuzzleResponse{Result: marsh}
+			return &types.KuzzleResponse{Result: marsh}
 		},
 		MockGetRooms: func() *types.RoomList {
 			return nil

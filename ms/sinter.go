@@ -12,9 +12,9 @@ func (ms Ms) Sinter(keys []string, options types.QueryOptions) ([]string, error)
 		return []string{}, errors.New("Ms.Sinter: please provide at least one key")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sinter",
 		Keys:       keys,
@@ -24,7 +24,7 @@ func (ms Ms) Sinter(keys []string, options types.QueryOptions) ([]string, error)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []string{}, errors.New(res.Error.Message)
 	}
 	var returnedResult []string

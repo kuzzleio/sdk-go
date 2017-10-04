@@ -27,7 +27,7 @@ type webSocket struct {
 
 	listenChan     chan []byte
 	channelsResult sync.Map
-	subscriptions  types.RoomList
+	subscriptions  *types.RoomList
 	lastUrl        string
 	host           string
 	wasConnected   bool
@@ -38,7 +38,7 @@ type webSocket struct {
 	autoReplay            bool
 	autoResubscribe       bool
 	queueTTL              time.Duration
-	offlineQueue          []types.QueryObject
+	offlineQueue          []*types.QueryObject
 	offlineQueueLoader    OfflineQueueLoader
 	queueFilter           QueueFilter
 	queueMaxSize          int
@@ -60,7 +60,7 @@ func (qf defaultQueueFilter) Filter(interface{}) bool {
 }
 
 type OfflineQueueLoader interface {
-	load() []types.QueryObject
+	load() []*types.QueryObject
 }
 
 func (ws *webSocket) SetQueueFilter(queueFilter QueueFilter) {
@@ -75,13 +75,14 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 	} else {
 		opts = options
 	}
+
 	ws := &webSocket{
 		mu:                    &sync.Mutex{},
 		queueTTL:              opts.GetQueueTTL(),
-		offlineQueue:          make([]types.QueryObject, 0),
+		offlineQueue:          make([]*types.QueryObject, 0),
 		queueMaxSize:          opts.GetQueueMaxSize(),
 		channelsResult:        sync.Map{},
-		subscriptions:         types.RoomList{},
+		subscriptions:         &types.RoomList{},
 		eventListeners:        make(map[int]chan<- interface{}),
 		RequestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.GetAutoQueue(),
@@ -181,9 +182,9 @@ func (ws *webSocket) Connect() (bool, error) {
 	return ws.wasConnected, err
 }
 
-func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse, requestId string) error {
+func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
 	if ws.state == state.Connected || (options != nil && !options.GetQueuable()) {
-		ws.emitRequest(types.QueryObject{
+		ws.emitRequest(&types.QueryObject{
 			Query:     query,
 			ResChan:   responseChannel,
 			RequestId: requestId,
@@ -192,7 +193,7 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 		ws.cleanQueue()
 
 		if ws.queueFilter.Filter(query) {
-			qo := types.QueryObject{
+			qo := &types.QueryObject{
 				Timestamp: time.Now(),
 				ResChan:   responseChannel,
 				Query:     query,
@@ -208,9 +209,9 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 	return nil
 }
 
-func (ws *webSocket) discardRequest(responseChannel chan<- types.KuzzleResponse, query []byte) {
+func (ws *webSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
 	if responseChannel != nil {
-		responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: "Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: " + string(query), Status: 400}}
+		responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: "Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: " + string(query), Status: 400}}
 	}
 }
 
@@ -221,7 +222,7 @@ func (ws *webSocket) cleanQueue() {
 
 	// Clean queue of timed out query
 	if ws.queueTTL > 0 {
-		var query types.QueryObject
+		var query *types.QueryObject
 		for _, query = range ws.offlineQueue {
 			if query.Timestamp.Before(now) {
 				ws.offlineQueue = ws.offlineQueue[1:]
@@ -260,19 +261,19 @@ func (ws *webSocket) UnregisterRoom(roomId string) {
 
 func (ws *webSocket) listen() {
 	for {
-		var message types.KuzzleResponse
-		var r collection.Room
+		var message *types.KuzzleResponse
+		var r *collection.Room
 
 		msg := <-ws.listenChan
 
-		json.Unmarshal(msg, &message)
+		json.Unmarshal(msg, message)
 		m := message
 
-		json.Unmarshal(m.Result, &r)
+		json.Unmarshal(m.Result, r)
 
 		s, ok := ws.subscriptions.Load(m.RoomId)
 		if m.RoomId != "" && ok {
-			var notification types.KuzzleNotification
+			var notification *types.KuzzleNotification
 
 			json.Unmarshal(m.Result, &notification.Result)
 			s.(*sync.Map).Range(func(key, value interface{}) bool {
@@ -291,8 +292,8 @@ func (ws *webSocket) listen() {
 			}
 
 			// If this is a response to a query we simply broadcast the response to the corresponding channel
-			c.(chan<- types.KuzzleResponse) <- message
-			close(c.(chan<- types.KuzzleResponse))
+			c.(chan<- *types.KuzzleResponse) <- message
+			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(m.RequestId)
 		}
 	}
@@ -402,7 +403,7 @@ func (ws *webSocket) dequeue() error {
 	return nil
 }
 
-func (ws *webSocket) emitRequest(query types.QueryObject) error {
+func (ws *webSocket) emitRequest(query *types.QueryObject) error {
 	now := time.Now()
 	now = now.Add(-MAX_EMIT_TIMEOUT * time.Second)
 
@@ -434,11 +435,11 @@ func (ws *webSocket) Close() error {
 	return ws.ws.Close()
 }
 
-func (ws webSocket) GetOfflineQueue() *[]types.QueryObject {
+func (ws webSocket) GetOfflineQueue() *[]*types.QueryObject {
 	return &ws.offlineQueue
 }
 
-func (ws *webSocket) isValidState() bool {
+func (ws webSocket) isValidState() bool {
 	switch ws.state {
 	case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
 		return true
@@ -446,12 +447,12 @@ func (ws *webSocket) isValidState() bool {
 	return false
 }
 
-func (ws *webSocket) GetState() *int {
-	return &ws.state
+func (ws webSocket) GetState() int {
+	return ws.state
 }
 
-func (ws webSocket) GetRequestHistory() *map[string]time.Time {
-	return &ws.RequestHistory
+func (ws webSocket) GetRequestHistory() map[string]time.Time {
+	return ws.RequestHistory
 }
 
 func (ws webSocket) RenewSubscriptions() {
@@ -466,5 +467,5 @@ func (ws webSocket) RenewSubscriptions() {
 }
 
 func (ws webSocket) GetRooms() *types.RoomList {
-	return &ws.subscriptions
+	return ws.subscriptions
 }

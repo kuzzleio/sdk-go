@@ -11,7 +11,7 @@ import (
 // Scores are expressed as floating point numbers.
 // If a member to insert is already in the sorted set,
 // its score is updated and the member is reinserted at the right position in the set.
-func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryOptions) (int, error) {
+func (ms Ms) Zadd(key string, elements []*types.MSSortedSet, options types.QueryOptions) (int, error) {
 	if key == "" {
 		return 0, errors.New("Ms.Zadd: key required")
 	}
@@ -19,14 +19,14 @@ func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryO
 		return 0, errors.New("Ms.Zadd: please provide at least one element")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Elements []types.MSSortedSet `json:"elements"`
-		Nx       bool                `json:"nx,omitempty"`
-		Xx       bool                `json:"xx,omitempty"`
-		Ch       bool                `json:"ch,omitempty"`
-		Incr     bool                `json:"incr,omitempty"`
+		Elements []*types.MSSortedSet `json:"elements"`
+		Nx       bool                 `json:"nx,omitempty"`
+		Xx       bool                 `json:"xx,omitempty"`
+		Ch       bool                 `json:"ch,omitempty"`
+		Incr     bool                 `json:"incr,omitempty"`
 	}
 
 	bodyContent := body{Elements: elements}
@@ -38,7 +38,7 @@ func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryO
 		bodyContent.Incr = options.GetIncr()
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zadd",
 		Id:         key,
@@ -49,7 +49,7 @@ func (ms Ms) Zadd(key string, elements []types.MSSortedSet, options types.QueryO
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

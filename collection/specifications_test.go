@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -18,8 +17,8 @@ func TestGetSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -30,7 +29,7 @@ func TestGetSpecificationsError(t *testing.T) {
 
 func TestGetSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -41,7 +40,7 @@ func TestGetSpecifications(t *testing.T) {
 
 			validation := types.KuzzleValidation{
 				Strict: false,
-				Fields: types.KuzzleValidationFields{
+				Fields: &types.KuzzleValidationFields{
 					"foo": {
 						Mandatory:    false,
 						Type:         "bool",
@@ -53,10 +52,10 @@ func TestGetSpecifications(t *testing.T) {
 			res := types.KuzzleSpecificationsResult{
 				Index:      parsedQuery.Index,
 				Collection: parsedQuery.Collection,
-				Validation: validation,
+				Validation: &validation,
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -65,10 +64,10 @@ func TestGetSpecifications(t *testing.T) {
 	assert.Equal(t, "index", res.Index)
 	assert.Equal(t, "collection", res.Collection)
 	assert.Equal(t, false, res.Validation.Strict)
-	assert.Equal(t, 1, len(res.Validation.Fields))
-	assert.Equal(t, false, res.Validation.Fields["foo"].Mandatory)
-	assert.Equal(t, "bool", res.Validation.Fields["foo"].Type)
-	assert.Equal(t, "Boring value", res.Validation.Fields["foo"].DefaultValue)
+	assert.Equal(t, 1, len(*res.Validation.Fields))
+	assert.Equal(t, false, (*res.Validation.Fields)["foo"].Mandatory)
+	assert.Equal(t, "bool", (*res.Validation.Fields)["foo"].Type)
+	assert.Equal(t, "Boring value", (*res.Validation.Fields)["foo"].DefaultValue)
 }
 
 func ExampleCollection_GetSpecifications() {
@@ -91,8 +90,8 @@ func TestSearchSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -103,7 +102,7 @@ func TestSearchSpecificationsError(t *testing.T) {
 
 func TestSearchSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -113,14 +112,14 @@ func TestSearchSpecifications(t *testing.T) {
 			res := types.KuzzleSpecificationSearchResult{
 				ScrollId: "f00b4r",
 				Total:    1,
-				Hits: []struct {
-					Source types.KuzzleSpecificationsResult `json:"_source"`
-				}{{Source: types.KuzzleSpecificationsResult{
+				Hits: []*struct {
+					Source *types.KuzzleSpecificationsResult `json:"_source"`
+				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.KuzzleValidation{
+					Validation: &types.KuzzleValidation{
 						Strict: false,
-						Fields: types.KuzzleValidationFields{
+						Fields: &types.KuzzleValidationFields{
 							"foo": {
 								Mandatory:    true,
 								Type:         "string",
@@ -131,7 +130,7 @@ func TestSearchSpecifications(t *testing.T) {
 				}}},
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -144,7 +143,7 @@ func TestSearchSpecifications(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, opts)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, 1, res.Total)
-	assert.Equal(t, "Value found with search", res.Hits[0].Source.Validation.Fields["foo"].DefaultValue)
+	assert.Equal(t, "Value found with search", (*res.Hits[0].Source.Validation.Fields)["foo"].DefaultValue)
 }
 
 func ExampleCollection_SearchSpecifications() {
@@ -172,8 +171,8 @@ func TestScrollSpecificationsEmptyScrollId(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.ScrollSpecifications: scroll id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.ScrollSpecifications: scroll id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -188,8 +187,8 @@ func TestScrollSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -200,7 +199,7 @@ func TestScrollSpecificationsError(t *testing.T) {
 
 func TestScrollSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -210,14 +209,14 @@ func TestScrollSpecifications(t *testing.T) {
 			res := types.KuzzleSpecificationSearchResult{
 				ScrollId: "f00b4r",
 				Total:    1,
-				Hits: []struct {
-					Source types.KuzzleSpecificationsResult `json:"_source"`
-				}{{Source: types.KuzzleSpecificationsResult{
+				Hits: []*struct {
+					Source *types.KuzzleSpecificationsResult `json:"_source"`
+				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.KuzzleValidation{
+					Validation: &types.KuzzleValidation{
 						Strict: false,
-						Fields: types.KuzzleValidationFields{
+						Fields: &types.KuzzleValidationFields{
 							"bar": {
 								Mandatory:    true,
 								Type:         "string",
@@ -228,7 +227,7 @@ func TestScrollSpecifications(t *testing.T) {
 				}}},
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -239,7 +238,7 @@ func TestScrollSpecifications(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").ScrollSpecifications("f00b4r", opts)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, 1, res.Total)
-	assert.Equal(t, "Value found with scroll", res.Hits[0].Source.Validation.Fields["bar"].DefaultValue)
+	assert.Equal(t, "Value found with scroll", (*res.Hits[0].Source.Validation.Fields)["bar"].DefaultValue)
 }
 
 func ExampleCollection_ScrollSpecifications() {
@@ -265,19 +264,19 @@ func TestValidateSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(types.KuzzleValidation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&types.KuzzleValidation{}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestValidateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -288,14 +287,14 @@ func TestValidateSpecifications(t *testing.T) {
 
 			res := types.ValidResponse{Valid: true}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	specifications := types.KuzzleValidation{
 		Strict: false,
-		Fields: types.KuzzleValidationFields{
+		Fields: &types.KuzzleValidationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -304,7 +303,7 @@ func TestValidateSpecifications(t *testing.T) {
 		},
 	}
 
-	res, _ := collection.NewCollection(k, "collection", "index").ValidateSpecifications(specifications, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&specifications, nil)
 	assert.Equal(t, true, res.Valid)
 }
 
@@ -314,7 +313,7 @@ func ExampleCollection_ValidateSpecifications() {
 
 	specifications := types.KuzzleValidation{
 		Strict: false,
-		Fields: types.KuzzleValidationFields{
+		Fields: &types.KuzzleValidationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -323,7 +322,7 @@ func ExampleCollection_ValidateSpecifications() {
 		},
 	}
 
-	res, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(specifications, nil)
+	res, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&specifications, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -338,19 +337,19 @@ func TestUpdateSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(types.KuzzleValidation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&types.KuzzleValidation{}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -361,9 +360,9 @@ func TestUpdateSpecifications(t *testing.T) {
 
 			res := types.KuzzleSpecifications{
 				"index": {
-					"collection": types.KuzzleValidation{
+					"collection": &types.KuzzleValidation{
 						Strict: true,
-						Fields: types.KuzzleValidationFields{
+						Fields: &types.KuzzleValidationFields{
 							"foo": {
 								Mandatory:    true,
 								Type:         "string",
@@ -374,14 +373,14 @@ func TestUpdateSpecifications(t *testing.T) {
 				},
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	specifications := types.KuzzleValidation{
 		Strict: true,
-		Fields: types.KuzzleValidationFields{
+		Fields: &types.KuzzleValidationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -390,12 +389,16 @@ func TestUpdateSpecifications(t *testing.T) {
 		},
 	}
 
-	res, _ := collection.NewCollection(k, "collection", "index").UpdateSpecifications(specifications, nil)
-	assert.Equal(t, true, res["index"]["collection"].Strict)
-	assert.Equal(t, 1, len(res["index"]["collection"].Fields))
-	assert.Equal(t, true, res["index"]["collection"].Fields["foo"].Mandatory)
-	assert.Equal(t, "string", res["index"]["collection"].Fields["foo"].Type)
-	assert.Equal(t, "Exciting value", res["index"]["collection"].Fields["foo"].DefaultValue)
+	res, _ := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&specifications, nil)
+
+	specs := (*res)["index"]["collection"]
+	fields := (*specs.Fields)
+
+	assert.Equal(t, true, specs.Strict)
+	assert.Equal(t, 1, len(fields))
+	assert.Equal(t, true, fields["foo"].Mandatory)
+	assert.Equal(t, "string", fields["foo"].Type)
+	assert.Equal(t, "Exciting value", fields["foo"].DefaultValue)
 }
 
 func ExampleCollection_UpdateSpecifications() {
@@ -404,7 +407,7 @@ func ExampleCollection_UpdateSpecifications() {
 
 	specifications := types.KuzzleValidation{
 		Strict: true,
-		Fields: types.KuzzleValidationFields{
+		Fields: &types.KuzzleValidationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -413,14 +416,14 @@ func ExampleCollection_UpdateSpecifications() {
 		},
 	}
 
-	res, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(specifications, nil)
+	res, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&specifications, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res["index"]["collection"].Strict, res["index"]["collection"].Fields)
+	fmt.Println((*res)["index"]["collection"].Strict, (*res)["index"]["collection"].Fields)
 }
 
 func TestDeleteSpecificationsError(t *testing.T) {
@@ -429,8 +432,8 @@ func TestDeleteSpecificationsError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -442,7 +445,7 @@ func TestDeleteSpecificationsError(t *testing.T) {
 
 func TestDeleteSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -453,7 +456,7 @@ func TestDeleteSpecifications(t *testing.T) {
 
 			res := types.AckResponse{Acknowledged: true}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

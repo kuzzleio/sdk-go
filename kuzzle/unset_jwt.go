@@ -13,7 +13,8 @@ func (k *Kuzzle) UnsetJwt() {
 	if rooms != nil {
 		k.socket.GetRooms().Range(func(key, value interface{}) bool {
 			value.(*sync.Map).Range(func(key, value interface{}) bool {
-				value.(types.IRoom).Renew(value.(types.IRoom).GetFilters(), value.(types.IRoom).GetRealtimeChannel(), value.(types.IRoom).GetResponseChannel())
+				room := value.(types.IRoom)
+				room.Renew(room.GetFilters(), room.GetRealtimeChannel(), room.GetResponseChannel())
 
 				return true
 			})

@@ -12,14 +12,14 @@ func (ms Ms) Lset(key string, index int, value string, options types.QueryOption
 		return "", errors.New("Ms.Lset: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value string `json:"value"`
 		Index int    `json:"index"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lset",
 		Id:         key,
@@ -30,7 +30,7 @@ func (ms Ms) Lset(key string, index int, value string, options types.QueryOption
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

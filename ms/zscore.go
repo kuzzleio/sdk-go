@@ -16,9 +16,9 @@ func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (floa
 		return 0, errors.New("Ms.Zscore: member required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zscore",
 		Id:         key,
@@ -29,14 +29,12 @@ func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (floa
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 
 	var scanResponse string
 	json.Unmarshal(res.Result, &scanResponse)
 
-	floatResult, _ := strconv.ParseFloat(scanResponse, 64)
-
-	return floatResult, nil
+	return strconv.ParseFloat(scanResponse, 64)
 }

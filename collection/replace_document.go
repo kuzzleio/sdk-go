@@ -7,14 +7,14 @@ import (
 )
 
 // ReplaceDocument replaces a document in Kuzzle.
-func (dc Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (Document, error) {
+func (dc *Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (*Document, error) {
 	if id == "" {
-		return Document{}, errors.New("Collection.ReplaceDocument: document id required")
+		return &Document{}, errors.New("Collection.ReplaceDocument: document id required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -26,42 +26,44 @@ func (dc Collection) ReplaceDocument(id string, document interface{}, options ty
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return Document{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &Document{}, errors.New(res.Error.Message)
 	}
 
-	d := Document{collection: dc}
-	json.Unmarshal(res.Result, &d)
+	d := &Document{collection: dc}
+	json.Unmarshal(res.Result, d)
 
 	return d, nil
 }
 
 // MReplaceDocument replaces the provided documents.
-func (dc Collection) MReplaceDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
+func (dc *Collection) MReplaceDocument(documents []*Document, options types.QueryOptions) (*SearchResult, error) {
+	result := &SearchResult{}
+
 	if len(documents) == 0 {
-		return SearchResult{}, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
+		return result, errors.New("Collection.MReplaceDocument: please provide at least one document to replace")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string      `json:"_id"`
-		Body interface{} `json:"body"`
+		Id   string       `json:"_id"`
+		Body interface{}  `json:"body"`
 	}
-	docs := []CreationDocument{}
+	docs := []*CreationDocument{}
 
 	type body struct {
-		Documents []CreationDocument `json:"documents"`
+		Documents []*CreationDocument `json:"documents"`
 	}
 
 	for _, doc := range documents {
-		docs = append(docs, CreationDocument{
+		docs = append(docs, &CreationDocument{
 			Id:   doc.Id,
 			Body: doc.Content,
 		})
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -72,12 +74,11 @@ func (dc Collection) MReplaceDocument(documents []Document, options types.QueryO
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return SearchResult{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return result, errors.New(res.Error.Message)
 	}
 
-	result := SearchResult{}
-	json.Unmarshal(res.Result, &result)
+	json.Unmarshal(res.Result, result)
 
 	for _, d := range result.Hits {
 		d.collection = dc

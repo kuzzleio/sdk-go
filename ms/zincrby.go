@@ -16,14 +16,14 @@ func (ms Ms) ZincrBy(key string, member string, increment float64, options types
 		return 0, errors.New("Ms.ZincrBy: member required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Member    string  `json:"member"`
 		Increment float64 `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zincrby",
 		Id:         key,
@@ -34,13 +34,12 @@ func (ms Ms) ZincrBy(key string, member string, increment float64, options types
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)
-	parsedResult, _ := strconv.ParseFloat(returnedResult, 64)
 
-	return parsedResult, nil
+	return strconv.ParseFloat(returnedResult, 64)
 }

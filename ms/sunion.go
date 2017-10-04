@@ -12,9 +12,9 @@ func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error)
 		return []string{}, errors.New("Ms.Sunion: please provide at least 2 sets")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sunion",
 		Keys:       sets,
@@ -24,7 +24,7 @@ func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []string{}, errors.New(res.Error.Message)
 	}
 

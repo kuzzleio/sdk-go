@@ -13,14 +13,14 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 		return "", errors.New("Ms.Ltrim: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Start int `json:"start"`
 		Stop  int `json:"stop"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "ltrim",
 		Id:         key,
@@ -31,7 +31,7 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

@@ -12,13 +12,13 @@ func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions)
 		return nil, errors.New("Ms.Lrange: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lrange",
 		Id:         key,
-		Start:      &start,
+		Start:      start,
 		Stop:       stop,
 	}
 
@@ -26,7 +26,7 @@ func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var returnedResult []string
