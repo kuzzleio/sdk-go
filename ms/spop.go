@@ -12,9 +12,9 @@ func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 		return "", errors.New("Ms.Spop: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "spop",
 		Id:         key,

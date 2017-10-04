@@ -14,13 +14,13 @@ func (ms Ms) Lpush(key string, values []string, options types.QueryOptions) (int
 		return 0, errors.New("Ms.Lpush: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Values []string `json:"values"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lpush",
 		Id:         key,

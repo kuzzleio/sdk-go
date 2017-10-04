@@ -13,13 +13,13 @@ func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 		return 0, errors.New("Ms.Ttl: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Keys []string `json:"keys"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "ttl",
 		Id:         key,

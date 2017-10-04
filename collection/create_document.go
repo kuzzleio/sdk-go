@@ -15,8 +15,8 @@ import (
 //       If the same document already exists:
 //         - resolves with an error if set to "error".
 //         - replaces the existing document if set to "replace"
-func (dc Collection) CreateDocument(id string, document Document, options types.QueryOptions) (Document, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc *Collection) CreateDocument(id string, document *Document, options types.QueryOptions) (*Document, error) {
+	ch := make(chan *types.KuzzleResponse)
 
 	action := "create"
 
@@ -24,11 +24,11 @@ func (dc Collection) CreateDocument(id string, document Document, options types.
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplace"
 		} else if options.GetIfExist() != "error" {
-			return Document{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return &Document{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -41,11 +41,11 @@ func (dc Collection) CreateDocument(id string, document Document, options types.
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return Document{}, errors.New(res.Error.Message)
+		return &Document{}, errors.New(res.Error.Message)
 	}
 
-	documentResponse := Document{collection: dc}
-	json.Unmarshal(res.Result, &documentResponse)
+	documentResponse := &Document{collection: dc}
+	json.Unmarshal(res.Result, documentResponse)
 
 	return documentResponse, nil
 }
@@ -53,38 +53,39 @@ func (dc Collection) CreateDocument(id string, document Document, options types.
 /*
   Creates the provided documents.
 */
-func (dc Collection) MCreateDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
+func (dc *Collection) MCreateDocument(documents []*Document, options types.QueryOptions) (*SearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreate", options)
 }
 
 /*
   Creates or replaces the provided documents.
 */
-func (dc Collection) MCreateOrReplaceDocument(documents []Document, options types.QueryOptions) (SearchResult, error) {
+func (dc *Collection) MCreateOrReplaceDocument(documents []*Document, options types.QueryOptions) (*SearchResult, error) {
 	return performMultipleCreate(dc, documents, "mCreateOrReplace", options)
 }
 
-func performMultipleCreate(dc Collection, documents []Document, action string, options types.QueryOptions) (SearchResult, error) {
-	ch := make(chan types.KuzzleResponse)
+func performMultipleCreate(dc *Collection, documents []*Document, action string, options types.QueryOptions) (*SearchResult, error) {
+	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string      `json:"_id"`
-		Body interface{} `json:"body"`
+		Id   string       `json:"_id"`
+		Body interface{}  `json:"body"`
 	}
-	docs := []CreationDocument{}
+
+	docs := []*CreationDocument{}
 
 	type body struct {
-		Documents []CreationDocument `json:"documents"`
+		Documents []*CreationDocument `json:"documents"`
 	}
 
 	for _, doc := range documents {
-		docs = append(docs, CreationDocument{
+		docs = append(docs, &CreationDocument{
 			Id:   doc.Id,
 			Body: doc.Content,
 		})
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -95,12 +96,13 @@ func performMultipleCreate(dc Collection, documents []Document, action string, o
 
 	res := <-ch
 
+	result := &SearchResult{}
+
 	if res.Error.Message != "" {
-		return SearchResult{}, errors.New(res.Error.Message)
+		return result, errors.New(res.Error.Message)
 	}
 
-	result := SearchResult{}
-	json.Unmarshal(res.Result, &result)
+	json.Unmarshal(res.Result, result)
 
 	for _, d := range result.Hits {
 		d.collection = dc

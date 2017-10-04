@@ -7,14 +7,14 @@ import (
 )
 
 // DeleteDocument deletes the Document using its provided unique id.
-func (dc Collection) DeleteDocument(id string, options types.QueryOptions) (string, error) {
+func (dc *Collection) DeleteDocument(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("Collection.DeleteDocument: document id required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -29,25 +29,27 @@ func (dc Collection) DeleteDocument(id string, options types.QueryOptions) (stri
 		return "", errors.New(res.Error.Message)
 	}
 
-	document := Document{collection: dc}
-	json.Unmarshal(res.Result, &document)
+	document := &Document{collection: dc}
+	json.Unmarshal(res.Result, document)
 
 	return document.Id, nil
 }
 
 // MDeleteDocument deletes specific documents according to given IDs.
 func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) ([]string, error) {
+	result := []string{}
+
 	if len(ids) == 0 {
-		return []string{}, errors.New("Collection.MDeleteDocument: please provide at least one id of document to delete")
+		return result, errors.New("Collection.MDeleteDocument: please provide at least one id of document to delete")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Ids []string `json:"ids"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -59,11 +61,10 @@ func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) (
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return []string{}, errors.New(res.Error.Message)
+		return result, errors.New(res.Error.Message)
 	}
 
-	result := []string{}
-	json.Unmarshal(res.Result, &result)
+	json.Unmarshal(res.Result, result)
 
 	return result, nil
 }

@@ -12,7 +12,7 @@ func (ms Ms) Linsert(key string, position string, pivot string, value string, op
 		return 0, errors.New("Ms.Linsert: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Position string `json:"position"`
@@ -20,7 +20,7 @@ func (ms Ms) Linsert(key string, position string, pivot string, value string, op
 		Value    string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "linsert",
 		Id:         key,

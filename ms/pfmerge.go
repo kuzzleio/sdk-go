@@ -16,13 +16,13 @@ func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (
 		return "", errors.New("Ms.Pfmerge: please provide at least one source")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Sources []string `json:"sources"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "pfmerge",
 		Id:         key,

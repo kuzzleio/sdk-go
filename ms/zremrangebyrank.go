@@ -15,14 +15,14 @@ func (ms Ms) ZremRangeByRank(key string, min int, max int, options types.QueryOp
 		return 0, errors.New("Ms.ZremRangeByRank: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Start string `json:"start"`
 		Stop  string `json:"stop"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zremrangebyrank",
 		Id:         key,

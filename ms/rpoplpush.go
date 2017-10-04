@@ -16,14 +16,14 @@ func (ms Ms) RpoplPush(source string, destination string, options types.QueryOpt
 		return "", errors.New("Ms.RpoplPush: destination required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Source      string `json:"source"`
 		Destination string `json:"destination"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "rpoplpush",
 		Body:       &body{Source: source, Destination: destination},

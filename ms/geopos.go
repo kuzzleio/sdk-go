@@ -8,14 +8,14 @@ import (
 )
 
 // Geopos returns the longitude/latitude values for the provided key's members
-func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]types.GeoPoint, error) {
+func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]*types.GeoPoint, error) {
 	if key == "" {
 		return nil, errors.New("Ms.Geopos: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geopos",
 		Id:         key,
@@ -31,10 +31,10 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 	var stringResults [][]string
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoPoint, len(stringResults))
+	returnedResults := make([]*types.GeoPoint, len(stringResults))
 
 	for i := 0; i < len(stringResults); i++ {
-		returnedResults[i] = types.GeoPoint{}
+		returnedResults[i] = &types.GeoPoint{}
 		tmp, err := strconv.ParseFloat(stringResults[i][0], 64)
 		if err != nil {
 			return nil, err

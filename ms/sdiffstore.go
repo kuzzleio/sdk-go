@@ -20,14 +20,14 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 		return 0, errors.New("Ms.SdiffStore: destination required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Keys        []string `json:"keys"`
 		Destination string   `json:"destination"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sdiffstore",
 		Id:         key,

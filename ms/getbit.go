@@ -12,9 +12,9 @@ func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, er
 		return 0, errors.New("Ms.Getbit: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "getbit",
 		Id:         key,

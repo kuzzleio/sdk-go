@@ -18,9 +18,9 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, erro
 		options.SetCount(1)
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "srandmember",
 		Id:         key,

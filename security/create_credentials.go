@@ -17,9 +17,9 @@ func (s Security) CreateCredentials(strategy string, kuid string, credentials in
 		return nil, errors.New("Security.CreateCredentials: kuid is required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "createCredentials",
 		Body:       credentials,

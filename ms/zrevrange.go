@@ -7,14 +7,14 @@ import (
 )
 
 // ZrevRange is identical to zrange, except that the sorted set is traversed in descending order.
-func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptions) ([]types.MSSortedSet, error) {
+func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []types.MSSortedSet{}, errors.New("Ms.ZrevRange: key required")
+		return []*types.MSSortedSet{}, errors.New("Ms.ZrevRange: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrevrange",
 		Id:         key,
@@ -22,14 +22,14 @@ func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptio
 		Stop:       stop,
 	}
 
-	assignZrangeOptions(&query, options)
+	assignZrangeOptions(query, options)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
 	if res.Error.Message != "" {
-		return []types.MSSortedSet{}, errors.New(res.Error.Message)
+		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
 	}
 
 	var returnedResult []string

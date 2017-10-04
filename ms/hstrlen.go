@@ -15,9 +15,9 @@ func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int,
 		return 0, errors.New("Ms.Hstrlen: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hstrlen",
 		Id:         key,

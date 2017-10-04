@@ -13,13 +13,13 @@ func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, erro
 		return 0, errors.New("Ms.Pexpire: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Milliseconds int `json:"milliseconds"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "pexpire",
 		Id:         key,

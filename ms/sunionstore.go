@@ -16,14 +16,14 @@ func (ms Ms) SunionStore(destination string, sets []string, options types.QueryO
 		return 0, errors.New("Ms.SunionStore: please provide at least 2 sets")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Destination string   `json:"destination"`
 		Keys        []string `json:"keys"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sunionstore",
 		Body:       &body{Destination: destination, Keys: sets},

@@ -15,9 +15,9 @@ func (ms Ms) Zrank(key string, member string, options types.QueryOptions) (int, 
 		return 0, errors.New("Ms.Zrank: member required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrank",
 		Id:         key,

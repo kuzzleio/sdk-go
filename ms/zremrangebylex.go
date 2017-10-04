@@ -18,14 +18,14 @@ func (ms Ms) ZremRangeByLex(key string, min string, max string, options types.Qu
 		return 0, errors.New("Ms.ZremRangeByLex: max required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Min string `json:"min"`
 		Max string `json:"max"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zremrangebylex",
 		Id:         key,

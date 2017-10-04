@@ -12,13 +12,13 @@ func (ms Ms) SetNx(key string, value interface{}, options types.QueryOptions) (i
 		return 0, errors.New("Ms.SetNx: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value interface{} `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "setnx",
 		Id:         key,

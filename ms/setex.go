@@ -13,14 +13,14 @@ func (ms Ms) SetEx(key string, value interface{}, ttl int, options types.QueryOp
 		return "", errors.New("Ms.SetEx: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value interface{} `json:"value"`
 		Ttk   int         `json:"seconds"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "setex",
 		Id:         key,

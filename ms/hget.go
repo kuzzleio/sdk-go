@@ -15,9 +15,9 @@ func (ms Ms) Hget(key string, field string, options types.QueryOptions) (string,
 		return "", errors.New("Ms.Hget: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hget",
 		Id:         key,

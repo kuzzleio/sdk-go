@@ -16,14 +16,14 @@ func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOption
 		return "", errors.New("Ms.Psetex: value required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value        string `json:"value"`
 		Milliseconds int    `json:"milliseconds"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "psetex",
 		Id:         key,

@@ -13,7 +13,7 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 		return "", errors.New("Ms.Ltrim: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Start int `json:"start"`

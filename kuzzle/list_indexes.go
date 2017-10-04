@@ -8,9 +8,9 @@ import (
 
 // ListIndexes retrieves the list of indexes stored in Kuzzle.
 func (k Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "index",
 		Action:     "list",
 	}

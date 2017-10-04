@@ -12,9 +12,9 @@ func (ms Ms) Type(key string, options types.QueryOptions) (string, error) {
 		return "", errors.New("Ms.Type: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "type",
 		Id:         key,

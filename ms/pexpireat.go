@@ -14,13 +14,13 @@ func (ms Ms) PexpireAt(key string, timestamp int, options types.QueryOptions) (i
 		return 0, errors.New("Ms.PexpireAt: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Timestamp int `json:"timestamp"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "pexpireat",
 		Id:         key,

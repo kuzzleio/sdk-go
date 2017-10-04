@@ -15,14 +15,14 @@ func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryO
 		return 0, errors.New("Ms.Hsetnx: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Field string `json:"field"`
 		Value string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hsetnx",
 		Id:         key,

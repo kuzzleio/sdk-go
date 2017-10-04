@@ -12,5 +12,5 @@ func TestAddListener(t *testing.T) {
 
 	ch := make(chan interface{})
 
-	kuzzle.AddListener(*k, 0, ch)
+	kuzzle.AddListener(k, 0, ch)
 }

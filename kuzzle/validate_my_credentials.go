@@ -8,9 +8,9 @@ import (
 
 // ValidateMyCredentials validate credentials of the specified strategy for the current user.
 func (k Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (bool, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "validateMyCredentials",
 		Strategy:   strategy,

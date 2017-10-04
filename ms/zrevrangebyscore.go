@@ -8,14 +8,14 @@ import (
 )
 
 // ZrevRangeByScore is identical to zrangebyscore except that the sorted set is traversed in descending order.
-func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]types.MSSortedSet, error) {
+func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []types.MSSortedSet{}, errors.New("Ms.ZrevRangeByScore: key required")
+		return []*types.MSSortedSet{}, errors.New("Ms.ZrevRangeByScore: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrevrangebyscore",
 		Id:         key,
@@ -23,14 +23,14 @@ func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options type
 		Max:        strconv.FormatFloat(max, 'f', 6, 64),
 	}
 
-	assignZrangeOptions(&query, options)
+	assignZrangeOptions(query, options)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
 	if res.Error.Message != "" {
-		return []types.MSSortedSet{}, errors.New(res.Error.Message)
+		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
 	}
 
 	var returnedResult []string

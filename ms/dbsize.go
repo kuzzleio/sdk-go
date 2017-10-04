@@ -8,9 +8,9 @@ import (
 
 // Dbsize returns the number of keys in the application database.
 func (ms Ms) Dbsize(options types.QueryOptions) (int, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "dbsize",
 	}

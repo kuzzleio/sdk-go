@@ -16,13 +16,13 @@ func (ms Ms) Rpushx(key string, value string, options types.QueryOptions) (int, 
 		return 0, errors.New("Ms.Rpushx: value required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "rpushx",
 		Id:         key,

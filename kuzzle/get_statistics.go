@@ -8,8 +8,8 @@ import (
 )
 
 // GetStatistics get Kuzzle usage statistics
-func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) (types.Statistics, error) {
-	result := make(chan types.KuzzleResponse)
+func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) (*types.Statistics, error) {
+	result := make(chan *types.KuzzleResponse)
 
 	type data struct {
 		since string `json:"since"`
@@ -22,7 +22,7 @@ func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) 
 		}
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "server",
 		Action:     "getLastStats",
 		Body:       d,
@@ -33,11 +33,11 @@ func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) 
 	res := <-result
 
 	if res.Error.Message != "" {
-		return types.Statistics{}, errors.New(res.Error.Message)
+		return &types.Statistics{}, errors.New(res.Error.Message)
 	}
 
-	s := types.Statistics{}
-	json.Unmarshal(res.Result, &s)
+	s := &types.Statistics{}
+	json.Unmarshal(res.Result, s)
 
 	return s, nil
 }

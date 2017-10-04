@@ -12,9 +12,9 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 		return 0, errors.New("Ms.Geodist: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geodist",
 		Id:         key,

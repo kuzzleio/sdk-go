@@ -8,9 +8,9 @@ import (
 
 // Flushdb delete all keys from the database
 func (ms Ms) Flushdb(options types.QueryOptions) (string, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "flushdb",
 	}

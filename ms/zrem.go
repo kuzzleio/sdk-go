@@ -15,13 +15,13 @@ func (ms Ms) Zrem(key string, members []string, options types.QueryOptions) (int
 		return 0, errors.New("Ms.Zrem: please provide at least one member")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Members []string `json:"members"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrem",
 		Id:         key,

@@ -7,10 +7,10 @@ import (
 )
 
 // Truncate delete every Documents from the provided Collection.
-func (dc Collection) Truncate(options types.QueryOptions) (types.AckResponse, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) Truncate(options types.QueryOptions) (*types.AckResponse, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -19,13 +19,13 @@ func (dc Collection) Truncate(options types.QueryOptions) (types.AckResponse, er
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
+	ack := &types.AckResponse{}
 
 	if res.Error.Message != "" {
-		return types.AckResponse{}, errors.New(res.Error.Message)
+		return ack, errors.New(res.Error.Message)
 	}
 
-	ack := types.AckResponse{}
-	json.Unmarshal(res.Result, &ack)
+	json.Unmarshal(res.Result, ack)
 
 	return ack, nil
 }

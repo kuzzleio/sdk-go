@@ -12,9 +12,9 @@ func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) 
 		return []string{}, errors.New("Ms.Smembers: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "smembers",
 		Id:         key,

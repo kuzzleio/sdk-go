@@ -15,13 +15,13 @@ func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (stri
 		return "", errors.New("Ms.Rename: newkey required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		NewKey string `json:"newkey"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "rename",
 		Id:         key,

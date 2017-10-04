@@ -20,8 +20,8 @@ func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection 
 }
 
 // Document instanciates a new Document
-func (dc Collection) Document() Document {
-	return Document{
+func (dc *Collection) Document() *Document {
+	return &Document{
 		Content:    []byte(`{}`),
 		collection: dc,
 	}

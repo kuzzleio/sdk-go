@@ -12,9 +12,9 @@ func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 		return nil, errors.New("Ms.Hvals: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hvals",
 		Id:         key,

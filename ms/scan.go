@@ -11,10 +11,10 @@ import (
 // To get the next page of results, simply re-send the identical request
 // with the updated cursor position provided in the result set.
 // The scan terminates when the next position cursor returned by the server is 0.
-func (ms Ms) Scan(cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
-	result := make(chan types.KuzzleResponse)
+func (ms Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "scan",
 		Cursor:     cursor,
@@ -38,8 +38,8 @@ func (ms Ms) Scan(cursor *int, options types.QueryOptions) (types.MSScanResponse
 		return types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 
-	var scanResponse = types.MSScanResponse{}
-	json.Unmarshal(res.Result, &scanResponse)
+	var scanResponse = &types.MSScanResponse{}
+	json.Unmarshal(res.Result, scanResponse)
 
 	return scanResponse, nil
 }

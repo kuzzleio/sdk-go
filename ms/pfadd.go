@@ -15,13 +15,13 @@ func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (i
 		return 0, errors.New("Ms.Pfadd: please provide at least one element")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Elements []string `json:"elements"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "pfadd",
 		Id:         key,

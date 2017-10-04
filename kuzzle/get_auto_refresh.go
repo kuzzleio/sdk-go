@@ -15,9 +15,9 @@ func (k Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, 
 		index = k.defaultIndex
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "index",
 		Action:     "getAutoRefresh",
 		Index:      index,

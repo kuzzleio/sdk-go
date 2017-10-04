@@ -13,13 +13,13 @@ func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 		return 0, errors.New("Ms.Pfcount: please provide at least one key")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Elements []string `json:"elements"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "pfcount",
 		Keys:       keys,

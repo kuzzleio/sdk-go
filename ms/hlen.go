@@ -12,9 +12,9 @@ func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 		return 0, errors.New("Ms.Hlen: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hlen",
 		Id:         key,

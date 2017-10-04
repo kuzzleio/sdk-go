@@ -7,10 +7,10 @@ import (
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc Collection) GetSpecifications(options types.QueryOptions) (types.KuzzleSpecificationsResult, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.KuzzleSpecificationsResult, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -20,21 +20,22 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (types.Kuzzle
 
 	res := <-ch
 
+	specification := &types.KuzzleSpecificationsResult{}
+
 	if res.Error.Message != "" {
-		return types.KuzzleSpecificationsResult{}, errors.New(res.Error.Message)
+		return specification, errors.New(res.Error.Message)
 	}
 
-	specification := types.KuzzleSpecificationsResult{}
-	json.Unmarshal(res.Result, &specification)
+	json.Unmarshal(res.Result, specification)
 
 	return specification, nil
 }
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
-func (dc Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "searchSpecifications",
 		Body: struct {
@@ -55,25 +56,28 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 
 	res := <-ch
 
+	specifications := &types.KuzzleSpecificationSearchResult{}
+
 	if res.Error.Message != "" {
-		return types.KuzzleSpecificationSearchResult{}, errors.New(res.Error.Message)
+		return specifications, errors.New(res.Error.Message)
 	}
 
-	specifications := types.KuzzleSpecificationSearchResult{}
-	json.Unmarshal(res.Result, &specifications)
+	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
 }
 
 // ScrollSpecifications retrieves next result of a specification search with scroll query.
-func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (types.KuzzleSpecificationSearchResult, error) {
+func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+	specifications := &types.KuzzleSpecificationSearchResult{}
+
 	if scrollId == "" {
-		return types.KuzzleSpecificationSearchResult{}, errors.New("Collection.ScrollSpecifications: scroll id required")
+		return specifications, errors.New("Collection.ScrollSpecifications: scroll id required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "scrollSpecifications",
 		ScrollId:   scrollId,
@@ -91,18 +95,17 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.KuzzleSpecificationSearchResult{}, errors.New(res.Error.Message)
+		return specifications, errors.New(res.Error.Message)
 	}
 
-	specifications := types.KuzzleSpecificationSearchResult{}
-	json.Unmarshal(res.Result, &specifications)
+	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
 }
 
 // ValidateSpecifications validates the provided specifications.
-func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.ValidResponse, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.ValidResponse, error) {
+	ch := make(chan *types.KuzzleResponse)
 
 	specificationsData := types.KuzzleSpecifications{
 		dc.index: {
@@ -110,7 +113,7 @@ func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidatio
 		},
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -120,28 +123,28 @@ func (dc Collection) ValidateSpecifications(specifications types.KuzzleValidatio
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
+	response := &types.ValidResponse{}
 
 	if res.Error.Message != "" {
-		return types.ValidResponse{}, errors.New(res.Error.Message)
+		return response, errors.New(res.Error.Message)
 	}
 
-	response := types.ValidResponse{}
-	json.Unmarshal(res.Result, &response)
+	json.Unmarshal(res.Result, response)
 
 	return response, nil
 }
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation, options types.QueryOptions) (types.KuzzleSpecifications, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.KuzzleSpecifications, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	specificationsData := types.KuzzleSpecifications{
+	specificationsData := &types.KuzzleSpecifications{
 		dc.index: {
 			dc.collection: specifications,
 		},
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -151,22 +154,22 @@ func (dc Collection) UpdateSpecifications(specifications types.KuzzleValidation,
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
+	specification := &types.KuzzleSpecifications{}
 
 	if res.Error.Message != "" {
-		return types.KuzzleSpecifications{}, errors.New(res.Error.Message)
+		return specification, errors.New(res.Error.Message)
 	}
 
-	specification := types.KuzzleSpecifications{}
-	json.Unmarshal(res.Result, &specification)
+	json.Unmarshal(res.Result, specification)
 
 	return specification, nil
 }
 
 // DeleteSpecifications deletes the current specifications of this collection.
-func (dc Collection) DeleteSpecifications(options types.QueryOptions) (types.AckResponse, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc Collection) DeleteSpecifications(options types.QueryOptions) (*types.AckResponse, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -177,11 +180,11 @@ func (dc Collection) DeleteSpecifications(options types.QueryOptions) (types.Ack
 	res := <-ch
 
 	if res.Error.Message != "" {
-		return types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
+		return &types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
 	}
 
-	response := types.AckResponse{}
-	json.Unmarshal(res.Result, &response)
+	response := &types.AckResponse{}
+	json.Unmarshal(res.Result, response)
 
 	return response, nil
 }

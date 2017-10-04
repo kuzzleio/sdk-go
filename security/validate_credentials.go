@@ -16,9 +16,9 @@ func (s Security) ValidateCredentials(strategy string, kuid string, credentials 
 		return false, errors.New("Security.ValidateCredentials: kuid is required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "validateCredentials",
 		Body:       credentials,

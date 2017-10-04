@@ -8,9 +8,9 @@ import (
 
 // WhoAmI gets the rights array for the currently logged user.
 func (k Kuzzle) WhoAmI() (*types.User, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "getCurrentUser",
 	}
@@ -23,8 +23,8 @@ func (k Kuzzle) WhoAmI() (*types.User, error) {
 		return nil, errors.New(res.Error.Message)
 	}
 
-	u := types.User{}
-	json.Unmarshal(res.Result, &u)
+	u := &types.User{}
+	json.Unmarshal(res.Result, u)
 
-	return &u, nil
+	return u, nil
 }

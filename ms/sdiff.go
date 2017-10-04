@@ -15,9 +15,9 @@ func (ms Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]str
 		return []string{}, errors.New("Ms.Sdiff: please provide at least one set")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sdiff",
 		Id:         key,

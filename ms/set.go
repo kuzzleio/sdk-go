@@ -12,7 +12,7 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 		return "", errors.New("Ms.Set: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value interface{} `json:"value"`
@@ -37,7 +37,7 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 		bodyContent.Xx = options.GetXx()
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "set",
 		Id:         key,

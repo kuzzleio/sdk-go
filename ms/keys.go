@@ -12,9 +12,9 @@ func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) 
 		return nil, errors.New("Ms.Keys: pattern required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "keys",
 		Pattern:    pattern,

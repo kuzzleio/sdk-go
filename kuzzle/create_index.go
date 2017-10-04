@@ -7,14 +7,14 @@ import (
 )
 
 // CreateIndex create a new empty data index, with no associated mapping.
-func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (types.AckResponse, error) {
+func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.AckResponse, error) {
 	if index == "" {
-		return types.AckResponse{}, errors.New("Kuzzle.createIndex: index required")
+		return &types.AckResponse{}, errors.New("Kuzzle.createIndex: index required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Index:      index,
 		Controller: "index",
 		Action:     "create",
@@ -24,11 +24,11 @@ func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (types.Ack
 	res := <-result
 
 	if res.Error.Message != "" {
-		return types.AckResponse{}, errors.New(res.Error.Message)
+		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := types.AckResponse{}
-	json.Unmarshal(res.Result, &ack)
+	ack := &types.AckResponse{}
+	json.Unmarshal(res.Result, ack)
 
 	return ack, nil
 }

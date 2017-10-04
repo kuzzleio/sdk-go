@@ -18,9 +18,9 @@ func (ms Ms) ZlexCount(key string, min string, max string, options types.QueryOp
 		return 0, errors.New("Ms.ZlexCount: max required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zlexcount",
 		Id:         key,

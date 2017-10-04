@@ -15,9 +15,9 @@ func (ms Ms) Zcount(key string, min int, max int, options types.QueryOptions) (i
 		return 0, errors.New("Ms.Zcount: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zcount",
 		Id:         key,

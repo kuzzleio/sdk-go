@@ -8,9 +8,9 @@ import (
 
 // RandomKey returns a random key from the memory storage.
 func (ms Ms) RandomKey(options types.QueryOptions) (string, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "randomkey",
 	}

@@ -10,14 +10,14 @@ type Connection interface {
 	RemoveListener(event int)
 	RemoveAllListeners(event int)
 	Connect() (bool, error)
-	Send([]byte, types.QueryOptions, chan<- types.KuzzleResponse, string) error
+	Send([]byte, types.QueryOptions, chan<- *types.KuzzleResponse, string) error
 	Close() error
-	GetOfflineQueue() *[]types.QueryObject
-	GetState() *int
+	GetOfflineQueue() *[]*types.QueryObject
+	GetState() int
 	EmitEvent(int, interface{})
 	RegisterRoom(string, string, types.IRoom)
 	UnregisterRoom(string)
-	GetRequestHistory() *map[string]time.Time
+	GetRequestHistory() map[string]time.Time
 	RenewSubscriptions()
 	GetRooms() *types.RoomList
 	StartQueuing()

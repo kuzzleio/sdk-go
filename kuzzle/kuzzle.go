@@ -12,13 +12,13 @@ import (
 const version = "1.0.0"
 
 type IKuzzle interface {
-	Query(types.KuzzleRequest, chan<- types.KuzzleResponse, types.QueryOptions)
+	Query(*types.KuzzleRequest, chan<- *types.KuzzleResponse, types.QueryOptions)
 }
 
 type Kuzzle struct {
 	Host   string
 	socket connection.Connection
-	State  *int
+	State  int
 
 	wasConnected   bool
 	lastUrl        string
@@ -27,13 +27,11 @@ type Kuzzle struct {
 	jwt            string
 	headers        map[string]interface{}
 	version        string
-	RequestHistory *map[string]time.Time
+	RequestHistory map[string]time.Time
 }
 
 // NewKuzzle is the Kuzzle constructor
 func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
-	var err error
-
 	if c == nil {
 		return nil, errors.New("Connection is nil")
 	}
@@ -58,6 +56,8 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.defaultIndex = options.GetDefaultIndex()
 
+	var err error
+
 	if options.GetConnect() == types.Auto {
 		err = k.Connect()
 	}
@@ -66,7 +66,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 }
 
 // Connect connects to a Kuzzle instance using the provided host and port.
-func (k *Kuzzle) Connect() error {
+func (k Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
 		if k.lastUrl != k.Host {
@@ -98,7 +98,7 @@ func (k *Kuzzle) Connect() error {
 	return err
 }
 
-func (k Kuzzle) GetOfflineQueue() *[]types.QueryObject {
+func (k Kuzzle) GetOfflineQueue() *[]*types.QueryObject {
 	return k.socket.GetOfflineQueue()
 }
 

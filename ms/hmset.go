@@ -7,18 +7,18 @@ import (
 )
 
 // Hmset sets multiple fields at once in a hash.
-func (ms Ms) Hmset(key string, entries []types.MsHashField, options types.QueryOptions) (string, error) {
+func (ms Ms) Hmset(key string, entries []*types.MsHashField, options types.QueryOptions) (string, error) {
 	if key == "" {
 		return "", errors.New("Ms.Hmset: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Entries []types.MsHashField `json:"entries"`
+		Entries []*types.MsHashField `json:"entries"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hmset",
 		Id:         key,

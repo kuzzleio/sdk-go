@@ -13,9 +13,9 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 		return nil, errors.New("Ms.Georadiusbymember: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, false, false)
+	assignGeoradiusOptions(query, options, false, false)
 
 	go ms.Kuzzle.Query(query, options, result)
 
@@ -40,14 +40,14 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 }
 
 // GeoradiusbymemberWithCoord returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoord, error) {
+func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoord, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithCoord: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
 		Id:         key,
@@ -56,7 +56,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, true, false)
+	assignGeoradiusOptions(query, options, true, false)
 
 	go ms.Kuzzle.Query(query, options, result)
 
@@ -68,10 +68,10 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithCoord, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithCoord, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithCoord{Name: value[0].(string)}
 
 		tmp := value[1].([]interface{})[0].(string)
 		tmpF, err := strconv.ParseFloat(tmp, 64)
@@ -94,14 +94,14 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 }
 
 // GeoradiusbymemberWithDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithDist, error) {
+func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithDist: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := *types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
 		Id:         key,
@@ -110,7 +110,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, false, true)
+	assignGeoradiusOptions(query, options, false, true)
 
 	go ms.Kuzzle.Query(query, options, result)
 
@@ -122,10 +122,10 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithDist, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithDist, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithDist{Name: value[0].(string)}
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {
@@ -139,7 +139,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 }
 
 // GeoradiusbymemberWithCoordAndDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoordAndDist, error) {
+func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusbymemberWithCoordAndDist: key required")
 	}
@@ -155,7 +155,7 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, true, true)
+	assignGeoradiusOptions(query, options, true, true)
 
 	go ms.Kuzzle.Query(query, options, result)
 
@@ -167,10 +167,10 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithCoordAndDist, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithCoordAndDist, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithCoordAndDist{Name: value[0].(string)}
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {

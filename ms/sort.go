@@ -14,9 +14,9 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 		return []interface{}{}, errors.New("Ms.Sort: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sort",
 		Id:         key,

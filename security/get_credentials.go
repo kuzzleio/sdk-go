@@ -16,9 +16,9 @@ func (s Security) GetCredentials(strategy string, kuid string, options types.Que
 		return nil, errors.New("Security.GetCredentials: kuid is required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "getCredentials",
 		Strategy:   strategy,

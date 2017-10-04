@@ -12,9 +12,9 @@ func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 		return 0, errors.New("Ms.Bitcount: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "bitcount",
 		Id:         key,

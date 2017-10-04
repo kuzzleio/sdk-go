@@ -17,14 +17,14 @@ func (ms Ms) SinterStore(destination string, keys []string, options types.QueryO
 		return 0, errors.New("Ms.SinterStore: please provide at least one key")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Destination string   `json:"destination"`
 		Keys        []string `json:"keys"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sinterstore",
 		Body:       &body{Destination: destination, Keys: keys},

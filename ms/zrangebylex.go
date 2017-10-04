@@ -18,9 +18,9 @@ func (ms Ms) ZrangeByLex(key string, min string, max string, options types.Query
 		return []string{}, errors.New("Ms.ZrangeByLex: max required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zrangebylex",
 		Id:         key,
@@ -28,7 +28,7 @@ func (ms Ms) ZrangeByLex(key string, min string, max string, options types.Query
 		Max:        max,
 	}
 
-	assignZrangeOptions(&query, options)
+	assignZrangeOptions(query, options)
 
 	go ms.Kuzzle.Query(query, options, result)
 

@@ -16,14 +16,14 @@ func (ms Ms) Hset(key string, field string, value string, options types.QueryOpt
 		return 0, errors.New("Ms.Hset: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Field string `json:"field"`
 		Value string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hset",
 		Id:         key,

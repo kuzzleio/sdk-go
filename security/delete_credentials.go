@@ -7,21 +7,21 @@ import (
 )
 
 // DeleteCredentials deletes credentials of the specified strategy for the given user.
-func (s Security) DeleteCredentials(strategy string, kuid string, options types.QueryOptions) (types.AckResponse, error) {
+func (s Security) DeleteCredentials(strategy string, kuid string, options types.QueryOptions) (*types.AckResponse, error) {
 	if strategy == "" {
-		return types.AckResponse{}, errors.New("Security.DeleteCredentials: strategy is required")
+		return &types.AckResponse{}, errors.New("Security.DeleteCredentials: strategy is required")
 	}
 
 	if kuid == "" {
-		return types.AckResponse{}, errors.New("Security.DeleteCredentials: kuid is required")
+		return &types.AckResponse{}, errors.New("Security.DeleteCredentials: kuid is required")
 	}
 
 	type body struct {
 		Strategy string `json:"strategy"`
 	}
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "deleteCredentials",
 		Body:       &body{strategy},
@@ -33,11 +33,11 @@ func (s Security) DeleteCredentials(strategy string, kuid string, options types.
 	res := <-result
 
 	if res.Error.Message != "" {
-		return types.AckResponse{}, errors.New(res.Error.Message)
+		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 
-	ack := types.AckResponse{}
-	json.Unmarshal(res.Result, &ack)
+	ack := &types.AckResponse{}
+	json.Unmarshal(res.Result, ack)
 
 	return ack, nil
 }
