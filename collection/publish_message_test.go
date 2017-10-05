@@ -13,9 +13,6 @@ import (
 )
 
 func TestPublishMessageError(t *testing.T) {
-	type Document struct {
-		Title string
-	}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
@@ -24,15 +21,13 @@ func TestPublishMessageError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").PublishMessage(Document{Title: "yolo"}, nil)
+	message := make(map[string]interface{})
+	message["title"] = interface{}("yolo")
+	_, err := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
 	assert.NotNil(t, err)
 }
 
 func TestPublishMessage(t *testing.T) {
-	type Document struct {
-		Title string
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -43,7 +38,7 @@ func TestPublishMessage(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["Title"])
+			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["title"])
 
 			res := types.KuzzleResponse{Result: []byte(`{"published":true}`)}
 			r, _ := json.Marshal(res.Result)
@@ -52,7 +47,9 @@ func TestPublishMessage(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(Document{Title: "yolo"}, nil)
+	message := make(map[string]interface{})
+	message["title"] = interface{}("yolo")
+	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
 	assert.Equal(t, true, res.Published)
 }
 
@@ -64,7 +61,9 @@ func ExampleCollection_PublishMessage() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").PublishMessage(Document{Title: "yolo"}, nil)
+	message := make(map[string]interface{})
+	message["title"] = interface{}("yolo")
+	res, err := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
