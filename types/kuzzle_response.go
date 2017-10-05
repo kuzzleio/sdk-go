@@ -42,8 +42,11 @@ type (
 		Error     MessageError    `json:"error"`
 	}
 
+	// TODO Not exhaustive !
 	KuzzleValidationFields map[string]struct {
 		Type         string `json:"type"`
+		Path         []string `json:"path"`
+		Depth				 int		`json:"depth"`
 		Mandatory    bool   `json:"mandatory"`
 		DefaultValue string `json:"defaultValue"`
 	}

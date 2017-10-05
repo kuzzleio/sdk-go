@@ -10,7 +10,7 @@ import (
 // Takes an optional argument object with the following properties:
 //   - volatile (object, default: null):
 //     Additional information passed to notifications to other users
-func (dc Collection) PublishMessage(document interface{}, options types.QueryOptions) (types.RealtimeResponse, error) {
+func (dc Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (types.RealtimeResponse, error) {
 	ch := make(chan types.KuzzleResponse)
 
 	query := types.KuzzleRequest{
@@ -18,7 +18,7 @@ func (dc Collection) PublishMessage(document interface{}, options types.QueryOpt
 		Index:      dc.index,
 		Controller: "realtime",
 		Action:     "publish",
-		Body:       document,
+		Body:       message,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
 
