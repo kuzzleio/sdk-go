@@ -25,7 +25,7 @@ func (dc *Collection) DeleteDocument(id string, options types.QueryOptions) (str
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 
@@ -60,11 +60,11 @@ func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) (
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return result, errors.New(res.Error.Message)
 	}
 
-	json.Unmarshal(res.Result, result)
+	json.Unmarshal(res.Result, &result)
 
 	return result, nil
 }

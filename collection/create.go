@@ -22,7 +22,7 @@ func (dc Collection) Create(options types.QueryOptions) (*types.AckResponse, err
 
 	ack := &types.AckResponse{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return ack, errors.New(res.Error.Message)
 	}
 

@@ -34,7 +34,7 @@ func (ms Ms) SinterStore(destination string, keys []string, options types.QueryO
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

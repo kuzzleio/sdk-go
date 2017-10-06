@@ -29,7 +29,7 @@ func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (floa
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

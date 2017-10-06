@@ -19,7 +19,7 @@ func (k Kuzzle) WhoAmI() (*types.User, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

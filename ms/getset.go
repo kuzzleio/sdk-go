@@ -28,7 +28,7 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

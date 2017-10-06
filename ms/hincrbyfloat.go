@@ -34,7 +34,7 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

@@ -21,7 +21,7 @@ func (dc Collection) Truncate(options types.QueryOptions) (*types.AckResponse, e
 	res := <-ch
 	ack := &types.AckResponse{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return ack, errors.New(res.Error.Message)
 	}
 

@@ -23,7 +23,7 @@ func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*Sear
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &SearchResult{}, errors.New(res.Error.Message)
 	}
 

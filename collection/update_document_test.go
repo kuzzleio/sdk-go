@@ -89,7 +89,7 @@ func TestUpdateDocument(t *testing.T) {
 
 	assert.Equal(t, id, res.Id)
 
-	result := InitialContent
+	result := InitialContent{}
 	json.Unmarshal(res.Content, &result)
 
 	assert.Equal(t, initialContent.Name, result.Name)
@@ -121,7 +121,7 @@ func ExampleCollection_UpdateDocument() {
 }
 
 func TestMUpdateDocumentEmptyDocuments(t *testing.T) {
-	documents := []&collection.Document{}
+	documents := []*collection.Document{}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -135,7 +135,7 @@ func TestMUpdateDocumentEmptyDocuments(t *testing.T) {
 }
 
 func TestMUpdateDocumentError(t *testing.T) {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -152,7 +152,7 @@ func TestMUpdateDocumentError(t *testing.T) {
 }
 
 func TestMUpdateDocument(t *testing.T) {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -167,7 +167,7 @@ func TestMUpdateDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			results := []&collection.Document{
+			results := []*collection.Document{
 				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
@@ -192,7 +192,7 @@ func TestMUpdateDocument(t *testing.T) {
 }
 
 func ExampleCollection_MUpdateDocument(t *testing.T) {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}

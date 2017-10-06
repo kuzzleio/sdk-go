@@ -24,7 +24,7 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 		return ksr.Collection.Scroll(ksr.ScrollId, options)
 	}
 
-	if ksr.Options != nil {
+	if ksr.Options != nil && ksr.Filters != nil {
 		if ksr.Options.GetSize() != 0 && len(ksr.Filters.Sort) > 0 {
 			filters := *ksr.Filters
 

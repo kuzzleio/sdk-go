@@ -26,7 +26,7 @@ type ProfileSearchResult struct {
 }
 
 // AddPolicy adds a role to the profile.
-func (p Profile) AddPolicy(policy *types.Policy) Profile {
+func (p *Profile) AddPolicy(policy *types.Policy) *Profile {
 	return p.SetPolicies(append(p.GetPolicies(), policy))
 }
 
@@ -69,7 +69,7 @@ func (p Profile) Save(options types.QueryOptions) (*Profile, error) {
 }
 
 // Update performs a partial content update on this object.
-func (p Profile) Update(policies []*types.Policy, options types.QueryOptions) (*Profile, error) {
+func (p *Profile) Update(policies []*types.Policy, options types.QueryOptions) (*Profile, error) {
 	return p.SP.Update(p.Id, &types.Policies{Policies: policies}, options)
 }
 
@@ -96,7 +96,7 @@ func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profil
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Profile{}, errors.New(res.Error.Message)
 	}
 
@@ -131,7 +131,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &ProfileSearchResult{}, errors.New(res.Error.Message)
 	}
 
@@ -159,7 +159,7 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &ProfileSearchResult{}, errors.New(res.Error.Message)
 	}
 
@@ -197,7 +197,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Profile{}, errors.New(res.Error.Message)
 	}
 
@@ -226,7 +226,7 @@ func (sp *SecurityProfile) Update(id string, policies *types.Policies, options t
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Profile{}, errors.New(res.Error.Message)
 	}
 
@@ -256,7 +256,7 @@ func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string,
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

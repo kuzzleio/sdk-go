@@ -29,7 +29,7 @@ func (s Security) GetCredentials(strategy string, kuid string, options types.Que
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

@@ -31,7 +31,7 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

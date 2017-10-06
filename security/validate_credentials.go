@@ -29,7 +29,7 @@ func (s Security) ValidateCredentials(strategy string, kuid string, credentials 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

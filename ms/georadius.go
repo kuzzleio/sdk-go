@@ -56,7 +56,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var returnedResults []string
@@ -89,7 +89,7 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}
@@ -144,7 +144,7 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}
@@ -190,7 +190,7 @@ func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, dis
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}

@@ -24,12 +24,12 @@ func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, op
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return types.Credentials{}, errors.New(res.Error.Message)
 	}
 
 	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()
-	json.Unmarshal(res.Result, ref)
+	json.Unmarshal(res.Result, &ref)
 
 	return ref.(map[string]interface{}), nil
 }

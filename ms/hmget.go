@@ -25,7 +25,7 @@ func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]s
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

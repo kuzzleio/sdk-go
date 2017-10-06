@@ -75,7 +75,7 @@ func (sr *SecurityRole) Fetch(id string, options types.QueryOptions) (*Role, err
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Role{}, errors.New(res.Error.Message)
 	}
 
@@ -110,7 +110,7 @@ func (sr SecurityRole) Search(filters interface{}, options types.QueryOptions) (
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &RoleSearchResult{}, errors.New(res.Error.Message)
 	}
 
@@ -148,7 +148,7 @@ func (sr *SecurityRole) Create(id string, controllers *types.Controllers, option
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Role{}, errors.New(res.Error.Message)
 	}
 
@@ -177,7 +177,7 @@ func (sr *SecurityRole) Update(id string, controllers *types.Controllers, option
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Role{}, errors.New(res.Error.Message)
 	}
 
@@ -207,7 +207,7 @@ func (sr SecurityRole) Delete(id string, options types.QueryOptions) (string, er
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

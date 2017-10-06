@@ -29,7 +29,7 @@ func (ms Ms) ZrangeByScore(key string, min float64, max float64, options types.Q
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
 	}
 

@@ -30,7 +30,7 @@ func TestLoginError(t *testing.T) {
 		},
 		MockEmitEvent: func(e int, arg interface{}) {
 			assert.Equal(t, event.LoginAttempt, e)
-			assert.Equal(t, "error", arg.(types.LoginAttempt).Error.Error())
+			assert.Equal(t, "error", arg.(*types.LoginAttempt).Error.Error())
 		},
 	}
 
@@ -59,8 +59,8 @@ func TestLogin(t *testing.T) {
 		},
 		MockEmitEvent: func(e int, arg interface{}) {
 			assert.Equal(t, event.LoginAttempt, e)
-			assert.Equal(t, true, arg.(types.LoginAttempt).Success)
-			assert.Nil(t, arg.(types.LoginAttempt).Error)
+			assert.Equal(t, true, arg.(*types.LoginAttempt).Success)
+			assert.Nil(t, arg.(*types.LoginAttempt).Error)
 		},
 	}
 

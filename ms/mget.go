@@ -23,7 +23,7 @@ func (ms Ms) Mget(keys []string, options types.QueryOptions) ([]string, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []string{}, errors.New(res.Error.Message)
 	}
 	var returnedResult []string

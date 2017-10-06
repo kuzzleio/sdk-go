@@ -71,7 +71,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
@@ -97,7 +97,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "1m", parsedQuery.Scroll)
 				assert.Equal(t, "f00b4r", parsedQuery.ScrollId)
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
@@ -152,7 +152,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":"1200"}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":"800"}`)},
 				}
@@ -178,7 +178,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "collection", parsedQuery.Collection)
 				assert.Equal(t, []interface{}([]interface{}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":"400"}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":"200"}`)},
 				}
@@ -227,7 +227,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
@@ -252,7 +252,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []&collection.Document{
+				results := []*collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
@@ -281,7 +281,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 
 	tooFarRes, _ := fetchNextRes.FetchNext()
 
-	assert.Equal(t, collection.SearchResult{}, tooFarRes)
+	assert.Equal(t, &collection.SearchResult{}, tooFarRes)
 }
 
 func ExampleSearchResult_FetchNext() {

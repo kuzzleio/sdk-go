@@ -49,6 +49,7 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),
 		subscribeToSelf:      opts.GetSubscribeToSelf(),
 		Volatile:             opts.GetVolatile(),
+		queue:								&list.List{},
 	}
 	r.queue.Init()
 

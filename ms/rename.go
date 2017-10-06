@@ -31,7 +31,7 @@ func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (stri
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

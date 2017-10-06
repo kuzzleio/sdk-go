@@ -110,7 +110,7 @@ func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return d, errors.New(res.Error.Message)
 	}
 
@@ -138,7 +138,7 @@ func (d *Document) Refresh(options types.QueryOptions) (*Document, error) {
 	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return d, errors.New(res.Error.Message)
 	}
 
@@ -220,7 +220,7 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 
@@ -253,7 +253,7 @@ func (d Document) Exists(options types.QueryOptions) (bool, error) {
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 
@@ -284,7 +284,7 @@ func (d Document) Delete(options types.QueryOptions) (string, error) {
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

@@ -95,7 +95,7 @@ func ExampleCollection_ReplaceDocument() {
 }
 
 func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
-	documents := []&collection.Document{}
+	documents := []*collection.Document{}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -109,7 +109,7 @@ func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 }
 
 func TestMReplaceDocumentError(t *testing.T) {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -126,7 +126,7 @@ func TestMReplaceDocumentError(t *testing.T) {
 }
 
 func TestMReplaceDocument(t *testing.T) {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -141,7 +141,7 @@ func TestMReplaceDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			results := []collection.Document{
+			results := []*collection.Document{
 				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
@@ -166,7 +166,7 @@ func TestMReplaceDocument(t *testing.T) {
 }
 
 func ExampleCollection_MReplaceDocument() {
-	documents := []&collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}

@@ -35,9 +35,10 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return tokenValidity, errors.New(res.Error.Message)
 	}
+
 	json.Unmarshal(res.Result, tokenValidity)
 
 	return tokenValidity, nil

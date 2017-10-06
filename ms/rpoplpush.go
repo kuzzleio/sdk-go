@@ -32,7 +32,7 @@ func (ms Ms) RpoplPush(source string, destination string, options types.QueryOpt
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult interface{}

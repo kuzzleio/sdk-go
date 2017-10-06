@@ -24,7 +24,7 @@ func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

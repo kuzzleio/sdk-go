@@ -23,7 +23,7 @@ func (ms Ms) Persist(key string, options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

@@ -23,7 +23,7 @@ func (k Kuzzle) GetMyRights(options types.QueryOptions) ([]*types.Rights, error)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

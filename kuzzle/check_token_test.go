@@ -33,15 +33,12 @@ func TestCheckToken(t *testing.T) {
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			tokenValidity := kuzzle.TokenValidity{Valid: true}
 			r, _ := json.Marshal(tokenValidity)
+
 			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	type ackResult struct {
-		Acknowledged       bool
-		ShardsAcknowledged bool
-	}
 	res, _ := k.CheckToken("token")
 	assert.Equal(t, true, res.Valid)
 }

@@ -32,7 +32,7 @@ func (ms Ms) Rpush(source string, values []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

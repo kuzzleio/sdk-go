@@ -33,7 +33,7 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

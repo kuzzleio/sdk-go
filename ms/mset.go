@@ -28,7 +28,7 @@ func (ms Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) (stri
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

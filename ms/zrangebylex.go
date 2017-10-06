@@ -34,7 +34,7 @@ func (ms Ms) ZrangeByLex(key string, min string, max string, options types.Query
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []string{}, errors.New(res.Error.Message)
 	}
 

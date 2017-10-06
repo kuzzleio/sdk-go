@@ -32,7 +32,7 @@ func (s Security) DeleteCredentials(strategy string, kuid string, options types.
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 

@@ -42,7 +42,7 @@ func TestRenewQueryError(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	k.State = state.Connected
 
-	subResChan := make(chan &types.SubscribeResponse)
+	subResChan := make(chan *types.SubscribeResponse)
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
 
 	res := <-subResChan
@@ -56,7 +56,7 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			room := NewRoom(NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
-			(*room.collection.Kuzzle.RequestHistory)["ah!"] = time.Now()
+			room.collection.Kuzzle.RequestHistory["ah!"] = time.Now()
 			marshed, _ := json.Marshal(room)
 
 			return &types.KuzzleResponse{RequestId: "ah!", Result: marshed}
@@ -95,5 +95,5 @@ func ExampleRoom_Renew() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.State = state.Connected
 
-	NewRoom(*NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
+	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
 }

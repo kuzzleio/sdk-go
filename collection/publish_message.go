@@ -26,7 +26,7 @@ func (dc Collection) PublishMessage(document interface{}, options types.QueryOpt
 
 	response := &types.RealtimeResponse{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return response, errors.New(res.Error.Message)
 	}
 

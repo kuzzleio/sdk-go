@@ -25,7 +25,7 @@ func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, op
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

@@ -27,7 +27,7 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 

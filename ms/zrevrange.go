@@ -28,7 +28,7 @@ func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptio
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
 	}
 

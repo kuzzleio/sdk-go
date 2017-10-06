@@ -29,7 +29,7 @@ func (ms Ms) Zcount(key string, min int, max int, options types.QueryOptions) (i
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

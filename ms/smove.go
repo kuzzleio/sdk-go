@@ -36,7 +36,7 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

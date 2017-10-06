@@ -41,7 +41,7 @@ func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*ty
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

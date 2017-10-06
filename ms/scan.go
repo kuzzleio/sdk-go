@@ -34,7 +34,7 @@ func (ms Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 

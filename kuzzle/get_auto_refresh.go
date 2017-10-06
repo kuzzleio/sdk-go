@@ -26,7 +26,7 @@ func (k Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

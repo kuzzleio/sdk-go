@@ -33,7 +33,7 @@ func (ms Ms) ZremRangeByRank(key string, min int, max int, options types.QueryOp
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

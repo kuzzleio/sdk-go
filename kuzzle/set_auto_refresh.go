@@ -29,7 +29,7 @@ func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.Que
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

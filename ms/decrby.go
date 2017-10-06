@@ -29,7 +29,7 @@ func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, err
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

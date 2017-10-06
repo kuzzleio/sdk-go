@@ -36,7 +36,7 @@ func (u *User) SetContent(data *types.UserData) *User {
 // SetCredentials update the userData of the current user
 // Updating user credentials will have no impact until the create method is called.
 // The credentials to send depends entirely on the authentication plugin and strategy you want to create credentials for.
-func (u User) SetCredentials(credentials *types.UserCredentials) User {
+func (u *User) SetCredentials(credentials types.UserCredentials) *User {
 	userData := u.UserData()
 	userData.Credentials = credentials
 
@@ -61,7 +61,7 @@ func (u User) GetProfiles(options types.QueryOptions) ([]*profile.Profile, error
 	}
 
 	for _, profileId := range u.UserData().ProfileIds {
-		p, err := profile.SecurityProfile{Kuzzle: u.SU.Kuzzle}.Fetch(profileId, options)
+		p, err := (&profile.SecurityProfile{Kuzzle: u.SU.Kuzzle}).Fetch(profileId, options)
 
 		if err != nil {
 			return []*profile.Profile{}, err
@@ -81,7 +81,7 @@ func (u User) GetProfileIds() []string {
 // SetProfiles updates the profiles of the current user
 // Updating a user will have no impact until the create or replace method is called.
 func (u User) SetProfiles(profiles []*profile.Profile) *User {
-	profileIds := make([]string{}, profiles.len())
+	profileIds := make([]string, 0, len(profiles))
 
 	userData := u.UserData()
 
@@ -109,7 +109,7 @@ func (u User) Replace(options types.QueryOptions) (*User, error) {
 }
 
 // Update the user in kuzzle.
-func (u User) Update(content *types.UserData, options types.QueryOptions) (User, error) {
+func (u *User) Update(content *types.UserData, options types.QueryOptions) (*User, error) {
 	return u.SU.Update(u.Id, content, options)
 }
 
@@ -120,7 +120,7 @@ func (u User) Delete(options types.QueryOptions) (string, error) {
 
 // UserData returns the current user's data
 func (u User) UserData() *types.UserData {
-	userData := *types.UserData{}
+	userData := &types.UserData{}
 	json.Unmarshal(u.Source, userData)
 
 	rawContent := map[string]interface{}{}
@@ -171,8 +171,8 @@ func (su *SecurityUser) Fetch(id string, options types.QueryOptions) (*User, err
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return User{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &User{}, errors.New(res.Error.Message)
 	}
 
 	u := &User{SU: su}
@@ -205,7 +205,7 @@ func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &UserSearchResult{}, errors.New(res.Error.Message)
 	}
 
@@ -233,7 +233,7 @@ func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (*Use
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &UserSearchResult{}, errors.New(res.Error.Message)
 	}
 
@@ -259,20 +259,20 @@ func (su *SecurityUser) Create(kuid string, content *types.UserData, options typ
 	}
 	type createBody struct {
 		Content     *userData              `json:"content"`
-		Credentials *types.UserCredentials `json:"credentials"`
+		Credentials types.UserCredentials `json:"credentials"`
 	}
 
 	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "createUser",
-		Body:       createBody{Content: ud, Credentials: content.Credentials},
+		Body:       createBody{Content: &ud, Credentials: content.Credentials},
 		Id:         kuid,
 	}
 	go su.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &User{}, errors.New(res.Error.Message)
 	}
 
@@ -297,21 +297,21 @@ func (su *SecurityUser) CreateRestrictedUser(kuid string, content *types.UserDat
 	}
 	type createBody struct {
 		Content     *userData              `json:"content"`
-		Credentials *types.UserCredentials `json:"credentials"`
+		Credentials types.UserCredentials `json:"credentials"`
 	}
 
 	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "createRestrictedUser",
-		Body:       createBody{Content: ud, Credentials: content.Credentials},
+		Body:       createBody{Content: &ud, Credentials: content.Credentials},
 		Id:         kuid,
 	}
 	go su.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return User{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &User{}, errors.New(res.Error.Message)
 	}
 
 	user := &User{SU: su}
@@ -345,7 +345,7 @@ func (su *SecurityUser) Replace(kuid string, content *types.UserData, options ty
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &User{}, errors.New(res.Error.Message)
 	}
 
@@ -380,7 +380,7 @@ func (su *SecurityUser) Update(kuid string, content *types.UserData, options typ
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &User{}, errors.New(res.Error.Message)
 	}
 
@@ -409,7 +409,7 @@ func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, 
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 
@@ -436,7 +436,7 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]*ty
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []*types.UserRights{}, errors.New(res.Error.Message)
 	}
 
@@ -462,7 +462,7 @@ func (su SecurityUser) IsActionAllowed(rights []*types.UserRights, controller st
 		return "", errors.New("Security.User.IsActionAllowed: Action parameter is mandatory")
 	}
 
-	filteredUserRights := make([]*types.UserRights{}, rights.len())
+	filteredUserRights := make([]*types.UserRights, 0, len(rights))
 
 	for _, ur := range rights {
 		if (ur.Controller == controller || ur.Controller == "*") && (ur.Action == action || ur.Action == "*") && (ur.Index == index || ur.Index == "*") && (ur.Collection == collection || ur.Collection == "*") {

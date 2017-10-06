@@ -5,7 +5,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (k Kuzzle) SetJwt(token string) {
+func (k *Kuzzle) SetJwt(token string) {
 	k.jwt = token
 
 	if token != "" {

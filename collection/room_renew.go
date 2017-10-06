@@ -59,7 +59,7 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 
 		room.subscribing = false
 
-		if res.Error.Message != "" {
+		if res.Error != nil {
 			room.queue.Init()
 			if subscribeResponseChan != nil {
 				subscribeResponseChan <- &types.SubscribeResponse{Error: errors.New(res.Error.Message)}

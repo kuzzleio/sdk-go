@@ -46,8 +46,7 @@ func TestGetAllStatistics(t *testing.T) {
 				CompletedRequests: m,
 			}
 
-			hitsArray := make([]*types.Statistics, 1)
-			hitsArray = append(hitsArray, &stats)
+			hitsArray := []*types.Statistics{&stats}
 			toMarshal := hits{hitsArray}
 
 			h, err := json.Marshal(toMarshal)

@@ -23,7 +23,7 @@ func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.Ac
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.AckResponse{}, errors.New(res.Error.Message)
 	}
 

@@ -25,7 +25,7 @@ func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Doc
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Document{}, errors.New(res.Error.Message)
 	}
 
@@ -60,7 +60,7 @@ func (dc *Collection) MGetDocument(ids []string, options types.QueryOptions) (*S
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return result, errors.New(res.Error.Message)
 	}
 

@@ -50,8 +50,7 @@ func TestGetMyRights(t *testing.T) {
 				Value:      "allowed",
 			}
 
-			hitsArray := make([]*types.Rights, 1)
-			hitsArray = append(hitsArray, &rights)
+			hitsArray := []*types.Rights{&rights}
 			toMarshal := hits{hitsArray}
 
 			h, err := json.Marshal(toMarshal)

@@ -27,7 +27,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Apply(nil)
@@ -41,9 +41,9 @@ func TestCollectionMappingApply(t *testing.T) {
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
+			callCount++
 
-			if callCount == 0 {
-				callCount++
+			if callCount == 1 {
 				assert.Equal(t, "collection", parsedQuery.Controller)
 				assert.Equal(t, "getMapping", parsedQuery.Action)
 				assert.Equal(t, "index", parsedQuery.Index)
@@ -53,8 +53,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				r, _ := json.Marshal(res.Result)
 				return &types.KuzzleResponse{Result: r}
 			}
-			if callCount == 1 {
-				callCount++
+			if callCount == 2 {
 				assert.Equal(t, "collection", parsedQuery.Controller)
 				assert.Equal(t, "updateMapping", parsedQuery.Action)
 				assert.Equal(t, "index", parsedQuery.Index)
@@ -64,8 +63,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				r, _ := json.Marshal(res.Result)
 				return &types.KuzzleResponse{Result: r}
 			}
-			if callCount == 2 {
-				callCount++
+			if callCount == 3 {
 				assert.Equal(t, "collection", parsedQuery.Controller)
 				assert.Equal(t, "getMapping", parsedQuery.Action)
 				assert.Equal(t, "index", parsedQuery.Index)
@@ -83,7 +81,7 @@ func TestCollectionMappingApply(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	var fieldMapping = types.KuzzleFieldMapping{
+	fieldMapping := types.KuzzleFieldMapping{
 		"foo": {
 			Type:   "text",
 			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
@@ -135,7 +133,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -168,7 +166,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -202,7 +200,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	_, err := cm.Refresh(nil)
@@ -236,7 +234,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 	updatedCm := collection.CollectionMapping{
 		Mapping: &types.KuzzleFieldMapping{
@@ -245,13 +243,11 @@ func TestCollectionMappingRefresh(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
-	res, _ := cm.Refresh(nil)
-
-	assert.NotEqual(t, cm, res)
-	assert.Equal(t, updatedCm, res)
+	cm.Refresh(nil)
+	assert.Equal(t, *updatedCm.Mapping, *cm.Mapping)
 }
 
 func ExampleCollectionMapping_Refresh() {
@@ -267,7 +263,7 @@ func ExampleCollectionMapping_Refresh() {
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	res, err := cm.Refresh(qo)
@@ -314,7 +310,7 @@ func TestCollectionMappingSet(t *testing.T) {
 		IgnoreAbove int    `json:"ignore_above"`
 	}
 	fieldStruct := FieldsStruct{}
-	json.Unmarshal(cm.Mapping["foo"].Fields, &fieldStruct)
+	json.Unmarshal((*cm.Mapping)["foo"].Fields, &fieldStruct)
 
 	assert.Equal(t, 100, fieldStruct.IgnoreAbove)
 }
@@ -348,7 +344,7 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	headers := make(map[string]interface{}, 0)
@@ -382,7 +378,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	headers := make(map[string]interface{}, 0)
@@ -417,7 +413,7 @@ func ExampleCollectionMapping_SetHeaders() {
 				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
 			},
 		},
-		Collection: *cl,
+		Collection: cl,
 	}
 
 	headers := make(map[string]interface{}, 0)

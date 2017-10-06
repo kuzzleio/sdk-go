@@ -17,7 +17,7 @@ func (k Kuzzle) Logout() error {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return errors.New(res.Error.Message)
 	}
 

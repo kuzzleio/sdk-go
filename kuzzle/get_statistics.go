@@ -32,7 +32,7 @@ func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.Statistics{}, errors.New(res.Error.Message)
 	}
 

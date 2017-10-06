@@ -29,7 +29,7 @@ func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, erro
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

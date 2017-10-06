@@ -92,15 +92,18 @@ func TestGetMapping(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	res, _ := cl.GetMapping(nil)
-	assert.Equal(t, collection.CollectionMapping{
-		Mapping: types.KuzzleFieldMapping{
+
+	expected := collection.CollectionMapping{
+		Mapping: &types.KuzzleFieldMapping{
 			"foo": {
 				Type:   "text",
 				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
 			},
 		},
-		Collection: *cl,
-	}, res)
+		Collection: cl,
+	}
+
+	assert.Equal(t, *expected.Mapping, *res.Mapping)
 }
 
 func ExampleCollection_GetMapping() {

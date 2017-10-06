@@ -19,13 +19,14 @@ func TestSearchError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").Search(types.SearchFilters{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").Search(&types.SearchFilters{}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestSearch(t *testing.T) {
-	hits := make([]*collection.Document, 1)
-	hits[0] = &collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	hits := []*collection.Document{
+		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+	}
 
 	results := collection.SearchResult{Total: 42, Hits: hits}
 
@@ -48,9 +49,9 @@ func TestSearch(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").Search(&types.SearchFilters{}, nil)
 	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits, res.Hits)
-	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, len(hits), len(res.Hits))
+	assert.Equal(t, res.Hits[0].Id, hits[0].Id)
+	assert.Equal(t, res.Hits[0].Content, hits[0].Content)
 }
 
 func ExampleCollection_Search() {
@@ -71,8 +72,9 @@ func ExampleCollection_Search() {
 }
 
 func TestSearchWithScroll(t *testing.T) {
-	hits := make([]*collection.Document, 1)
-	hits[0] = &collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	hits := []*collection.Document{
+		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+	}
 	results := collection.SearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -101,8 +103,8 @@ func TestSearchWithScroll(t *testing.T) {
 	opts.SetScroll("1m")
 	res, _ := collection.NewCollection(k, "collection", "index").Search(&types.SearchFilters{}, opts)
 	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits, res.Hits)
+	assert.Equal(t, len(hits), len(res.Hits))
 	assert.Equal(t, "f00b4r", res.ScrollId)
-	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, res.Hits[0].Id, hits[0].Id)
+	assert.Equal(t, res.Hits[0].Content, hits[0].Content)
 }

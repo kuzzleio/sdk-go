@@ -105,10 +105,12 @@ func TestMGetDocumentError(t *testing.T) {
 }
 
 func TestMGetDocument(t *testing.T) {
-	hits := make([]collection.Document, 2)
-	hits[0] = collection.Document{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)}
-	hits[1] = collection.Document{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)}
-	var results = collection.SearchResult{Total: 2, Hits: hits}
+	hits := []*collection.Document{
+		{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)},
+		{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)},
+	}
+
+	results := collection.SearchResult{Total: 2, Hits: hits}
 
 	ids := []string{"foo", "bar"}
 
@@ -132,7 +134,11 @@ func TestMGetDocument(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
 	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits, res.Hits)
+
+	for i, _ := range res.Hits {
+		assert.Equal(t, hits[i].Id, res.Hits[i].Id)
+		assert.Equal(t, hits[i].Content, res.Hits[i].Content)
+	}
 }
 
 func ExampleCollection_MGetDocument() {

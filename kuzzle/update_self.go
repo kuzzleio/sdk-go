@@ -20,7 +20,7 @@ func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.User{}, errors.New(res.Error.Message)
 	}
 

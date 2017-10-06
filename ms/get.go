@@ -24,7 +24,7 @@ func (ms Ms) Get(key string, options types.QueryOptions) (interface{}, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

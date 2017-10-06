@@ -38,7 +38,7 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

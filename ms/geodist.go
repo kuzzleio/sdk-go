@@ -30,7 +30,7 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult float64

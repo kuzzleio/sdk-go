@@ -23,7 +23,7 @@ func (k Kuzzle) GetAllStatistics(options types.QueryOptions) ([]*types.Statistic
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

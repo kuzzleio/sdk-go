@@ -9,7 +9,7 @@ import (
 
 // Login send login request to kuzzle with credentials.
 // If login success, store the jwtToken into kuzzle object.
-func (k Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
+func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
 	if strategy == "" {
 		return "", errors.New("Kuzzle.Login: cannot authenticate to Kuzzle without an authentication strategy")
 	}
@@ -44,7 +44,7 @@ func (k Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) 
 
 	json.Unmarshal(res.Result, &token)
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		err := errors.New(res.Error.Message)
 		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: false, Error: err})
 		return "", err

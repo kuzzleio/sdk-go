@@ -26,7 +26,7 @@ func (dc *Collection) ReplaceDocument(id string, document interface{}, options t
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Document{}, errors.New(res.Error.Message)
 	}
 
@@ -74,7 +74,7 @@ func (dc *Collection) MReplaceDocument(documents []*Document, options types.Quer
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return result, errors.New(res.Error.Message)
 	}
 

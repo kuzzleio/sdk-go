@@ -18,7 +18,7 @@ func (ms Ms) Flushdb(options types.QueryOptions) (string, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

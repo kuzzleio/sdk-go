@@ -26,7 +26,7 @@ func (dc *Collection) UpdateDocument(id string, document interface{}, options ty
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Document{}, errors.New(res.Error.Message)
 	}
 
@@ -74,7 +74,7 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return result, errors.New(res.Error.Message)
 	}
 

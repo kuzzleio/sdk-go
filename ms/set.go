@@ -48,7 +48,7 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

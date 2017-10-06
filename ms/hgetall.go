@@ -24,7 +24,7 @@ func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string,
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	returnedResult := make(map[string]string)

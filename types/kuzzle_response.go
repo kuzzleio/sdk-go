@@ -134,7 +134,7 @@ type (
 	}
 
 	Controllers struct {
-		Controllers map[string]*Controller `json:"controllers"`
+		Controllers map[string]Controller `json:"controllers"`
 	}
 
 	SecurityDocument struct {
@@ -148,7 +148,7 @@ type (
 	Role    SecurityDocument
 
 	CredentialStrategyFields []string
-	CredentialFields         map[string]*CredentialStrategyFields
+	CredentialFields         map[string]CredentialStrategyFields
 
 	Credentials map[string]interface{}
 

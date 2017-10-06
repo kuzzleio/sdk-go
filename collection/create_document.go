@@ -40,7 +40,7 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &Document{}, errors.New(res.Error.Message)
 	}
 
@@ -98,7 +98,7 @@ func performMultipleCreate(dc *Collection, documents []*Document, action string,
 
 	result := &SearchResult{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return result, errors.New(res.Error.Message)
 	}
 

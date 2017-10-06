@@ -40,7 +40,7 @@ func TestGetSpecifications(t *testing.T) {
 
 			validation := types.KuzzleValidation{
 				Strict: false,
-				Fields: types.KuzzleValidationFields{
+				Fields: &types.KuzzleValidationFields{
 					"foo": {
 						Mandatory:    false,
 						Type:         "bool",
@@ -64,10 +64,10 @@ func TestGetSpecifications(t *testing.T) {
 	assert.Equal(t, "index", res.Index)
 	assert.Equal(t, "collection", res.Collection)
 	assert.Equal(t, false, res.Validation.Strict)
-	assert.Equal(t, 1, len(res.Validation.Fields))
-	assert.Equal(t, false, res.Validation.Fields["foo"].Mandatory)
-	assert.Equal(t, "bool", res.Validation.Fields["foo"].Type)
-	assert.Equal(t, "Boring value", res.Validation.Fields["foo"].DefaultValue)
+	assert.Equal(t, 1, len(*res.Validation.Fields))
+	assert.Equal(t, false, (*res.Validation.Fields)["foo"].Mandatory)
+	assert.Equal(t, "bool", (*res.Validation.Fields)["foo"].Type)
+	assert.Equal(t, "Boring value", (*res.Validation.Fields)["foo"].DefaultValue)
 }
 
 func ExampleCollection_GetSpecifications() {
@@ -112,7 +112,7 @@ func TestSearchSpecifications(t *testing.T) {
 			res := types.KuzzleSpecificationSearchResult{
 				ScrollId: "f00b4r",
 				Total:    1,
-				Hits: []&struct {
+				Hits: []*struct {
 					Source *types.KuzzleSpecificationsResult `json:"_source"`
 				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
@@ -143,7 +143,7 @@ func TestSearchSpecifications(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").SearchSpecifications(nil, opts)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, 1, res.Total)
-	assert.Equal(t, "Value found with search", res.Hits[0].Source.Validation.Fields["foo"].DefaultValue)
+	assert.Equal(t, "Value found with search", (*res.Hits[0].Source.Validation.Fields)["foo"].DefaultValue)
 }
 
 func ExampleCollection_SearchSpecifications() {
@@ -209,7 +209,7 @@ func TestScrollSpecifications(t *testing.T) {
 			res := types.KuzzleSpecificationSearchResult{
 				ScrollId: "f00b4r",
 				Total:    1,
-				Hits: []&struct {
+				Hits: []*struct {
 					Source *types.KuzzleSpecificationsResult `json:"_source"`
 				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
@@ -238,7 +238,7 @@ func TestScrollSpecifications(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").ScrollSpecifications("f00b4r", opts)
 	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, 1, res.Total)
-	assert.Equal(t, "Value found with scroll", res.Hits[0].Source.Validation.Fields["bar"].DefaultValue)
+	assert.Equal(t, "Value found with scroll", (*res.Hits[0].Source.Validation.Fields)["bar"].DefaultValue)
 }
 
 func ExampleCollection_ScrollSpecifications() {
@@ -390,11 +390,15 @@ func TestUpdateSpecifications(t *testing.T) {
 	}
 
 	res, _ := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&specifications, nil)
-	assert.Equal(t, true, res["index"]["collection"].Strict)
-	assert.Equal(t, 1, len(res["index"]["collection"].Fields))
-	assert.Equal(t, true, res["index"]["collection"].Fields["foo"].Mandatory)
-	assert.Equal(t, "string", res["index"]["collection"].Fields["foo"].Type)
-	assert.Equal(t, "Exciting value", res["index"]["collection"].Fields["foo"].DefaultValue)
+
+	specs := (*res)["index"]["collection"]
+	fields := (*specs.Fields)
+
+	assert.Equal(t, true, specs.Strict)
+	assert.Equal(t, 1, len(fields))
+	assert.Equal(t, true, fields["foo"].Mandatory)
+	assert.Equal(t, "string", fields["foo"].Type)
+	assert.Equal(t, "Exciting value", fields["foo"].DefaultValue)
 }
 
 func ExampleCollection_UpdateSpecifications() {
@@ -419,7 +423,7 @@ func ExampleCollection_UpdateSpecifications() {
 		return
 	}
 
-	fmt.Println(res["index"]["collection"].Strict, res["index"]["collection"].Fields)
+	fmt.Println((*res)["index"]["collection"].Strict, (*res)["index"]["collection"].Fields)
 }
 
 func TestDeleteSpecificationsError(t *testing.T) {

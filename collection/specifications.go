@@ -22,7 +22,7 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.Kuzzl
 
 	specification := &types.KuzzleSpecificationsResult{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return specification, errors.New(res.Error.Message)
 	}
 
@@ -58,7 +58,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 
 	specifications := &types.KuzzleSpecificationSearchResult{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return specifications, errors.New(res.Error.Message)
 	}
 
@@ -94,7 +94,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return specifications, errors.New(res.Error.Message)
 	}
 
@@ -125,7 +125,7 @@ func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidati
 	res := <-ch
 	response := &types.ValidResponse{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return response, errors.New(res.Error.Message)
 	}
 
@@ -156,7 +156,7 @@ func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation
 	res := <-ch
 	specification := &types.KuzzleSpecifications{}
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return specification, errors.New(res.Error.Message)
 	}
 
@@ -179,7 +179,7 @@ func (dc Collection) DeleteSpecifications(options types.QueryOptions) (*types.Ac
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
 	}
 

@@ -25,7 +25,7 @@ func (dc Collection) DocumentExists(id string, options types.QueryOptions) (bool
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

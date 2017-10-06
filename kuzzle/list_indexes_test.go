@@ -38,9 +38,10 @@ func TestListIndexes(t *testing.T) {
 				Indexes []string `json:"indexes"`
 			}
 
-			list := make([]string, 2)
-			list = append(list, "index1")
-			list = append(list, "index2")
+			list := []string{
+				"index1",
+				"index2",
+			}
 
 			c := indexes{
 				Indexes: list,

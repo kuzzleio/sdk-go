@@ -34,7 +34,7 @@ func (ms Ms) ZincrBy(key string, member string, increment float64, options types
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

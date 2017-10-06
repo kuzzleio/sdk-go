@@ -32,7 +32,7 @@ func (ms Ms) ZlexCount(key string, min string, max string, options types.QueryOp
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

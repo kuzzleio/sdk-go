@@ -20,7 +20,7 @@ func TestCreateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").CreateDocument("id", collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").CreateDocument("id", &collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,7 +35,7 @@ func TestCreateDocumentWrongOptionError(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("unknown")
 
-	_, err := newCollection.CreateDocument("id", collection.Document{Content: []byte(`{"title":"yolo"}`)}, opts)
+	_, err := newCollection.CreateDocument("id", &collection.Document{Content: []byte(`{"title":"yolo"}`)}, opts)
 	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
 
@@ -65,7 +65,7 @@ func TestCreateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").CreateDocument(id, collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").CreateDocument(id, &collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
 	assert.Equal(t, id, res.Id)
 }
 
@@ -87,7 +87,7 @@ func TestCreateDocumentReplace(t *testing.T) {
 	newCollection := collection.NewCollection(k, "collection", "index")
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("replace")
-	newCollection.CreateDocument("id", collection.Document{Content: []byte(`{"Title":"yolo"}`)}, opts)
+	newCollection.CreateDocument("id", &collection.Document{Content: []byte(`{"Title":"yolo"}`)}, opts)
 }
 
 func TestCreateDocumentCreate(t *testing.T) {
@@ -109,7 +109,7 @@ func TestCreateDocumentCreate(t *testing.T) {
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("error")
 
-	newCollection.CreateDocument("id", collection.Document{Content: []byte(`{"Title":"yolo"}`)}, opts)
+	newCollection.CreateDocument("id", &collection.Document{Content: []byte(`{"Title":"yolo"}`)}, opts)
 }
 
 func ExampleCollection_CreateDocument() {
@@ -117,7 +117,7 @@ func ExampleCollection_CreateDocument() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	id := "myId"
 
-	res, err := collection.NewCollection(k, "collection", "index").CreateDocument(id, collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
+	res, err := collection.NewCollection(k, "collection", "index").CreateDocument(id, &collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -128,7 +128,7 @@ func ExampleCollection_CreateDocument() {
 }
 
 func TestMCreateDocumentError(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -145,7 +145,7 @@ func TestMCreateDocumentError(t *testing.T) {
 }
 
 func TestMCreateDocument(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -160,7 +160,7 @@ func TestMCreateDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			results := []collection.Document{
+			results := []*collection.Document{
 				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
@@ -188,7 +188,10 @@ func ExampleCollection_MCreateDocument() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").MCreateDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)
+	res, err := collection.NewCollection(k, "collection", "index").MCreateDocument([]*collection.Document{
+		{Content: []byte(`{"title":"yolo"}`)}, 
+		{Content: []byte(`{"title":"oloy"}`)},
+	}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -199,7 +202,7 @@ func ExampleCollection_MCreateDocument() {
 }
 
 func TestMCreateOrReplaceDocumentError(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -216,7 +219,7 @@ func TestMCreateOrReplaceDocumentError(t *testing.T) {
 }
 
 func TestMCreateOrReplaceDocument(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
@@ -259,7 +262,10 @@ func ExampleCollection_MCreateOrReplaceDocument() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument([]collection.Document{{Content: []byte(`{"title":"yolo"}`)}, {Content: []byte(`{"title":"oloy"}`)}}, nil)
+	res, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument([]*collection.Document{
+		{Content: []byte(`{"title":"yolo"}`)}, 
+		{Content: []byte(`{"title":"oloy"}`)},
+	}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

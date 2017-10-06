@@ -27,7 +27,7 @@ func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult interface{}

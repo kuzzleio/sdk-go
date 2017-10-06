@@ -23,7 +23,7 @@ func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (j
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

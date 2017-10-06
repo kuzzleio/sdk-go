@@ -20,7 +20,7 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &CollectionMapping{}, errors.New(res.Error.Message)
 	}
 
@@ -31,7 +31,7 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping
 	}
 
 	result := mappingResult{}
-	json.Unmarshal(res.Result, result)
+	json.Unmarshal(res.Result, &result)
 
 	if _, ok := result[dc.index]; ok {
 		indexMappings := result[dc.index].Mappings

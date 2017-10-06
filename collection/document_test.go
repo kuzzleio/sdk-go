@@ -72,7 +72,7 @@ func TestDocumentSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := collection.NewCollection(k, "collection", "index").Document()
 
-	headers := map[string]interface{}
+	headers := make(map[string]interface{})
 
 	assert.Equal(t, headers, k.GetHeaders())
 
@@ -81,7 +81,7 @@ func TestDocumentSetHeaders(t *testing.T) {
 
 	d.SetHeaders(headers, false)
 
-	newHeaders := map[string]interface{}
+	newHeaders := make(map[string]interface{})
 	newHeaders["foo"] = "rab"
 
 	d.SetHeaders(newHeaders, false)
@@ -97,7 +97,7 @@ func ExampleDocument_SetHeaders() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := collection.NewCollection(k, "collection", "index").Document()
 
-	headers := map[string]interface{}
+	headers := make(map[string]interface{})
 
 	headers["foo"] = "bar"
 	headers["bar"] = "foo"
@@ -121,7 +121,7 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := collection.NewCollection(k, "collection", "index").Document()
 
-	headers := map[string]interface{}
+	headers := make(map[string]interface{})
 
 	assert.Equal(t, headers, k.GetHeaders())
 
@@ -130,7 +130,7 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 
 	d.SetHeaders(headers, false)
 
-	newHeaders = map[string]interface{}
+	newHeaders := make(map[string]interface{})
 	newHeaders["foo"] = "rab"
 
 	d.SetHeaders(newHeaders, true)
@@ -210,7 +210,7 @@ func TestDocumentSubscribeEmptyId(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 	cd := dc.Document()
 
-	ch := make(chan types.KuzzleNotification)
+	ch := make(chan *types.KuzzleNotification)
 	res := <-cd.Subscribe(types.NewRoomOptions(), ch)
 
 	assert.Nil(t, res.Room)
@@ -245,7 +245,7 @@ func TestDocumentSubscribe(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, map[string]interface{}(map[string]interface{}{"ids": map[string]interface{}{"values": []interface{}{"docId"}}}), parsedQuery.Body)
-			room := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil)
+			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
 
 			marshed, _ := json.Marshal(room)
@@ -273,7 +273,7 @@ func ExampleDocument_Subscribe() {
 
 	c := &internal.MockedConnection{}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
 	d, _ := dc.Document().Fetch(id)
 

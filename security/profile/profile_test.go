@@ -37,15 +37,25 @@ func TestProfileAddPolicy(t *testing.T) {
 	policy := types.Policy{
 		RoleId:             "roleId",
 		AllowInternalIndex: true,
-		RestrictedTo:       []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}},
+		RestrictedTo:       []*types.PolicyRestriction{
+			{Index: "index"}, 
+			{Index: "other-index", Collections: []string{"foo", "bar"}},
+		},
 	}
 
-	p.AddPolicy(policy)
+	p.AddPolicy(&policy)
 
-	assert.Equal(t, []types.Policy{
+	assert.Equal(t, []*types.Policy{
 		{RoleId: "admin"},
 		{RoleId: "other"},
-		{RoleId: "roleId", AllowInternalIndex: true, RestrictedTo: []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}}},
+		{
+			RoleId: "roleId", 
+			AllowInternalIndex: true, 
+			RestrictedTo: []*types.PolicyRestriction{
+				{Index: "index"}, 
+				{Index: "other-index", Collections: []string{"foo", "bar"}},
+			},
+		},
 	}, p.GetPolicies())
 }
 
@@ -58,10 +68,13 @@ func ExampleProfile_AddPolicy() {
 	policy := types.Policy{
 		RoleId:             "roleId",
 		AllowInternalIndex: true,
-		RestrictedTo:       []types.PolicyRestriction{{Index: "index"}, {Index: "other-index", Collections: []string{"foo", "bar"}}},
+		RestrictedTo:       []*types.PolicyRestriction{
+			{Index: "index"}, 
+			{Index: "other-index", Collections: []string{"foo", "bar"}},
+		},
 	}
 
-	p.AddPolicy(policy)
+	p.AddPolicy(&policy)
 
 	fmt.Println(p.GetPolicies())
 }
@@ -87,7 +100,7 @@ func TestProfileGetPolicies(t *testing.T) {
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
-	assert.Equal(t, []types.Policy{
+	assert.Equal(t, []*types.Policy{
 		{RoleId: "admin"},
 		{RoleId: "other"}}, p.GetPolicies())
 }
@@ -123,9 +136,9 @@ func TestProfileSetPolicies(t *testing.T) {
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
-	newPolicies := []types.Policy{
+	newPolicies := []*types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
-		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
 	}
 
 	p.SetPolicies(newPolicies)
@@ -140,9 +153,9 @@ func ExampleProfile_SetPolicies() {
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
-	newPolicies := []types.Policy{
+	newPolicies := []*types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
-		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
 	}
 
 	p.SetPolicies(newPolicies)
@@ -172,9 +185,9 @@ func TestProfileSetContent(t *testing.T) {
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
 	newContent := []byte(`{"policies":[{"roleId":"newRoleId","allowInternalIndex":true},{"roleId":"otherRoleId","restrictedTo":[{"index":"index","collections":["foo","bar"]}]}]}`)
-	expectedPolicies := []types.Policy{
+	expectedPolicies := []*types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
-		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
 	}
 
 	p.SetContent(newContent)
@@ -236,12 +249,12 @@ func TestProfileSave(t *testing.T) {
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 	newPolicies := []types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
-		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
 	}
 
 	p.SetContent([]byte(`{"im":"emptyInside"}`))
 	for _, policy := range newPolicies {
-		p.AddPolicy(policy)
+		p.AddPolicy(&policy)
 	}
 	newProfile, _ := p.Save(nil)
 
@@ -259,12 +272,12 @@ func ExampleProfile_Save() {
 
 	newPolicies := []types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
-		{RoleId: "otherRoleId", RestrictedTo: []types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
+		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
 	}
 
 	p.SetContent([]byte(`{"im":"emptyInside"}`))
 	for _, policy := range newPolicies {
-		p.AddPolicy(policy)
+		p.AddPolicy(&policy)
 	}
 	res, err := p.Save(nil)
 
@@ -313,7 +326,7 @@ func TestProfileUpdate(t *testing.T) {
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
-	newPolicies := []types.Policy{
+	newPolicies := []*types.Policy{
 		{RoleId: "boringNewRoleId"},
 	}
 
@@ -332,7 +345,7 @@ func ExampleProfile_Update() {
 
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
-	newPolicies := []types.Policy{
+	newPolicies := []*types.Policy{
 		{RoleId: "boringNewRoleId"},
 	}
 
@@ -450,7 +463,7 @@ func TestFetch(t *testing.T) {
 	res, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
 
 	assert.Equal(t, id, res.Id)
-	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+	assert.Equal(t, []*types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
 func ExampleSecurityProfile_Fetch() {
@@ -481,9 +494,11 @@ func TestSearchError(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	hits := make([]profile.Profile, 1)
-	hits[0] = profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)}
-	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
+	hits := []*profile.Profile{
+		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+	}
+
+	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -523,9 +538,10 @@ func ExampleSecurityProfile_Search() {
 }
 
 func TestSearchWithScroll(t *testing.T) {
-	hits := make([]profile.Profile, 1)
-	hits[0] = profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)}
-	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
+	hits := []*profile.Profile{
+		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+	}
+	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -583,12 +599,13 @@ func TestScrollError(t *testing.T) {
 func TestScroll(t *testing.T) {
 	type response struct {
 		Total int               `json:"total"`
-		Hits  []profile.Profile `json:"hits"`
+		Hits  []*profile.Profile `json:"hits"`
 	}
 
-	hits := make([]profile.Profile, 1)
-	hits[0] = profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)}
-	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
+	hits := []*profile.Profile{
+		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+	}
+	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -615,8 +632,8 @@ func TestScroll(t *testing.T) {
 
 func ExampleSecurityProfile_Scroll() {
 	type response struct {
-		Total int               `json:"total"`
-		Hits  []profile.Profile `json:"hits"`
+		Total int                `json:"total"`
+		Hits  []*profile.Profile `json:"hits"`
 	}
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -639,7 +656,7 @@ func TestCreateEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).Profile.Create("", types.Policies{}, nil)
+	_, err := security.NewSecurity(k).Profile.Create("", &types.Policies{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -651,7 +668,7 @@ func TestCreateError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).Profile.Create("profileId", types.Policies{}, nil)
+	_, err := security.NewSecurity(k).Profile.Create("profileId", &types.Policies{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -677,13 +694,14 @@ func TestCreate(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
-	res, _ := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, nil)
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
+	res, _ := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, nil)
 
 	assert.Equal(t, id, res.Id)
-	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+	assert.Equal(t, []*types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
 func ExampleSecurityProfile_Create() {
@@ -691,10 +709,11 @@ func ExampleSecurityProfile_Create() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
-	res, err := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, nil)
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
+	res, err := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -726,17 +745,18 @@ func TestCreateIfExists(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
 
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("replace")
 
-	res, _ := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, opts)
+	res, _ := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, opts)
 
 	assert.Equal(t, id, res.Id)
-	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+	assert.Equal(t, []*types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
 func TestCreateWithStrictOption(t *testing.T) {
@@ -761,17 +781,18 @@ func TestCreateWithStrictOption(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
 
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("error")
 
-	res, _ := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, opts)
+	res, _ := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, opts)
 
 	assert.Equal(t, id, res.Id)
-	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+	assert.Equal(t, []*types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
 func TestCreateWithWrongOption(t *testing.T) {
@@ -784,14 +805,15 @@ func TestCreateWithWrongOption(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
 
 	opts := types.NewQueryOptions()
 	opts.SetIfExist("unknown")
 
-	_, err := security.NewSecurity(k).Profile.Create(id, types.Policies{Policies: policies}, opts)
+	_, err := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, opts)
 
 	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
@@ -804,7 +826,7 @@ func TestUpdateEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).Profile.Update("", types.Policies{}, nil)
+	_, err := security.NewSecurity(k).Profile.Update("", &types.Policies{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -816,7 +838,7 @@ func TestUpdateError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).Profile.Update("profileId", types.Policies{}, nil)
+	_, err := security.NewSecurity(k).Profile.Update("profileId", &types.Policies{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -842,13 +864,14 @@ func TestUpdate(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
-	res, _ := security.NewSecurity(k).Profile.Update(id, types.Policies{Policies: policies}, nil)
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
+	res, _ := security.NewSecurity(k).Profile.Update(id, &types.Policies{Policies: policies}, nil)
 
 	assert.Equal(t, id, res.Id)
-	assert.Equal(t, []types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
+	assert.Equal(t, []*types.Policy{{RoleId: "admin"}, {RoleId: "other"}}, res.GetPolicies())
 }
 
 func ExampleSecurityProfile_Update() {
@@ -856,10 +879,11 @@ func ExampleSecurityProfile_Update() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	policies := []types.Policy{}
-	policies = append(policies, types.Policy{RoleId: "admin"})
-	policies = append(policies, types.Policy{RoleId: "other"})
-	res, err := security.NewSecurity(k).Profile.Update(id, types.Policies{Policies: policies}, nil)
+	policies := []*types.Policy{
+		{RoleId: "admin"},
+		{RoleId: "other"},
+	}
+	res, err := security.NewSecurity(k).Profile.Update(id, &types.Policies{Policies: policies}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

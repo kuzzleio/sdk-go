@@ -41,7 +41,7 @@ func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.M
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 

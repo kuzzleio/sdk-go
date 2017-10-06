@@ -32,7 +32,7 @@ func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
 	}
 

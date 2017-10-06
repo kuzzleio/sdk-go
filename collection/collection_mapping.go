@@ -38,7 +38,7 @@ func (cm *CollectionMapping) Apply(options types.QueryOptions) (*CollectionMappi
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return cm, errors.New(res.Error.Message)
 	}
 
@@ -60,7 +60,7 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return cm, errors.New(res.Error.Message)
 	}
 
@@ -71,7 +71,7 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 	}
 
 	result := mappingResult{}
-	json.Unmarshal(res.Result, result)
+	json.Unmarshal(res.Result, &result)
 
 	if _, ok := result[cm.Collection.index]; ok {
 		indexMappings := result[cm.Collection.index].Mappings

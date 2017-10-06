@@ -41,7 +41,7 @@ func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanRe
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return &HscanResponse{}, errors.New(res.Error.Message)
 	}
 

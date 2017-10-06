@@ -27,7 +27,7 @@ func (ms Ms) Object(key string, subcommand string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

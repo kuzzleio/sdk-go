@@ -21,7 +21,7 @@ func (k Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

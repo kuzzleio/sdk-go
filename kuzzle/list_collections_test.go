@@ -46,9 +46,10 @@ func TestListCollections(t *testing.T) {
 				Collections []*types.CollectionsList `json:"collections"`
 			}
 
-			list := make([]*types.CollectionsList, 2)
-			list = append(list, &types.CollectionsList{Name: "collection1", Type: "stored"})
-			list = append(list, &types.CollectionsList{Name: "collection2", Type: "stored"})
+			list := []*types.CollectionsList{
+				&types.CollectionsList{Name: "collection1", Type: "stored"},
+				&types.CollectionsList{Name: "collection2", Type: "stored"},
+			}
 
 			c := collections{
 				Collections: list,
@@ -84,9 +85,10 @@ func TestListCollectionsWithOptions(t *testing.T) {
 				Collections []*types.CollectionsList `json:"collections"`
 			}
 
-			list := make([]*types.CollectionsList, 2)
-			list = append(list, &types.CollectionsList{Name: "collection1", Type: "stored"})
-			list = append(list, &types.CollectionsList{Name: "collection2", Type: "stored"})
+			list := []*types.CollectionsList {
+				&types.CollectionsList{Name: "collection1", Type: "stored"},
+				&types.CollectionsList{Name: "collection2", Type: "stored"},
+			}
 
 			c := collections{
 				Collections: list,

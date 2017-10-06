@@ -26,7 +26,7 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

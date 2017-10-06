@@ -42,8 +42,9 @@ func TestScroll(t *testing.T) {
 		Hits  []*collection.Document `json:"hits"`
 	}
 
-	hits := make([]*collection.Document, 1)
-	hits[0] = &collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	hits := []*collection.Document{
+		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+	}
 	results := collection.SearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
@@ -63,9 +64,9 @@ func TestScroll(t *testing.T) {
 
 	res, _ := collection.NewCollection(k, "collection", "index").Scroll("f00b4r", nil)
 	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits, res.Hits)
-	assert.Equal(t, res.Hits[0].Id, "doc42")
-	assert.Equal(t, res.Hits[0].Content, json.RawMessage(`{"foo":"bar"}`))
+	assert.Equal(t, hits[0].Id, res.Hits[0].Id)
+	assert.Equal(t, hits[0].Content, res.Hits[0].Content)
+	assert.Equal(t, len(hits), len(res.Hits))
 }
 
 func ExampleCollection_Scroll(t *testing.T) {

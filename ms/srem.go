@@ -32,7 +32,7 @@ func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOption
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

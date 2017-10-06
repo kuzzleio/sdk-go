@@ -31,7 +31,7 @@ func (ms Ms) SetEx(key string, value interface{}, ttl int, options types.QueryOp
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

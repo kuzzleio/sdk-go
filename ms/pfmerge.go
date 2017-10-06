@@ -32,7 +32,7 @@ func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string
