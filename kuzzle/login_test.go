@@ -20,13 +20,13 @@ func TestLoginNoStrategy(t *testing.T) {
 
 func TestLoginError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "login", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 		MockEmitEvent: func(e int, arg interface{}) {
 			assert.Equal(t, event.LoginAttempt, e)
@@ -40,7 +40,7 @@ func TestLoginError(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
@@ -55,7 +55,7 @@ func TestLogin(t *testing.T) {
 			loginRes := loginResult{"token"}
 			marsh, _ := json.Marshal(loginRes)
 
-			return types.KuzzleResponse{Result: marsh}
+			return &types.KuzzleResponse{Result: marsh}
 		},
 		MockEmitEvent: func(e int, arg interface{}) {
 			assert.Equal(t, event.LoginAttempt, e)

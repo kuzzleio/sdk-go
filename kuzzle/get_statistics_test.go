@@ -15,12 +15,12 @@ import (
 
 func TestGetStatisticsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getLastStats", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -30,7 +30,7 @@ func TestGetStatisticsQueryError(t *testing.T) {
 
 func TestGetStatistics(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
@@ -48,7 +48,7 @@ func TestGetStatistics(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

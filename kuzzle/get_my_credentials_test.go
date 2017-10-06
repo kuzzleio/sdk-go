@@ -13,13 +13,13 @@ import (
 
 func TestGetMyCredentialsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "getMyCredentials", request.Action)
 			assert.Equal(t, "local", request.Strategy)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -36,7 +36,7 @@ func TestGetMyCredentialsEmptyStrategy(t *testing.T) {
 
 func TestGetMyCredentials(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
@@ -51,7 +51,7 @@ func TestGetMyCredentials(t *testing.T) {
 			myCred := myCredentials{"admin", "test"}
 			marsh, _ := json.Marshal(myCred)
 
-			return types.KuzzleResponse{Result: marsh}
+			return &types.KuzzleResponse{Result: marsh}
 		},
 	}
 

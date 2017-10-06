@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -21,13 +20,13 @@ type QueryFilters struct {
 
 func TestFetchNextError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.SearchResult{Collection: *cl}
+	ksr := collection.SearchResult{Collection: cl}
 
 	_, err := ksr.FetchNext()
 
@@ -37,7 +36,7 @@ func TestFetchNextError(t *testing.T) {
 func TestFetchNextNotPossible(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.SearchResult{Collection: *cl}
+	ksr := collection.SearchResult{Collection: cl}
 
 	_, err := ksr.FetchNext()
 
@@ -48,20 +47,20 @@ func TestFetchNextNotPossible(t *testing.T) {
 func TestFetchNextWithScroll(t *testing.T) {
 	requestCount := 0
 
-	var sort = []map[string]string{}
+	sort := []map[string]string{}
 	sort = append(sort, map[string]string{"price": "asc"})
 
-	var filters = types.SearchFilters{
+	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
 		Sort:  sort,
 	}
 
-	var options = types.NewQueryOptions()
+	options := types.NewQueryOptions()
 	options.SetSize(2)
 	options.SetScroll("1m")
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -72,7 +71,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
@@ -86,10 +85,10 @@ func TestFetchNextWithScroll(t *testing.T) {
 					ScrollId:   "f00b4r",
 					Filters:    filters,
 					Options:    options,
-					Collection: *cl,
+					Collection: cl,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if requestCount == 1 {
 				requestCount++
@@ -98,7 +97,7 @@ func TestFetchNextWithScroll(t *testing.T) {
 				assert.Equal(t, "1m", parsedQuery.Scroll)
 				assert.Equal(t, "f00b4r", parsedQuery.ScrollId)
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
@@ -108,10 +107,10 @@ func TestFetchNextWithScroll(t *testing.T) {
 					Hits:  results,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -129,20 +128,20 @@ func TestFetchNextWithScroll(t *testing.T) {
 func TestFetchNextWithSearchAfter(t *testing.T) {
 	requestCount := 0
 
-	var sort = []map[string]string{}
+	sort := []map[string]string{}
 	sort = append(sort, map[string]string{"price": "desc"})
 	sort = append(sort, map[string]string{"label": "asc"})
 
-	var filters = types.SearchFilters{
+	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
 		Sort:  sort,
 	}
 
-	var options = types.NewQueryOptions()
+	options := types.NewQueryOptions()
 	options.SetSize(2)
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -153,7 +152,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":"1200"}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":"800"}`)},
 				}
@@ -166,10 +165,10 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 					Hits:       results,
 					Filters:    filters,
 					Options:    options,
-					Collection: *cl,
+					Collection: cl,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if requestCount == 1 {
 				requestCount++
@@ -179,7 +178,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				assert.Equal(t, "collection", parsedQuery.Collection)
 				assert.Equal(t, []interface{}([]interface{}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":"400"}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":"200"}`)},
 				}
@@ -189,10 +188,10 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 					Hits:  results,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -209,15 +208,15 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 func TestFetchNextWithSizeFrom(t *testing.T) {
 	requestCount := 0
 
-	var filters = types.SearchFilters{
+	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
 	}
 
-	var options = types.NewQueryOptions()
+	options := types.NewQueryOptions()
 	options.SetSize(2)
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -228,7 +227,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
 					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
 				}
@@ -241,10 +240,10 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 					Hits:       results,
 					Filters:    filters,
 					Options:    options,
-					Collection: *cl,
+					Collection: cl,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if requestCount == 1 {
 				requestCount++
@@ -253,7 +252,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				results := []collection.Document{
+				results := []&collection.Document{
 					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
 					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
 				}
@@ -264,10 +263,10 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 					Options: options,
 				}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -286,11 +285,11 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 }
 
 func ExampleSearchResult_FetchNext() {
-	var filters = types.SearchFilters{
+	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
 	}
 
-	var options = types.NewQueryOptions()
+	options := types.NewQueryOptions()
 	options.SetSize(2)
 
 	c := &internal.MockedConnection{}

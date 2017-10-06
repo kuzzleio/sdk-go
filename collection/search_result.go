@@ -31,7 +31,7 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 			for _, sortRules := range filters.Sort {
 				for field := range sortRules {
 					source := ksr.Hits[len(ksr.Hits)-1].SourceToMap()
-					filters.SearchAfter = append(filters.SearchAfter, (*source)[field])
+					filters.SearchAfter = append(filters.SearchAfter, source[field])
 				}
 			}
 

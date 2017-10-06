@@ -14,8 +14,8 @@ import (
 
 func TestCreateDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -26,8 +26,8 @@ func TestCreateDocumentError(t *testing.T) {
 
 func TestCreateDocumentWrongOptionError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -43,7 +43,7 @@ func TestCreateDocument(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -53,14 +53,14 @@ func TestCreateDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			var body = make(map[string]interface{}, 0)
+			body := make(map[string]interface{}, 0)
 			body["title"] = "yolo"
 
 			assert.Equal(t, body, parsedQuery.Body)
 
 			res := collection.Document{Id: id, Content: []byte(`{"title":"yolo"}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -71,7 +71,7 @@ func TestCreateDocument(t *testing.T) {
 
 func TestCreateDocumentReplace(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -79,7 +79,7 @@ func TestCreateDocumentReplace(t *testing.T) {
 
 			res := collection.Document{Id: "id", Content: []byte(`{"Title":"yolo"}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -92,7 +92,7 @@ func TestCreateDocumentReplace(t *testing.T) {
 
 func TestCreateDocumentCreate(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -100,7 +100,7 @@ func TestCreateDocumentCreate(t *testing.T) {
 
 			res := collection.Document{Id: "id", Content: []byte(`{"Title":"yolo"}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -134,8 +134,8 @@ func TestMCreateDocumentError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -151,7 +151,7 @@ func TestMCreateDocument(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -170,7 +170,7 @@ func TestMCreateDocument(t *testing.T) {
 				Hits:  results,
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -205,8 +205,8 @@ func TestMCreateOrReplaceDocumentError(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -222,7 +222,7 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -231,7 +231,7 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			results := []collection.Document{
+			results := []*collection.Document{
 				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
@@ -241,7 +241,7 @@ func TestMCreateOrReplaceDocument(t *testing.T) {
 				Hits:  results,
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -25,8 +25,8 @@ func TestZrevRangeByScoreEmptyKey(t *testing.T) {
 
 func TestZrevRangeByScoreError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestZrevRangeByScoreError(t *testing.T) {
 
 func TestZrevRangeByScore(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -48,7 +48,7 @@ func TestZrevRangeByScore(t *testing.T) {
 			assert.Equal(t, "zrevrangebyscore", parsedQuery.Action)
 
 			r, _ := json.Marshal([]string{"bar", "5", "foo", "1.377"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -66,7 +66,7 @@ func TestZrevRangeByScore(t *testing.T) {
 
 func TestZrevRangeByScoreWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -76,7 +76,7 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 			assert.Equal(t, "0,1", parsedQuery.Limit)
 
 			r, _ := json.Marshal([]string{"bar", "5"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

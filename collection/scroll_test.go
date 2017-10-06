@@ -14,8 +14,8 @@ import (
 
 func TestScrollEmptyScrollId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.Scroll: scroll id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.Scroll: scroll id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -26,8 +26,8 @@ func TestScrollEmptyScrollId(t *testing.T) {
 
 func TestScrollError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -38,16 +38,16 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int                   `json:"total"`
-		Hits  []collection.Document `json:"hits"`
+		Total int                    `json:"total"`
+		Hits  []*collection.Document `json:"hits"`
 	}
 
-	hits := make([]collection.Document, 1)
-	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
-	var results = collection.SearchResult{Total: 42, Hits: hits}
+	hits := make([]*collection.Document, 1)
+	hits[0] = &collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	results := collection.SearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -56,7 +56,7 @@ func TestScroll(t *testing.T) {
 
 			res := response{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -69,8 +69,8 @@ func TestScroll(t *testing.T) {
 }
 
 func ExampleCollection_Scroll(t *testing.T) {
-	hits := make([]collection.Document, 1)
-	hits[0] = collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
+	hits := make([]*collection.Document, 1)
+	hits[0] = &collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)}
 
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)

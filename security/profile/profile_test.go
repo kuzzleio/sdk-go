@@ -17,7 +17,7 @@ func TestProfileAddPolicy(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -27,7 +27,7 @@ func TestProfileAddPolicy(t *testing.T) {
 
 			res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -70,7 +70,7 @@ func TestProfileGetPolicies(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -80,7 +80,7 @@ func TestProfileGetPolicies(t *testing.T) {
 
 			res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -106,7 +106,7 @@ func TestProfileSetPolicies(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -116,7 +116,7 @@ func TestProfileSetPolicies(t *testing.T) {
 
 			res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -154,7 +154,7 @@ func TestProfileSetContent(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -164,7 +164,7 @@ func TestProfileSetContent(t *testing.T) {
 
 			res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -203,7 +203,7 @@ func TestProfileSave(t *testing.T) {
 	callCount := 0
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -215,7 +215,7 @@ func TestProfileSave(t *testing.T) {
 
 				res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if callCount == 1 {
 				callCount++
@@ -225,10 +225,10 @@ func TestProfileSave(t *testing.T) {
 				assert.Equal(t, id, parsedQuery.Id)
 
 				r, _ := json.Marshal(expectedNewProfile)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{Result: nil}
+			return &types.KuzzleResponse{Result: nil}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -282,7 +282,7 @@ func TestProfileUpdate(t *testing.T) {
 	callCount := 0
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -294,7 +294,7 @@ func TestProfileUpdate(t *testing.T) {
 
 				res := profile.Profile{Id: id, Source: []byte(`{"im":"emptyInside","policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if callCount == 1 {
 				callCount++
@@ -303,10 +303,10 @@ func TestProfileUpdate(t *testing.T) {
 				assert.Equal(t, id, parsedQuery.Id)
 
 				r, _ := json.Marshal(expectedUpdatedProfile)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{Result: nil}
+			return &types.KuzzleResponse{Result: nil}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -352,7 +352,7 @@ func TestProfileDelete(t *testing.T) {
 	callCount := 0
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -364,7 +364,7 @@ func TestProfileDelete(t *testing.T) {
 
 				res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 			if callCount == 1 {
 				callCount++
@@ -374,10 +374,10 @@ func TestProfileDelete(t *testing.T) {
 
 				res := types.ShardResponse{Id: id}
 				r, _ := json.Marshal(res)
-				return types.KuzzleResponse{Result: r}
+				return &types.KuzzleResponse{Result: r}
 			}
 
-			return types.KuzzleResponse{Result: nil}
+			return &types.KuzzleResponse{Result: nil}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -406,8 +406,8 @@ func ExampleProfile_Delete() {
 
 func TestFetchEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Fetch: profile id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Fetch: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -418,8 +418,8 @@ func TestFetchEmptyId(t *testing.T) {
 
 func TestFetchError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -432,7 +432,7 @@ func TestFetch(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -442,7 +442,7 @@ func TestFetch(t *testing.T) {
 
 			res := profile.Profile{Id: id, Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -470,8 +470,8 @@ func ExampleSecurityProfile_Fetch() {
 
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -486,7 +486,7 @@ func TestSearch(t *testing.T) {
 	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -495,7 +495,7 @@ func TestSearch(t *testing.T) {
 
 			res := profile.ProfileSearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -528,7 +528,7 @@ func TestSearchWithScroll(t *testing.T) {
 	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -537,7 +537,7 @@ func TestSearchWithScroll(t *testing.T) {
 
 			res := profile.ProfileSearchResult{Total: results.Total, Hits: results.Hits, ScrollId: "f00b4r"}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -558,8 +558,8 @@ func TestSearchWithScroll(t *testing.T) {
 
 func TestScrollEmptyScrollId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Scroll: scroll id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Scroll: scroll id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -570,8 +570,8 @@ func TestScrollEmptyScrollId(t *testing.T) {
 
 func TestScrollError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -591,7 +591,7 @@ func TestScroll(t *testing.T) {
 	var results = profile.ProfileSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -600,7 +600,7 @@ func TestScroll(t *testing.T) {
 
 			res := response{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -633,8 +633,8 @@ func ExampleSecurityProfile_Scroll() {
 
 func TestCreateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Create: profile id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Create: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -645,8 +645,8 @@ func TestCreateEmptyId(t *testing.T) {
 
 func TestCreateError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -659,7 +659,7 @@ func TestCreate(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -672,7 +672,7 @@ func TestCreate(t *testing.T) {
 				Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`),
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -708,7 +708,7 @@ func TestCreateIfExists(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -721,7 +721,7 @@ func TestCreateIfExists(t *testing.T) {
 				Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`),
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -743,7 +743,7 @@ func TestCreateWithStrictOption(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -756,7 +756,7 @@ func TestCreateWithStrictOption(t *testing.T) {
 				Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`),
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -778,8 +778,8 @@ func TestCreateWithWrongOption(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -798,8 +798,8 @@ func TestCreateWithWrongOption(t *testing.T) {
 
 func TestUpdateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Update: profile id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Update: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -810,8 +810,8 @@ func TestUpdateEmptyId(t *testing.T) {
 
 func TestUpdateError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -824,7 +824,7 @@ func TestUpdate(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -837,7 +837,7 @@ func TestUpdate(t *testing.T) {
 				Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`),
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -871,8 +871,8 @@ func ExampleSecurityProfile_Update() {
 
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Security.Profile.Delete: profile id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Delete: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -883,8 +883,8 @@ func TestDeleteEmptyId(t *testing.T) {
 
 func TestDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -897,7 +897,7 @@ func TestDelete(t *testing.T) {
 	id := "profileId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -907,7 +907,7 @@ func TestDelete(t *testing.T) {
 
 			res := types.ShardResponse{Id: id}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

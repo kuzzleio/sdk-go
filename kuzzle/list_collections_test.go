@@ -20,13 +20,13 @@ func TestListCollectionsIndexNull(t *testing.T) {
 
 func TestListCollectionsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "collection", request.Controller)
 			assert.Equal(t, "index", request.Index)
 			assert.Equal(t, "list", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -36,19 +36,19 @@ func TestListCollectionsQueryError(t *testing.T) {
 
 func TestListCollections(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "collection", request.Controller)
 			assert.Equal(t, "list", request.Action)
 
 			type collections struct {
-				Collections []types.CollectionsList `json:"collections"`
+				Collections []*types.CollectionsList `json:"collections"`
 			}
 
-			list := make([]types.CollectionsList, 0)
-			list = append(list, types.CollectionsList{Name: "collection1", Type: "stored"})
-			list = append(list, types.CollectionsList{Name: "collection2", Type: "stored"})
+			list := make([]*types.CollectionsList, 2)
+			list = append(list, &types.CollectionsList{Name: "collection1", Type: "stored"})
+			list = append(list, &types.CollectionsList{Name: "collection2", Type: "stored"})
 
 			c := collections{
 				Collections: list,
@@ -59,7 +59,7 @@ func TestListCollections(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -74,19 +74,19 @@ func TestListCollections(t *testing.T) {
 
 func TestListCollectionsWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "collection", request.Controller)
 			assert.Equal(t, "list", request.Action)
 
 			type collections struct {
-				Collections []types.CollectionsList `json:"collections"`
+				Collections []*types.CollectionsList `json:"collections"`
 			}
 
-			list := make([]types.CollectionsList, 0)
-			list = append(list, types.CollectionsList{Name: "collection1", Type: "stored"})
-			list = append(list, types.CollectionsList{Name: "collection2", Type: "stored"})
+			list := make([]*types.CollectionsList, 2)
+			list = append(list, &types.CollectionsList{Name: "collection1", Type: "stored"})
+			list = append(list, &types.CollectionsList{Name: "collection2", Type: "stored"})
 
 			c := collections{
 				Collections: list,
@@ -97,7 +97,7 @@ func TestListCollectionsWithOptions(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -14,8 +14,8 @@ import (
 
 func TestUpdateSelfQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,7 +29,7 @@ func TestUpdateSelf(t *testing.T) {
 	}{"foo"}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
@@ -44,7 +44,7 @@ func TestUpdateSelf(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

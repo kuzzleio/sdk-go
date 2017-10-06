@@ -15,7 +15,7 @@ func TestQueryDefaultOptions(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
@@ -25,14 +25,14 @@ func TestQueryDefaultOptions(t *testing.T) {
 			assert.Equal(t, "", request.Scroll)
 			assert.Equal(t, "", request.ScrollId)
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 	options := types.NewQueryOptions()
-	go k.Query(types.KuzzleRequest{}, options, ch)
+	go k.Query(&types.KuzzleRequest{}, options, ch)
 	<-ch
 }
 
@@ -40,7 +40,7 @@ func TestQueryWithOptions(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
@@ -57,12 +57,12 @@ func TestQueryWithOptions(t *testing.T) {
 			assert.Equal(t, "wait_for", rawRequest["refresh"])
 			assert.Equal(t, 7.0, rawRequest["retryOnConflict"])
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 	options := types.NewQueryOptions()
 
 	options.SetFrom(42)
@@ -72,7 +72,7 @@ func TestQueryWithOptions(t *testing.T) {
 	options.SetRefresh("wait_for")
 	options.SetRetryOnConflict(7)
 
-	go k.Query(types.KuzzleRequest{}, options, ch)
+	go k.Query(&types.KuzzleRequest{}, options, ch)
 	<-ch
 }
 
@@ -84,22 +84,22 @@ func TestQueryWithVolatile(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
 			assert.Equal(t, volatileData, request.Volatile)
 			assert.NotNil(t, request.Volatile["sdkVersion"])
 
-			return types.KuzzleResponse{}
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 	options := types.NewQueryOptions()
 	options.SetVolatile(volatileData)
-	go k.Query(types.KuzzleRequest{}, options, ch)
+	go k.Query(&types.KuzzleRequest{}, options, ch)
 	<-ch
 }
 
@@ -108,8 +108,8 @@ func ExampleKuzzle_Query() {
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	request := types.KuzzleRequest{Controller: "server", Action: "now"}
-	resChan := make(chan types.KuzzleResponse)
-	k.Query(request, nil, resChan)
+	resChan := make(chan *types.KuzzleResponse)
+	k.Query(&request, nil, resChan)
 
 	now := <-resChan
 	if now.Error.Message != "" {

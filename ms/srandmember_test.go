@@ -25,8 +25,8 @@ func TestSrandMemberEmptyKey(t *testing.T) {
 
 func TestSrandMemberError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestSrandMemberError(t *testing.T) {
 
 func TestSrandMemberSingleMember(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -48,7 +48,7 @@ func TestSrandMemberSingleMember(t *testing.T) {
 			assert.Equal(t, "srandmember", parsedQuery.Action)
 
 			r, _ := json.Marshal("RANDOM!!")
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -62,7 +62,7 @@ func TestSrandMemberSingleMember(t *testing.T) {
 
 func TestSrandMemberMultipleMembers(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -70,7 +70,7 @@ func TestSrandMemberMultipleMembers(t *testing.T) {
 			assert.Equal(t, "srandmember", parsedQuery.Action)
 
 			r, _ := json.Marshal([]string{"dude", "thats", "so", "random.."})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

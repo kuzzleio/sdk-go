@@ -25,8 +25,8 @@ func TestSpopEmptyKey(t *testing.T) {
 
 func TestSpopError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestSpopError(t *testing.T) {
 
 func TestSpop(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -48,7 +48,7 @@ func TestSpop(t *testing.T) {
 			assert.Equal(t, "spop", parsedQuery.Action)
 
 			r, _ := json.Marshal([]string{"you", "removed", "me", "thats", "rude.."})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -62,7 +62,7 @@ func TestSpop(t *testing.T) {
 
 func TestSpopWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -70,7 +70,7 @@ func TestSpopWithOptions(t *testing.T) {
 			assert.Equal(t, "spop", parsedQuery.Action)
 
 			r, _ := json.Marshal([]string{"you", "removed", "me", "thats", "rude.."})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

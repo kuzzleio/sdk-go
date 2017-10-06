@@ -39,8 +39,8 @@ func (c MockedConnection) GetState() int {
 	return state
 }
 
-func (c MockedConnection) GetOfflineQueue() []*types.QueryObject {
-	return OfflineQueue
+func (c MockedConnection) GetOfflineQueue() *[]*types.QueryObject {
+	return &OfflineQueue
 }
 
 func (c MockedConnection) EmitEvent(event int, arg interface{}) {

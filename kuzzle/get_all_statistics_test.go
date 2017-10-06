@@ -14,12 +14,12 @@ import (
 
 func TestGetAllStatisticsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getAllStats", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,25 +29,25 @@ func TestGetAllStatisticsQueryError(t *testing.T) {
 
 func TestGetAllStatistics(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getAllStats", request.Action)
 
 			type hits struct {
-				Hits []types.Statistics `json:"hits"`
+				Hits []*types.Statistics `json:"hits"`
 			}
 
-			m := make(map[string]int)
+			m := map[string]int{}
 			m["websocket"] = 42
 
 			stats := types.Statistics{
 				CompletedRequests: m,
 			}
 
-			hitsArray := make([]types.Statistics, 0)
-			hitsArray = append(hitsArray, stats)
+			hitsArray := make([]*types.Statistics, 1)
+			hitsArray = append(hitsArray, &stats)
 			toMarshal := hits{hitsArray}
 
 			h, err := json.Marshal(toMarshal)
@@ -55,7 +55,7 @@ func TestGetAllStatistics(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

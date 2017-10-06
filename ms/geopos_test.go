@@ -25,8 +25,8 @@ func TestGeoposEmptyKey(t *testing.T) {
 
 func TestGeoposError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestGeoposError(t *testing.T) {
 
 func TestGeopos(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -50,7 +50,7 @@ func TestGeopos(t *testing.T) {
 			assert.Equal(t, []string{"some", "members"}, parsedQuery.Members)
 
 			r, _ := json.Marshal([][]string{{"43.6075274", "3.9128795"}, {"25.176", "14.466577"}})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -64,7 +64,7 @@ func TestGeopos(t *testing.T) {
 
 func TestGeoposLonConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -74,7 +74,7 @@ func TestGeoposLonConvError(t *testing.T) {
 			assert.Equal(t, []string{"members"}, parsedQuery.Members)
 
 			r, _ := json.Marshal([][]string{{"43.6075abc", "3.9128795"}})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -88,7 +88,7 @@ func TestGeoposLonConvError(t *testing.T) {
 
 func TestGeoposLatConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -98,7 +98,7 @@ func TestGeoposLatConvError(t *testing.T) {
 			assert.Equal(t, []string{"members"}, parsedQuery.Members)
 
 			r, _ := json.Marshal([][]string{{"43.6075274", "3.9128abc"}})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

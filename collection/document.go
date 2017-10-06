@@ -29,16 +29,16 @@ type Document struct {
 
 type DocumentContent map[string]interface{}
 
-func (documentContent *DocumentContent) ToString() string {
+func (documentContent DocumentContent) ToString() string {
 	s, _ := json.Marshal(documentContent)
 
 	return string(s)
 }
 
-func (d Document) SourceToMap() *DocumentContent {
-	sourceMap := &DocumentContent{}
+func (d Document) SourceToMap() DocumentContent {
+	sourceMap := DocumentContent{}
 
-	json.Unmarshal(d.Content, sourceMap)
+	json.Unmarshal(d.Content, &sourceMap)
 
 	return sourceMap
 }
@@ -163,14 +163,14 @@ func (d *Document) SetDocumentId(id string) *Document {
   Changes made by this function won’t be applied until the save method is called.
   If replace is set to true, the entire content will be replaced, otherwise, only existing and new fields will be impacted.
 */
-func (d *Document) SetContent(content *DocumentContent, replace bool) *Document {
+func (d *Document) SetContent(content DocumentContent, replace bool) *Document {
 	if replace {
 		d.Content, _ = json.Marshal(content)
 	} else {
 		source := DocumentContent{}
 		json.Unmarshal(d.Content, &source)
 
-		for attr, value := range *content {
+		for attr, value := range content {
 			source[attr] = value
 		}
 

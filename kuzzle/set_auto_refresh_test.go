@@ -22,8 +22,8 @@ func TestSetAutoRefreshIndexNull(t *testing.T) {
 	opts.SetDefaultIndex("myIndex")
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Result: json.RawMessage("true")}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage("true")}
 		},
 	}
 
@@ -34,7 +34,7 @@ func TestSetAutoRefreshIndexNull(t *testing.T) {
 
 func TestSetAutoRefreshQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
@@ -45,7 +45,7 @@ func TestSetAutoRefreshQueryError(t *testing.T) {
 			}
 			assert.Equal(t, true, request.Body.(map[string]interface{})["autoRefresh"])
 
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -60,7 +60,7 @@ func TestSetAutoRefresh(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
@@ -69,7 +69,7 @@ func TestSetAutoRefresh(t *testing.T) {
 			ar := autorefresh{true}
 			marshaled, _ := json.Marshal(ar)
 
-			return types.KuzzleResponse{Result: marshaled}
+			return &types.KuzzleResponse{Result: marshaled}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

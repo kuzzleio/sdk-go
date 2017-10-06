@@ -14,12 +14,12 @@ import (
 
 func TestGetMyRightsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "getMyRights", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,14 +29,14 @@ func TestGetMyRightsQueryError(t *testing.T) {
 
 func TestGetMyRights(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "getMyRights", request.Action)
 
 			type hits struct {
-				Hits []types.Rights `json:"hits"`
+				Hits []*types.Rights `json:"hits"`
 			}
 
 			m := make(map[string]int)
@@ -50,8 +50,8 @@ func TestGetMyRights(t *testing.T) {
 				Value:      "allowed",
 			}
 
-			hitsArray := make([]types.Rights, 0)
-			hitsArray = append(hitsArray, rights)
+			hitsArray := make([]*types.Rights, 1)
+			hitsArray = append(hitsArray, &rights)
 			toMarshal := hits{hitsArray}
 
 			h, err := json.Marshal(toMarshal)
@@ -59,7 +59,7 @@ func TestGetMyRights(t *testing.T) {
 				log.Fatal(err)
 			}
 
-			return types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

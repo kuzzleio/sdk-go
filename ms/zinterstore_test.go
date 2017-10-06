@@ -36,8 +36,8 @@ func TestZinterStoreEmptyKeys(t *testing.T) {
 
 func TestZinterStoreError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -51,7 +51,7 @@ func TestZinterStoreError(t *testing.T) {
 
 func TestZinterStore(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -59,7 +59,7 @@ func TestZinterStore(t *testing.T) {
 			assert.Equal(t, "zinterstore", parsedQuery.Action)
 
 			r, _ := json.Marshal(2)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -73,7 +73,7 @@ func TestZinterStore(t *testing.T) {
 
 func TestZinterStoreWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -83,7 +83,7 @@ func TestZinterStoreWithOptions(t *testing.T) {
 			assert.Equal(t, []int{1, 2}, options.GetWeights())
 
 			r, _ := json.Marshal(2)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
