@@ -20,7 +20,7 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 		Stop  int `json:"stop"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "ltrim",
 		Id:         key,

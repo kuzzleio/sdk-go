@@ -18,7 +18,7 @@ func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptio
 		Controller: "ms",
 		Action:     "zrevrange",
 		Id:         key,
-		Start:      &start,
+		Start:      start,
 		Stop:       stop,
 	}
 

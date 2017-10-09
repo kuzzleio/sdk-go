@@ -17,7 +17,7 @@ func TestZaddEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zadd("", []types.MSSortedSet{}, qo)
+	_, err := memoryStorage.Zadd("", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zadd: key required", fmt.Sprint(err))
@@ -28,7 +28,7 @@ func TestZaddEmptyElements(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zadd("foo", []types.MSSortedSet{}, qo)
+	_, err := memoryStorage.Zadd("foo", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zadd: please provide at least one element", fmt.Sprint(err))
@@ -44,9 +44,11 @@ func TestZaddError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
+
 	_, err := memoryStorage.Zadd("foo", sortedSet, qo)
 
 	assert.NotNil(t, err)
@@ -69,9 +71,11 @@ func TestZadd(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
+
 	res, _ := memoryStorage.Zadd("foo", sortedSet, qo)
 
 	assert.Equal(t, 2, res)
@@ -98,9 +102,10 @@ func TestZaddWithOptions(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
 
 	qo.SetCh(true)
 	qo.SetIncr(true)
@@ -117,9 +122,10 @@ func ExampleMs_Zadd() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
 
 	qo.SetCh(true)
 	qo.SetIncr(true)

@@ -59,7 +59,7 @@ func TestGeopos(t *testing.T) {
 
 	res, _ := memoryStorage.Geopos("foo", []string{"some", "members"}, qo)
 
-	assert.Equal(t, []types.GeoPoint{{float64(43.6075274), float64(3.9128795), "some"}, {float64(25.176), float64(14.466577), "members"}}, res)
+	assert.Equal(t, []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "some"}, {float64(25.176), float64(14.466577), "members"}}, res)
 }
 
 func TestGeoposLonConvError(t *testing.T) {

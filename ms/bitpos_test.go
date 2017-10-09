@@ -72,7 +72,7 @@ func TestBitposOptions(t *testing.T) {
 			assert.Equal(t, "bitpos", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
 			assert.Equal(t, 2, parsedQuery.Bit)
-			assert.Equal(t, 1, *parsedQuery.Start)
+			assert.Equal(t, 1, parsedQuery.Start)
 			assert.Equal(t, 2, parsedQuery.End)
 
 			r, _ := json.Marshal(1)

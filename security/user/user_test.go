@@ -39,9 +39,9 @@ func TestUserSetContent(t *testing.T) {
 		ProfileIds: []string{"adminNew", "otherNew"},
 	}
 
-	u.SetContent(newContent)
+	u.SetContent(&newContent)
 
-	assert.Equal(t, newContent, u.UserData())
+	assert.Equal(t, &newContent, u.UserData())
 }
 
 func ExampleUser_SetContent() {
@@ -54,7 +54,7 @@ func ExampleUser_SetContent() {
 		ProfileIds: []string{"adminNew", "otherNew"},
 	}
 
-	u.SetContent(newContent)
+	u.SetContent(&newContent)
 
 	fmt.Println(u.UserData())
 }
@@ -123,7 +123,7 @@ func TestUserAddProfile(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.AddProfile(profile.Profile{Id: "adminNew"})
+	u.AddProfile(&profile.Profile{Id: "adminNew"})
 
 	assert.Equal(t, []string{"admin", "other", "adminNew"}, u.UserData().ProfileIds)
 }
@@ -134,7 +134,7 @@ func ExampleUser_AddProfile() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	res := u.AddProfile(profile.Profile{Id: "adminNew"})
+	res := u.AddProfile(&profile.Profile{Id: "adminNew"})
 
 	fmt.Println(res.Id, res.UserData().ProfileIds)
 }
@@ -162,7 +162,7 @@ func TestUserGetProfilesEmptyProfileIds(t *testing.T) {
 
 	profiles, _ := u.GetProfiles(nil)
 
-	assert.Equal(t, []profile.Profile{}, profiles)
+	assert.Equal(t, []*profile.Profile{}, profiles)
 }
 
 func TestUserGetProfilesError(t *testing.T) {
@@ -182,7 +182,7 @@ func TestUserGetProfilesError(t *testing.T) {
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -220,7 +220,7 @@ func TestUserGetProfiles(t *testing.T) {
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -232,7 +232,7 @@ func TestUserGetProfiles(t *testing.T) {
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-				res := profile.Profile{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: profile.SecurityProfile{Kuzzle: k}}
+				res := profile.Profile{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: &profile.SecurityProfile{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -244,7 +244,7 @@ func TestUserGetProfiles(t *testing.T) {
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-				res := profile.Profile{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: profile.SecurityProfile{Kuzzle: k}}
+				res := profile.Profile{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: &profile.SecurityProfile{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -258,9 +258,9 @@ func TestUserGetProfiles(t *testing.T) {
 
 	profiles, _ := u.GetProfiles(nil)
 
-	assert.Equal(t, []profile.Profile{
-		{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: profile.SecurityProfile{Kuzzle: k}},
-		{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: profile.SecurityProfile{Kuzzle: k}},
+	assert.Equal(t, []*profile.Profile{
+		{Id: "admin", Source: []byte(`{"policies":[{"roleId":"admin"},{"roleId":"other"}]}`), SP: &profile.SecurityProfile{Kuzzle: k}},
+		{Id: "other", Source: []byte(`{"policies":[{"roleId":"other"},{"roleId":"default"}]}`), SP: &profile.SecurityProfile{Kuzzle: k}},
 	}, profiles)
 }
 
@@ -337,7 +337,7 @@ func TestUserSetProfiles(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetProfiles([]profile.Profile{
+	u.SetProfiles([]*profile.Profile{
 		{Id: "adminNew"},
 		{Id: "otherNew"},
 	})
@@ -351,7 +351,7 @@ func ExampleUser_SetProfiles() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	res := u.SetProfiles([]profile.Profile{
+	res := u.SetProfiles([]*profile.Profile{
 		{Id: "adminNew"},
 		{Id: "otherNew"},
 	})
@@ -376,7 +376,7 @@ func TestUserCreate(t *testing.T) {
 				assert.Equal(t, "getUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -386,7 +386,7 @@ func TestUserCreate(t *testing.T) {
 				assert.Equal(t, "createUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -398,7 +398,7 @@ func TestUserCreate(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	createdUser, _ := u.Create(nil)
 
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
@@ -410,7 +410,7 @@ func ExampleUser_Create() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	res, err := u.Create(nil)
 
 	if err != nil {
@@ -438,7 +438,7 @@ func TestUserSaveRestricted(t *testing.T) {
 				assert.Equal(t, "getUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -448,7 +448,7 @@ func TestUserSaveRestricted(t *testing.T) {
 				assert.Equal(t, "createRestrictedUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -460,7 +460,7 @@ func TestUserSaveRestricted(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	createdUser, _ := u.SaveRestricted(nil)
 
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
@@ -472,7 +472,7 @@ func ExampleUser_SaveRestricted() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	res, err := u.SaveRestricted(nil)
 
 	if err != nil {
@@ -500,7 +500,7 @@ func TestUserReplace(t *testing.T) {
 				assert.Equal(t, "getUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -510,7 +510,7 @@ func TestUserReplace(t *testing.T) {
 				assert.Equal(t, "replaceUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Master Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -522,7 +522,7 @@ func TestUserReplace(t *testing.T) {
 
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	createdUser, _ := u.Replace(nil)
 
 	assert.Equal(t, "Master Jedi", createdUser.Content("function"))
@@ -534,7 +534,7 @@ func ExampleUser_Replace() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
-	u.SetContent(types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
+	u.SetContent(&types.UserData{Content: map[string]interface{}{"function": "Master Jedi"}})
 	res, err := u.Replace(nil)
 
 	if err != nil {
@@ -562,7 +562,7 @@ func TestUserUpdate(t *testing.T) {
 				assert.Equal(t, "getUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -572,7 +572,7 @@ func TestUserUpdate(t *testing.T) {
 				assert.Equal(t, "updateUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["adminNew","otherNew"]}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["adminNew","otherNew"]}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -585,9 +585,9 @@ func TestUserUpdate(t *testing.T) {
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
 	newContent := types.UserData{ProfileIds: []string{"adminNew", "otherNew"}}
-	updatedUser, _ := u.Update(newContent, nil)
+	updatedUser, _ := u.Update(&newContent, nil)
 
-	assert.Equal(t, newContent, updatedUser.UserData())
+	assert.Equal(t, &newContent, updatedUser.UserData())
 }
 
 func ExampleUser_Update() {
@@ -597,7 +597,7 @@ func ExampleUser_Update() {
 	u, _ := security.NewSecurity(k).User.Fetch(id, nil)
 
 	newContent := types.UserData{ProfileIds: []string{"adminNew", "otherNew"}}
-	res, err := u.Update(newContent, nil)
+	res, err := u.Update(&newContent, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -624,7 +624,7 @@ func TestUserDelete(t *testing.T) {
 				assert.Equal(t, "getUser", parsedQuery.Action)
 				assert.Equal(t, id, parsedQuery.Id)
 
-				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+				res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -681,7 +681,7 @@ func TestUserContentEmptyKey(t *testing.T) {
 
 			k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -708,7 +708,7 @@ func TestUserContentNonExistingKey(t *testing.T) {
 
 			k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -735,7 +735,7 @@ func TestUserEmptyContentMap(t *testing.T) {
 
 			k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -785,7 +785,7 @@ func TestFetch(t *testing.T) {
 
 			k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: user.SecurityUser{Kuzzle: k}}
+			res := user.User{Id: id, Source: []byte(`{"profileIds":["admin","other"],"name":"Luke","function":"Jedi"}`), SU: &user.SecurityUser{Kuzzle: k}}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -836,10 +836,11 @@ func TestSearchError(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	hits := make([]user.User, 1)
 	mockedK, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`), SU: user.SecurityUser{Kuzzle: mockedK}}
-	var results = user.UserSearchResult{Total: 42, Hits: hits}
+	hits := []*user.User{
+		{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`), SU: &user.SecurityUser{Kuzzle: mockedK}},
+	}
+	results := user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -866,8 +867,6 @@ func TestSearch(t *testing.T) {
 }
 
 func ExampleSecurityUser_Search() {
-	hits := make([]user.User, 1)
-	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
@@ -882,10 +881,11 @@ func ExampleSecurityUser_Search() {
 }
 
 func TestSearchWithScroll(t *testing.T) {
-	hits := make([]user.User, 1)
 	mockedK, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`), SU: user.SecurityUser{Kuzzle: mockedK}}
-	var results = user.UserSearchResult{Total: 42, Hits: hits}
+	hits := []*user.User{
+		{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`), SU: &user.SecurityUser{Kuzzle: mockedK}},
+	}
+	results := user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -943,13 +943,14 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int         `json:"total"`
-		Hits  []user.User `json:"hits"`
+		Total int          `json:"total"`
+		Hits  []*user.User `json:"hits"`
 	}
 
-	hits := make([]user.User, 1)
-	hits[0] = user.User{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)}
-	var results = user.UserSearchResult{Total: 42, Hits: hits}
+	hits := []*user.User{
+		{Id: "user42", Source: json.RawMessage(`{"profileIds":["admin","other"],"foo":"bar"}`)},
+	}
+	results := user.UserSearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -977,8 +978,8 @@ func TestScroll(t *testing.T) {
 
 func ExampleSecurityUser_Scroll() {
 	type response struct {
-		Total int         `json:"total"`
-		Hits  []user.User `json:"hits"`
+		Total int          `json:"total"`
+		Hits  []*user.User `json:"hits"`
 	}
 
 	c := websocket.NewWebSocket("localhost:7512", nil)
@@ -1002,7 +1003,7 @@ func TestCreateEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Create("", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Create("", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1014,7 +1015,7 @@ func TestCreateError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Create("userId", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Create("userId", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1045,7 +1046,7 @@ func TestCreate(t *testing.T) {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, _ := security.NewSecurity(k).User.Create(id, ud, nil)
+	res, _ := security.NewSecurity(k).User.Create(id, &ud, nil)
 
 	assert.Equal(t, id, res.Id)
 
@@ -1071,7 +1072,7 @@ func ExampleSecurityUser_Create() {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, err := security.NewSecurity(k).User.Create(id, ud, nil)
+	res, err := security.NewSecurity(k).User.Create(id, &ud, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -1089,7 +1090,7 @@ func TestCreateRestrictedEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.CreateRestrictedUser("", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.CreateRestrictedUser("", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1101,7 +1102,7 @@ func TestCreateRestrictedError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.CreateRestrictedUser("userId", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.CreateRestrictedUser("userId", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1132,7 +1133,7 @@ func TestCreateRestricted(t *testing.T) {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, _ := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
+	res, _ := security.NewSecurity(k).User.CreateRestrictedUser(id, &ud, nil)
 
 	assert.Equal(t, id, res.Id)
 
@@ -1158,7 +1159,7 @@ func ExampleSecurityUser_CreateRestrictedUser() {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, err := security.NewSecurity(k).User.CreateRestrictedUser(id, ud, nil)
+	res, err := security.NewSecurity(k).User.CreateRestrictedUser(id, &ud, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -1176,7 +1177,7 @@ func TestReplaceEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Replace("", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Replace("", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1188,7 +1189,7 @@ func TestReplaceError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Replace("userId", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Replace("userId", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1219,7 +1220,7 @@ func TestReplace(t *testing.T) {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, _ := security.NewSecurity(k).User.Replace(id, ud, nil)
+	res, _ := security.NewSecurity(k).User.Replace(id, &ud, nil)
 
 	assert.Equal(t, id, res.Id)
 
@@ -1245,7 +1246,7 @@ func ExampleSecurityUser_Replace() {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, err := security.NewSecurity(k).User.Replace(id, ud, nil)
+	res, err := security.NewSecurity(k).User.Replace(id, &ud, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -1263,7 +1264,7 @@ func TestUpdateEmptyId(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Update("", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Update("", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1275,7 +1276,7 @@ func TestUpdateError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := security.NewSecurity(k).User.Update("userId", types.UserData{}, nil)
+	_, err := security.NewSecurity(k).User.Update("userId", &types.UserData{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -1306,7 +1307,7 @@ func TestUpdate(t *testing.T) {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, _ := security.NewSecurity(k).User.Update(id, ud, nil)
+	res, _ := security.NewSecurity(k).User.Update(id, &ud, nil)
 
 	assert.Equal(t, id, res.Id)
 
@@ -1332,7 +1333,7 @@ func ExampleSecurityUser_Update() {
 	json.Unmarshal([]byte(`{"local": {"Username": "username", "Password": "password"}}`), cred)
 	ud := types.UserData{ProfileIds: []string{"default", "anonymous"}, Content: UserContent{"foo": "bar"}, Credentials: cred}
 
-	res, err := security.NewSecurity(k).User.Update(id, ud, nil)
+	res, err := security.NewSecurity(k).User.Update(id, &ud, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -1442,10 +1443,11 @@ func TestGetRights(t *testing.T) {
 			assert.Equal(t, id, parsedQuery.Id)
 
 			type resultUserRights struct {
-				UserRights []types.UserRights `json:"hits"`
+				UserRights []*types.UserRights `json:"hits"`
 			}
-			userRights := []types.UserRights{}
-			userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+			userRights := []*types.UserRights{
+				{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
+			}
 			actualRights := resultUserRights{UserRights: userRights}
 			r, _ := json.Marshal(actualRights)
 			return &types.KuzzleResponse{Result: r}
@@ -1455,8 +1457,9 @@ func TestGetRights(t *testing.T) {
 
 	res, _ := security.NewSecurity(k).User.GetRights(id, nil)
 
-	expectedRights := []types.UserRights{}
-	expectedRights = append(expectedRights, types.UserRights{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"})
+	expectedRights := []*types.UserRights{
+		{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
+	}
 
 	assert.Equal(t, expectedRights, res)
 }
@@ -1486,21 +1489,21 @@ func TestIsActionAllowedNilRights(t *testing.T) {
 func TestIsActionAllowedEmptyController(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := security.NewSecurity(k).User.IsActionAllowed([]types.UserRights{}, "", "such-action", "", "")
+	_, err := security.NewSecurity(k).User.IsActionAllowed([]*types.UserRights{}, "", "such-action", "", "")
 	assert.NotNil(t, err)
 }
 
 func TestIsActionAllowedEmptyAction(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := security.NewSecurity(k).User.IsActionAllowed([]types.UserRights{}, "wow-controller", "", "", "")
+	_, err := security.NewSecurity(k).User.IsActionAllowed([]*types.UserRights{}, "wow-controller", "", "", "")
 	assert.NotNil(t, err)
 }
 
 func TestIsActionAllowedEmptyRights(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	res, _ := security.NewSecurity(k).User.IsActionAllowed([]types.UserRights{}, "wow-controller", "such-action", "much-index", "very-collection")
+	res, _ := security.NewSecurity(k).User.IsActionAllowed([]*types.UserRights{}, "wow-controller", "such-action", "much-index", "very-collection")
 
 	assert.Equal(t, "denied", res)
 }
@@ -1508,8 +1511,9 @@ func TestIsActionAllowedEmptyRights(t *testing.T) {
 func TestIsActionAllowedResultAllowed(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+	userRights := []*types.UserRights{
+		{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"},
+	}
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "such-action", "much-index", "very-collection")
 
@@ -1519,8 +1523,9 @@ func TestIsActionAllowedResultAllowed(t *testing.T) {
 func TestIsActionAllowedResultConditional(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "conditional"})
+	userRights := []*types.UserRights{
+		{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "conditional"},
+	}
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "action", "much-index", "very-collection")
 
@@ -1530,8 +1535,9 @@ func TestIsActionAllowedResultConditional(t *testing.T) {
 func TestIsActionAllowedResultDenied(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller: "wow-controller.", Action: "action-such", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+	userRights := []*types.UserRights{
+		{Controller: "wow-controller.", Action: "action-such", Index: "much-index", Collection: "very-collection", Value: "allowed"},
+	}
 
 	res, _ := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "action", "much-index", "very-collection")
 
@@ -1542,8 +1548,9 @@ func ExampleSecurityUser_IsActionAllowed() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	userRights := []types.UserRights{}
-	userRights = append(userRights, types.UserRights{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"})
+	userRights := []*types.UserRights{
+		{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"},
+	}
 
 	res, err := security.NewSecurity(k).User.IsActionAllowed(userRights, "wow-controller", "such-action", "much-index", "very-collection")
 

@@ -47,7 +47,7 @@ func TestLrange(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "lrange", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Start)
+			assert.Equal(t, 1, parsedQuery.Start)
 			assert.Equal(t, 2, parsedQuery.Stop)
 
 			r, _ := json.Marshal([]string{"some", "results"})

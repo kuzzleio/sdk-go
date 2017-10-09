@@ -18,7 +18,7 @@ func TestHscanEmptyKey(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cur := 0
-	_, err := memoryStorage.Hscan("", &cur, qo)
+	_, err := memoryStorage.Hscan("", cur, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Hscan: key required", fmt.Sprint(err))
@@ -35,7 +35,7 @@ func TestHscanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cur := 0
-	_, err := memoryStorage.Hscan("foo", &cur, qo)
+	_, err := memoryStorage.Hscan("foo", cur, qo)
 
 	assert.NotNil(t, err)
 }
@@ -49,7 +49,7 @@ func TestHscanCursorConvError(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "hscan", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Cursor)
+			assert.Equal(t, 1, parsedQuery.Cursor)
 
 			var result []interface{}
 			values := []string{"some", "results"}
@@ -66,7 +66,7 @@ func TestHscanCursorConvError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 1
-	_, err := memoryStorage.Hscan("foo", &cursor, qo)
+	_, err := memoryStorage.Hscan("foo", cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -80,7 +80,7 @@ func TestHscan(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "hscan", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Cursor)
+			assert.Equal(t, 1, parsedQuery.Cursor)
 
 			var result []interface{}
 			values := []string{"some", "results"}
@@ -97,9 +97,9 @@ func TestHscan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 1
-	res, _ := memoryStorage.Hscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Hscan("foo", cursor, qo)
 
-	assert.Equal(t, MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
+	assert.Equal(t, &MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
 }
 
 func TestHscanWithOptions(t *testing.T) {
@@ -111,7 +111,7 @@ func TestHscanWithOptions(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "hscan", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Cursor)
+			assert.Equal(t, 1, parsedQuery.Cursor)
 
 			var result []interface{}
 			values := []string{"some", "results"}
@@ -131,9 +131,9 @@ func TestHscanWithOptions(t *testing.T) {
 	qo.SetMatch("*")
 
 	cursor := 1
-	res, _ := memoryStorage.Hscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Hscan("foo", cursor, qo)
 
-	assert.Equal(t, MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
+	assert.Equal(t, &MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
 }
 
 func ExampleMs_Hscan() {
@@ -147,7 +147,7 @@ func ExampleMs_Hscan() {
 
 	cursor := 1
 
-	res, err := memoryStorage.Hscan("foo", &cursor, qo)
+	res, err := memoryStorage.Hscan("foo", cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -17,7 +17,7 @@ func TestGeoaddEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geoadd("", []types.GeoPoint{}, qo)
+	_, err := memoryStorage.Geoadd("", []*types.GeoPoint{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Geoadd: key required", fmt.Sprint(err))
@@ -33,7 +33,7 @@ func TestGeoaddError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geoadd("foo", []types.GeoPoint{}, qo)
+	_, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{}, qo)
 
 	assert.NotNil(t, err)
 }
@@ -59,7 +59,7 @@ func TestGeoadd(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Geoadd("foo", []types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, _ := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
 
 	assert.Equal(t, 1, res)
 }
@@ -70,7 +70,7 @@ func ExampleMs_Geoadd() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Geoadd("foo", []types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

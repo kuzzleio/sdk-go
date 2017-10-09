@@ -23,8 +23,7 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 
 	if options != nil {
 		if options.GetStart() != 0 {
-			var start = options.GetStart()
-			query.Start = &start
+			query.Start = options.GetStart()
 		}
 
 		if options.GetEnd() != 0 {

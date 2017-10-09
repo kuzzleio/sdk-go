@@ -58,9 +58,10 @@ func TestZrange(t *testing.T) {
 
 	res, _ := memoryStorage.Zrange("foo", 0, -1, qo)
 
-	expectedResult := []types.MSSortedSet{}
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "bar", Score: 5})
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "foo", Score: 1.377})
+	expectedResult := []*types.MSSortedSet{
+		{Member: "bar", Score: 5},
+		{Member: "foo", Score: 1.377},
+	}
 
 	assert.Equal(t, expectedResult, res)
 }

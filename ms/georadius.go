@@ -50,7 +50,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, false, false)
+	assignGeoradiusOptions(query, options, false, false)
 
 	go ms.Kuzzle.Query(query, options, result)
 

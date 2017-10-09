@@ -45,7 +45,7 @@ func (u *User) SetCredentials(credentials types.UserCredentials) *User {
 
 // AddProfile adds a profile to the current user
 // Updating an user will have no impact until the create or replace method is called.
-func (u User) AddProfile(profile *profile.Profile) *User {
+func (u *User) AddProfile(profile *profile.Profile) *User {
 	userData := u.UserData()
 	userData.ProfileIds = append(userData.ProfileIds, profile.Id)
 
@@ -80,7 +80,7 @@ func (u User) GetProfileIds() []string {
 
 // SetProfiles updates the profiles of the current user
 // Updating a user will have no impact until the create or replace method is called.
-func (u User) SetProfiles(profiles []*profile.Profile) *User {
+func (u *User) SetProfiles(profiles []*profile.Profile) *User {
 	profileIds := make([]string, 0, len(profiles))
 
 	userData := u.UserData()

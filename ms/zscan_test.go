@@ -18,7 +18,7 @@ func TestZscanEmptyKey(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	_, err := memoryStorage.Zscan("", &cursor, qo)
+	_, err := memoryStorage.Zscan("", cursor, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zscan: key required", fmt.Sprint(err))
@@ -35,7 +35,7 @@ func TestZscanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	_, err := memoryStorage.Zscan("foo", &cursor, qo)
+	_, err := memoryStorage.Zscan("foo", cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -63,9 +63,9 @@ func TestZscan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	res, _ := memoryStorage.Zscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Zscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func TestZscanWithOptions(t *testing.T) {
@@ -95,9 +95,9 @@ func TestZscanWithOptions(t *testing.T) {
 	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, _ := memoryStorage.Zscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Zscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func ExampleMs_Zscan() {
@@ -109,7 +109,7 @@ func ExampleMs_Zscan() {
 	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, err := memoryStorage.Zscan("foo", &cursor, qo)
+	res, err := memoryStorage.Zscan("foo", cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

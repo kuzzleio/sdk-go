@@ -17,7 +17,7 @@ func TestMsetEmptyEntries(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Mset([]types.MSKeyValue{}, qo)
+	_, err := memoryStorage.Mset([]*types.MSKeyValue{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Mset: please provide at least one key/value entry", fmt.Sprint(err))
@@ -33,9 +33,10 @@ func TestMsetError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	entries := []types.MSKeyValue{}
-	entries = append(entries, types.MSKeyValue{Key: "foo", Value: "bar"})
-	entries = append(entries, types.MSKeyValue{Key: "bar", Value: "foo"})
+	entries := []*types.MSKeyValue{
+		{Key: "foo", Value: "bar"},
+		{Key: "bar", Value: "foo"},
+	}
 
 	_, err := memoryStorage.Mset(entries, qo)
 
@@ -59,9 +60,10 @@ func TestMset(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	entries := []types.MSKeyValue{}
-	entries = append(entries, types.MSKeyValue{Key: "foo", Value: "bar"})
-	entries = append(entries, types.MSKeyValue{Key: "bar", Value: "foo"})
+	entries := []*types.MSKeyValue{
+		{Key: "foo", Value: "bar"},
+		{Key: "bar", Value: "foo"},
+	}
 
 	res, _ := memoryStorage.Mset(entries, qo)
 
@@ -74,9 +76,10 @@ func ExampleMs_Mset() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	entries := []types.MSKeyValue{}
-	entries = append(entries, types.MSKeyValue{Key: "foo", Value: "bar"})
-	entries = append(entries, types.MSKeyValue{Key: "bar", Value: "foo"})
+	entries := []*types.MSKeyValue{
+		{Key: "foo", Value: "bar"},
+		{Key: "bar", Value: "foo"},
+	}
 
 	res, err := memoryStorage.Mset(entries, qo)
 

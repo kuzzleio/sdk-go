@@ -495,7 +495,7 @@ func TestSearchError(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	hits := []*profile.Profile{
-		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+		{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
 	}
 
 	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
@@ -539,7 +539,7 @@ func ExampleSecurityProfile_Search() {
 
 func TestSearchWithScroll(t *testing.T) {
 	hits := []*profile.Profile{
-		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+		{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
 	}
 	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
 
@@ -603,7 +603,7 @@ func TestScroll(t *testing.T) {
 	}
 
 	hits := []*profile.Profile{
-		&profile.Profile{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
+		{Id: "profile42", Source: json.RawMessage(`{"policies":[{"roleId":"admin"}]}`)},
 	}
 	results := profile.ProfileSearchResult{Total: 42, Hits: hits}
 

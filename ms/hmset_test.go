@@ -17,7 +17,7 @@ func TestHmsetEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("", []types.MsHashField{}, qo)
+	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Hmset: key required", fmt.Sprint(err))
@@ -33,7 +33,7 @@ func TestHmsetError(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("foo", []types.MsHashField{}, qo)
+	_, err := memoryStorage.Hmset("foo", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
 }
@@ -58,7 +58,7 @@ func TestHmset(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hmset("foo", []types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, _ := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
 
 	assert.Equal(t, "result", res)
 }
@@ -69,7 +69,7 @@ func ExampleMs_Hmset() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hmset("foo", []types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, err := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

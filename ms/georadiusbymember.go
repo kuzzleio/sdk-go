@@ -101,7 +101,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 
 	result := make(chan *types.KuzzleResponse)
 
-	query := *types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
 		Id:         key,
@@ -144,9 +144,9 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 		return nil, errors.New("Ms.GeoradiusbymemberWithCoordAndDist: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadiusbymember",
 		Id:         key,

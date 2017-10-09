@@ -236,7 +236,7 @@ func TestGeoradiusWithCoord(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusWithCoord() {
@@ -358,7 +358,7 @@ func TestGeoradiusWithDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusWithDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
 }
 
 func ExampleMs_GeoradiusWithDist() {
@@ -578,7 +578,7 @@ func TestGeoradiusWithCoordAndDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusWithCoordAndDist() {

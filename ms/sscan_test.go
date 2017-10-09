@@ -18,7 +18,7 @@ func TestSscanEmptyKey(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	_, err := memoryStorage.Sscan("", &cursor, qo)
+	_, err := memoryStorage.Sscan("", cursor, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Sscan: key required", fmt.Sprint(err))
@@ -35,7 +35,7 @@ func TestSscanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	_, err := memoryStorage.Sscan("foo", &cursor, qo)
+	_, err := memoryStorage.Sscan("foo", cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -63,9 +63,9 @@ func TestSscan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 10
-	res, _ := memoryStorage.Sscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Sscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func TestSscanWithOptions(t *testing.T) {
@@ -94,9 +94,9 @@ func TestSscanWithOptions(t *testing.T) {
 	qo.SetMatch("*")
 
 	cursor := 10
-	res, _ := memoryStorage.Sscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Sscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func ExampleMs_Sscan() {
@@ -109,7 +109,7 @@ func ExampleMs_Sscan() {
 	qo.SetMatch("*")
 
 	cursor := 10
-	res, err := memoryStorage.Sscan("foo", &cursor, qo)
+	res, err := memoryStorage.Sscan("foo", cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

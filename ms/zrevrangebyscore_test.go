@@ -57,9 +57,10 @@ func TestZrevRangeByScore(t *testing.T) {
 
 	res, _ := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
 
-	expectedResult := []types.MSSortedSet{}
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "bar", Score: 5})
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "foo", Score: 1.377})
+	expectedResult := []*types.MSSortedSet{
+		{Member: "bar", Score: 5},
+		{Member: "foo", Score: 1.377},
+	}
 
 	assert.Equal(t, expectedResult, res)
 }
@@ -86,8 +87,7 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 	qo.SetLimit([]int{0, 1})
 	res, _ := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
 
-	expectedResult := []types.MSSortedSet{}
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "bar", Score: 5})
+	expectedResult := []*types.MSSortedSet{{Member: "bar", Score: 5}}
 
 	assert.Equal(t, expectedResult, res)
 }

@@ -57,14 +57,14 @@ func assignZrangeOptions(query *types.KuzzleRequest, options types.QueryOptions)
 }
 
 func mapZrangeResults(results []string) []*types.MSSortedSet {
-	var buffer = ""
-	var sortedSet = make([]*types.MSSortedSet{}, results.len())
+	buffer := ""
+	sortedSet := make([]*types.MSSortedSet, 0, len(results))
 
 	for _, value := range results {
 		if buffer == "" {
 			buffer = value
 		} else {
-			var score, _ = strconv.ParseFloat(value, 64)
+			score, _ := strconv.ParseFloat(value, 64)
 			sortedSet = append(sortedSet, &types.MSSortedSet{Member: buffer, Score: score})
 			buffer = ""
 		}

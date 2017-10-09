@@ -52,14 +52,14 @@ func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.M
 }
 
 func formatZscanResponse(response []interface{}) *types.MSScanResponse {
-	formatedResponse := *types.MSScanResponse{}
+	formatedResponse := &types.MSScanResponse{}
 
 	for _, element := range response {
 		switch vf := element.(type) {
 		case string:
 			formatedResponse.Cursor, _ = strconv.Atoi(vf)
 		case []interface{}:
-			values := make([]string{}, vf.len())
+			values := make([]string, 0, len(vf))
 
 			for _, v := range vf {
 				switch vv := v.(type) {

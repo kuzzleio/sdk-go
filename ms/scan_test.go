@@ -23,7 +23,7 @@ func TestScanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	_, err := memoryStorage.Scan(&cursor, qo)
+	_, err := memoryStorage.Scan(cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -51,9 +51,9 @@ func TestScan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	res, _ := memoryStorage.Scan(&cursor, qo)
+	res, _ := memoryStorage.Scan(cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func TestScanWithOptions(t *testing.T) {
@@ -82,9 +82,9 @@ func TestScanWithOptions(t *testing.T) {
 	qo.SetMatch("*")
 
 	cursor := 0
-	res, _ := memoryStorage.Scan(&cursor, qo)
+	res, _ := memoryStorage.Scan(cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func ExampleMs_Scan() {
@@ -97,7 +97,7 @@ func ExampleMs_Scan() {
 	qo.SetMatch("*")
 
 	cursor := 0
-	res, err := memoryStorage.Scan(&cursor, qo)
+	res, err := memoryStorage.Scan(cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
