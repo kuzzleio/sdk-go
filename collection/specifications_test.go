@@ -18,7 +18,7 @@ func TestGetSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -91,7 +91,7 @@ func TestSearchSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -172,7 +172,7 @@ func TestScrollSpecificationsEmptyScrollId(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.ScrollSpecifications: scroll id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.ScrollSpecifications: scroll id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -188,7 +188,7 @@ func TestScrollSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -265,7 +265,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -338,7 +338,7 @@ func TestUpdateSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -433,7 +433,7 @@ func TestDeleteSpecificationsError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Set creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Set: key required")
+		return "", types.NewError("Ms.Set: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -49,7 +48,7 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	var returnedResult string

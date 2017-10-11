@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -27,7 +26,7 @@ func (dc Collection) PublishMessage(document interface{}, options types.QueryOpt
 	response := &types.RealtimeResponse{}
 
 	if res.Error != nil {
-		return response, errors.New(res.Error.Message)
+		return response, res.Error
 	}
 
 	json.Unmarshal(res.Result, response)

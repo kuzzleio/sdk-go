@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -23,7 +22,7 @@ func (room Room) Count() (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	count := struct {

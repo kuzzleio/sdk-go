@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Llen counts the number of items in a list.
 func (ms Ms) Llen(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Llen: key required")
+		return 0, types.NewError("Ms.Llen: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Llen(key string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

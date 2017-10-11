@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -10,7 +9,7 @@ import (
 // Geopos returns the longitude/latitude values for the provided key's members
 func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]*types.GeoPoint, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Geopos: key required")
+		return nil, types.NewError("Ms.Geopos: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var stringResults [][]string
 	json.Unmarshal(res.Result, &stringResults)

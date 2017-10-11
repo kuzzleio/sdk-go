@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -10,10 +9,10 @@ import (
 // Hincrbyfloat increments the number stored in a hash field by the provided float value.
 func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Hincrbyfloat: key required")
+		return 0, types.NewError("Ms.Hincrbyfloat: key required")
 	}
 	if field == "" {
-		return 0, errors.New("Ms.Hincrbyfloat: field required")
+		return 0, types.NewError("Ms.Hincrbyfloat: field required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -35,7 +34,7 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var stringResult string

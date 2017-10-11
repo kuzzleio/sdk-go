@@ -14,13 +14,15 @@ import (
 func TestCountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+	count, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, -1, count)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
 func TestCount(t *testing.T) {

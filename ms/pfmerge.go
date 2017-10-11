@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,10 +9,10 @@ import (
 // structure stored at key, approximating the cardinality of the union of the source structures.
 func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Pfmerge: key required")
+		return "", types.NewError("Ms.Pfmerge: key required")
 	}
 	if len(sources) == 0 {
-		return "", errors.New("Ms.Pfmerge: please provide at least one source")
+		return "", types.NewError("Ms.Pfmerge: please provide at least one source")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

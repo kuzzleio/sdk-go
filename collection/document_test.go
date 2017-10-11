@@ -152,7 +152,7 @@ func TestDocumentFetchEmptyId(t *testing.T) {
 func TestDocumentFetchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Not found"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Not found"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -297,7 +297,7 @@ func TestDocumentSaveEmptyId(t *testing.T) {
 func TestDocumentSaveError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -367,7 +367,7 @@ func TestDocumentRefreshEmptyId(t *testing.T) {
 func TestDocumentRefreshError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -445,7 +445,7 @@ func TestCollectionDocumentExistsEmptyId(t *testing.T) {
 func TestCollectionDocumentExistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -498,7 +498,7 @@ func ExampleDocument_Exists() {
 func TestDocumentPublishError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -556,7 +556,7 @@ func TestDocumentDeleteEmptyId(t *testing.T) {
 func TestDocumentDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

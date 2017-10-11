@@ -2,7 +2,6 @@ package security
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"reflect"
 )
@@ -10,11 +9,11 @@ import (
 // CreateCredentials creates credential of the specified strategy for the given user.
 func (s Security) CreateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
-		return nil, errors.New("Security.CreateCredentials: strategy is required")
+		return nil, types.NewError("Security.CreateCredentials: strategy is required")
 	}
 
 	if kuid == "" {
-		return nil, errors.New("Security.CreateCredentials: kuid is required")
+		return nil, types.NewError("Security.CreateCredentials: kuid is required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (s Security) CreateCredentials(strategy string, kuid string, credentials in
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()

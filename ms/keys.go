@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Keys returns all keys matching the provided pattern.
 func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) {
 	if pattern == "" {
-		return nil, errors.New("Ms.Keys: pattern required")
+		return nil, types.NewError("Ms.Keys: pattern required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) 
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

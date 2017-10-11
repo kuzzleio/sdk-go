@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -11,7 +10,7 @@ import (
 // as double precision floating point number.
 func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error) {
 	if key == "" {
-		return []interface{}{}, errors.New("Ms.Sort: key required")
+		return []interface{}{}, types.NewError("Ms.Sort: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -59,7 +58,7 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 	res := <-result
 
 	if res.Error != nil {
-		return []interface{}{}, errors.New(res.Error.Message)
+		return []interface{}{}, res.Error
 	}
 
 	var returnedResult []interface{}

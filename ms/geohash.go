@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Geohash returns the geohash values for the provided key's members
 func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Geohash: key required")
+		return nil, types.NewError("Ms.Geohash: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) (
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,10 +9,10 @@ import (
 // back at the start of the list at destination.
 func (ms Ms) RpoplPush(source string, destination string, options types.QueryOptions) (interface{}, error) {
 	if source == "" {
-		return "", errors.New("Ms.RpoplPush: source required")
+		return "", types.NewError("Ms.RpoplPush: source required")
 	}
 	if destination == "" {
-		return "", errors.New("Ms.RpoplPush: destination required")
+		return "", types.NewError("Ms.RpoplPush: destination required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) RpoplPush(source string, destination string, options types.QueryOpt
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult interface{}
 	json.Unmarshal(res.Result, &returnedResult)

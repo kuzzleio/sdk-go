@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 // First position starts at 0.
 func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []*types.MSSortedSet{}, errors.New("Ms.Zrange: key required")
+		return []*types.MSSortedSet{}, types.NewError("Ms.Zrange: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions)
 	res := <-result
 
 	if res.Error != nil {
-		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
+		return []*types.MSSortedSet{}, res.Error
 	}
 
 	var returnedResult []string

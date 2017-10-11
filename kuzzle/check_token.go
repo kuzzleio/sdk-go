@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -17,7 +16,7 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 	tokenValidity := &TokenValidity{}
 
 	if token == "" {
-		return tokenValidity, errors.New("Kuzzle.CheckToken: token required")
+		return tokenValidity, types.NewError("Kuzzle.CheckToken: token required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -35,11 +34,9 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 
 	res := <-result
 
-	if res.Error != nil {
-		return tokenValidity, errors.New(res.Error.Message)
+	if res.Error == nil {
+		json.Unmarshal(res.Result, tokenValidity)
 	}
 
-	json.Unmarshal(res.Result, tokenValidity)
-
-	return tokenValidity, nil
+	return tokenValidity, res.Error
 }

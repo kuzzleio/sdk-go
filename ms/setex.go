@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // If the key does not exist, it is created beforehand.
 func (ms Ms) SetEx(key string, value interface{}, ttl int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.SetEx: key required")
+		return "", types.NewError("Ms.SetEx: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -32,7 +31,7 @@ func (ms Ms) SetEx(key string, value interface{}, ttl int, options types.QueryOp
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

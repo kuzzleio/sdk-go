@@ -45,7 +45,7 @@ func TestSetAutoRefreshQueryError(t *testing.T) {
 			}
 			assert.Equal(t, true, request.Body.(map[string]interface{})["autoRefresh"])
 
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

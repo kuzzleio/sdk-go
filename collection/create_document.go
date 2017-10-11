@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -24,7 +23,7 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplace"
 		} else if options.GetIfExist() != "error" {
-			return &Document{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return &Document{}, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -41,7 +40,7 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, errors.New(res.Error.Message)
+		return &Document{}, res.Error
 	}
 
 	documentResponse := &Document{collection: dc}
@@ -99,7 +98,7 @@ func performMultipleCreate(dc *Collection, documents []*Document, action string,
 	result := &SearchResult{}
 
 	if res.Error != nil {
-		return result, errors.New(res.Error.Message)
+		return result, res.Error
 	}
 
 	json.Unmarshal(res.Result, result)

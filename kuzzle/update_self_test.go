@@ -15,7 +15,7 @@ import (
 func TestUpdateSelfQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

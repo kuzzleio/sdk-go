@@ -2,14 +2,13 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // FetchDocument retrieves a Document using its provided unique id.
 func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Document, error) {
 	if id == "" {
-		return &Document{}, errors.New("Collection.FetchDocument: document id required")
+		return &Document{}, types.NewError("Collection.FetchDocument: document id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Doc
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, errors.New(res.Error.Message)
+		return &Document{}, res.Error
 	}
 
 	document := &Document{collection: dc}
@@ -40,7 +39,7 @@ func (dc *Collection) MGetDocument(ids []string, options types.QueryOptions) (*S
 	result := &SearchResult{}
 
 	if len(ids) == 0 {
-		return result, errors.New("Collection.MGetDocument: please provide at least one id of document to retrieve")
+		return result, types.NewError("Collection.MGetDocument: please provide at least one id of document to retrieve")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -61,7 +60,7 @@ func (dc *Collection) MGetDocument(ids []string, options types.QueryOptions) (*S
 	res := <-ch
 
 	if res.Error != nil {
-		return result, errors.New(res.Error.Message)
+		return result, res.Error
 	}
 
 	json.Unmarshal(res.Result, result)

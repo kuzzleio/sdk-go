@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -33,7 +32,7 @@ func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOp
 	res := <-ch
 
 	if res.Error != nil {
-		return &SearchResult{}, errors.New(res.Error.Message)
+		return &SearchResult{}, res.Error
 	}
 
 	searchResult := &SearchResult{

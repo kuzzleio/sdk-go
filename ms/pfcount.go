@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // or of the merged HyperLogLog structures if more than 1 is provided (see pfadd).
 func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, errors.New("Ms.Pfcount: please provide at least one key")
+		return 0, types.NewError("Ms.Pfcount: please provide at least one key")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

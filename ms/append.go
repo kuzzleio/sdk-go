@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Append a value to a key
 func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Append: key required")
+		return 0, types.NewError("Ms.Append: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, 
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

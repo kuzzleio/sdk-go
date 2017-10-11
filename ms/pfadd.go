@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Pfadd Adds elements to an HyperLogLog data structure.
 func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Pfadd: key required")
+		return 0, types.NewError("Ms.Pfadd: key required")
 	}
 	if len(elements) == 0 {
-		return 0, errors.New("Ms.Pfadd: please provide at least one element")
+		return 0, types.NewError("Ms.Pfadd: please provide at least one element")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -32,7 +31,7 @@ func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

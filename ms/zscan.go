@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -15,7 +14,7 @@ type ZScanResponse struct {
 // Zscan is identical to scan, except that zscan iterates the members held by a sorted set.
 func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	if key == "" {
-		return &types.MSScanResponse{}, errors.New("Ms.Zscan: key required")
+		return &types.MSScanResponse{}, types.NewError("Ms.Zscan: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -42,7 +41,7 @@ func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.M
 	res := <-result
 
 	if res.Error != nil {
-		return &types.MSScanResponse{}, errors.New(res.Error.Message)
+		return &types.MSScanResponse{}, res.Error
 	}
 
 	var scanResponse []interface{}

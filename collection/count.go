@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -28,7 +27,7 @@ func (dc Collection) Count(filters interface{}, options types.QueryOptions) (int
 	res := <-ch
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return -1, res.Error
 	}
 
 	result := &countResult{}

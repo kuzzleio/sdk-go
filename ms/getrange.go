@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Getrange returns a substring of a key's value (index starts at position 0).
 func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Getrange: key required")
+		return "", types.NewError("Ms.Getrange: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -27,7 +26,7 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

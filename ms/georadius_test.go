@@ -26,7 +26,7 @@ func TestGeoradiusEmptyKey(t *testing.T) {
 func TestGeoradiusError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -101,7 +101,7 @@ func TestGeoradiusWithCoordEmptyKey(t *testing.T) {
 func TestGeoradiusWithCoordError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -271,7 +271,7 @@ func TestGeoradiusWithDistEmptyKey(t *testing.T) {
 func TestGeoradiusWithDistError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -393,7 +393,7 @@ func TestGeoradiusWithCoordAndDistEmptyKey(t *testing.T) {
 func TestGeoradiusWithCoordAndDistError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

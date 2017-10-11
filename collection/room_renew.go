@@ -3,7 +3,6 @@ package collection
 import (
 	"container/list"
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"time"
@@ -62,7 +61,7 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 		if res.Error != nil {
 			room.queue.Init()
 			if subscribeResponseChan != nil {
-				subscribeResponseChan <- &types.SubscribeResponse{Error: errors.New(res.Error.Message)}
+				subscribeResponseChan <- &types.SubscribeResponse{Error: res.Error}
 			}
 			return
 		}

@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,10 +9,10 @@ import (
 // If the key does not exist, it is created beforehand.
 func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Psetex: key required")
+		return "", types.NewError("Ms.Psetex: key required")
 	}
 	if value == "" {
-		return "", errors.New("Ms.Psetex: value required")
+		return "", types.NewError("Ms.Psetex: value required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +33,7 @@ func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOption
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

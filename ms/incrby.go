@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incrby(key string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Incrby: key required")
+		return 0, types.NewError("Ms.Incrby: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (ms Ms) Incrby(key string, value int, options types.QueryOptions) (int, err
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

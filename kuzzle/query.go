@@ -10,7 +10,7 @@ import (
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
 	if k.State == state.Disconnected || k.State == state.Offline || k.State == state.Ready {
-		responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: "This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?"}}
+		responseChannel <- &types.KuzzleResponse{Error: &types.KuzzleError{Message: "This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?"}}
 		return
 	}
 
@@ -69,7 +69,7 @@ func (k Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, re
 
 	if err != nil {
 		if responseChannel != nil {
-			responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: err.Error()}}
+			responseChannel <- &types.KuzzleResponse{Error: &types.KuzzleError{Message: err.Error()}}
 		}
 		return
 	}
@@ -77,7 +77,7 @@ func (k Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, re
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
 	if err != nil {
 		if responseChannel != nil {
-			responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: err.Error()}}
+			responseChannel <- &types.KuzzleResponse{Error: &types.KuzzleError{Message: err.Error()}}
 		}
 		return
 	}

@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Sadd creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Sadd: key required")
+		return 0, types.NewError("Ms.Sadd: key required")
 	}
 	if len(values) == 0 {
-		return 0, errors.New("Ms.Sadd: please provide at least one value")
+		return 0, types.NewError("Ms.Sadd: please provide at least one value")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int,
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

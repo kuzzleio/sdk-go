@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -35,7 +34,7 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 // Georadius returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Georadius: key required")
+		return nil, types.NewError("Ms.Georadius: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -57,7 +56,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResults []string
 	json.Unmarshal(res.Result, &returnedResults)
@@ -68,7 +67,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 // GeoradiusWithCoord returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoord, error) {
 	if key == "" {
-		return nil, errors.New("Ms.GeoradiusWithCoord: key required")
+		return nil, types.NewError("Ms.GeoradiusWithCoord: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -90,7 +89,7 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
@@ -123,7 +122,7 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 // GeoradiusWithDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithDist, error) {
 	if key == "" {
-		return nil, errors.New("Ms.GeoradiusWithDist: key required")
+		return nil, types.NewError("Ms.GeoradiusWithDist: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -145,7 +144,7 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
@@ -169,7 +168,7 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 // GeoradiusWithCoordAndDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
-		return nil, errors.New("Ms.GeoradiusWithCoordAndDist: key required")
+		return nil, types.NewError("Ms.GeoradiusWithCoordAndDist: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -191,7 +190,7 @@ func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, dis
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)

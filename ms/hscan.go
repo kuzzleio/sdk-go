@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -15,7 +14,7 @@ type HscanResponse struct {
 // Hscan is identical to scan, except that hscan iterates the fields contained in a hash.
 func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanResponse, error) {
 	if key == "" {
-		return &HscanResponse{}, errors.New("Ms.Hscan: key required")
+		return &HscanResponse{}, types.NewError("Ms.Hscan: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -42,7 +41,7 @@ func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanRe
 	res := <-result
 
 	if res.Error != nil {
-		return &HscanResponse{}, errors.New(res.Error.Message)
+		return &HscanResponse{}, res.Error
 	}
 
 	var stringResult []interface{}

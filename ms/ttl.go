@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // or a negative value if the key does not exist or if it is persistent.
 func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Ttl: key required")
+		return 0, types.NewError("Ms.Ttl: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

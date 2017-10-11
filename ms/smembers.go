@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Smembers returns the members of a set of unique values.
 func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, errors.New("Ms.Smembers: key required")
+		return []string{}, types.NewError("Ms.Smembers: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) 
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, errors.New(res.Error.Message)
+		return []string{}, res.Error
 	}
 
 	var returnedResult []string

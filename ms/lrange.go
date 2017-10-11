@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lrange returns the list elements between the start and stop positions (inclusive).
 func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Lrange: key required")
+		return nil, types.NewError("Ms.Lrange: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -27,7 +26,7 @@ func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions)
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

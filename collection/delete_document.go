@@ -2,14 +2,13 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // DeleteDocument deletes the Document using its provided unique id.
 func (dc *Collection) DeleteDocument(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
-		return "", errors.New("Collection.DeleteDocument: document id required")
+		return "", types.NewError("Collection.DeleteDocument: document id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (dc *Collection) DeleteDocument(id string, options types.QueryOptions) (str
 	res := <-ch
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	document := &Document{collection: dc}
@@ -40,7 +39,7 @@ func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) (
 	result := []string{}
 
 	if len(ids) == 0 {
-		return result, errors.New("Collection.MDeleteDocument: please provide at least one id of document to delete")
+		return result, types.NewError("Collection.MDeleteDocument: please provide at least one id of document to delete")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -61,7 +60,7 @@ func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) (
 	res := <-ch
 
 	if res.Error != nil {
-		return result, errors.New(res.Error.Message)
+		return result, res.Error
 	}
 
 	json.Unmarshal(res.Result, &result)

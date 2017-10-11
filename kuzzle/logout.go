@@ -1,7 +1,6 @@
 package kuzzle
 
 import (
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -18,7 +17,7 @@ func (k Kuzzle) Logout() error {
 	res := <-result
 
 	if res.Error != nil {
-		return errors.New(res.Error.Message)
+		return res.Error
 	}
 
 	k.jwt = ""

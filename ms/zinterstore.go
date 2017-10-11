@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,10 +9,10 @@ import (
 // If the destination key already exists, it is overwritten.
 func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
-		return 0, errors.New("Ms.ZinterStore: destination required")
+		return 0, types.NewError("Ms.ZinterStore: destination required")
 	}
 	if len(keys) == 0 {
-		return 0, errors.New("Ms.ZinterStore: please provide at least one key")
+		return 0, types.NewError("Ms.ZinterStore: please provide at least one key")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -46,7 +45,7 @@ func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryO
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

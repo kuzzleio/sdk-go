@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-	"errors"
 	"flag"
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/collection"
@@ -211,7 +210,7 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 
 func (ws *webSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
 	if responseChannel != nil {
-		responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: "Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: " + string(query), Status: 400}}
+		responseChannel <- &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: " + string(query), Status: 400}}
 	}
 }
 
@@ -374,7 +373,7 @@ func (ws *webSocket) mergeOfflineQueueWithLoader() error {
 					additionalOfflineQueue = additionalOfflineQueue[:1]
 				}
 			} else {
-				return errors.New("Invalid offline queue request. One or more missing properties: requestId, action, controller.")
+				return types.NewError("Invalid offline queue request. One or more missing properties: requestId, action, controller.")
 			}
 		}
 	}

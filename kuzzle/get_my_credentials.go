@@ -2,14 +2,13 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMyCredentials get credential information of the specified strategy for the current user.
 func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
-		return nil, errors.New("Kuzzle.GetMyCredentials: strategy is required")
+		return nil, types.NewError("Kuzzle.GetMyCredentials: strategy is required")
 	}
 	result := make(chan *types.KuzzleResponse)
 
@@ -24,7 +23,7 @@ func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (j
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	return res.Result, nil

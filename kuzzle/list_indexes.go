@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -24,7 +23,7 @@ func (k Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
 	}
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var i indexes

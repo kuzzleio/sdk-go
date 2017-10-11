@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hgetall returns all fields and values of a hash
 func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Hgetall: key required")
+		return nil, types.NewError("Ms.Hgetall: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string,
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	returnedResult := make(map[string]string)
 	json.Unmarshal(res.Result, &returnedResult)

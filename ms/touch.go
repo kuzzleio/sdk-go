@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Touch alters the last access time of one or multiple keys. A key is ignored if it does not exist.
 func (ms Ms) Touch(keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, errors.New("Ms.Touch: please provide at least one key")
+		return 0, types.NewError("Ms.Touch: please provide at least one key")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -28,7 +27,7 @@ func (ms Ms) Touch(keys []string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

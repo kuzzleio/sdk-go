@@ -2,20 +2,19 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Smove moves a member from a set of unique values to another.
 func (ms Ms) Smove(key string, destination string, member string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Smove: key required")
+		return 0, types.NewError("Ms.Smove: key required")
 	}
 	if destination == "" {
-		return 0, errors.New("Ms.Smove: destination required")
+		return 0, types.NewError("Ms.Smove: destination required")
 	}
 	if member == "" {
-		return 0, errors.New("Ms.Smove: member required")
+		return 0, types.NewError("Ms.Smove: member required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -37,7 +36,7 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

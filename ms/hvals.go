@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hval returns all values contained in a hash.
 func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Hvals: key required")
+		return nil, types.NewError("Ms.Hvals: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var returnedResult []string

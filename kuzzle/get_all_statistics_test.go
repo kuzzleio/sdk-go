@@ -19,7 +19,7 @@ func TestGetAllStatisticsQueryError(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getAllStats", request.Action)
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

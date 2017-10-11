@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -23,7 +22,7 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.Kuzzl
 	specification := &types.KuzzleSpecificationsResult{}
 
 	if res.Error != nil {
-		return specification, errors.New(res.Error.Message)
+		return specification, res.Error
 	}
 
 	json.Unmarshal(res.Result, specification)
@@ -59,7 +58,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 	specifications := &types.KuzzleSpecificationSearchResult{}
 
 	if res.Error != nil {
-		return specifications, errors.New(res.Error.Message)
+		return specifications, res.Error
 	}
 
 	json.Unmarshal(res.Result, specifications)
@@ -72,7 +71,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 	specifications := &types.KuzzleSpecificationSearchResult{}
 
 	if scrollId == "" {
-		return specifications, errors.New("Collection.ScrollSpecifications: scroll id required")
+		return specifications, types.NewError("Collection.ScrollSpecifications: scroll id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -95,7 +94,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 	res := <-ch
 
 	if res.Error != nil {
-		return specifications, errors.New(res.Error.Message)
+		return specifications, res.Error
 	}
 
 	json.Unmarshal(res.Result, specifications)
@@ -126,7 +125,7 @@ func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidati
 	response := &types.ValidResponse{}
 
 	if res.Error != nil {
-		return response, errors.New(res.Error.Message)
+		return response, res.Error
 	}
 
 	json.Unmarshal(res.Result, response)
@@ -157,7 +156,7 @@ func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation
 	specification := &types.KuzzleSpecifications{}
 
 	if res.Error != nil {
-		return specification, errors.New(res.Error.Message)
+		return specification, res.Error
 	}
 
 	json.Unmarshal(res.Result, specification)
@@ -180,7 +179,7 @@ func (dc Collection) DeleteSpecifications(options types.QueryOptions) (*types.Ac
 	res := <-ch
 
 	if res.Error != nil {
-		return &types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
+		return &types.AckResponse{Acknowledged: false}, res.Error
 	}
 
 	response := &types.AckResponse{}

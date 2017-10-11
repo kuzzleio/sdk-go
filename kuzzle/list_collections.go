@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*types.CollectionsList, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
-			return nil, errors.New("Kuzzle.ListCollections: index required")
+			return nil, types.NewError("Kuzzle.ListCollections: index required")
 		}
 		index = k.defaultIndex
 	}
@@ -42,7 +41,7 @@ func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*ty
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	s := collections{}

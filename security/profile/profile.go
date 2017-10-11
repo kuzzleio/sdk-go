@@ -2,7 +2,6 @@ package profile
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -81,7 +80,7 @@ func (p Profile) Delete(options types.QueryOptions) (string, error) {
 // Fetch retrieves a Profile using its provided unique id.
 func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, errors.New("Security.Profile.Fetch: profile id required")
+		return &Profile{}, types.NewError("Security.Profile.Fetch: profile id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -97,7 +96,7 @@ func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profil
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, errors.New(res.Error.Message)
+		return &Profile{}, res.Error
 	}
 
 	profile := &Profile{}
@@ -132,7 +131,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 	res := <-ch
 
 	if res.Error != nil {
-		return &ProfileSearchResult{}, errors.New(res.Error.Message)
+		return &ProfileSearchResult{}, res.Error
 	}
 
 	searchResult := &ProfileSearchResult{}
@@ -144,7 +143,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 // Scroll executes a scroll search on Profiles.
 func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*ProfileSearchResult, error) {
 	if scrollId == "" {
-		return &ProfileSearchResult{}, errors.New("Security.Profile.Scroll: scroll id required")
+		return &ProfileSearchResult{}, types.NewError("Security.Profile.Scroll: scroll id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -160,7 +159,7 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*
 	res := <-ch
 
 	if res.Error != nil {
-		return &ProfileSearchResult{}, errors.New(res.Error.Message)
+		return &ProfileSearchResult{}, res.Error
 	}
 
 	searchResult := &ProfileSearchResult{}
@@ -172,7 +171,7 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*
 // Create a new Profile in Kuzzle.
 func (sp *SecurityProfile) Create(id string, policies *types.Policies, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, errors.New("Security.Profile.Create: profile id required")
+		return &Profile{}, types.NewError("Security.Profile.Create: profile id required")
 	}
 
 	action := "createProfile"
@@ -181,7 +180,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplaceProfile"
 		} else if options.GetIfExist() != "error" {
-			return &Profile{}, errors.New(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return &Profile{}, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
 		}
 	}
 
@@ -198,7 +197,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, errors.New(res.Error.Message)
+		return &Profile{}, res.Error
 	}
 
 	profile := &Profile{}
@@ -211,7 +210,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 // Update a Profile in Kuzzle.
 func (sp *SecurityProfile) Update(id string, policies *types.Policies, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, errors.New("Security.Profile.Update: profile id required")
+		return &Profile{}, types.NewError("Security.Profile.Update: profile id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -227,7 +226,7 @@ func (sp *SecurityProfile) Update(id string, policies *types.Policies, options t
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, errors.New(res.Error.Message)
+		return &Profile{}, res.Error
 	}
 
 	profile := &Profile{}
@@ -242,7 +241,7 @@ func (sp *SecurityProfile) Update(id string, policies *types.Policies, options t
 // This means that a profile that has just been deleted will still be returned by this function.
 func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
-		return "", errors.New("Security.Profile.Delete: profile id required")
+		return "", types.NewError("Security.Profile.Delete: profile id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -257,7 +256,7 @@ func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string,
 	res := <-ch
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	shardResponse := types.ShardResponse{}

@@ -14,7 +14,7 @@ import (
 func TestCollectionMappingApplyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -120,7 +120,7 @@ func ExampleCollectionMapping_Apply() {
 func TestCollectionMappingRefreshError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -171,7 +171,8 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 
 	_, err := cm.Refresh(nil)
 
-	assert.Equal(t, "No mapping found for index wrong-index", fmt.Sprint(err))
+	assert.Equal(t, "No mapping found for index wrong-index", err.(*types.KuzzleError).Message)
+	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
 func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
@@ -205,7 +206,8 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 
 	_, err := cm.Refresh(nil)
 
-	assert.Equal(t, "No mapping found for collection wrong-collection", fmt.Sprint(err))
+	assert.Equal(t, "No mapping found for collection wrong-collection", err.(*types.KuzzleError).Message)
+	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
 func TestCollectionMappingRefresh(t *testing.T) {

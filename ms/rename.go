@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Rename renames a key to newkey. If newkey already exists, it is overwritten.
 func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Rename: key required")
+		return "", types.NewError("Ms.Rename: key required")
 	}
 	if newkey == "" {
-		return "", errors.New("Ms.Rename: newkey required")
+		return "", types.NewError("Ms.Rename: newkey required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -32,7 +31,7 @@ func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (stri
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

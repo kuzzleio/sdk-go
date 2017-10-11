@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -35,7 +34,7 @@ func (ms Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse
 	res := <-result
 
 	if res.Error != nil {
-		return &types.MSScanResponse{}, errors.New(res.Error.Message)
+		return &types.MSScanResponse{}, res.Error
 	}
 
 	var scanResponse = &types.MSScanResponse{}

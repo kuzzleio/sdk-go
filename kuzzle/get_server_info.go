@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -20,7 +19,7 @@ func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, erro
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	type serverInfo struct {

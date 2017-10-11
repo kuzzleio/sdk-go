@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // SetNx sets a value on a key, only if it does not already exist.
 func (ms Ms) SetNx(key string, value interface{}, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.SetNx: key required")
+		return 0, types.NewError("Ms.SetNx: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) SetNx(key string, value interface{}, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

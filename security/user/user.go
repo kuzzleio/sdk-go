@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security/profile"
 	"github.com/kuzzleio/sdk-go/types"
@@ -157,7 +156,7 @@ func (u User) ContentMap(keys ...string) map[string]interface{} {
 // Fetch retrieves an User using its provided unique id.
 func (su *SecurityUser) Fetch(id string, options types.QueryOptions) (*User, error) {
 	if id == "" {
-		return &User{}, errors.New("Security.User.Fetch: user id required")
+		return &User{}, types.NewError("Security.User.Fetch: user id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -172,7 +171,7 @@ func (su *SecurityUser) Fetch(id string, options types.QueryOptions) (*User, err
 	res := <-ch
 
 	if res.Error != nil {
-		return &User{}, errors.New(res.Error.Message)
+		return &User{}, res.Error
 	}
 
 	u := &User{SU: su}
@@ -206,7 +205,7 @@ func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (
 	res := <-ch
 
 	if res.Error != nil {
-		return &UserSearchResult{}, errors.New(res.Error.Message)
+		return &UserSearchResult{}, res.Error
 	}
 
 	searchResult := &UserSearchResult{}
@@ -218,7 +217,7 @@ func (su SecurityUser) Search(filters interface{}, options types.QueryOptions) (
 // Scroll executes a scroll search on Users.
 func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (*UserSearchResult, error) {
 	if scrollId == "" {
-		return &UserSearchResult{}, errors.New("Security.User.Scroll: scroll id required")
+		return &UserSearchResult{}, types.NewError("Security.User.Scroll: scroll id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -234,7 +233,7 @@ func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (*Use
 	res := <-ch
 
 	if res.Error != nil {
-		return &UserSearchResult{}, errors.New(res.Error.Message)
+		return &UserSearchResult{}, res.Error
 	}
 
 	searchResult := &UserSearchResult{}
@@ -246,7 +245,7 @@ func (su SecurityUser) Scroll(scrollId string, options types.QueryOptions) (*Use
 // Create a new User in Kuzzle.
 func (su *SecurityUser) Create(kuid string, content *types.UserData, options types.QueryOptions) (*User, error) {
 	if kuid == "" {
-		return &User{}, errors.New("Security.User.Create: user kuid required")
+		return &User{}, types.NewError("Security.User.Create: user kuid required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -273,7 +272,7 @@ func (su *SecurityUser) Create(kuid string, content *types.UserData, options typ
 	res := <-ch
 
 	if res.Error != nil {
-		return &User{}, errors.New(res.Error.Message)
+		return &User{}, res.Error
 	}
 
 	user := &User{SU: su}
@@ -285,7 +284,7 @@ func (su *SecurityUser) Create(kuid string, content *types.UserData, options typ
 // CreateRestrictedUser creates a new restricted User in Kuzzle.
 func (su *SecurityUser) CreateRestrictedUser(kuid string, content *types.UserData, options types.QueryOptions) (*User, error) {
 	if kuid == "" {
-		return &User{}, errors.New("Security.User.CreateRestrictedUser: user kuid required")
+		return &User{}, types.NewError("Security.User.CreateRestrictedUser: user kuid required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -311,7 +310,7 @@ func (su *SecurityUser) CreateRestrictedUser(kuid string, content *types.UserDat
 	res := <-ch
 
 	if res.Error != nil {
-		return &User{}, errors.New(res.Error.Message)
+		return &User{}, res.Error
 	}
 
 	user := &User{SU: su}
@@ -323,7 +322,7 @@ func (su *SecurityUser) CreateRestrictedUser(kuid string, content *types.UserDat
 // Replace an User in Kuzzle.
 func (su *SecurityUser) Replace(kuid string, content *types.UserData, options types.QueryOptions) (*User, error) {
 	if kuid == "" {
-		return &User{}, errors.New("Security.User.Replace: user kuid required")
+		return &User{}, types.NewError("Security.User.Replace: user kuid required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -346,7 +345,7 @@ func (su *SecurityUser) Replace(kuid string, content *types.UserData, options ty
 	res := <-ch
 
 	if res.Error != nil {
-		return &User{}, errors.New(res.Error.Message)
+		return &User{}, res.Error
 	}
 
 	user := &User{SU: su}
@@ -358,7 +357,7 @@ func (su *SecurityUser) Replace(kuid string, content *types.UserData, options ty
 // Update an User in Kuzzle.
 func (su *SecurityUser) Update(kuid string, content *types.UserData, options types.QueryOptions) (*User, error) {
 	if kuid == "" {
-		return &User{}, errors.New("Security.User.Update: user kuid required")
+		return &User{}, types.NewError("Security.User.Update: user kuid required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -381,7 +380,7 @@ func (su *SecurityUser) Update(kuid string, content *types.UserData, options typ
 	res := <-ch
 
 	if res.Error != nil {
-		return &User{}, errors.New(res.Error.Message)
+		return &User{}, res.Error
 	}
 
 	user := &User{SU: su}
@@ -395,7 +394,7 @@ func (su *SecurityUser) Update(kuid string, content *types.UserData, options typ
 // This means that a user that has just been deleted will still be returned by this function.
 func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, error) {
 	if kuid == "" {
-		return "", errors.New("Security.User.Delete: user kuid required")
+		return "", types.NewError("Security.User.Delete: user kuid required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -410,7 +409,7 @@ func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, 
 	res := <-ch
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	shardResponse := types.ShardResponse{}
@@ -422,7 +421,7 @@ func (su SecurityUser) Delete(kuid string, options types.QueryOptions) (string, 
 // GetRights returns the rights of an User using its provided unique id.
 func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]*types.UserRights, error) {
 	if kuid == "" {
-		return []*types.UserRights{}, errors.New("Security.User.GetRights: user id required")
+		return []*types.UserRights{}, types.NewError("Security.User.GetRights: user id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -437,7 +436,7 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]*ty
 	res := <-ch
 
 	if res.Error != nil {
-		return []*types.UserRights{}, errors.New(res.Error.Message)
+		return []*types.UserRights{}, res.Error
 	}
 
 	type response struct {
@@ -453,13 +452,13 @@ func (su SecurityUser) GetRights(kuid string, options types.QueryOptions) ([]*ty
 // An action is defined as a couple of action and controller (mandatory), plus an index and a collection(optional).
 func (su SecurityUser) IsActionAllowed(rights []*types.UserRights, controller string, action string, index string, collection string) (string, error) {
 	if rights == nil {
-		return "", errors.New("Security.User.IsActionAllowed: Rights parameter is mandatory")
+		return "", types.NewError("Security.User.IsActionAllowed: Rights parameter is mandatory")
 	}
 	if controller == "" {
-		return "", errors.New("Security.User.IsActionAllowed: Controller parameter is mandatory")
+		return "", types.NewError("Security.User.IsActionAllowed: Controller parameter is mandatory")
 	}
 	if action == "" {
-		return "", errors.New("Security.User.IsActionAllowed: Action parameter is mandatory")
+		return "", types.NewError("Security.User.IsActionAllowed: Action parameter is mandatory")
 	}
 
 	filteredUserRights := make([]*types.UserRights, 0, len(rights))

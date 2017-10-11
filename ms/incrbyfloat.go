@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -11,7 +10,7 @@ import (
 // If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Incrbyfloat: key required")
+		return 0, types.NewError("Ms.Incrbyfloat: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -32,7 +31,7 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var stringResult string

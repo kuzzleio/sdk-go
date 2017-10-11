@@ -2,7 +2,6 @@
 package kuzzle
 
 import (
-	"errors"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
@@ -33,7 +32,7 @@ type Kuzzle struct {
 // NewKuzzle is the Kuzzle constructor
 func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
 	if c == nil {
-		return nil, errors.New("Connection is nil")
+		return nil, types.NewError("Connection is nil")
 	}
 
 	if options == nil {

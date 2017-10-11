@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Getset sets a new value for a key and returns its previous value.
 func (ms Ms) Getset(key string, value string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Getset: key required")
+		return "", types.NewError("Ms.Getset: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

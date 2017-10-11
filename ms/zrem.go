@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Zrem removes members from a sorted set.
 func (ms Ms) Zrem(key string, members []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Zrem: key required")
+		return 0, types.NewError("Ms.Zrem: key required")
 	}
 	if len(members) == 0 {
-		return 0, errors.New("Ms.Zrem: please provide at least one member")
+		return 0, types.NewError("Ms.Zrem: please provide at least one member")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) Zrem(key string, members []string, options types.QueryOptions) (int
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

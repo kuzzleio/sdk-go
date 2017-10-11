@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -15,13 +14,14 @@ import (
 func TestCreateDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").CreateDocument("id", &collection.Document{Content: []byte(`{"title":"yolo"}`)}, nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
 func TestCreateDocumentWrongOptionError(t *testing.T) {
@@ -135,13 +135,14 @@ func TestMCreateDocumentError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").MCreateDocument(documents, nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
 func TestMCreateDocument(t *testing.T) {
@@ -209,7 +210,7 @@ func TestMCreateOrReplaceDocumentError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

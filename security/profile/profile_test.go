@@ -420,7 +420,7 @@ func ExampleProfile_Delete() {
 func TestFetchEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Fetch: profile id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Profile.Fetch: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -432,7 +432,7 @@ func TestFetchEmptyId(t *testing.T) {
 func TestFetchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -484,7 +484,7 @@ func ExampleSecurityProfile_Fetch() {
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -575,7 +575,7 @@ func TestSearchWithScroll(t *testing.T) {
 func TestScrollEmptyScrollId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Scroll: scroll id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Profile.Scroll: scroll id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -587,7 +587,7 @@ func TestScrollEmptyScrollId(t *testing.T) {
 func TestScrollError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -651,7 +651,7 @@ func ExampleSecurityProfile_Scroll() {
 func TestCreateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Create: profile id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Profile.Create: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -663,7 +663,7 @@ func TestCreateEmptyId(t *testing.T) {
 func TestCreateError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -821,7 +821,7 @@ func TestCreateWithWrongOption(t *testing.T) {
 func TestUpdateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Update: profile id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Profile.Update: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -833,7 +833,7 @@ func TestUpdateEmptyId(t *testing.T) {
 func TestUpdateError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -896,7 +896,7 @@ func ExampleSecurityProfile_Update() {
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Profile.Delete: profile id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Profile.Delete: profile id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -908,7 +908,7 @@ func TestDeleteEmptyId(t *testing.T) {
 func TestDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

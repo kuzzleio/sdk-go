@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Srem removes members from a set of unique values.
 func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Srem: key required")
+		return 0, types.NewError("Ms.Srem: key required")
 	}
 	if len(valuesToRemove) == 0 {
-		return 0, errors.New("Ms.Srem: please provide at least one value to remove")
+		return 0, types.NewError("Ms.Srem: please provide at least one value to remove")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,7 +32,7 @@ func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOption
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

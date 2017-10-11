@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"reflect"
 )
@@ -10,7 +9,7 @@ import (
 // UpdateMyCredentials update credentials of the specified strategy for the current user.
 func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
-		return nil, errors.New("Kuzzle.UpdateMyCredentials: strategy is required")
+		return nil, types.NewError("Kuzzle.UpdateMyCredentials: strategy is required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, op
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()

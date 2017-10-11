@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hincrby increments the number stored in a hash field by the provided integer value.
 func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Hincrby: key required")
+		return 0, types.NewError("Ms.Hincrby: key required")
 	}
 	if field == "" {
-		return 0, errors.New("Ms.Hincrby: field required")
+		return 0, types.NewError("Ms.Hincrby: field required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +33,7 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

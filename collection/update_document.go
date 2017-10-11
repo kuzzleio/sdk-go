@@ -2,14 +2,13 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // UpdateDocument updates a document in Kuzzle.
 func (dc *Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (*Document, error) {
 	if id == "" {
-		return &Document{}, errors.New("Collection.UpdateDocument: document id required")
+		return &Document{}, types.NewError("Collection.UpdateDocument: document id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -27,7 +26,7 @@ func (dc *Collection) UpdateDocument(id string, document interface{}, options ty
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, errors.New(res.Error.Message)
+		return &Document{}, res.Error
 	}
 
 	documentResponse := &Document{collection: dc}
@@ -41,7 +40,7 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 	result := &SearchResult{}
 
 	if len(documents) == 0 {
-		return result, errors.New("Collection.MUpdateDocument: please provide at least one document to update")
+		return result, types.NewError("Collection.MUpdateDocument: please provide at least one document to update")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -75,7 +74,7 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 	res := <-ch
 
 	if res.Error != nil {
-		return result, errors.New(res.Error.Message)
+		return result, res.Error
 	}
 
 	json.Unmarshal(res.Result, result)

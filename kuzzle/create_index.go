@@ -2,14 +2,13 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // CreateIndex create a new empty data index, with no associated mapping.
 func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.AckResponse, error) {
 	if index == "" {
-		return &types.AckResponse{}, errors.New("Kuzzle.createIndex: index required")
+		return &types.AckResponse{}, types.NewError("Kuzzle.createIndex: index required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -24,7 +23,7 @@ func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.Ac
 	res := <-result
 
 	if res.Error != nil {
-		return &types.AckResponse{}, errors.New(res.Error.Message)
+		return &types.AckResponse{}, res.Error
 	}
 
 	ack := &types.AckResponse{}

@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -10,10 +9,10 @@ import (
 // Zscore returns the score of a member in a sorted set.
 func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Zscore: key required")
+		return 0, types.NewError("Ms.Zscore: key required")
 	}
 	if member == "" {
-		return 0, errors.New("Ms.Zscore: member required")
+		return 0, types.NewError("Ms.Zscore: member required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (floa
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var scanResponse string

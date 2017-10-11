@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hdel removes fields from a hash
 func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Hdel: key required")
+		return 0, types.NewError("Ms.Hdel: key required")
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int,
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

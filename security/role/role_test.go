@@ -230,7 +230,7 @@ func ExampleRole_Delete() {
 func TestFetchEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Role.Fetch: role id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Role.Fetch: role id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -242,7 +242,7 @@ func TestFetchEmptyId(t *testing.T) {
 func TestFetchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -294,7 +294,7 @@ func ExampleSecurityRole_Fetch() {
 func TestSearchError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -382,7 +382,7 @@ func TestSearchWithOptions(t *testing.T) {
 func TestCreateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Role.Create: role id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Role.Create: role id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -394,7 +394,7 @@ func TestCreateEmptyId(t *testing.T) {
 func TestCreateError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -529,7 +529,7 @@ func TestCreateWithWrongOption(t *testing.T) {
 func TestUpdateEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Role.Update: role id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Role.Update: role id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -541,7 +541,7 @@ func TestUpdateEmptyId(t *testing.T) {
 func TestUpdateError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -596,7 +596,7 @@ func ExampleSecurityRole_Update() {
 func TestDeleteEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Role.Delete: role id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Security.Role.Delete: role id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -608,7 +608,7 @@ func TestDeleteEmptyId(t *testing.T) {
 func TestDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
