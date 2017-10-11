@@ -7,10 +7,10 @@ import (
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "collection",
@@ -20,13 +20,13 @@ func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, 
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return CollectionMapping{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &CollectionMapping{}, errors.New(res.Error.Message)
 	}
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties types.KuzzleFieldsMapping `json:"properties"`
+			Properties *types.KuzzleFieldsMapping `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -35,15 +35,16 @@ func (dc Collection) GetMapping(options types.QueryOptions) (CollectionMapping, 
 
 	if _, ok := result[dc.index]; ok {
 		indexMappings := result[dc.index].Mappings
-		cm := NewCollectionMapping(&dc)
-		cm.Set(indexMappings[dc.collection].Properties)
 
 		if _, ok := indexMappings[dc.collection]; ok {
-			return *cm, nil
+			cm := NewCollectionMapping(dc)
+			cm.Set(indexMappings[dc.collection].Properties)
+
+			return cm, nil
 		} else {
-			return CollectionMapping{}, errors.New("No mapping found for collection " + dc.collection)
+			return &CollectionMapping{}, errors.New("No mapping found for collection " + dc.collection)
 		}
 	} else {
-		return CollectionMapping{}, errors.New("No mapping found for index " + dc.index)
+		return &CollectionMapping{}, errors.New("No mapping found for index " + dc.index)
 	}
 }

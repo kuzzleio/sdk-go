@@ -25,8 +25,8 @@ func TestLtrimEmptyKey(t *testing.T) {
 
 func TestLtrimError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestLtrimError(t *testing.T) {
 
 func TestLtrim(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -51,7 +51,7 @@ func TestLtrim(t *testing.T) {
 			assert.Equal(t, float64(2), parsedQuery.Body.(map[string]interface{})["stop"].(float64))
 
 			r, _ := json.Marshal("result")
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

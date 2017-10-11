@@ -14,8 +14,8 @@ import (
 
 func TestTruncateError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -26,10 +26,10 @@ func TestTruncateError(t *testing.T) {
 
 func TestTruncate(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			res := types.AckResponse{Acknowledged: true}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

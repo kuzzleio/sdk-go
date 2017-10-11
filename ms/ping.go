@@ -8,9 +8,9 @@ import (
 
 // Ping pings the memory storage database.
 func (ms Ms) Ping(options types.QueryOptions) (string, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "ping",
 	}
@@ -18,7 +18,7 @@ func (ms Ms) Ping(options types.QueryOptions) (string, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

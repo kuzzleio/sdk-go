@@ -12,9 +12,9 @@ func (dc Collection) DocumentExists(id string, options types.QueryOptions) (bool
 		return false, errors.New("Collection.DocumentExists: document id required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -25,7 +25,7 @@ func (dc Collection) DocumentExists(id string, options types.QueryOptions) (bool
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return false, errors.New(res.Error.Message)
 	}
 

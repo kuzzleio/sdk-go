@@ -13,8 +13,8 @@ import (
 
 func TestNowQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,11 +29,11 @@ func TestNow(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			n := now{Now: 1500646351073}
 
 			marsh, _ := json.Marshal(n)
-			return types.KuzzleResponse{Result: marsh}
+			return &types.KuzzleResponse{Result: marsh}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

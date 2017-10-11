@@ -12,9 +12,9 @@ func (ms Ms) Get(key string, options types.QueryOptions) (interface{}, error) {
 		return "", errors.New("Ms.Get: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "get",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Get(key string, options types.QueryOptions) (interface{}, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 

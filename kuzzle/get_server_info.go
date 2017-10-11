@@ -8,9 +8,9 @@ import (
 
 // GetServerInfo retrieves information about Kuzzle, its plugins and active services.
 func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "server",
 		Action:     "info",
 	}
@@ -19,7 +19,7 @@ func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, erro
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

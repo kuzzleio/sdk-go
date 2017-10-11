@@ -25,7 +25,7 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 		body = credentials
 	}
 
-	q := types.KuzzleRequest{
+	q := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "login",
 		Body:       body,
@@ -36,7 +36,7 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 		q.ExpiresIn = *expiresIn
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	go k.Query(q, nil, result)
 
@@ -44,9 +44,9 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 
 	json.Unmarshal(res.Result, &token)
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		err := errors.New(res.Error.Message)
-		k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: false, Error: err})
+		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: false, Error: err})
 		return "", err
 	}
 

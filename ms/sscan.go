@@ -7,14 +7,14 @@ import (
 )
 
 // Sscan is identical to scan, except that sscan iterates the members held by a set of unique values.
-func (ms Ms) Sscan(key string, cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
+func (ms Ms) Sscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	if key == "" {
-		return types.MSScanResponse{}, errors.New("Ms.Sscan: key required")
+		return &types.MSScanResponse{}, errors.New("Ms.Sscan: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sscan",
 		Id:         key,
@@ -35,12 +35,12 @@ func (ms Ms) Sscan(key string, cursor *int, options types.QueryOptions) (types.M
 
 	res := <-result
 
-	if res.Error.Message != "" {
-		return types.MSScanResponse{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 
-	var sscanResponse = types.MSScanResponse{}
-	json.Unmarshal(res.Result, &sscanResponse)
+	var sscanResponse = &types.MSScanResponse{}
+	json.Unmarshal(res.Result, sscanResponse)
 
 	return sscanResponse, nil
 }

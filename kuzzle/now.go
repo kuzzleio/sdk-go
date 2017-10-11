@@ -8,9 +8,9 @@ import (
 
 // Now retrieves the current Kuzzle time.
 func (k Kuzzle) Now(options types.QueryOptions) (int, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "server",
 		Action:     "now",
 	}
@@ -18,7 +18,7 @@ func (k Kuzzle) Now(options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

@@ -14,37 +14,39 @@ type ICollectionMapping interface {
 }
 
 type CollectionMapping struct {
-	Mapping    types.KuzzleFieldsMapping
+	Mapping    *types.KuzzleFieldsMapping
 	Collection *Collection
 }
 
 func NewCollectionMapping(col *Collection) *CollectionMapping {
+	fm := make(types.KuzzleFieldsMapping)
 	return &CollectionMapping{
 		Collection: col,
-		Mapping:    make(types.KuzzleFieldsMapping),
+		Mapping:    &fm,
 	}
 }
 
 // Apply applies the new mapping to the data collection.
-func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping, error) {
-	ch := make(chan types.KuzzleResponse)
+func (cm *CollectionMapping) Apply(options types.QueryOptions) (*CollectionMapping, error) {
+	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Properties types.KuzzleFieldsMapping `json:"properties"`
+		Properties *types.KuzzleFieldsMapping `json:"properties"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: cm.Collection.collection,
 		Index:      cm.Collection.index,
 		Controller: "collection",
 		Action:     "updateMapping",
 		Body:       &body{Properties: cm.Mapping},
 	}
+
 	go cm.Collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return cm, errors.New(res.Error.Message)
 	}
 
@@ -53,10 +55,10 @@ func (cm CollectionMapping) Apply(options types.QueryOptions) (CollectionMapping
 
 // Refresh Replaces the current content with the mapping stored in Kuzzle.
 // Calling this function will discard any uncommitted changes. You can commit changes by calling the “apply” function
-func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMapping, error) {
-	ch := make(chan types.KuzzleResponse)
+func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMapping, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: cm.Collection.collection,
 		Index:      cm.Collection.index,
 		Controller: "collection",
@@ -66,13 +68,13 @@ func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMappi
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return cm, errors.New(res.Error.Message)
 	}
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties types.KuzzleFieldsMapping `json:"properties"`
+			Properties *types.KuzzleFieldsMapping `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -99,9 +101,9 @@ func (cm CollectionMapping) Refresh(options types.QueryOptions) (CollectionMappi
 
   Changes made by this function won’t be applied until you call the apply method
 */
-func (cm CollectionMapping) Set(mappings types.KuzzleFieldsMapping) CollectionMapping {
-	for field, mapping := range mappings {
-		cm.Mapping[field] = mapping
+func (cm *CollectionMapping) Set(mappings *types.KuzzleFieldsMapping) *CollectionMapping {
+	for field, mapping := range *mappings {
+		(*(cm.Mapping))[field] = mapping
 	}
 
 	return cm
@@ -110,7 +112,7 @@ func (cm CollectionMapping) Set(mappings types.KuzzleFieldsMapping) CollectionMa
 // SetHeaders is is a helper function returning itself, allowing to easily chain calls.
 // If the replace argument is set to true, replace the current headers with the provided content.
 // Otherwise, it appends the content to the current headers, only replacing already existing values
-func (cm CollectionMapping) SetHeaders(content map[string]interface{}, replace bool) CollectionMapping {
+func (cm *CollectionMapping) SetHeaders(content map[string]interface{}, replace bool) *CollectionMapping {
 	cm.Collection.SetHeaders(content, replace)
 
 	return cm

@@ -38,9 +38,9 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 		return nil, errors.New("Ms.Georadius: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
 		Id:         key,
@@ -50,13 +50,13 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, false, false)
+	assignGeoradiusOptions(query, options, false, false)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var returnedResults []string
@@ -66,14 +66,14 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 }
 
 // GeoradiusWithCoord returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoord, error) {
+func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoord, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithCoord: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
 		Id:         key,
@@ -83,22 +83,22 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, true, false)
+	assignGeoradiusOptions(query, options, true, false)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithCoord, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithCoord, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithCoord{Name: value[0].(string)}
 
 		tmp := value[1].([]interface{})[0].(string)
 		tmpF, err := strconv.ParseFloat(tmp, 64)
@@ -121,14 +121,14 @@ func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance f
 }
 
 // GeoradiusWithDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithDist, error) {
+func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithDist: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
 		Id:         key,
@@ -138,22 +138,22 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, false, true)
+	assignGeoradiusOptions(query, options, false, true)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithDist, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithDist, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithDist{Name: value[0].(string)}
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {
@@ -167,14 +167,14 @@ func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance fl
 }
 
 // GeoradiusWithCoordAndDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]types.GeoradiusPointWithCoordAndDist, error) {
+func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
 		return nil, errors.New("Ms.GeoradiusWithCoordAndDist: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "georadius",
 		Id:         key,
@@ -184,22 +184,22 @@ func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, dis
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(&query, options, true, true)
+	assignGeoradiusOptions(query, options, true, true)
 
 	go ms.Kuzzle.Query(query, options, result)
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var stringResults [][]interface{}
 	json.Unmarshal(res.Result, &stringResults)
 
-	returnedResults := make([]types.GeoradiusPointWithCoordAndDist, len(stringResults))
+	returnedResults := make([]*types.GeoradiusPointWithCoordAndDist, len(stringResults))
 
 	for i, value := range stringResults {
-		returnedResults[i].Name = value[0].(string)
+		returnedResults[i] = &types.GeoradiusPointWithCoordAndDist{Name: value[0].(string)}
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {

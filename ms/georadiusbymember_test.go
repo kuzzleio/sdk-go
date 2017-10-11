@@ -25,8 +25,8 @@ func TestGeoradiusbymemberEmptyKey(t *testing.T) {
 
 func TestGeoradiusbymemberError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestGeoradiusbymemberError(t *testing.T) {
 
 func TestGeoradiusbymember(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -56,7 +56,7 @@ func TestGeoradiusbymember(t *testing.T) {
 			assert.Equal(t, opts, parsedQuery.Options)
 
 			r, _ := json.Marshal([]string{"some", "results"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -100,8 +100,8 @@ func TestGeoradiusbymemberWithCoordEmptyKey(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -115,7 +115,7 @@ func TestGeoradiusbymemberWithCoordError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordLonConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -142,7 +142,7 @@ func TestGeoradiusbymemberWithCoordLonConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -157,7 +157,7 @@ func TestGeoradiusbymemberWithCoordLonConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordLatConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -184,7 +184,7 @@ func TestGeoradiusbymemberWithCoordLatConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -199,7 +199,7 @@ func TestGeoradiusbymemberWithCoordLatConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoord(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -226,7 +226,7 @@ func TestGeoradiusbymemberWithCoord(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -236,7 +236,7 @@ func TestGeoradiusbymemberWithCoord(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithCoord("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusbymemberWithCoord() {
@@ -270,8 +270,8 @@ func TestGeoradiusbymemberWithDistEmptyKey(t *testing.T) {
 
 func TestGeoradiusbymemberWithDistError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -285,7 +285,7 @@ func TestGeoradiusbymemberWithDistError(t *testing.T) {
 
 func TestGeoradiusbymemberWithDistDistConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -309,7 +309,7 @@ func TestGeoradiusbymemberWithDistDistConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -324,7 +324,7 @@ func TestGeoradiusbymemberWithDistDistConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithDist(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -348,7 +348,7 @@ func TestGeoradiusbymemberWithDist(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -358,7 +358,7 @@ func TestGeoradiusbymemberWithDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithDist("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
 }
 
 func ExampleMs_GeoradiusbymemberWithDist() {
@@ -392,8 +392,8 @@ func TestGeoradiusbymemberWithCoordAndDistEmptyKey(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordAndDistError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -406,7 +406,7 @@ func TestGeoradiusbymemberWithCoordAndDistError(t *testing.T) {
 }
 func TestGeoradiusbymemberWithCoordAndDistDistConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -435,7 +435,7 @@ func TestGeoradiusbymemberWithCoordAndDistDistConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -450,7 +450,7 @@ func TestGeoradiusbymemberWithCoordAndDistDistConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordAndDistLonConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -479,7 +479,7 @@ func TestGeoradiusbymemberWithCoordAndDistLonConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -494,7 +494,7 @@ func TestGeoradiusbymemberWithCoordAndDistLonConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordAndDistLatConvError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -523,7 +523,7 @@ func TestGeoradiusbymemberWithCoordAndDistLatConvError(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -538,7 +538,7 @@ func TestGeoradiusbymemberWithCoordAndDistLatConvError(t *testing.T) {
 
 func TestGeoradiusbymemberWithCoordAndDist(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -567,7 +567,7 @@ func TestGeoradiusbymemberWithCoordAndDist(t *testing.T) {
 			response = append(response, location)
 
 			r, _ := json.Marshal(response)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -577,7 +577,7 @@ func TestGeoradiusbymemberWithCoordAndDist(t *testing.T) {
 
 	res, _ := memoryStorage.GeoradiusbymemberWithCoordAndDist("foo", "member", float64(200), "km", qo)
 
-	assert.Equal(t, []types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusbymemberWithCoordAndDist() {

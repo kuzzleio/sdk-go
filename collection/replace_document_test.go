@@ -15,26 +15,26 @@ import (
 func TestReplaceDocumentEmptyId(t *testing.T) {
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.ReplaceDocument: document id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.ReplaceDocument: document id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("", &collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
 func TestReplaceDocumentError(t *testing.T) {
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("id", collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ReplaceDocument("id", &collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -46,7 +46,7 @@ func TestReplaceDocument(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -60,12 +60,12 @@ func TestReplaceDocument(t *testing.T) {
 
 			res := collection.Document{Id: id, Content: []byte(`{"title": "jonathan"}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
+	res, _ := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, &collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 	assert.Equal(t, id, res.Id)
 }
 
@@ -78,7 +78,7 @@ func ExampleCollection_ReplaceDocument() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
+	res, err := collection.NewCollection(k, "collection", "index").ReplaceDocument(id, &collection.Document{Content: []byte(`{"title": "jonathan"}`)}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -89,11 +89,11 @@ func ExampleCollection_ReplaceDocument() {
 }
 
 func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
-	documents := []collection.Document{}
+	documents := []*collection.Document{}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.MReplaceDocument: please provide at least one document to replace"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.MReplaceDocument: please provide at least one document to replace"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -103,14 +103,14 @@ func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 }
 
 func TestMReplaceDocumentError(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -120,13 +120,13 @@ func TestMReplaceDocumentError(t *testing.T) {
 }
 
 func TestMReplaceDocument(t *testing.T) {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -135,7 +135,7 @@ func TestMReplaceDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			results := []collection.Document{
+			results := []*collection.Document{
 				{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 				{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 			}
@@ -145,7 +145,7 @@ func TestMReplaceDocument(t *testing.T) {
 				Hits:  results,
 			}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -160,7 +160,7 @@ func TestMReplaceDocument(t *testing.T) {
 }
 
 func ExampleCollection_MReplaceDocument() {
-	documents := []collection.Document{
+	documents := []*collection.Document{
 		{Id: "foo", Content: []byte(`{"title":"Foo"}`)},
 		{Id: "bar", Content: []byte(`{"title":"Bar"}`)},
 	}

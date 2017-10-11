@@ -15,14 +15,14 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 		return 0, errors.New("Ms.Hincrby: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value int    `json:"value"`
 		Field string `json:"field"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hincrby",
 		Id:         key,
@@ -33,7 +33,7 @@ func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOpt
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

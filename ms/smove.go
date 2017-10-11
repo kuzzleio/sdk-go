@@ -18,14 +18,14 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 		return 0, errors.New("Ms.Smove: member required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Destination string `json:"destination"`
 		Member      string `json:"member"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "smove",
 		Id:         key,
@@ -36,7 +36,7 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -14,13 +13,13 @@ import (
 
 func TestRoomCountError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil).Count()
+	_, err := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil).Count()
 	assert.NotNil(t, err)
 }
 
@@ -30,15 +29,15 @@ func TestRoomCount(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			res := result{Count: 10}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil).Count()
+	res, _ := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil).Count()
 	assert.Equal(t, 10, res)
 }
 
@@ -50,7 +49,7 @@ func ExampleRoom_Count() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewRoom(*collection.NewCollection(k, "collection", "index"), nil).Count()
+	res, err := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil).Count()
 
 	if err != nil {
 		fmt.Println(err.Error())

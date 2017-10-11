@@ -12,9 +12,9 @@ func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]s
 		return nil, errors.New("Ms.Hmget: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hmget",
 		Id:         key,
@@ -25,7 +25,7 @@ func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]s
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

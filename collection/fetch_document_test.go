@@ -14,8 +14,8 @@ import (
 
 func TestFetchDocumentEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.FetchDocument: document id required"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.FetchDocument: document id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -26,8 +26,8 @@ func TestFetchDocumentEmptyId(t *testing.T) {
 
 func TestFetchDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -44,7 +44,7 @@ func TestFetchDocument(t *testing.T) {
 	id := "myId"
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -56,7 +56,7 @@ func TestFetchDocument(t *testing.T) {
 
 			res := collection.Document{Id: id, Content: []byte(`{"foo": "bar"}`)}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -82,8 +82,8 @@ func ExampleCollection_FetchDocument() {
 
 func TestMGetDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Collection.MGetDocument: please provide at least one id of document to retrieve"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.MGetDocument: please provide at least one id of document to retrieve"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -94,8 +94,8 @@ func TestMGetDocumentEmptyIds(t *testing.T) {
 
 func TestMGetDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -105,15 +105,17 @@ func TestMGetDocumentError(t *testing.T) {
 }
 
 func TestMGetDocument(t *testing.T) {
-	hits := make([]collection.Document, 2)
-	hits[0] = collection.Document{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)}
-	hits[1] = collection.Document{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)}
-	var results = collection.SearchResult{Total: 2, Hits: hits}
+	hits := []*collection.Document{
+		{Id: "foo", Content: json.RawMessage(`{"title":"foo"}`)},
+		{Id: "bar", Content: json.RawMessage(`{"title":"bar"}`)},
+	}
+
+	results := collection.SearchResult{Total: 2, Hits: hits}
 
 	ids := []string{"foo", "bar"}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -125,14 +127,18 @@ func TestMGetDocument(t *testing.T) {
 
 			res := collection.SearchResult{Total: results.Total, Hits: results.Hits}
 			r, _ := json.Marshal(res)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
 	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits, res.Hits)
+
+	for i, _ := range res.Hits {
+		assert.Equal(t, hits[i].Id, res.Hits[i].Id)
+		assert.Equal(t, hits[i].Content, res.Hits[i].Content)
+	}
 }
 
 func ExampleCollection_MGetDocument() {

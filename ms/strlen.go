@@ -12,9 +12,9 @@ func (ms Ms) Strlen(key string, options types.QueryOptions) (int, error) {
 		return 0, errors.New("Ms.Strlen: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "strlen",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Strlen(key string, options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

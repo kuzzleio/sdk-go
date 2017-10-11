@@ -14,12 +14,12 @@ import (
 
 func TestGetAllCredentialFieldsError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "getAllCredentialFields", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -30,7 +30,7 @@ func TestGetAllCredentialFieldsError(t *testing.T) {
 
 func TestGetAllCredentialFields(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
@@ -40,7 +40,7 @@ func TestGetAllCredentialFields(t *testing.T) {
 			credFields["local"] = []string{"username", "password"}
 			marsh, _ := json.Marshal(credFields)
 
-			return types.KuzzleResponse{Result: marsh}
+			return &types.KuzzleResponse{Result: marsh}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

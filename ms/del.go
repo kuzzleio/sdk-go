@@ -8,13 +8,13 @@ import (
 
 // Del deletes keys
 func (ms Ms) Del(keys []string, options types.QueryOptions) (int, error) {
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Keys []string `json:"keys"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "del",
 		Body:       &body{Keys: keys},
@@ -24,7 +24,7 @@ func (ms Ms) Del(keys []string, options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

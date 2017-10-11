@@ -13,14 +13,14 @@ type ZScanResponse struct {
 }
 
 // Zscan is identical to scan, except that zscan iterates the members held by a sorted set.
-func (ms Ms) Zscan(key string, cursor *int, options types.QueryOptions) (types.MSScanResponse, error) {
+func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	if key == "" {
-		return types.MSScanResponse{}, errors.New("Ms.Zscan: key required")
+		return &types.MSScanResponse{}, errors.New("Ms.Zscan: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zscan",
 		Id:         key,
@@ -41,8 +41,8 @@ func (ms Ms) Zscan(key string, cursor *int, options types.QueryOptions) (types.M
 
 	res := <-result
 
-	if res.Error.Message != "" {
-		return types.MSScanResponse{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &types.MSScanResponse{}, errors.New(res.Error.Message)
 	}
 
 	var scanResponse []interface{}
@@ -51,15 +51,15 @@ func (ms Ms) Zscan(key string, cursor *int, options types.QueryOptions) (types.M
 	return formatZscanResponse(scanResponse), nil
 }
 
-func formatZscanResponse(response []interface{}) types.MSScanResponse {
-	formatedResponse := types.MSScanResponse{}
+func formatZscanResponse(response []interface{}) *types.MSScanResponse {
+	formatedResponse := &types.MSScanResponse{}
 
 	for _, element := range response {
 		switch vf := element.(type) {
 		case string:
 			formatedResponse.Cursor, _ = strconv.Atoi(vf)
 		case []interface{}:
-			values := []string{}
+			values := make([]string, 0, len(vf))
 
 			for _, v := range vf {
 				switch vv := v.(type) {

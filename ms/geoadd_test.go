@@ -17,7 +17,7 @@ func TestGeoaddEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geoadd("", []types.GeoPoint{}, qo)
+	_, err := memoryStorage.Geoadd("", []*types.GeoPoint{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Geoadd: key required", fmt.Sprint(err))
@@ -25,22 +25,22 @@ func TestGeoaddEmptyKey(t *testing.T) {
 
 func TestGeoaddError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geoadd("foo", []types.GeoPoint{}, qo)
+	_, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{}, qo)
 
 	assert.NotNil(t, err)
 }
 
 func TestGeoadd(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -52,14 +52,14 @@ func TestGeoadd(t *testing.T) {
 			assert.Equal(t, float64(3.9128795), parsedQuery.Body.(map[string]interface{})["points"].([]interface{})[0].(map[string]interface{})["lat"].(float64))
 
 			r, _ := json.Marshal(1)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Geoadd("foo", []types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, _ := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
 
 	assert.Equal(t, 1, res)
 }
@@ -70,7 +70,7 @@ func ExampleMs_Geoadd() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Geoadd("foo", []types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

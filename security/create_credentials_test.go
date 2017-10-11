@@ -14,12 +14,12 @@ import (
 
 func TestCreateCredentialsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "createCredentials", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -30,8 +30,8 @@ func TestCreateCredentialsQueryError(t *testing.T) {
 
 func TestCreateCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -42,8 +42,8 @@ func TestCreateCredentialsEmptyStrategy(t *testing.T) {
 
 func TestCreateCredentialsEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -59,7 +59,7 @@ func TestCreateCredentials(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			ack := myCredentials{Username: "foo", Password: "bar"}
 			r, _ := json.Marshal(ack)
 
@@ -69,7 +69,7 @@ func TestCreateCredentials(t *testing.T) {
 			assert.Equal(t, "createCredentials", request.Action)
 			assert.Equal(t, "local", request.Strategy)
 			assert.Equal(t, "someId", request.Id)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

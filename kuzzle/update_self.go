@@ -7,10 +7,10 @@ import (
 )
 
 // UpdateSelf update the currently authenticated user information.
-func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) (types.User, error) {
-	result := make(chan types.KuzzleResponse)
+func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) (*types.User, error) {
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "updateSelf",
 		Body:       credentials,
@@ -20,12 +20,12 @@ func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
-		return types.User{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &types.User{}, errors.New(res.Error.Message)
 	}
 
-	u := types.User{}
-	json.Unmarshal(res.Result, &u)
+	u := &types.User{}
+	json.Unmarshal(res.Result, u)
 
 	return u, nil
 }

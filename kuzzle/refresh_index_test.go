@@ -13,12 +13,12 @@ import (
 
 func TestRefreshIndexQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
 			assert.Equal(t, "refresh", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -28,7 +28,7 @@ func TestRefreshIndexQueryError(t *testing.T) {
 
 func TestRefreshIndex(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			type shards struct {
 				Shards types.Shards `json:"_shards"`
 			}
@@ -40,7 +40,7 @@ func TestRefreshIndex(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
 			assert.Equal(t, "refresh", request.Action)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

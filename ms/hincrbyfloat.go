@@ -16,14 +16,14 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 		return 0, errors.New("Ms.Hincrbyfloat: field required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value float64 `json:"value"`
 		Field string  `json:"field"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hincrbyfloat",
 		Id:         key,
@@ -34,7 +34,7 @@ func (ms Ms) Hincrbyfloat(key string, field string, value float64, options types
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

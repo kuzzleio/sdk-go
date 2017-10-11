@@ -19,8 +19,8 @@ func TestCheckTokenTokenNull(t *testing.T) {
 
 func TestCheckTokenQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -30,18 +30,15 @@ func TestCheckTokenQueryError(t *testing.T) {
 
 func TestCheckToken(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			tokenValidity := kuzzle.TokenValidity{Valid: true}
 			r, _ := json.Marshal(tokenValidity)
-			return types.KuzzleResponse{Result: r}
+
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	type ackResult struct {
-		Acknowledged       bool
-		ShardsAcknowledged bool
-	}
 	res, _ := k.CheckToken("token")
 	assert.Equal(t, true, res.Valid)
 }

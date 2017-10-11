@@ -15,8 +15,8 @@ func (dc Collection) Count(filters *types.SearchFilters, options types.QueryOpti
 		Count int `json:"count"`
 	}
 
-	ch := make(chan types.KuzzleResponse)
-	query := types.KuzzleRequest{
+	ch := make(chan *types.KuzzleResponse)
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -27,11 +27,12 @@ func (dc Collection) Count(filters *types.SearchFilters, options types.QueryOpti
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
-	result := countResult{}
-	json.Unmarshal(res.Result, &result)
+
+	result := &countResult{}
+	json.Unmarshal(res.Result, result)
 
 	return result.Count, nil
 }

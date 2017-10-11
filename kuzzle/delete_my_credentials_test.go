@@ -13,12 +13,12 @@ import (
 
 func TestDeleteMyCredentialsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "deleteMyCredentials", request.Action)
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -28,8 +28,8 @@ func TestDeleteMyCredentialsQueryError(t *testing.T) {
 
 func TestDeleteMyCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -39,7 +39,7 @@ func TestDeleteMyCredentialsEmptyStrategy(t *testing.T) {
 
 func TestDeleteMyCredentials(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			type ackResult struct {
 				Acknowledged       bool
 				ShardsAcknowledged bool
@@ -52,7 +52,7 @@ func TestDeleteMyCredentials(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "deleteMyCredentials", request.Action)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

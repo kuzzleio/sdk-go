@@ -12,9 +12,9 @@ func (ms Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
 		return nil, errors.New("Ms.Hkeys: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "hkeys",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var returnedResult []string

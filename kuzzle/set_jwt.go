@@ -10,6 +10,6 @@ func (k *Kuzzle) SetJwt(token string) {
 
 	if token != "" {
 		k.socket.RenewSubscriptions()
-		k.socket.EmitEvent(event.LoginAttempt, types.LoginAttempt{Success: true})
+		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
 	}
 }

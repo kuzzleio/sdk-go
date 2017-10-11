@@ -17,7 +17,7 @@ func TestZaddEmptyKey(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zadd("", []types.MSSortedSet{}, qo)
+	_, err := memoryStorage.Zadd("", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zadd: key required", fmt.Sprint(err))
@@ -28,7 +28,7 @@ func TestZaddEmptyElements(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zadd("foo", []types.MSSortedSet{}, qo)
+	_, err := memoryStorage.Zadd("foo", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zadd: please provide at least one element", fmt.Sprint(err))
@@ -36,17 +36,19 @@ func TestZaddEmptyElements(t *testing.T) {
 
 func TestZaddError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
+
 	_, err := memoryStorage.Zadd("foo", sortedSet, qo)
 
 	assert.NotNil(t, err)
@@ -54,7 +56,7 @@ func TestZaddError(t *testing.T) {
 
 func TestZadd(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -62,16 +64,18 @@ func TestZadd(t *testing.T) {
 			assert.Equal(t, "zadd", parsedQuery.Action)
 
 			r, _ := json.Marshal(2)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
+
 	res, _ := memoryStorage.Zadd("foo", sortedSet, qo)
 
 	assert.Equal(t, 2, res)
@@ -79,7 +83,7 @@ func TestZadd(t *testing.T) {
 
 func TestZaddWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -91,16 +95,17 @@ func TestZaddWithOptions(t *testing.T) {
 			assert.Equal(t, true, options.GetXx())
 
 			r, _ := json.Marshal(2)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
 
 	qo.SetCh(true)
 	qo.SetIncr(true)
@@ -117,9 +122,10 @@ func ExampleMs_Zadd() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	sortedSet := []types.MSSortedSet{}
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 10, Member: "bar"})
-	sortedSet = append(sortedSet, types.MSSortedSet{Score: 5, Member: "foo"})
+	sortedSet := []*types.MSSortedSet{
+		{Score: 10, Member: "bar"},
+		{Score: 5, Member: "foo"},
+	}
 
 	qo.SetCh(true)
 	qo.SetIncr(true)

@@ -20,30 +20,30 @@ type (
 	}
 
 	KuzzleResult struct {
-		Id         string          `json:"_id"`
-		Meta       KuzzleMeta      `json:"_meta"`
-		Content    json.RawMessage `json:"_source"`
-		Version    int             `json:"_version"`
-		Collection string          `json:"collection"`
+		Id         string           `json:"_id"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Content    json.RawMessage  `json:"_source"`
+		Version    int              `json:"_version"`
+		Collection string           `json:"collection"`
 	}
 
 	KuzzleNotification struct {
-		RequestId string       `json:"requestId"`
-		Result    KuzzleResult `json:"result"`
-		RoomId    string       `json:"room"`
-		Error     MessageError `json:"error"`
+		RequestId string        `json:"requestId"`
+		Result    *KuzzleResult `json:"result"`
+		RoomId    string        `json:"room"`
+		Error     *MessageError `json:"error"`
 	}
 
 	KuzzleResponse struct {
-		RequestId string          `json:"requestId"`
-		Result    json.RawMessage `json:"result"`
-		RoomId    string          `json:"room"`
-		Channel   string          `json:"channel"`
-		Error     MessageError    `json:"error"`
+		RequestId string           `json:"requestId"`
+		Result    json.RawMessage  `json:"result"`
+		RoomId    string           `json:"room"`
+		Channel   string           `json:"channel"`
+		Error     *MessageError    `json:"error"`
 	}
 
 	// TODO Not exhaustive !
-	KuzzleValidationFields map[string]struct {
+	KuzzleValidationFields map[string]*struct {
 		Type         string `json:"type"`
 		Path         []string `json:"path"`
 		Depth				 int		`json:"depth"`
@@ -52,8 +52,8 @@ type (
 	}
 
 	KuzzleValidation struct {
-		Strict bool                   `json:"strict"`
-		Fields KuzzleValidationFields `json:"fields"`
+		Strict bool                    `json:"strict"`
+		Fields *KuzzleValidationFields `json:"fields"`
 	}
 
 	KuzzleFieldMapping struct {
@@ -61,22 +61,19 @@ type (
 		Properties map[string]interface{} `json:"properties,omitempty"`
 	}
 
-	KuzzleFieldsMapping map[string]KuzzleFieldMapping
+	KuzzleFieldsMapping map[string]*KuzzleFieldMapping
 
-	KuzzleSpecifications map[string]map[string]struct {
-		Strict bool                   `json:"strict"`
-		Fields KuzzleValidationFields `json:"fields"`
-	}
+	KuzzleSpecifications map[string]map[string]*KuzzleValidation
 
 	KuzzleSpecificationsResult struct {
-		Validation KuzzleValidation `json:"validation"`
-		Index      string           `json:"index"`
-		Collection string           `json:"collection"`
+		Validation *KuzzleValidation `json:"validation"`
+		Index      string            `json:"index"`
+		Collection string            `json:"collection"`
 	}
 
 	KuzzleSpecificationSearchResult struct {
-		Hits []struct {
-			Source KuzzleSpecificationsResult `json:"_source"`
+		Hits []*struct {
+			Source *KuzzleSpecificationsResult `json:"_source"`
 		} `json:"hits"`
 		Total    int    `json:"total"`
 		ScrollId string `json:"scrollId"`
@@ -96,13 +93,13 @@ type (
 	}
 
 	ShardResponse struct {
-		Found   bool   `json:"found"`
-		Index   string `json:"_index"`
-		Type    string `json:"_type"`
-		Id      string `json:"_id"`
-		Version int    `json:"_version"`
-		Result  string `json:"result"`
-		Shards  Shards `json:"_shards"`
+		Found   bool    `json:"found"`
+		Index   string  `json:"_index"`
+		Type    string  `json:"_type"`
+		Id      string  `json:"_id"`
+		Version int     `json:"_version"`
+		Result  string  `json:"result"`
+		Shards  *Shards `json:"_shards"`
 	}
 
 	Statistics struct {
@@ -146,10 +143,10 @@ type (
 	}
 
 	SecurityDocument struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       KuzzleMeta      `json:"_meta"`
-		Strategies []string        `json:"strategies"`
+		Id         string           `json:"_id"`
+		Source     json.RawMessage  `json:"_source"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Strategies []string         `json:"strategies"`
 	}
 
 	Profile SecurityDocument
@@ -169,10 +166,10 @@ type (
 	}
 
 	User struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       KuzzleMeta      `json:"_meta"`
-		Strategies []string        `json:"strategies"`
+		Id         string           `json:"_id"`
+		Source     json.RawMessage  `json:"_source"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Strategies []string         `json:"strategies"`
 	}
 
 	GeoradiusPointWithCoord struct {

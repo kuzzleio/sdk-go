@@ -16,7 +16,7 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 		return 0, errors.New("Ms.ZunionStore: please provide at least one key")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Keys      []string `json:"keys"`
@@ -34,7 +34,7 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 		bodyContent.Aggregate = options.GetAggregate()
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "zunionstore",
 		Id:         destination,
@@ -45,7 +45,7 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

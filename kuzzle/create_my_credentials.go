@@ -8,13 +8,13 @@ import (
 )
 
 // CreateMyCredentials create credentials of the specified strategy for the current user.
-func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
+func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (types.Credentials, error) {
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.CreateMyCredentials: strategy is required")
 	}
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "createMyCredentials",
 		Body:       credentials,
@@ -24,7 +24,7 @@ func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, op
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return types.Credentials{}, errors.New(res.Error.Message)
 	}
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -15,8 +14,8 @@ import (
 func TestPublishMessageError(t *testing.T) {
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,7 +28,7 @@ func TestPublishMessageError(t *testing.T) {
 
 func TestPublishMessage(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -42,7 +41,7 @@ func TestPublishMessage(t *testing.T) {
 
 			res := types.KuzzleResponse{Result: []byte(`{"published":true}`)}
 			r, _ := json.Marshal(res.Result)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -50,6 +49,7 @@ func TestPublishMessage(t *testing.T) {
 	message := make(map[string]interface{})
 	message["title"] = interface{}("yolo")
 	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
+
 	assert.Equal(t, true, res.Published)
 }
 

@@ -25,8 +25,8 @@ func TestBitcountEmptyKey(t *testing.T) {
 
 func TestBitcountError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestBitcountError(t *testing.T) {
 
 func TestBitcount(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -49,7 +49,7 @@ func TestBitcount(t *testing.T) {
 			assert.Equal(t, "foo", parsedQuery.Id)
 
 			r, _ := json.Marshal(1)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -63,18 +63,18 @@ func TestBitcount(t *testing.T) {
 
 func TestBitcountOptions(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "bitcount", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Start)
+			assert.Equal(t, 1, parsedQuery.Start)
 			assert.Equal(t, 2, parsedQuery.End)
 
 			r, _ := json.Marshal(1)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
