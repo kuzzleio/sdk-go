@@ -43,7 +43,7 @@ func TestScroll(t *testing.T) {
 	}
 
 	hits := []*collection.Document{
-		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+		{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
 	}
 	results := collection.SearchResult{Total: 42, Hits: hits}
 

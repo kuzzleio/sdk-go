@@ -189,7 +189,7 @@ func ExampleCollection_MCreateDocument() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MCreateDocument([]*collection.Document{
-		{Content: []byte(`{"title":"yolo"}`)}, 
+		{Content: []byte(`{"title":"yolo"}`)},
 		{Content: []byte(`{"title":"oloy"}`)},
 	}, nil)
 
@@ -263,7 +263,7 @@ func ExampleCollection_MCreateOrReplaceDocument() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, err := collection.NewCollection(k, "collection", "index").MCreateOrReplaceDocument([]*collection.Document{
-		{Content: []byte(`{"title":"yolo"}`)}, 
+		{Content: []byte(`{"title":"yolo"}`)},
 		{Content: []byte(`{"title":"oloy"}`)},
 	}, nil)
 

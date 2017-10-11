@@ -20,11 +20,11 @@ type (
 	}
 
 	KuzzleResult struct {
-		Id         string           `json:"_id"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Content    json.RawMessage  `json:"_source"`
-		Version    int              `json:"_version"`
-		Collection string           `json:"collection"`
+		Id         string          `json:"_id"`
+		Meta       *KuzzleMeta     `json:"_meta"`
+		Content    json.RawMessage `json:"_source"`
+		Version    int             `json:"_version"`
+		Collection string          `json:"collection"`
 	}
 
 	KuzzleNotification struct {
@@ -35,20 +35,20 @@ type (
 	}
 
 	KuzzleResponse struct {
-		RequestId string           `json:"requestId"`
-		Result    json.RawMessage  `json:"result"`
-		RoomId    string           `json:"room"`
-		Channel   string           `json:"channel"`
-		Error     *MessageError    `json:"error"`
+		RequestId string          `json:"requestId"`
+		Result    json.RawMessage `json:"result"`
+		RoomId    string          `json:"room"`
+		Channel   string          `json:"channel"`
+		Error     *MessageError   `json:"error"`
 	}
 
 	// TODO Not exhaustive !
 	KuzzleValidationFields map[string]*struct {
-		Type         string `json:"type"`
+		Type         string   `json:"type"`
 		Path         []string `json:"path"`
-		Depth				 int		`json:"depth"`
-		Mandatory    bool   `json:"mandatory"`
-		DefaultValue string `json:"defaultValue"`
+		Depth        int      `json:"depth"`
+		Mandatory    bool     `json:"mandatory"`
+		DefaultValue string   `json:"defaultValue"`
 	}
 
 	KuzzleValidation struct {
@@ -143,10 +143,10 @@ type (
 	}
 
 	SecurityDocument struct {
-		Id         string           `json:"_id"`
-		Source     json.RawMessage  `json:"_source"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Strategies []string         `json:"strategies"`
+		Id         string          `json:"_id"`
+		Source     json.RawMessage `json:"_source"`
+		Meta       *KuzzleMeta     `json:"_meta"`
+		Strategies []string        `json:"strategies"`
 	}
 
 	Profile SecurityDocument
@@ -166,10 +166,10 @@ type (
 	}
 
 	User struct {
-		Id         string           `json:"_id"`
-		Source     json.RawMessage  `json:"_source"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Strategies []string         `json:"strategies"`
+		Id         string          `json:"_id"`
+		Source     json.RawMessage `json:"_source"`
+		Meta       *KuzzleMeta     `json:"_meta"`
+		Strategies []string        `json:"strategies"`
 	}
 
 	GeoradiusPointWithCoord struct {

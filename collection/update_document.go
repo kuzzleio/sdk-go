@@ -47,8 +47,8 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string       `json:"_id"`
-		Body interface{}  `json:"body"`
+		Id   string      `json:"_id"`
+		Body interface{} `json:"body"`
 	}
 	docs := []*CreationDocument{}
 

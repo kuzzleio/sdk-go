@@ -13,7 +13,6 @@ import (
 func (dc Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (*types.RealtimeResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-
 	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,

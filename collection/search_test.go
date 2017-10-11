@@ -25,7 +25,7 @@ func TestSearchError(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	hits := []*collection.Document{
-		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+		{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
 	}
 
 	results := collection.SearchResult{Total: 42, Hits: hits}
@@ -73,7 +73,7 @@ func ExampleCollection_Search() {
 
 func TestSearchWithScroll(t *testing.T) {
 	hits := []*collection.Document{
-		&collection.Document{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
+		{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
 	}
 	results := collection.SearchResult{Total: 42, Hits: hits}
 

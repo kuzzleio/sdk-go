@@ -47,8 +47,8 @@ func (dc *Collection) MReplaceDocument(documents []*Document, options types.Quer
 	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string       `json:"_id"`
-		Body interface{}  `json:"body"`
+		Id   string      `json:"_id"`
+		Body interface{} `json:"body"`
 	}
 	docs := []*CreationDocument{}
 

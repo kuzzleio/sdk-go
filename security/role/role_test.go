@@ -347,7 +347,7 @@ func ExampleSecurityRole_Search() {
 
 func TestSearchWithOptions(t *testing.T) {
 	hits := []*role.Role{
-		{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)},	
+		{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)},
 	}
 	results := role.RoleSearchResult{Total: 42, Hits: hits}
 
