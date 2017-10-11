@@ -8,9 +8,9 @@ import (
 
 // GetAllCredentialFields gets an array of strategy's fieldnames for each strategies
 func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.CredentialFields, error) {
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "getAllCredentialFields",
 	}
@@ -18,7 +18,7 @@ func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.Cred
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return types.CredentialFields{}, errors.New(res.Error.Message)
 	}
 

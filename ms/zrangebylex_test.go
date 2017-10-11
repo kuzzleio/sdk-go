@@ -47,8 +47,8 @@ func TestZrangeByLexEmptyMax(t *testing.T) {
 
 func TestZrangeByLexError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -62,7 +62,7 @@ func TestZrangeByLexError(t *testing.T) {
 
 func TestZrangeByLex(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -71,7 +71,7 @@ func TestZrangeByLex(t *testing.T) {
 			assert.Equal(t, []interface{}([]interface{}{"withscores"}), parsedQuery.Options)
 
 			r, _ := json.Marshal([]string{"bar", "rab"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -85,7 +85,7 @@ func TestZrangeByLex(t *testing.T) {
 
 func TestZrangeByLexWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -95,7 +95,7 @@ func TestZrangeByLexWithLimits(t *testing.T) {
 			assert.Equal(t, []interface{}([]interface{}{"withscores"}), parsedQuery.Options)
 
 			r, _ := json.Marshal([]string{"bar", "rab"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

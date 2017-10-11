@@ -7,14 +7,14 @@ import (
 )
 
 // Scroll passes a "scroll" option to search queries, creating persistent paginated results.
-func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (SearchResult, error) {
+func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*SearchResult, error) {
 	if scrollId == "" {
-		return SearchResult{}, errors.New("Collection.Scroll: scroll id required")
+		return &SearchResult{}, errors.New("Collection.Scroll: scroll id required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "document",
 		Action:     "scroll",
 		ScrollId:   scrollId,
@@ -23,15 +23,15 @@ func (dc Collection) Scroll(scrollId string, options types.QueryOptions) (Search
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return SearchResult{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := SearchResult{
+	searchResult := &SearchResult{
 		Collection: dc,
 		Options:    options,
 	}
-	json.Unmarshal(res.Result, &searchResult)
+	json.Unmarshal(res.Result, searchResult)
 
 	for _, d := range searchResult.Hits {
 		d.collection = dc

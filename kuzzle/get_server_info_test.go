@@ -13,13 +13,13 @@ import (
 
 func TestGetServerInfoQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "info", request.Action)
 
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -35,7 +35,7 @@ func TestGetServerInfo(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
@@ -52,7 +52,7 @@ func TestGetServerInfo(t *testing.T) {
 			si := serverInfo{msiMarsh}
 
 			info, _ := json.Marshal(si)
-			return types.KuzzleResponse{Result: info}
+			return &types.KuzzleResponse{Result: info}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

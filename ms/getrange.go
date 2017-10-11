@@ -12,13 +12,13 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 		return "", errors.New("Ms.Getrange: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "getrange",
 		Id:         key,
-		Start:      &start,
+		Start:      start,
 		End:        end,
 	}
 
@@ -26,7 +26,7 @@ func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string

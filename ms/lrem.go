@@ -12,14 +12,14 @@ func (ms Ms) Lrem(key string, count int, value string, options types.QueryOption
 		return 0, errors.New("Ms.Lrem: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value string `json:"value"`
 		Count int    `json:"count"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "lrem",
 		Id:         key,
@@ -30,7 +30,7 @@ func (ms Ms) Lrem(key string, count int, value string, options types.QueryOption
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

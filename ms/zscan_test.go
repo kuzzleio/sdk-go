@@ -18,7 +18,7 @@ func TestZscanEmptyKey(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	_, err := memoryStorage.Zscan("", &cursor, qo)
+	_, err := memoryStorage.Zscan("", cursor, qo)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Ms.Zscan: key required", fmt.Sprint(err))
@@ -26,8 +26,8 @@ func TestZscanEmptyKey(t *testing.T) {
 
 func TestZscanError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -35,7 +35,7 @@ func TestZscanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	_, err := memoryStorage.Zscan("foo", &cursor, qo)
+	_, err := memoryStorage.Zscan("foo", cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -47,7 +47,7 @@ func TestZscan(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -55,7 +55,7 @@ func TestZscan(t *testing.T) {
 			assert.Equal(t, "zscan", parsedQuery.Action)
 
 			r, _ := json.Marshal([]interface{}{"42", []string{"bar", "5", "foo", "10"}})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -63,9 +63,9 @@ func TestZscan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 42
-	res, _ := memoryStorage.Zscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Zscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func TestZscanWithOptions(t *testing.T) {
@@ -75,7 +75,7 @@ func TestZscanWithOptions(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -85,7 +85,7 @@ func TestZscanWithOptions(t *testing.T) {
 			assert.Equal(t, "*", options.GetMatch())
 
 			r, _ := json.Marshal([]interface{}{"42", []string{"bar", "5", "foo", "10"}})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -95,9 +95,9 @@ func TestZscanWithOptions(t *testing.T) {
 	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, _ := memoryStorage.Zscan("foo", &cursor, qo)
+	res, _ := memoryStorage.Zscan("foo", cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func ExampleMs_Zscan() {
@@ -109,7 +109,7 @@ func ExampleMs_Zscan() {
 	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, err := memoryStorage.Zscan("foo", &cursor, qo)
+	res, err := memoryStorage.Zscan("foo", cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

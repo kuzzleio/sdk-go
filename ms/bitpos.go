@@ -12,9 +12,9 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 		return 0, errors.New("Ms.Bitpos: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "bitpos",
 		Id:         key,
@@ -23,8 +23,7 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 
 	if options != nil {
 		if options.GetStart() != 0 {
-			var start = options.GetStart()
-			query.Start = &start
+			query.Start = options.GetStart()
 		}
 
 		if options.GetEnd() != 0 {
@@ -36,7 +35,7 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

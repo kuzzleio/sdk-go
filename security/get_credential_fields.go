@@ -12,9 +12,9 @@ func (s Security) GetCredentialFields(strategy string, options types.QueryOption
 		return types.CredentialStrategyFields{}, errors.New("Security.GetCredentialFields: strategy is required")
 	}
 
-	ch := make(chan types.KuzzleResponse)
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "security",
 		Action:     "getCredentialFields",
 		Strategy:   strategy,
@@ -23,7 +23,7 @@ func (s Security) GetCredentialFields(strategy string, options types.QueryOption
 
 	res := <-ch
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return types.CredentialStrategyFields{}, errors.New(res.Error.Message)
 	}
 

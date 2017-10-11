@@ -14,13 +14,13 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 		return 0, errors.New("Ms.Incrbyfloat: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value float64 `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "incrbyfloat",
 		Id:         key,
@@ -31,7 +31,7 @@ func (ms Ms) Incrbyfloat(key string, value float64, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

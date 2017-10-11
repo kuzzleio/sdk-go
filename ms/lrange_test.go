@@ -25,8 +25,8 @@ func TestLrangeEmptyKey(t *testing.T) {
 
 func TestLrangeError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,18 +40,18 @@ func TestLrangeError(t *testing.T) {
 
 func TestLrange(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "lrange", parsedQuery.Action)
 			assert.Equal(t, "foo", parsedQuery.Id)
-			assert.Equal(t, 1, *parsedQuery.Start)
+			assert.Equal(t, 1, parsedQuery.Start)
 			assert.Equal(t, 2, parsedQuery.Stop)
 
 			r, _ := json.Marshal([]string{"some", "results"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

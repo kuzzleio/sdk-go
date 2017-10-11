@@ -7,10 +7,10 @@ import (
 )
 
 // Search documents in the given Collection, using provided filters and option.
-func (dc Collection) Search(filters types.SearchFilters, options types.QueryOptions) (SearchResult, error) {
-	ch := make(chan types.KuzzleResponse)
+func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOptions) (*SearchResult, error) {
+	ch := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
@@ -32,16 +32,16 @@ func (dc Collection) Search(filters types.SearchFilters, options types.QueryOpti
 
 	res := <-ch
 
-	if res.Error.Message != "" {
-		return SearchResult{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &SearchResult{}, errors.New(res.Error.Message)
 	}
 
-	searchResult := SearchResult{
+	searchResult := &SearchResult{
 		Collection: dc,
 		Options:    options,
 		Filters:    filters,
 	}
-	json.Unmarshal(res.Result, &searchResult)
+	json.Unmarshal(res.Result, searchResult)
 
 	for _, d := range searchResult.Hits {
 		d.collection = dc

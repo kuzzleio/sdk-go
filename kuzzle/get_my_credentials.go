@@ -11,9 +11,9 @@ func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (j
 	if strategy == "" {
 		return nil, errors.New("Kuzzle.GetMyCredentials: strategy is required")
 	}
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "getMyCredentials",
 		Strategy:   strategy,
@@ -23,7 +23,7 @@ func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (j
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 

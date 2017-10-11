@@ -3,7 +3,6 @@ package collection
 import (
 	"encoding/json"
 	"fmt"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -14,12 +13,12 @@ import (
 
 func TestSubscribeError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
@@ -31,16 +30,16 @@ func TestSubscribe(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			room := NewRoom(*NewCollection(k, "collection", "index"), nil)
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			room := NewRoom(NewCollection(k, "collection", "index"), nil)
 			room.RoomId = "42"
 
 			marshed, _ := json.Marshal(room)
-			return types.KuzzleResponse{Result: marshed}
+			return &types.KuzzleResponse{Result: marshed}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
@@ -51,7 +50,7 @@ func TestSubscribe(t *testing.T) {
 func ExampleCollection_Subscribe() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 

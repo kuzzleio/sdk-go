@@ -14,8 +14,8 @@ import (
 
 func TestScanError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -23,7 +23,7 @@ func TestScanError(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	_, err := memoryStorage.Scan(&cursor, qo)
+	_, err := memoryStorage.Scan(cursor, qo)
 
 	assert.NotNil(t, err)
 }
@@ -35,7 +35,7 @@ func TestScan(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -43,7 +43,7 @@ func TestScan(t *testing.T) {
 			assert.Equal(t, "scan", parsedQuery.Action)
 
 			r, _ := json.Marshal(scanResponse)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -51,9 +51,9 @@ func TestScan(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	cursor := 0
-	res, _ := memoryStorage.Scan(&cursor, qo)
+	res, _ := memoryStorage.Scan(cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func TestScanWithOptions(t *testing.T) {
@@ -63,7 +63,7 @@ func TestScanWithOptions(t *testing.T) {
 	}
 
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -71,7 +71,7 @@ func TestScanWithOptions(t *testing.T) {
 			assert.Equal(t, "scan", parsedQuery.Action)
 
 			r, _ := json.Marshal(scanResponse)
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -82,9 +82,9 @@ func TestScanWithOptions(t *testing.T) {
 	qo.SetMatch("*")
 
 	cursor := 0
-	res, _ := memoryStorage.Scan(&cursor, qo)
+	res, _ := memoryStorage.Scan(cursor, qo)
 
-	assert.Equal(t, scanResponse, res)
+	assert.Equal(t, &scanResponse, res)
 }
 
 func ExampleMs_Scan() {
@@ -97,7 +97,7 @@ func ExampleMs_Scan() {
 	qo.SetMatch("*")
 
 	cursor := 0
-	res, err := memoryStorage.Scan(&cursor, qo)
+	res, err := memoryStorage.Scan(cursor, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

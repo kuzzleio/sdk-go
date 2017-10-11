@@ -13,7 +13,7 @@ func TestFlushQueue(t *testing.T) {
 	c := internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	*k.GetOfflineQueue() = append(*k.GetOfflineQueue(), types.QueryObject{RequestId: "test"})
+	*k.GetOfflineQueue() = append(*k.GetOfflineQueue(), &types.QueryObject{RequestId: "test"})
 	assert.NotEmpty(t, *k.GetOfflineQueue())
 
 	k.FlushQueue()

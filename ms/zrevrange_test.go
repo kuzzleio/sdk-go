@@ -25,8 +25,8 @@ func TestZrevRangeEmptyKey(t *testing.T) {
 
 func TestZrevRangeError(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
-			return types.KuzzleResponse{Error: types.MessageError{Message: "Unit test error"}}
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -40,7 +40,7 @@ func TestZrevRangeError(t *testing.T) {
 
 func TestZrevRange(t *testing.T) {
 	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) types.KuzzleResponse {
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -49,7 +49,7 @@ func TestZrevRange(t *testing.T) {
 			assert.Equal(t, []interface{}([]interface{}{"withscores"}), parsedQuery.Options)
 
 			r, _ := json.Marshal([]string{"bar", "5", "foo", "1.377"})
-			return types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -58,9 +58,10 @@ func TestZrevRange(t *testing.T) {
 
 	res, _ := memoryStorage.ZrevRange("foo", 0, -1, qo)
 
-	expectedResult := []types.MSSortedSet{}
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "bar", Score: 5})
-	expectedResult = append(expectedResult, types.MSSortedSet{Member: "foo", Score: 1.377})
+	expectedResult := []*types.MSSortedSet{
+		{Member: "bar", Score: 5},
+		{Member: "foo", Score: 1.377},
+	}
 
 	assert.Equal(t, expectedResult, res)
 }

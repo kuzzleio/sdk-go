@@ -7,10 +7,10 @@ import (
 )
 
 // RefreshIndex forces the provided data index to refresh on each modification
-func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (types.Shards, error) {
-	result := make(chan types.KuzzleResponse)
+func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (*types.Shards, error) {
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "index",
 		Action:     "refresh",
 		Index:      index,
@@ -19,12 +19,12 @@ func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (types.Sh
 
 	res := <-result
 
-	if res.Error.Message != "" {
-		return types.Shards{}, errors.New(res.Error.Message)
+	if res.Error != nil {
+		return &types.Shards{}, errors.New(res.Error.Message)
 	}
 
 	type s struct {
-		Shards types.Shards `json:"_shards"`
+		Shards *types.Shards `json:"_shards"`
 	}
 
 	shards := s{}

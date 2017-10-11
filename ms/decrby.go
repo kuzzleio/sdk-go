@@ -12,13 +12,13 @@ func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, err
 		return 0, errors.New("Ms.Decrby: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value int `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "decrby",
 		Id:         key,
@@ -29,7 +29,7 @@ func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, err
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

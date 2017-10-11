@@ -15,9 +15,9 @@ func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (i
 		return 0, errors.New("Ms.SisMember: member required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sismember",
 		Id:         key,
@@ -28,7 +28,7 @@ func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (i
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

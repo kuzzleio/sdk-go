@@ -12,9 +12,9 @@ func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) (
 		return nil, errors.New("Ms.Geohash: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "geohash",
 		Id:         key,
@@ -24,7 +24,7 @@ func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return nil, errors.New(res.Error.Message)
 	}
 	var returnedResult []string

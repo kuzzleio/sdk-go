@@ -15,13 +15,13 @@ func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int,
 		return 0, errors.New("Ms.Sadd: please provide at least one value")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Members []string `json:"members"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "sadd",
 		Id:         key,
@@ -32,7 +32,7 @@ func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int,
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 

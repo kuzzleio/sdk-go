@@ -16,13 +16,13 @@ func (ms Ms) Rpush(source string, values []string, options types.QueryOptions) (
 		return 0, errors.New("Ms.Rpush: please provide at least one value")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Values []string `json:"values"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "rpush",
 		Id:         source,
@@ -32,7 +32,7 @@ func (ms Ms) Rpush(source string, values []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return 0, errors.New(res.Error.Message)
 	}
 	var returnedResult int

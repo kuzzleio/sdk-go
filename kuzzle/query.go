@@ -8,9 +8,9 @@ import (
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
-func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- types.KuzzleResponse) {
-	if k.State == nil || *k.State == state.Disconnected || *k.State == state.Offline || *k.State == state.Ready {
-		responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: "This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?"}}
+func (k Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
+	if k.State == state.Disconnected || k.State == state.Offline || k.State == state.Ready {
+		responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: "This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?"}}
 		return
 	}
 
@@ -30,9 +30,8 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 		options = types.NewQueryOptions()
 	}
 
-	volatile := options.GetVolatile()
 	if options.GetVolatile() != nil {
-		query.Volatile = volatile
+		query.Volatile = options.GetVolatile()
 		query.Volatile["sdkVersion"] = version
 	} else {
 		query.Volatile = types.VolatileData{"sdkVersion": version}
@@ -41,7 +40,7 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 	jsonRequest, _ := json.Marshal(query)
 	out := map[string]interface{}{}
 	json.Unmarshal(jsonRequest, &out)
-	k.addHeaders(&out, query)
+	k.addHeaders(out, query)
 
 	refresh := options.GetRefresh()
 	if refresh != "" {
@@ -70,7 +69,7 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 
 	if err != nil {
 		if responseChannel != nil {
-			responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+			responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: err.Error()}}
 		}
 		return
 	}
@@ -78,21 +77,21 @@ func (k *Kuzzle) Query(query types.KuzzleRequest, options types.QueryOptions, re
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
 	if err != nil {
 		if responseChannel != nil {
-			responseChannel <- types.KuzzleResponse{Error: types.MessageError{Message: err.Error()}}
+			responseChannel <- &types.KuzzleResponse{Error: &types.MessageError{Message: err.Error()}}
 		}
 		return
 	}
 }
 
 // Helper function copying headers to the query data
-func (k Kuzzle) addHeaders(request *map[string]interface{}, query types.KuzzleRequest) {
+func (k Kuzzle) addHeaders(request map[string]interface{}, query *types.KuzzleRequest) {
 	if k.jwt != "" && !(query.Controller == "auth" && query.Action == "checkToken") {
-		(*request)["jwt"] = k.jwt
+		request["jwt"] = k.jwt
 	}
 
 	for k, v := range k.headers {
-		if (*request)[k] == nil {
-			(*request)[k] = v
+		if request[k] == nil {
+			request[k] = v
 		}
 	}
 }

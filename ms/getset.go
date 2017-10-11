@@ -12,13 +12,13 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 		return "", errors.New("Ms.Getset: key required")
 	}
 
-	result := make(chan types.KuzzleResponse)
+	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
 		Value string `json:"value"`
 	}
 
-	query := types.KuzzleRequest{
+	query := &types.KuzzleRequest{
 		Controller: "ms",
 		Action:     "getset",
 		Id:         key,
@@ -28,7 +28,7 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 
 	res := <-result
 
-	if res.Error.Message != "" {
+	if res.Error != nil {
 		return "", errors.New(res.Error.Message)
 	}
 	var returnedResult string
