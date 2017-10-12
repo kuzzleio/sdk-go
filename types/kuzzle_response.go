@@ -9,7 +9,7 @@ type (
 	KuzzleError struct {
 		Message string `json:"message"`
 		Stack   string `json:"stack"`
-		Status  int    `json:"status"`
+		Status  uint   `json:"status"`
 	}
 
 	KuzzleMeta struct {
@@ -41,7 +41,7 @@ type (
 		Result    json.RawMessage  `json:"result"`
 		RoomId    string           `json:"room"`
 		Channel   string           `json:"channel"`
-		Status		int 						 `json:"status"`
+		Status		uint 		  			 `json:"status"`
 		Error     *KuzzleError     `json:"error"`
 	}
 
