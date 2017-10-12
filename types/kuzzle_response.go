@@ -8,6 +8,7 @@ import (
 type (
 	KuzzleError struct {
 		Message string `json:"message"`
+		Stack   string `json:"stack"`
 		Status  int    `json:"status"`
 	}
 
@@ -40,7 +41,8 @@ type (
 		Result    json.RawMessage  `json:"result"`
 		RoomId    string           `json:"room"`
 		Channel   string           `json:"channel"`
-		Error     *KuzzleError    `json:"error"`
+		Status		int 						 `json:"status"`
+		Error     *KuzzleError     `json:"error"`
 	}
 
 	KuzzleValidationFields map[string]*struct {
@@ -193,11 +195,17 @@ type (
 )
 
 func (e *KuzzleError) Error() string {
-  if e.Status > 0 {
-    return fmt.Sprintf("[%d] %s", e.Status, e.Message)
+	msg := e.Message
+
+  if len(e.Stack) > 0 {
+    msg = fmt.Sprintf("%s\n%s", msg, e.Stack)
   }
 
-  return e.Message
+  if e.Status > 0 {
+  	msg = fmt.Sprintf("[%d] %s", msg)
+  }
+
+  return msg
 }
 
 func NewError(msg string, status ...int)  *KuzzleError {
