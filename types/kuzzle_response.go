@@ -42,18 +42,43 @@ type (
 		Error     *MessageError   `json:"error"`
 	}
 
-	// TODO Not exhaustive !
+	KuzzleValidationMultivalued struct {
+		Value    bool `json:"value"`
+		MinCount int  `json:"minCount"`
+		MaxCount int  `json:"maxCount"`
+	}
+
+	KuzzleValidationTypeOptions struct {
+		Range struct {
+			Min interface{} `json:"min"`
+			Max interface{} `json:"max"`
+		} `json:"range"`
+		Length struct {
+			Min interface{} `json:"min"`
+			Max interface{} `json:"max"`
+		} `json:"length"`
+		NotEmpty   bool     `json:"notEmpty"`
+		Formats    []string `json:"formats"`
+		Strict     bool     `json:"strict"`
+		Values     []string `json:"values"`
+		ShapeTypes []string `json:"shapeTypes"`
+	}
+
 	KuzzleValidationFields map[string]*struct {
-		Type         string   `json:"type"`
-		Path         []string `json:"path"`
-		Depth        int      `json:"depth"`
-		Mandatory    bool     `json:"mandatory"`
-		DefaultValue string   `json:"defaultValue"`
+		Type         string                      `json:"type"`
+		Path         []string                    `json:"path"`
+		Depth        int                         `json:"depth"`
+		Mandatory    bool                        `json:"mandatory"`
+		Description  string                      `json:"description"`
+		Multivalued  KuzzleValidationMultivalued `json:"multivalued"`
+		DefaultValue interface{}                 `json:"defaultValue"`
+		TypeOptions  KuzzleValidationTypeOptions `json:"typeOptions"`
 	}
 
 	KuzzleValidation struct {
-		Strict bool                    `json:"strict"`
-		Fields *KuzzleValidationFields `json:"fields"`
+		Strict     bool                    `json:"strict"`
+		Fields     *KuzzleValidationFields `json:"fields"`
+		Validators json.RawMessage         `json:"validators"`
 	}
 
 	KuzzleFieldMapping struct {
