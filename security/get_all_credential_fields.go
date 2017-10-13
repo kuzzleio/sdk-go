@@ -18,7 +18,7 @@ func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.Cred
 	res := <-ch
 
 	if res.Error != nil {
-		return types.CredentialFields{}, res.Error
+		return nil, res.Error
 	}
 
 	credentialFields := types.CredentialFields{}

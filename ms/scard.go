@@ -8,7 +8,7 @@ import (
 // Scard returns the number of members stored in a set of unique values.
 func (ms Ms) Scard(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Scard: key required")
+		return 0, types.NewError("Ms.Scard: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -8,7 +8,7 @@ import (
 // Mget returns the values of the provided keys.
 func (ms Ms) Mget(keys []string, options types.QueryOptions) ([]string, error) {
 	if len(keys) == 0 {
-		return []string{}, types.NewError("Ms.Mget: please provide at least one key")
+		return nil, types.NewError("Ms.Mget: please provide at least one key", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -23,7 +23,7 @@ func (ms Ms) Mget(keys []string, options types.QueryOptions) ([]string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, res.Error
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

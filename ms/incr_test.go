@@ -20,7 +20,7 @@ func TestIncrEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Incr("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Incr: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Incr: key required", fmt.Sprint(err))
 }
 
 func TestIncrError(t *testing.T) {

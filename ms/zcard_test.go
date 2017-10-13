@@ -20,7 +20,7 @@ func TestZcardEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zcard("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zcard: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zcard: key required", fmt.Sprint(err))
 }
 
 func TestZcardError(t *testing.T) {

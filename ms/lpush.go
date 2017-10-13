@@ -10,7 +10,7 @@ import (
 // an empty list before performing the operation.
 func (ms Ms) Lpush(key string, values []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Lpush: key required")
+		return 0, types.NewError("Ms.Lpush: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

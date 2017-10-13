@@ -20,7 +20,7 @@ func TestZremEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zrem("", []string{"bar"}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zrem: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrem: key required", fmt.Sprint(err))
 }
 
 func TestZremEmptyMembers(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZremEmptyMembers(t *testing.T) {
 	_, err := memoryStorage.Zrem("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zrem: please provide at least one member", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrem: please provide at least one member", fmt.Sprint(err))
 }
 
 func TestZremError(t *testing.T) {

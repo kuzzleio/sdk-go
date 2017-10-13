@@ -20,7 +20,7 @@ func TestLremEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Lrem("", 1, "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Lrem: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Lrem: key required", fmt.Sprint(err))
 }
 
 func TestLremError(t *testing.T) {

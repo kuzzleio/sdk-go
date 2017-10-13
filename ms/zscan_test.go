@@ -21,7 +21,7 @@ func TestZscanEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zscan("", cursor, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zscan: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zscan: key required", fmt.Sprint(err))
 }
 
 func TestZscanError(t *testing.T) {

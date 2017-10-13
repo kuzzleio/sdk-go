@@ -20,7 +20,7 @@ func TestBitcountEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Bitcount("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Bitcount: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Bitcount: key required", fmt.Sprint(err))
 }
 
 func TestBitcountError(t *testing.T) {

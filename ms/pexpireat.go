@@ -10,7 +10,7 @@ import (
 // The timestamp parameter accepts an Epoch time value, in milliseconds.
 func (ms Ms) PexpireAt(key string, timestamp int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.PexpireAt: key required")
+		return 0, types.NewError("Ms.PexpireAt: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

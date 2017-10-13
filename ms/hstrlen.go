@@ -8,10 +8,10 @@ import (
 // Hstrlen returns the string length of a field’s value in a hash.
 func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Hstrlen: key required")
+		return -1, types.NewError("Ms.Hstrlen: key required", 400)
 	}
 	if field == "" {
-		return 0, types.NewError("Ms.Hstrlen: field required")
+		return -1, types.NewError("Ms.Hstrlen: field required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -28,7 +28,7 @@ func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int,
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 
 	var returnedResult int

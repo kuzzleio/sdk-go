@@ -20,7 +20,7 @@ func TestHmgetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hmget("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hmget: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hmget: key required", fmt.Sprint(err))
 }
 
 func TestHmgetError(t *testing.T) {

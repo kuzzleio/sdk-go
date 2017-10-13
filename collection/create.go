@@ -19,12 +19,11 @@ func (dc Collection) Create(options types.QueryOptions) (*types.AckResponse, err
 
 	res := <-ch
 
-	ack := &types.AckResponse{}
-
 	if res.Error != nil {
-		return ack, res.Error
+		return nil, res.Error
 	}
 
+	ack := &types.AckResponse{}
 	json.Unmarshal(res.Result, ack)
 
 	return ack, nil

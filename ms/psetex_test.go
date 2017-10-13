@@ -20,7 +20,7 @@ func TestPsetexEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Psetex("", "bar", 60000, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Psetex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Psetex: key required", fmt.Sprint(err))
 }
 
 func TestPsetexEmptyValue(t *testing.T) {
@@ -31,7 +31,7 @@ func TestPsetexEmptyValue(t *testing.T) {
 	_, err := memoryStorage.Psetex("foo", "", 60000, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Psetex: value required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Psetex: value required", fmt.Sprint(err))
 }
 
 func TestPsetexError(t *testing.T) {

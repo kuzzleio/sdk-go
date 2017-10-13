@@ -20,7 +20,7 @@ func TestSrandMemberEmptyKey(t *testing.T) {
 	_, err := memoryStorage.SrandMember("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.SrandMember: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.SrandMember: key required", fmt.Sprint(err))
 }
 
 func TestSrandMemberError(t *testing.T) {

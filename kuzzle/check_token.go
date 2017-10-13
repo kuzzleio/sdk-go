@@ -13,10 +13,8 @@ type TokenValidity struct {
 
 // CheckToken checks the validity of a JSON Web Token.
 func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
-	tokenValidity := &TokenValidity{}
-
 	if token == "" {
-		return tokenValidity, types.NewError("Kuzzle.CheckToken: token required")
+		return nil, types.NewError("Kuzzle.CheckToken: token required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,9 +32,12 @@ func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 
 	res := <-result
 
-	if res.Error == nil {
-		json.Unmarshal(res.Result, tokenValidity)
+	if res.Error != nil {
+		return nil, res.Error
 	}
 
-	return tokenValidity, res.Error
+	tokenValidity := &TokenValidity{}
+	json.Unmarshal(res.Result, tokenValidity)
+
+	return tokenValidity, nil
 }

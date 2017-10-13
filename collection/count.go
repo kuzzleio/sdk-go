@@ -11,7 +11,8 @@ import (
 // That means that a document that was just been created won’t be returned by this function
 func (dc Collection) Count(filters interface{}, options types.QueryOptions) (int, error) {
 	type countResult struct {
-		Count int `json:"count"`
+		Count  int `json:"count"`
+		Status int
 	}
 
 	ch := make(chan *types.KuzzleResponse)

@@ -8,7 +8,7 @@ import (
 // Scroll passes a "scroll" option to search queries, creating persistent paginated results.
 func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*SearchResult, error) {
 	if scrollId == "" {
-		return &SearchResult{}, types.NewError("Collection.Scroll: scroll id required")
+		return nil, types.NewError("Collection.Scroll: scroll id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -23,7 +23,7 @@ func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*Sear
 	res := <-ch
 
 	if res.Error != nil {
-		return &SearchResult{}, res.Error
+		return nil, res.Error
 	}
 
 	searchResult := &SearchResult{

@@ -20,7 +20,7 @@ func TestSinterEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.Sinter([]string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sinter: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sinter: please provide at least one key", fmt.Sprint(err))
 }
 
 func TestSinterError(t *testing.T) {

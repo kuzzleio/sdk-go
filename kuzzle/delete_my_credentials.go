@@ -8,7 +8,7 @@ import (
 // DeleteMyCredentials delete credentials of the specified strategy for the current user.
 func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (*types.AckResponse, error) {
 	if strategy == "" {
-		return &types.AckResponse{}, types.NewError("Kuzzle.DeleteMyCredentials: strategy is required")
+		return nil, types.NewError("Kuzzle.DeleteMyCredentials: strategy is required", 400)
 	}
 
 	type body struct {
@@ -27,7 +27,7 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions)
 	res := <-result
 
 	if res.Error != nil {
-		return &types.AckResponse{}, res.Error
+		return nil, res.Error
 	}
 
 	ack := &types.AckResponse{}

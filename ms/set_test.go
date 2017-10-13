@@ -20,7 +20,7 @@ func TestSetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Set("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Set: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Set: key required", fmt.Sprint(err))
 }
 
 func TestSetError(t *testing.T) {

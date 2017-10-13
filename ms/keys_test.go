@@ -20,7 +20,7 @@ func TestKeysEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Keys("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Keys: pattern required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Keys: pattern required", fmt.Sprint(err))
 }
 
 func TestKeysError(t *testing.T) {

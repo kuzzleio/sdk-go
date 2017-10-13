@@ -9,7 +9,7 @@ import (
 // Geopos returns the longitude/latitude values for the provided key's members
 func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]*types.GeoPoint, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Geopos: key required")
+		return nil, types.NewError("Ms.Geopos: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -36,13 +36,13 @@ func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([
 		returnedResults[i] = &types.GeoPoint{}
 		tmp, err := strconv.ParseFloat(stringResults[i][0], 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 		returnedResults[i].Lon = tmp
 
 		tmp, err = strconv.ParseFloat(stringResults[i][1], 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 		returnedResults[i].Lat = tmp
 

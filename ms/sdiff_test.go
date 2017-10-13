@@ -20,7 +20,7 @@ func TestSdiffEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Sdiff("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sdiff: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sdiff: key required", fmt.Sprint(err))
 }
 
 func TestSdiffEmptySets(t *testing.T) {
@@ -31,7 +31,7 @@ func TestSdiffEmptySets(t *testing.T) {
 	_, err := memoryStorage.Sdiff("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sdiff: please provide at least one set", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sdiff: please provide at least one set", fmt.Sprint(err))
 }
 
 func TestSdiffError(t *testing.T) {

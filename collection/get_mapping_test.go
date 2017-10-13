@@ -45,7 +45,7 @@ func TestGetMappingUnknownIndex(t *testing.T) {
 
 	_, err := cl.GetMapping(nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "No mapping found for index wrong-index", fmt.Sprint(err))
+	assert.Equal(t, "[404] No mapping found for index wrong-index", fmt.Sprint(err))
 }
 
 func TestGetMappingUnknownCollection(t *testing.T) {
@@ -69,7 +69,7 @@ func TestGetMappingUnknownCollection(t *testing.T) {
 
 	_, err := cl.GetMapping(nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "No mapping found for collection wrong-collection", fmt.Sprint(err))
+	assert.Equal(t, "[404] No mapping found for collection wrong-collection", fmt.Sprint(err))
 }
 
 func TestGetMapping(t *testing.T) {

@@ -23,7 +23,7 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplace"
 		} else if options.GetIfExist() != "error" {
-			return &Document{}, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return nil, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()), 400)
 		}
 	}
 
@@ -40,7 +40,7 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, res.Error
+		return nil, res.Error
 	}
 
 	documentResponse := &Document{collection: dc}
@@ -95,12 +95,11 @@ func performMultipleCreate(dc *Collection, documents []*Document, action string,
 
 	res := <-ch
 
-	result := &SearchResult{}
-
 	if res.Error != nil {
-		return result, res.Error
+		return nil, res.Error
 	}
 
+	result := &SearchResult{}
 	json.Unmarshal(res.Result, result)
 
 	for _, d := range result.Hits {

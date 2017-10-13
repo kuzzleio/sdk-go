@@ -20,7 +20,7 @@ func TestGetbitEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Getbit("", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Getbit: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Getbit: key required", fmt.Sprint(err))
 }
 
 func TestGetbitError(t *testing.T) {

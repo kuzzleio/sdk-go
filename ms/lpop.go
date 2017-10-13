@@ -8,7 +8,7 @@ import (
 // Lpop removes and returns the first element of a list.
 func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Lpop: key required")
+		return "", types.NewError("Ms.Lpop: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -20,7 +20,7 @@ func TestAppendEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Append("", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Append: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Append: key required", fmt.Sprint(err))
 }
 
 func TestAppendError(t *testing.T) {

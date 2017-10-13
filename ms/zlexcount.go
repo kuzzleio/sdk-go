@@ -8,13 +8,13 @@ import (
 // ZlexCount counts elements in a sorted set where all members have equal score, using lexicographical ordering. The min and max values are inclusive by default. To change this behavior, please check the syntax detailed in the Redis documentation.
 func (ms Ms) ZlexCount(key string, min string, max string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.ZlexCount: key required")
+		return 0, types.NewError("Ms.ZlexCount: key required", 400)
 	}
 	if min == "" {
-		return 0, types.NewError("Ms.ZlexCount: min required")
+		return 0, types.NewError("Ms.ZlexCount: min required", 400)
 	}
 	if max == "" {
-		return 0, types.NewError("Ms.ZlexCount: max required")
+		return 0, types.NewError("Ms.ZlexCount: max required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -8,10 +8,10 @@ import (
 // Srem removes members from a set of unique values.
 func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Srem: key required")
+		return 0, types.NewError("Ms.Srem: key required", 400)
 	}
 	if len(valuesToRemove) == 0 {
-		return 0, types.NewError("Ms.Srem: please provide at least one value to remove")
+		return 0, types.NewError("Ms.Srem: please provide at least one value to remove", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

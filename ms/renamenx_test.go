@@ -20,7 +20,7 @@ func TestRenameNxEmptyKey(t *testing.T) {
 	_, err := memoryStorage.RenameNx("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.RenameNx: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.RenameNx: key required", fmt.Sprint(err))
 }
 
 func TestRenameNxEmptyNewkey(t *testing.T) {
@@ -31,7 +31,7 @@ func TestRenameNxEmptyNewkey(t *testing.T) {
 	_, err := memoryStorage.RenameNx("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.RenameNx: newkey required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.RenameNx: newkey required", fmt.Sprint(err))
 }
 
 func TestRenameNxError(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 // Lindex returns all keys matching the provided pattern.
 func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Lindex: key required")
+		return "", types.NewError("Ms.Lindex: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

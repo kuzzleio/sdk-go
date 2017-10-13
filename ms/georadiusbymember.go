@@ -9,7 +9,7 @@ import (
 // Georadiusbymember returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Georadiusbymember: key required")
+		return nil, types.NewError("Ms.Georadiusbymember: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -41,7 +41,7 @@ func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit
 // GeoradiusbymemberWithCoord returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoord, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusbymemberWithCoord: key required")
+		return nil, types.NewError("Ms.GeoradiusbymemberWithCoord: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -75,7 +75,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 		tmp := value[1].([]interface{})[0].(string)
 		tmpF, err := strconv.ParseFloat(tmp, 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Lon = tmpF
@@ -83,7 +83,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 		tmp = value[1].([]interface{})[1].(string)
 		tmpF, err = strconv.ParseFloat(tmp, 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Lat = tmpF
@@ -95,7 +95,7 @@ func (ms Ms) GeoradiusbymemberWithCoord(key string, member string, distance floa
 // GeoradiusbymemberWithDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithDist, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusbymemberWithDist: key required")
+		return nil, types.NewError("Ms.GeoradiusbymemberWithDist: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -128,7 +128,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Dist = tmpF
@@ -140,7 +140,7 @@ func (ms Ms) GeoradiusbymemberWithDist(key string, member string, distance float
 // GeoradiusbymemberWithCoordAndDist returns the geospatial members of a key inside the provided radius
 func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoordAndDist, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusbymemberWithCoordAndDist: key required")
+		return nil, types.NewError("Ms.GeoradiusbymemberWithCoordAndDist: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -173,7 +173,7 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 
 		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Dist = tmpF
@@ -181,7 +181,7 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 		tmp := value[2].([]interface{})[0].(string)
 		tmpF, err = strconv.ParseFloat(tmp, 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Lon = tmpF
@@ -189,7 +189,7 @@ func (ms Ms) GeoradiusbymemberWithCoordAndDist(key string, member string, distan
 		tmp = value[2].([]interface{})[1].(string)
 		tmpF, err = strconv.ParseFloat(tmp, 64)
 		if err != nil {
-			return nil, err
+			return nil, types.NewError(err.Error())
 		}
 
 		returnedResults[i].Lat = tmpF

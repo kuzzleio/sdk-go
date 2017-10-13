@@ -8,7 +8,7 @@ import (
 // Hdel removes fields from a hash
 func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Hdel: key required")
+		return -1, types.NewError("Ms.Hdel: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +29,7 @@ func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int,
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 
 	var returnedResult int

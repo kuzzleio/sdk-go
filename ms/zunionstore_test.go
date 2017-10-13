@@ -20,7 +20,7 @@ func TestZunionStoreEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.ZunionStore("", []string{"bar", "rab"}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZunionStore: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZunionStore: destination required", fmt.Sprint(err))
 }
 
 func TestZunionStoreEmptyKeys(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZunionStoreEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.ZunionStore("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZunionStore: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZunionStore: please provide at least one key", fmt.Sprint(err))
 }
 
 func TestZunionStoreError(t *testing.T) {

@@ -20,7 +20,7 @@ func TestPersistEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Persist("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Persist: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Persist: key required", fmt.Sprint(err))
 }
 
 func TestPersistError(t *testing.T) {

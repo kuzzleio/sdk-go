@@ -20,7 +20,7 @@ func TestGeohashEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Geohash("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Geohash: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Geohash: key required", fmt.Sprint(err))
 }
 
 func TestGeohashError(t *testing.T) {

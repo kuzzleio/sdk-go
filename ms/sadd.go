@@ -8,10 +8,10 @@ import (
 // Sadd creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Sadd(key string, values []string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Sadd: key required")
+		return 0, types.NewError("Ms.Sadd: key required", 400)
 	}
 	if len(values) == 0 {
-		return 0, types.NewError("Ms.Sadd: please provide at least one value")
+		return 0, types.NewError("Ms.Sadd: please provide at least one value", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -8,7 +8,7 @@ import (
 // Bitcount counts the number of set bits (population counting)
 func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Bitcount: key required")
+		return 0, types.NewError("Ms.Bitcount: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

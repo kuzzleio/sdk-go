@@ -9,10 +9,10 @@ import (
 // ZincrBy increments the score of a member in a sorted set by the provided value.
 func (ms Ms) ZincrBy(key string, member string, increment float64, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.ZincrBy: key required")
+		return 0, types.NewError("Ms.ZincrBy: key required", 400)
 	}
 	if member == "" {
-		return 0, types.NewError("Ms.ZincrBy: member required")
+		return 0, types.NewError("Ms.ZincrBy: member required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -40,5 +40,11 @@ func (ms Ms) ZincrBy(key string, member string, increment float64, options types
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return strconv.ParseFloat(returnedResult, 64)
+	converted, err := strconv.ParseFloat(returnedResult, 64)
+
+	if (err != nil) {
+		err = types.NewError(err.Error())
+	}
+
+	return converted, err
 }

@@ -8,7 +8,7 @@ import (
 // Spop removes and returns one or more elements at random from a set of unique values.
 func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Spop: key required")
+		return nil, types.NewError("Ms.Spop: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +30,7 @@ func (ms Ms) Spop(key string, options types.QueryOptions) (interface{}, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult interface{}

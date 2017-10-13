@@ -20,7 +20,7 @@ func TestExpireatEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Expireat("", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Expireat: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Expireat: key required", fmt.Sprint(err))
 }
 
 func TestExpireatError(t *testing.T) {

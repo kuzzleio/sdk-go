@@ -20,7 +20,7 @@ func TestBitopEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Bitop("", "", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Bitop: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Bitop: key required", fmt.Sprint(err))
 }
 
 func TestBitopError(t *testing.T) {

@@ -20,7 +20,7 @@ func TestGeoaddEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Geoadd("", []*types.GeoPoint{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Geoadd: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Geoadd: key required", fmt.Sprint(err))
 }
 
 func TestGeoaddError(t *testing.T) {

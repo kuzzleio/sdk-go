@@ -20,7 +20,7 @@ func TestZcountEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zcount("", 0, 10, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zcount: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zcount: key required", fmt.Sprint(err))
 }
 
 func TestZcountError(t *testing.T) {

@@ -8,11 +8,11 @@ import (
 // ValidateCredentials validates credentials of the specified strategy for the given user.
 func (s Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
-		return false, types.NewError("Security.ValidateCredentials: strategy is required")
+		return false, types.NewError("Security.ValidateCredentials: strategy is required", 400)
 	}
 
 	if kuid == "" {
-		return false, types.NewError("Security.ValidateCredentials: kuid is required")
+		return false, types.NewError("Security.ValidateCredentials: kuid is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

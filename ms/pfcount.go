@@ -9,7 +9,7 @@ import (
 // or of the merged HyperLogLog structures if more than 1 is provided (see pfadd).
 func (ms Ms) Pfcount(keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, types.NewError("Ms.Pfcount: please provide at least one key")
+		return 0, types.NewError("Ms.Pfcount: please provide at least one key", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

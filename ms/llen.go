@@ -8,7 +8,7 @@ import (
 // Llen counts the number of items in a list.
 func (ms Ms) Llen(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Llen: key required")
+		return 0, types.NewError("Ms.Llen: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

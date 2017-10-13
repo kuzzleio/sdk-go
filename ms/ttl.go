@@ -9,7 +9,7 @@ import (
 // or a negative value if the key does not exist or if it is persistent.
 func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Ttl: key required")
+		return 0, types.NewError("Ms.Ttl: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

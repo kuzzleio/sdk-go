@@ -10,7 +10,7 @@ import (
 // as double precision floating point number.
 func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error) {
 	if key == "" {
-		return []interface{}{}, types.NewError("Ms.Sort: key required")
+		return nil, types.NewError("Ms.Sort: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -58,7 +58,7 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 	res := <-result
 
 	if res.Error != nil {
-		return []interface{}{}, res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult []interface{}

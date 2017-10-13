@@ -20,7 +20,7 @@ func TestHsetnxEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hsetnx("", "bar", "barbar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hsetnx: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hsetnx: key required", fmt.Sprint(err))
 }
 
 func TestHsetnxEmptyField(t *testing.T) {
@@ -31,7 +31,7 @@ func TestHsetnxEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hsetnx("foo", "", "barbar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hsetnx: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hsetnx: field required", fmt.Sprint(err))
 }
 
 func TestHsetnxError(t *testing.T) {

@@ -20,7 +20,7 @@ func TestGeoradiusbymemberEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Georadiusbymember("", "member", float64(200), "km", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Georadiusbymember: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Georadiusbymember: key required", fmt.Sprint(err))
 }
 
 func TestGeoradiusbymemberError(t *testing.T) {
@@ -95,7 +95,7 @@ func TestGeoradiusbymemberWithCoordEmptyKey(t *testing.T) {
 	_, err := memoryStorage.GeoradiusbymemberWithCoord("", "member", float64(200), "km", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.GeoradiusbymemberWithCoord: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.GeoradiusbymemberWithCoord: key required", fmt.Sprint(err))
 }
 
 func TestGeoradiusbymemberWithCoordError(t *testing.T) {
@@ -265,7 +265,7 @@ func TestGeoradiusbymemberWithDistEmptyKey(t *testing.T) {
 	_, err := memoryStorage.GeoradiusbymemberWithDist("", "member", float64(200), "km", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.GeoradiusbymemberWithDist: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.GeoradiusbymemberWithDist: key required", fmt.Sprint(err))
 }
 
 func TestGeoradiusbymemberWithDistError(t *testing.T) {
@@ -387,7 +387,7 @@ func TestGeoradiusbymemberWithCoordAndDistEmptyKey(t *testing.T) {
 	_, err := memoryStorage.GeoradiusbymemberWithCoordAndDist("", "member", float64(200), "km", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.GeoradiusbymemberWithCoordAndDist: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.GeoradiusbymemberWithCoordAndDist: key required", fmt.Sprint(err))
 }
 
 func TestGeoradiusbymemberWithCoordAndDistError(t *testing.T) {

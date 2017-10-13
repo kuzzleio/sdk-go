@@ -20,7 +20,7 @@ func TestIncrbyEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Incrby("", 42, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Incrby: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Incrby: key required", fmt.Sprint(err))
 }
 
 func TestIncrbyError(t *testing.T) {

@@ -21,7 +21,7 @@ func TestSscanEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Sscan("", cursor, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sscan: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sscan: key required", fmt.Sprint(err))
 }
 
 func TestSscanError(t *testing.T) {

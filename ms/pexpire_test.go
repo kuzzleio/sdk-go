@@ -20,7 +20,7 @@ func TestPexpireEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Pexpire("", 0, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pexpire: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pexpire: key required", fmt.Sprint(err))
 }
 
 func TestPexpireError(t *testing.T) {

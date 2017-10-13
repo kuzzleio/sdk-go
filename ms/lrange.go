@@ -8,7 +8,7 @@ import (
 // Lrange returns the list elements between the start and stop positions (inclusive).
 func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Lrange: key required")
+		return nil, types.NewError("Ms.Lrange: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -20,7 +20,7 @@ func TestHincrbyfloatEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hincrbyfloat("", "bar", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hincrbyfloat: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hincrbyfloat: key required", fmt.Sprint(err))
 }
 
 func TestHincrbyfloatEmptyField(t *testing.T) {
@@ -31,7 +31,7 @@ func TestHincrbyfloatEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hincrbyfloat("foo", "", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hincrbyfloat: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hincrbyfloat: field required", fmt.Sprint(err))
 }
 
 func TestHincrbyfloatError(t *testing.T) {

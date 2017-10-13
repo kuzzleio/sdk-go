@@ -20,7 +20,7 @@ func TestZremRangeByRankEmptyKey(t *testing.T) {
 	_, err := memoryStorage.ZremRangeByRank("", 0, 42, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZremRangeByRank: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZremRangeByRank: key required", fmt.Sprint(err))
 }
 
 func TestZremRangeByRankError(t *testing.T) {

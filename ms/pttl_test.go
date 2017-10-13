@@ -20,7 +20,7 @@ func TestPttlEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Pttl("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pttl: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pttl: key required", fmt.Sprint(err))
 }
 
 func TestPttlError(t *testing.T) {

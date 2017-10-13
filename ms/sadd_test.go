@@ -20,7 +20,7 @@ func TestSaddEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Sadd("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sadd: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sadd: key required", fmt.Sprint(err))
 }
 
 func TestSaddEmptyValues(t *testing.T) {
@@ -31,7 +31,7 @@ func TestSaddEmptyValues(t *testing.T) {
 	_, err := memoryStorage.Sadd("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Sadd: please provide at least one value", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sadd: please provide at least one value", fmt.Sprint(err))
 }
 
 func TestSaddError(t *testing.T) {

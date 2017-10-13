@@ -36,7 +36,7 @@ func TestCreateDocumentWrongOptionError(t *testing.T) {
 	opts.SetIfExist("unknown")
 
 	_, err := newCollection.CreateDocument("id", &collection.Document{Content: []byte(`{"title":"yolo"}`)}, opts)
-	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
+	assert.Equal(t, "[400] Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
 
 func TestCreateDocument(t *testing.T) {

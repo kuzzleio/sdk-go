@@ -20,7 +20,7 @@ func TestHgetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hget("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hget: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hget: key required", fmt.Sprint(err))
 }
 
 func TestHgetEmptyField(t *testing.T) {
@@ -31,7 +31,7 @@ func TestHgetEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hget("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hget: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hget: field required", fmt.Sprint(err))
 }
 
 func TestHgetError(t *testing.T) {

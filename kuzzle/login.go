@@ -10,7 +10,7 @@ import (
 // If login success, store the jwtToken into kuzzle object.
 func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int) (string, error) {
 	if strategy == "" {
-		return "", types.NewError("Kuzzle.Login: cannot authenticate to Kuzzle without an authentication strategy")
+		return "", types.NewError("Kuzzle.Login: cannot authenticate to Kuzzle without an authentication strategy", 400)
 	}
 
 	type loginResult struct {
@@ -44,9 +44,8 @@ func (k *Kuzzle) Login(strategy string, credentials interface{}, expiresIn *int)
 	json.Unmarshal(res.Result, &token)
 
 	if res.Error != nil {
-		err := res.Error
-		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: false, Error: err})
-		return "", err
+		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: false, Error: res.Error})
+		return "", res.Error
 	}
 
 	k.SetJwt(token.Jwt)

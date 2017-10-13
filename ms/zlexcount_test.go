@@ -20,7 +20,7 @@ func TestZlexCountEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.ZlexCount("", "[b", "[f", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZlexCount: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZlexCount: key required", fmt.Sprint(err))
 }
 
 func TestZlexCountEmptyMin(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZlexCountEmptyMin(t *testing.T) {
 	_, err := memoryStorage.ZlexCount("foo", "", "[f", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZlexCount: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZlexCount: min required", fmt.Sprint(err))
 }
 
 func TestZlexCountEmptyMax(t *testing.T) {
@@ -42,7 +42,7 @@ func TestZlexCountEmptyMax(t *testing.T) {
 	_, err := memoryStorage.ZlexCount("foo", "[b", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZlexCount: max required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZlexCount: max required", fmt.Sprint(err))
 }
 
 func TestZlexCountError(t *testing.T) {

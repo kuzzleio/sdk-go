@@ -8,7 +8,7 @@ import (
 // Geoadd deletes all keys from the database
 func (ms Ms) Geoadd(key string, points []*types.GeoPoint, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Geoadd: key required")
+		return 0, types.NewError("Ms.Geoadd: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

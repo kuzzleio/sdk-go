@@ -8,11 +8,11 @@ import (
 // GetCredentials gets credential information of the specified strategy for the given user.
 func (s Security) GetCredentials(strategy string, kuid string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
-		return nil, types.NewError("Security.GetCredentials: strategy is required")
+		return nil, types.NewError("Security.GetCredentials: strategy is required", 400)
 	}
 
 	if kuid == "" {
-		return nil, types.NewError("Security.GetCredentials: kuid is required")
+		return nil, types.NewError("Security.GetCredentials: kuid is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

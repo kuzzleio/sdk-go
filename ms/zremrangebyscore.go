@@ -9,7 +9,7 @@ import (
 // ZremRangeByScore removes members from a sorted set with a score between min and max (inclusive by default).
 func (ms Ms) ZremRangeByScore(key string, min float64, max float64, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.ZremRangeByScore: key required")
+		return 0, types.NewError("Ms.ZremRangeByScore: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

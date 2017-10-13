@@ -20,7 +20,7 @@ func TestLinsertEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Linsert("", "position", "pivot", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Linsert: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Linsert: key required", fmt.Sprint(err))
 }
 
 func TestLinsertError(t *testing.T) {

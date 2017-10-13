@@ -20,7 +20,7 @@ func TestGetrangeEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Getrange("", 1, 2, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Getrange: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Getrange: key required", fmt.Sprint(err))
 }
 
 func TestGetrangeError(t *testing.T) {

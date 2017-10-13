@@ -8,7 +8,7 @@ import (
 // Decrby decrements the value of a key by a given value
 func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Decrby: key required")
+		return 0, types.NewError("Ms.Decrby: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

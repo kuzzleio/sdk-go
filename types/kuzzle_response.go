@@ -33,7 +33,7 @@ type (
 		RequestId string        `json:"requestId"`
 		Result    *KuzzleResult `json:"result"`
 		RoomId    string        `json:"room"`
-		Error     *KuzzleError `json:"error"`
+		Error     *KuzzleError  `json:"error"`
 	}
 
 	KuzzleResponse struct {
@@ -202,7 +202,7 @@ func (e *KuzzleError) Error() string {
   }
 
   if e.Status > 0 {
-  	msg = fmt.Sprintf("[%d] %s", msg)
+  	msg = fmt.Sprintf("[%d] %s", e.Status, msg)
   }
 
   return msg

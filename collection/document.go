@@ -1,7 +1,6 @@
 package collection
 
 import (
-	"fmt"
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
@@ -45,13 +44,14 @@ func (d Document) SourceToMap() DocumentContent {
 // Helper function to initialize a document into Document using fetch query.
 func (d *Document) Fetch(id string) (*Document, error) {
 	if id == "" {
-		return d, types.NewError("Document.Fetch: missing document id")
+		return d, types.NewError("Document.Fetch: missing document id", 400)
 	}
 
 	doc, err := d.collection.FetchDocument(id, nil)
 
 	if err != nil {
-		return d, types.NewError("Document.Fetch: an error occurred: " + fmt.Sprint(err))
+		err.(*types.KuzzleError).Message = "Document.Fetch: an error occurred: " + err.(*types.KuzzleError).Message
+		return d, err
 	}
 
 	d.Id = id
@@ -69,7 +69,7 @@ func (d *Document) Fetch(id string) (*Document, error) {
 func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) chan *types.SubscribeResponse {
 	if d.Id == "" {
 		errorResponse := make(chan *types.SubscribeResponse, 1)
-		errorResponse <- &types.SubscribeResponse{Error: types.NewError("Document.Subscribe: cannot subscribe to a document if no ID has been provided")}
+		errorResponse <- &types.SubscribeResponse{Error: types.NewError("Document.Subscribe: cannot subscribe to a document if no ID has been provided", 400)}
 
 		return errorResponse
 	}
@@ -91,7 +91,7 @@ func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNo
 */
 func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 	if d.Id == "" {
-		return d, types.NewError("Document.Save: missing document id")
+		return d, types.NewError("Document.Save: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -121,7 +121,7 @@ func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 */
 func (d *Document) Refresh(options types.QueryOptions) (*Document, error) {
 	if d.Id == "" {
-		return d, types.NewError("Document.Refresh: missing document id")
+		return d, types.NewError("Document.Refresh: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -235,7 +235,7 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 */
 func (d Document) Exists(options types.QueryOptions) (bool, error) {
 	if d.Id == "" {
-		return false, types.NewError("Document.Exists: missing document id")
+		return false, types.NewError("Document.Exists: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -266,7 +266,7 @@ func (d Document) Exists(options types.QueryOptions) (bool, error) {
 */
 func (d Document) Delete(options types.QueryOptions) (string, error) {
 	if d.Id == "" {
-		return "", types.NewError("Document.Delete: missing document id")
+		return "", types.NewError("Document.Delete: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)

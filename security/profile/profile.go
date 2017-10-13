@@ -15,7 +15,7 @@ type Profile struct {
 	Id     string            `json:"_id"`
 	Source json.RawMessage   `json:"_source"`
 	Meta   *types.KuzzleMeta `json:"_meta"`
-	SP     *SecurityProfile
+	SP     *SecurityProfile  `json:"-"`
 }
 
 type ProfileSearchResult struct {
@@ -80,7 +80,7 @@ func (p Profile) Delete(options types.QueryOptions) (string, error) {
 // Fetch retrieves a Profile using its provided unique id.
 func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, types.NewError("Security.Profile.Fetch: profile id required")
+		return nil, types.NewError("Security.Profile.Fetch: profile id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -96,13 +96,11 @@ func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profil
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, res.Error
+		return nil, res.Error
 	}
 
-	profile := &Profile{}
+	profile := &Profile{SP: sp}
 	json.Unmarshal(res.Result, profile)
-	profile.SP = sp
-
 	return profile, nil
 }
 
@@ -131,7 +129,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 	res := <-ch
 
 	if res.Error != nil {
-		return &ProfileSearchResult{}, res.Error
+		return nil, res.Error
 	}
 
 	searchResult := &ProfileSearchResult{}
@@ -143,7 +141,7 @@ func (sp SecurityProfile) Search(filters interface{}, options types.QueryOptions
 // Scroll executes a scroll search on Profiles.
 func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*ProfileSearchResult, error) {
 	if scrollId == "" {
-		return &ProfileSearchResult{}, types.NewError("Security.Profile.Scroll: scroll id required")
+		return nil, types.NewError("Security.Profile.Scroll: scroll id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -159,7 +157,7 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*
 	res := <-ch
 
 	if res.Error != nil {
-		return &ProfileSearchResult{}, res.Error
+		return nil, res.Error
 	}
 
 	searchResult := &ProfileSearchResult{}
@@ -170,8 +168,9 @@ func (sp SecurityProfile) Scroll(scrollId string, options types.QueryOptions) (*
 
 // Create a new Profile in Kuzzle.
 func (sp *SecurityProfile) Create(id string, policies *types.Policies, options types.QueryOptions) (*Profile, error) {
+	print("policies = ", options)
 	if id == "" {
-		return &Profile{}, types.NewError("Security.Profile.Create: profile id required")
+		return nil, types.NewError("Security.Profile.Create: profile id required", 400)
 	}
 
 	action := "createProfile"
@@ -180,7 +179,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 		if options.GetIfExist() == "replace" {
 			action = "createOrReplaceProfile"
 		} else if options.GetIfExist() != "error" {
-			return &Profile{}, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()))
+			return nil, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()), 400)
 		}
 	}
 
@@ -197,12 +196,11 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, res.Error
+		return nil, res.Error
 	}
 
-	profile := &Profile{}
+	profile := &Profile{SP: sp}
 	json.Unmarshal(res.Result, profile)
-	profile.SP = sp
 
 	return profile, nil
 }
@@ -210,7 +208,7 @@ func (sp *SecurityProfile) Create(id string, policies *types.Policies, options t
 // Update a Profile in Kuzzle.
 func (sp *SecurityProfile) Update(id string, policies *types.Policies, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, types.NewError("Security.Profile.Update: profile id required")
+		return nil, types.NewError("Security.Profile.Update: profile id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -226,12 +224,11 @@ func (sp *SecurityProfile) Update(id string, policies *types.Policies, options t
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, res.Error
+		return nil, res.Error
 	}
 
-	profile := &Profile{}
+	profile := &Profile{SP: sp}
 	json.Unmarshal(res.Result, profile)
-	profile.SP = sp
 
 	return profile, nil
 }
@@ -241,7 +238,7 @@ func (sp *SecurityProfile) Update(id string, policies *types.Policies, options t
 // This means that a profile that has just been deleted will still be returned by this function.
 func (sp SecurityProfile) Delete(id string, options types.QueryOptions) (string, error) {
 	if id == "" {
-		return "", types.NewError("Security.Profile.Delete: profile id required")
+		return "", types.NewError("Security.Profile.Delete: profile id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)

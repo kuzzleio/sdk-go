@@ -18,12 +18,12 @@ func (dc Collection) Truncate(options types.QueryOptions) (*types.AckResponse, e
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
-	ack := &types.AckResponse{}
 
 	if res.Error != nil {
-		return ack, res.Error
+		return nil, res.Error
 	}
 
+	ack := &types.AckResponse{}
 	json.Unmarshal(res.Result, ack)
 
 	return ack, nil

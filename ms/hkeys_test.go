@@ -20,7 +20,7 @@ func TestHkeysEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hkeys("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hkeys: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hkeys: key required", fmt.Sprint(err))
 }
 
 func TestHkeysError(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 // If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incrby(key string, value int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Incrby: key required")
+		return 0, types.NewError("Ms.Incrby: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

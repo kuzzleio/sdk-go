@@ -9,7 +9,7 @@ import (
 func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
-			return false, types.NewError("Kuzzle.SetAutoRefresh: index required")
+			return false, types.NewError("Kuzzle.SetAutoRefresh: index required", 400)
 		}
 		index = k.defaultIndex
 	}

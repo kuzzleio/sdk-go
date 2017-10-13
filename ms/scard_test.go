@@ -20,7 +20,7 @@ func TestScardEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Scard("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Scard: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Scard: key required", fmt.Sprint(err))
 }
 
 func TestScardError(t *testing.T) {

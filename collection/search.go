@@ -32,7 +32,7 @@ func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOp
 	res := <-ch
 
 	if res.Error != nil {
-		return &SearchResult{}, res.Error
+		return nil, res.Error
 	}
 
 	searchResult := &SearchResult{

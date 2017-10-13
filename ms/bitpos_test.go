@@ -20,7 +20,7 @@ func TestBitposEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Bitpos("", 0, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Bitpos: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Bitpos: key required", fmt.Sprint(err))
 }
 
 func TestBitposError(t *testing.T) {

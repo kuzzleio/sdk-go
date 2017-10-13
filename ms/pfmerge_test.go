@@ -20,7 +20,7 @@ func TestPfmergeEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Pfmerge("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pfmerge: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfmerge: key required", fmt.Sprint(err))
 }
 
 func TestPfmergeEmptySources(t *testing.T) {
@@ -31,7 +31,7 @@ func TestPfmergeEmptySources(t *testing.T) {
 	_, err := memoryStorage.Pfmerge("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pfmerge: please provide at least one source", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfmerge: please provide at least one source", fmt.Sprint(err))
 }
 
 func TestPfmergeError(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 // ZrangeByScore returns all the elements in the sorted set at key with a score between min and max (inclusive). The elements are considered to be ordered from low to high scores.
 func (ms Ms) ZrangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []*types.MSSortedSet{}, types.NewError("Ms.ZrangeByScore: key required")
+		return nil, types.NewError("Ms.ZrangeByScore: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,11 +29,11 @@ func (ms Ms) ZrangeByScore(key string, min float64, max float64, options types.Q
 	res := <-result
 
 	if res.Error != nil {
-		return []*types.MSSortedSet{}, res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return mapZrangeResults(returnedResult), nil
+	return mapZrangeResults(returnedResult)
 }

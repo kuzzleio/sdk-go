@@ -9,11 +9,11 @@ import (
 // CreateCredentials creates credential of the specified strategy for the given user.
 func (s Security) CreateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
-		return nil, types.NewError("Security.CreateCredentials: strategy is required")
+		return nil, types.NewError("Security.CreateCredentials: strategy is required", 400)
 	}
 
 	if kuid == "" {
-		return nil, types.NewError("Security.CreateCredentials: kuid is required")
+		return nil, types.NewError("Security.CreateCredentials: kuid is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

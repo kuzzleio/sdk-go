@@ -51,8 +51,9 @@ func TestPublishMessage(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(&Document{Title: "yolo"}, nil)
-	assert.Equal(t, true, res.Published)
+	coll := collection.NewCollection(k, "collection", "index")
+	res, _ := coll.PublishMessage(&Document{Title: "yolo"}, nil)
+	assert.Equal(t, coll, res)
 }
 
 func ExampleCollection_PublishMessage() {
@@ -70,5 +71,5 @@ func ExampleCollection_PublishMessage() {
 		return
 	}
 
-	fmt.Println(res.Published)
+	fmt.Println(res)
 }

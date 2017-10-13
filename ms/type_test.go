@@ -20,7 +20,7 @@ func TestTypeEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.Type("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Type: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Type: key required", fmt.Sprint(err))
 }
 
 func TestTypeError(t *testing.T) {

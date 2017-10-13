@@ -20,7 +20,7 @@ func TestZrevRangeByScoreEmptyKey(t *testing.T) {
 	_, err := memoryStorage.ZrevRangeByScore("", 1, 6, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrevRangeByScore: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByScore: key required", fmt.Sprint(err))
 }
 
 func TestZrevRangeByScoreError(t *testing.T) {

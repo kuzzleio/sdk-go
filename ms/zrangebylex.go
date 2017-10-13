@@ -8,13 +8,13 @@ import (
 // ZrangeByLex returns elements in a sorted set where all members have equal score, using lexicographical ordering. The min and max values are inclusive by default. To change this behavior, please check the full documentation.
 func (ms Ms) ZrangeByLex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, types.NewError("Ms.ZrangeByLex: key required")
+		return nil, types.NewError("Ms.ZrangeByLex: key required", 400)
 	}
 	if min == "" {
-		return []string{}, types.NewError("Ms.ZrangeByLex: min required")
+		return nil, types.NewError("Ms.ZrangeByLex: min required", 400)
 	}
 	if max == "" {
-		return []string{}, types.NewError("Ms.ZrangeByLex: max required")
+		return nil, types.NewError("Ms.ZrangeByLex: max required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +34,7 @@ func (ms Ms) ZrangeByLex(key string, min string, max string, options types.Query
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult []string

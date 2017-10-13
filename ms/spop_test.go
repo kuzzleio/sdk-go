@@ -20,7 +20,7 @@ func TestSpopEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Spop("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Spop: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Spop: key required", fmt.Sprint(err))
 }
 
 func TestSpopError(t *testing.T) {

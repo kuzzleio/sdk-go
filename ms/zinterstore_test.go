@@ -20,7 +20,7 @@ func TestZinterStoreEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.ZinterStore("", []string{"bar", "rab"}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZinterStore: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZinterStore: destination required", fmt.Sprint(err))
 }
 
 func TestZinterStoreEmptyKeys(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZinterStoreEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.ZinterStore("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZinterStore: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZinterStore: please provide at least one key", fmt.Sprint(err))
 }
 
 func TestZinterStoreError(t *testing.T) {

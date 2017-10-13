@@ -21,7 +21,7 @@ func TestHscanEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hscan("", cur, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hscan: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hscan: key required", fmt.Sprint(err))
 }
 
 func TestHscanError(t *testing.T) {

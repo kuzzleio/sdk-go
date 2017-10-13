@@ -9,7 +9,7 @@ import (
 // UpdateMyCredentials update credentials of the specified strategy for the current user.
 func (k Kuzzle) UpdateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
-		return nil, types.NewError("Kuzzle.UpdateMyCredentials: strategy is required")
+		return nil, types.NewError("Kuzzle.UpdateMyCredentials: strategy is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

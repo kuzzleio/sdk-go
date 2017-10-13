@@ -20,7 +20,7 @@ func TestHmsetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hmset: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hmset: key required", fmt.Sprint(err))
 }
 
 func TestHmsetError(t *testing.T) {

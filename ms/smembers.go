@@ -8,7 +8,7 @@ import (
 // Smembers returns the members of a set of unique values.
 func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, types.NewError("Ms.Smembers: key required")
+		return nil, types.NewError("Ms.Smembers: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -24,7 +24,7 @@ func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) 
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult []string

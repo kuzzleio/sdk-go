@@ -20,7 +20,7 @@ func TestStrlenEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Strlen("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Strlen: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Strlen: key required", fmt.Sprint(err))
 }
 
 func TestStrlenError(t *testing.T) {

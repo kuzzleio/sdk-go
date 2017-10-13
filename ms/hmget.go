@@ -8,7 +8,7 @@ import (
 // Hmget returns the values of the specified hash’s fields.
 func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Hmget: key required")
+		return nil, types.NewError("Ms.Hmget: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

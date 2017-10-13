@@ -20,7 +20,7 @@ func TestLpushEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Lpush("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Lpush: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Lpush: key required", fmt.Sprint(err))
 }
 
 func TestLpushError(t *testing.T) {

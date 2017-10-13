@@ -20,7 +20,7 @@ func TestGetsetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Getset("", "foo", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Getset: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Getset: key required", fmt.Sprint(err))
 }
 
 func TestGetsetError(t *testing.T) {

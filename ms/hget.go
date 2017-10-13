@@ -8,10 +8,10 @@ import (
 // Hget returns the field's value of a hash
 func (ms Ms) Hget(key string, field string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Hget: key required")
+		return "", types.NewError("Ms.Hget: key required", 400)
 	}
 	if field == "" {
-		return "", types.NewError("Ms.Hget: field required")
+		return "", types.NewError("Ms.Hget: field required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

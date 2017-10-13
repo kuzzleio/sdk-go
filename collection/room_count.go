@@ -22,7 +22,7 @@ func (room Room) Count() (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 
 	count := struct {

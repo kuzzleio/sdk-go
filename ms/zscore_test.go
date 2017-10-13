@@ -20,7 +20,7 @@ func TestZscoreEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zscore("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zscore: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zscore: key required", fmt.Sprint(err))
 }
 
 func TestZscoreEmptyMember(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZscoreEmptyMember(t *testing.T) {
 	_, err := memoryStorage.Zscore("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zscore: member required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zscore: member required", fmt.Sprint(err))
 }
 
 func TestZscoreError(t *testing.T) {

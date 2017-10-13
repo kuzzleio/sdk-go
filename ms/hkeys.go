@@ -8,7 +8,7 @@ import (
 // Hkeys returns all the field names contained in a hash
 func (ms Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Hkeys: key required")
+		return nil, types.NewError("Ms.Hkeys: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

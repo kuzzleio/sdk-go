@@ -20,7 +20,7 @@ func TestDecrbyEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Decrby("", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Decrby: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Decrby: key required", fmt.Sprint(err))
 }
 
 func TestDecrbyError(t *testing.T) {

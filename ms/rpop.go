@@ -8,7 +8,7 @@ import (
 // Rpop removes and returns the last element of a list.
 func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Rpop: key required")
+		return "", types.NewError("Ms.Rpop: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

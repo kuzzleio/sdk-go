@@ -20,7 +20,7 @@ func TestRpushxEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Rpushx("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Rpushx: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Rpushx: key required", fmt.Sprint(err))
 }
 
 func TestRpushxEmptyValue(t *testing.T) {
@@ -31,7 +31,7 @@ func TestRpushxEmptyValue(t *testing.T) {
 	_, err := memoryStorage.Rpushx("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Rpushx: value required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Rpushx: value required", fmt.Sprint(err))
 }
 
 func TestRpushxError(t *testing.T) {

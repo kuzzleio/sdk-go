@@ -18,7 +18,7 @@ func (k Kuzzle) Now(options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 
 	type now struct {

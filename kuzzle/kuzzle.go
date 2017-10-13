@@ -94,7 +94,7 @@ func (k Kuzzle) Connect() error {
 		return nil
 	}
 
-	return err
+	return types.NewError(err.Error())
 }
 
 func (k Kuzzle) GetOfflineQueue() *[]*types.QueryObject {

@@ -8,13 +8,13 @@ import (
 // ZrevRangeByLex is identical to zrangebylex except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, types.NewError("Ms.ZrevRangeByLex: key required")
+		return nil, types.NewError("Ms.ZrevRangeByLex: key required", 400)
 	}
 	if min == "" {
-		return []string{}, types.NewError("Ms.ZrevRangeByLex: min required")
+		return nil, types.NewError("Ms.ZrevRangeByLex: min required", 400)
 	}
 	if max == "" {
-		return []string{}, types.NewError("Ms.ZrevRangeByLex: max required")
+		return nil, types.NewError("Ms.ZrevRangeByLex: max required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +34,7 @@ func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.Qu
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, res.Error
+		return nil, res.Error
 	}
 
 	var returnedResult []string

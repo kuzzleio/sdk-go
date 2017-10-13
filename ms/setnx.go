@@ -8,7 +8,7 @@ import (
 // SetNx sets a value on a key, only if it does not already exist.
 func (ms Ms) SetNx(key string, value interface{}, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.SetNx: key required")
+		return 0, types.NewError("Ms.SetNx: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

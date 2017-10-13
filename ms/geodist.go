@@ -8,7 +8,7 @@ import (
 // Geodist gets the distance between two geospatial members of a key (see geoadd)
 func (ms Ms) Geodist(key string, member1 string, member2 string, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Geodist: key required")
+		return 0, types.NewError("Ms.Geodist: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -9,7 +9,7 @@ import (
 func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*types.CollectionsList, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
-			return nil, types.NewError("Kuzzle.ListCollections: index required")
+			return nil, types.NewError("Kuzzle.ListCollections: index required", 400)
 		}
 		index = k.defaultIndex
 	}

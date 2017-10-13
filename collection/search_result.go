@@ -52,5 +52,5 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 		}
 	}
 
-	return &SearchResult{}, types.NewError("SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters")
+	return nil, types.NewError("SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", 400)
 }

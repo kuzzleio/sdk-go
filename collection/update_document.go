@@ -8,7 +8,7 @@ import (
 // UpdateDocument updates a document in Kuzzle.
 func (dc *Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (*Document, error) {
 	if id == "" {
-		return &Document{}, types.NewError("Collection.UpdateDocument: document id required")
+		return nil, types.NewError("Collection.UpdateDocument: document id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -26,7 +26,7 @@ func (dc *Collection) UpdateDocument(id string, document interface{}, options ty
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, res.Error
+		return nil, res.Error
 	}
 
 	documentResponse := &Document{collection: dc}
@@ -37,10 +37,8 @@ func (dc *Collection) UpdateDocument(id string, document interface{}, options ty
 
 // MUpdateDocument update the provided documents.
 func (dc *Collection) MUpdateDocument(documents []*Document, options types.QueryOptions) (*SearchResult, error) {
-	result := &SearchResult{}
-
 	if len(documents) == 0 {
-		return result, types.NewError("Collection.MUpdateDocument: please provide at least one document to update")
+		return nil, types.NewError("Collection.MUpdateDocument: please provide at least one document to update", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -74,9 +72,10 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 	res := <-ch
 
 	if res.Error != nil {
-		return result, res.Error
+		return nil, res.Error
 	}
 
+	result := &SearchResult{}
 	json.Unmarshal(res.Result, result)
 
 	for _, d := range result.Hits {

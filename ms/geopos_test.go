@@ -20,7 +20,7 @@ func TestGeoposEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Geopos("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Geopos: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Geopos: key required", fmt.Sprint(err))
 }
 
 func TestGeoposError(t *testing.T) {

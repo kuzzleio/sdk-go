@@ -9,7 +9,7 @@ import (
 // contain only the specified range of elements specified.
 func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Ltrim: key required")
+		return "", types.NewError("Ms.Ltrim: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

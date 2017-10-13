@@ -8,7 +8,7 @@ import (
 // FetchDocument retrieves a Document using its provided unique id.
 func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Document, error) {
 	if id == "" {
-		return &Document{}, types.NewError("Collection.FetchDocument: document id required")
+		return nil, types.NewError("Collection.FetchDocument: document id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -25,7 +25,7 @@ func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Doc
 	res := <-ch
 
 	if res.Error != nil {
-		return &Document{}, res.Error
+		return nil, res.Error
 	}
 
 	document := &Document{collection: dc}
@@ -36,10 +36,8 @@ func (dc *Collection) FetchDocument(id string, options types.QueryOptions) (*Doc
 
 // MGetDocument fetches specific documents according to given IDs.
 func (dc *Collection) MGetDocument(ids []string, options types.QueryOptions) (*SearchResult, error) {
-	result := &SearchResult{}
-
 	if len(ids) == 0 {
-		return result, types.NewError("Collection.MGetDocument: please provide at least one id of document to retrieve")
+		return nil, types.NewError("Collection.MGetDocument: please provide at least one id of document to retrieve", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -60,9 +58,10 @@ func (dc *Collection) MGetDocument(ids []string, options types.QueryOptions) (*S
 	res := <-ch
 
 	if res.Error != nil {
-		return result, res.Error
+		return nil, res.Error
 	}
 
+	result := &SearchResult{}
 	json.Unmarshal(res.Result, result)
 
 	for _, d := range result.Hits {

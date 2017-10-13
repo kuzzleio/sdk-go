@@ -245,8 +245,8 @@ func TestProfileSave(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-
 	p, _ := security.NewSecurity(k).Profile.Fetch(id, nil)
+
 	newPolicies := []types.Policy{
 		{RoleId: "newRoleId", AllowInternalIndex: true},
 		{RoleId: "otherRoleId", RestrictedTo: []*types.PolicyRestriction{{Index: "index", Collections: []string{"foo", "bar"}}}},
@@ -258,6 +258,7 @@ func TestProfileSave(t *testing.T) {
 	}
 	newProfile, _ := p.Save(nil)
 
+	assert.NotNil(t, newProfile)
 	assert.Equal(t, expectedNewProfile.Id, newProfile.Id)
 	assert.Equal(t, expectedNewProfile.Source, newProfile.Source)
 	assert.Equal(t, expectedNewProfile.GetPolicies(), newProfile.GetPolicies())
@@ -815,7 +816,7 @@ func TestCreateWithWrongOption(t *testing.T) {
 
 	_, err := security.NewSecurity(k).Profile.Create(id, &types.Policies{Policies: policies}, opts)
 
-	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
+	assert.Equal(t, "[400] Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
 
 func TestUpdateEmptyId(t *testing.T) {

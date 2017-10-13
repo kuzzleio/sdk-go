@@ -20,7 +20,7 @@ func TestZrangeEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zrange("", 0, -1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zrange: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrange: key required", fmt.Sprint(err))
 }
 
 func TestZrangeError(t *testing.T) {

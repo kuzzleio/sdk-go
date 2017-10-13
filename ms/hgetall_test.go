@@ -20,7 +20,7 @@ func TestHgetallEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hgetall("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hgetall: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hgetall: key required", fmt.Sprint(err))
 }
 
 func TestHgetallError(t *testing.T) {

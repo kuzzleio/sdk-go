@@ -8,7 +8,7 @@ import (
 // Hlen returns the number of members of a hash
 func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, types.NewError("Ms.Hlen: key required")
+		return -1, types.NewError("Ms.Hlen: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -24,7 +24,7 @@ func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

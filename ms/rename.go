@@ -8,10 +8,10 @@ import (
 // Rename renames a key to newkey. If newkey already exists, it is overwritten.
 func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Rename: key required")
+		return "", types.NewError("Ms.Rename: key required", 400)
 	}
 	if newkey == "" {
-		return "", types.NewError("Ms.Rename: newkey required")
+		return "", types.NewError("Ms.Rename: newkey required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

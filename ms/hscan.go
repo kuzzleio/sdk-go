@@ -14,7 +14,7 @@ type HscanResponse struct {
 // Hscan is identical to scan, except that hscan iterates the fields contained in a hash.
 func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanResponse, error) {
 	if key == "" {
-		return &HscanResponse{}, types.NewError("Ms.Hscan: key required")
+		return nil, types.NewError("Ms.Hscan: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -41,7 +41,7 @@ func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanRe
 	res := <-result
 
 	if res.Error != nil {
-		return &HscanResponse{}, res.Error
+		return nil, res.Error
 	}
 
 	var stringResult []interface{}
@@ -51,7 +51,7 @@ func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanRe
 
 	tmp, err := strconv.ParseInt(stringResult[0].(string), 10, 0)
 	if err != nil {
-		return returnedResult, err
+		return returnedResult, types.NewError(err.Error())
 	}
 	returnedResult.Cursor = int(tmp)
 

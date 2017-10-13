@@ -19,7 +19,7 @@ func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (*types.S
 	res := <-result
 
 	if res.Error != nil {
-		return &types.Shards{}, res.Error
+		return nil, res.Error
 	}
 
 	type s struct {

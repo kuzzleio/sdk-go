@@ -8,7 +8,7 @@ import (
 // CreateIndex create a new empty data index, with no associated mapping.
 func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.AckResponse, error) {
 	if index == "" {
-		return &types.AckResponse{}, types.NewError("Kuzzle.createIndex: index required")
+		return nil, types.NewError("Kuzzle.createIndex: index required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -23,7 +23,7 @@ func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (*types.Ac
 	res := <-result
 
 	if res.Error != nil {
-		return &types.AckResponse{}, res.Error
+		return nil, res.Error
 	}
 
 	ack := &types.AckResponse{}

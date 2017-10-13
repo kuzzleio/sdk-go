@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -146,7 +145,7 @@ func TestDocumentFetchEmptyId(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 	_, err := dc.Document().Fetch("")
 
-	assert.Equal(t, "Document.Fetch: missing document id", fmt.Sprint(err))
+	assert.Equal(t, "[400] Document.Fetch: missing document id", fmt.Sprint(err))
 }
 
 func TestDocumentFetchError(t *testing.T) {
@@ -214,7 +213,7 @@ func TestDocumentSubscribeEmptyId(t *testing.T) {
 	res := <-cd.Subscribe(types.NewRoomOptions(), ch)
 
 	assert.Nil(t, res.Room)
-	assert.Equal(t, "Document.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
+	assert.Equal(t, "[400] Document.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
 }
 
 func TestDocumentSubscribe(t *testing.T) {
@@ -291,7 +290,7 @@ func TestDocumentSaveEmptyId(t *testing.T) {
 	_, err := dc.Document().Save(nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Document.Save: missing document id", fmt.Sprint(err))
+	assert.Equal(t, "[400] Document.Save: missing document id", fmt.Sprint(err))
 }
 
 func TestDocumentSaveError(t *testing.T) {
@@ -361,7 +360,7 @@ func TestDocumentRefreshEmptyId(t *testing.T) {
 	_, err := dc.Document().Refresh(nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Document.Refresh: missing document id", fmt.Sprint(err))
+	assert.Equal(t, "[400] Document.Refresh: missing document id", fmt.Sprint(err))
 }
 
 func TestDocumentRefreshError(t *testing.T) {
@@ -439,7 +438,7 @@ func TestCollectionDocumentExistsEmptyId(t *testing.T) {
 	_, err := dc.Document().Exists(nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Document.Exists: missing document id", fmt.Sprint(err))
+	assert.Equal(t, "[400] Document.Exists: missing document id", fmt.Sprint(err))
 }
 
 func TestCollectionDocumentExistsError(t *testing.T) {
@@ -550,7 +549,7 @@ func TestDocumentDeleteEmptyId(t *testing.T) {
 	_, err := dc.Document().Delete(nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Document.Delete: missing document id", fmt.Sprint(err))
+	assert.Equal(t, "[400] Document.Delete: missing document id", fmt.Sprint(err))
 }
 
 func TestDocumentDeleteError(t *testing.T) {

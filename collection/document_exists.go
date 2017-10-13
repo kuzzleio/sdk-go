@@ -8,7 +8,7 @@ import (
 // DocumentExists returns a boolean indicating whether or not a document with provided ID exists.
 func (dc Collection) DocumentExists(id string, options types.QueryOptions) (bool, error) {
 	if id == "" {
-		return false, types.NewError("Collection.DocumentExists: document id required")
+		return false, types.NewError("Collection.DocumentExists: document id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)

@@ -20,7 +20,7 @@ func TestSmoveEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Smove("", "suchDestination", "muchMember", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Smove: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Smove: key required", fmt.Sprint(err))
 }
 
 func TestSmoveEmptyDestination(t *testing.T) {
@@ -31,7 +31,7 @@ func TestSmoveEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.Smove("wowKey", "", "muchMember", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Smove: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Smove: destination required", fmt.Sprint(err))
 }
 
 func TestSmoveEmptyMember(t *testing.T) {
@@ -42,7 +42,7 @@ func TestSmoveEmptyMember(t *testing.T) {
 	_, err := memoryStorage.Smove("wowKey", "suchDestination", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Smove: member required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Smove: member required", fmt.Sprint(err))
 }
 
 func TestSmoveError(t *testing.T) {

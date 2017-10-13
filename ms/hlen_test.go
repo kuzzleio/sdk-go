@@ -20,7 +20,7 @@ func TestHlenEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hlen("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hlen: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hlen: key required", fmt.Sprint(err))
 }
 
 func TestHlenError(t *testing.T) {

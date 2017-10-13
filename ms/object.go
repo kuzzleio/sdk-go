@@ -8,10 +8,10 @@ import (
 // Object inspects the low-level properties of a key.
 func (ms Ms) Object(key string, subcommand string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Object: key required")
+		return "", types.NewError("Ms.Object: key required", 400)
 	}
 	if subcommand != "refcount" && subcommand != "encoding" && subcommand != "idletime" {
-		return "", types.NewError("Ms.Object: subcommand required, possible values: refcount|encoding|idletime")
+		return "", types.NewError("Ms.Object: subcommand required, possible values: refcount|encoding|idletime", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

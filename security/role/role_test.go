@@ -523,7 +523,7 @@ func TestCreateWithWrongOption(t *testing.T) {
 
 	_, err := security.NewSecurity(k).Role.Create(id, &types.Controllers{Controllers: map[string]types.Controller{"*": {Actions: map[string]bool{"*": true}}}}, opts)
 
-	assert.Equal(t, "Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
+	assert.Equal(t, "[400] Invalid value for the 'ifExist' option: 'unknown'", fmt.Sprint(err))
 }
 
 func TestUpdateEmptyId(t *testing.T) {

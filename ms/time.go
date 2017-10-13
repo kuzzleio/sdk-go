@@ -18,7 +18,7 @@ func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, res.Error
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

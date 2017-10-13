@@ -438,8 +438,7 @@ func TestDeleteSpecificationsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
-	assert.Equal(t, false, res.Acknowledged)
+	_, err := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
 	assert.NotNil(t, err)
 }
 

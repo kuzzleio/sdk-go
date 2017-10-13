@@ -20,7 +20,7 @@ func TestLindexEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Lindex("", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Lindex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Lindex: key required", fmt.Sprint(err))
 }
 
 func TestLindexError(t *testing.T) {

@@ -20,7 +20,7 @@ func TestMgetEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.Mget([]string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Mget: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Mget: please provide at least one key", fmt.Sprint(err))
 }
 
 func TestMgetError(t *testing.T) {

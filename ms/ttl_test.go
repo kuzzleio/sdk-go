@@ -20,7 +20,7 @@ func TestTtlEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.Ttl("", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Ttl: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Ttl: key required", fmt.Sprint(err))
 }
 
 func TestTtlError(t *testing.T) {

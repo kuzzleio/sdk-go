@@ -20,7 +20,7 @@ func TestPfaddEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Pfadd("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pfadd: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfadd: key required", fmt.Sprint(err))
 }
 
 func TestPfaddEmptyElements(t *testing.T) {
@@ -31,7 +31,7 @@ func TestPfaddEmptyElements(t *testing.T) {
 	_, err := memoryStorage.Pfadd("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pfadd: please provide at least one element", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfadd: please provide at least one element", fmt.Sprint(err))
 }
 
 func TestPfaddError(t *testing.T) {

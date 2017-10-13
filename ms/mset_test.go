@@ -20,7 +20,7 @@ func TestMsetEmptyEntries(t *testing.T) {
 	_, err := memoryStorage.Mset([]*types.MSKeyValue{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Mset: please provide at least one key/value entry", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Mset: please provide at least one key/value entry", fmt.Sprint(err))
 }
 
 func TestMsetError(t *testing.T) {

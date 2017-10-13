@@ -9,10 +9,10 @@ import (
 // If the key does not exist, it is created beforehand.
 func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", types.NewError("Ms.Psetex: key required")
+		return "", types.NewError("Ms.Psetex: key required", 400)
 	}
 	if value == "" {
-		return "", types.NewError("Ms.Psetex: value required")
+		return "", types.NewError("Ms.Psetex: value required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

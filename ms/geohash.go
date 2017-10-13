@@ -8,7 +8,7 @@ import (
 // Geohash returns the geohash values for the provided key's members
 func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Geohash: key required")
+		return nil, types.NewError("Ms.Geohash: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
