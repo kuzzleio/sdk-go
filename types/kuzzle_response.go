@@ -42,43 +42,39 @@ type (
 		Error     *MessageError   `json:"error"`
 	}
 
-	KuzzleValidationMultivalued struct {
-		Value    bool `json:"value"`
-		MinCount int  `json:"minCount"`
-		MaxCount int  `json:"maxCount"`
-	}
-
-	KuzzleValidationTypeOptions struct {
-		Range struct {
-			Min interface{} `json:"min"`
-			Max interface{} `json:"max"`
-		} `json:"range"`
-		Length struct {
-			Min interface{} `json:"min"`
-			Max interface{} `json:"max"`
-		} `json:"length"`
-		NotEmpty   bool     `json:"notEmpty"`
-		Formats    []string `json:"formats"`
-		Strict     bool     `json:"strict"`
-		Values     []string `json:"values"`
-		ShapeTypes []string `json:"shapeTypes"`
-	}
-
 	KuzzleValidationFields map[string]*struct {
-		Type         string                      `json:"type"`
-		Path         []string                    `json:"path"`
-		Depth        int                         `json:"depth"`
-		Mandatory    bool                        `json:"mandatory"`
-		Description  string                      `json:"description"`
-		Multivalued  KuzzleValidationMultivalued `json:"multivalued"`
-		DefaultValue interface{}                 `json:"defaultValue"`
-		TypeOptions  KuzzleValidationTypeOptions `json:"typeOptions"`
+		Type        string   `json:"type,omitempty"`
+		Path        []string `json:"path,omitempty"`
+		Depth       int      `json:"depth,omitempty"`
+		Mandatory   bool     `json:"mandatory,omitempty"`
+		Description string   `json:"description,omitempty"`
+		Multivalued struct {
+			Value    bool `json:"value,omitempty"`
+			MinCount int  `json:"minCount,omitempty"`
+			MaxCount int  `json:"maxCount,omitempty"`
+		} `json:"multivalued,omitempty"`
+		DefaultValue interface{} `json:"defaultValue,omitempty"`
+		TypeOptions  struct {
+			Range struct {
+				Min interface{} `json:"min,omitempty"`
+				Max interface{} `json:"max,omitempty"`
+			} `json:"range,omitempty"`
+			Length struct {
+				Min int         `json:"min,omitempty"`
+				Max interface{} `json:"max,omitempty"`
+			} `json:"length"`
+			NotEmpty   bool     `json:"notEmpty,omitempty"`
+			Formats    []string `json:"formats,omitempty"`
+			Strict     bool     `json:"strict,omitempty"`
+			Values     []string `json:"values,omitempty"`
+			ShapeTypes []string `json:"shapeTypes,omitempty"`
+		} `json:"typeOptions,omitempty"`
 	}
 
 	KuzzleValidation struct {
-		Strict     bool                    `json:"strict"`
-		Fields     *KuzzleValidationFields `json:"fields"`
-		Validators json.RawMessage         `json:"validators"`
+		Strict     bool                    `json:"strict,omitempty"`
+		Fields     *KuzzleValidationFields `json:"fields,omitempty"`
+		Validators json.RawMessage         `json:"validators,omitempty"`
 	}
 
 	KuzzleFieldMapping struct {
