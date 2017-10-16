@@ -20,7 +20,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:  "text",
@@ -126,7 +126,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -159,7 +159,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "wrong-index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -193,7 +193,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "wrong-collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -227,7 +227,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -236,7 +236,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 		},
 		Collection: cl,
 	}
-	updatedCm := collection.CollectionMapping{
+	updatedCm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -256,7 +256,7 @@ func ExampleCollectionMapping_Refresh() {
 	cl := collection.NewCollection(k, "collection", "index")
 	qo := types.NewQueryOptions()
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
@@ -330,7 +330,7 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",
@@ -364,7 +364,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",
@@ -402,7 +402,7 @@ func ExampleCollectionMapping_SetHeaders() {
 	fields["type"] = interface{}("keyword")
 	fields["ignore_above"] = interface{}(100)
 
-	cm := collection.CollectionMapping{
+	cm := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",

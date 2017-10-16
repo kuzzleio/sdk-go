@@ -68,7 +68,7 @@ func TestGetMapping(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	res, _ := cl.GetMapping(nil)
-	assert.Equal(t, &collection.CollectionMapping{
+	assert.Equal(t, &collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",

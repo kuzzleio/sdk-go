@@ -7,7 +7,7 @@ import (
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping, error) {
+func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -21,7 +21,7 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping
 	res := <-ch
 
 	if res.Error != nil {
-		return &CollectionMapping{}, errors.New(res.Error.Message)
+		return &Mapping{}, errors.New(res.Error.Message)
 	}
 
 	type mappingResult map[string]struct {
@@ -37,14 +37,14 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping
 		indexMappings := result[dc.index].Mappings
 
 		if _, ok := indexMappings[dc.collection]; ok {
-			cm := NewCollectionMapping(dc)
+			cm := NewMapping(dc)
 			cm.Set(indexMappings[dc.collection].Properties)
 
 			return cm, nil
 		} else {
-			return &CollectionMapping{}, errors.New("No mapping found for collection " + dc.collection)
+			return &Mapping{}, errors.New("No mapping found for collection " + dc.collection)
 		}
 	} else {
-		return &CollectionMapping{}, errors.New("No mapping found for index " + dc.index)
+		return &Mapping{}, errors.New("No mapping found for index " + dc.index)
 	}
 }
