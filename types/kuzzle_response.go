@@ -43,11 +43,10 @@ type (
 	}
 
 	KuzzleValidationFields map[string]*struct {
-		Type        string   `json:"type,omitempty"`
-		Path        []string `json:"path,omitempty"`
-		Depth       int      `json:"depth,omitempty"`
-		Mandatory   bool     `json:"mandatory,omitempty"`
-		Description string   `json:"description,omitempty"`
+		Type        string `json:"type,omitempty"`
+		Depth       int    `json:"depth,omitempty"`
+		Mandatory   bool   `json:"mandatory,omitempty"`
+		Description string `json:"description,omitempty"`
 		Multivalued struct {
 			Value    bool `json:"value,omitempty"`
 			MinCount int  `json:"minCount,omitempty"`
@@ -78,11 +77,53 @@ type (
 	}
 
 	KuzzleFieldMapping struct {
-		Type       string                 `json:"type,omitempty"`
-		Properties map[string]interface{} `json:"properties,omitempty"`
+		Analyzer                 string      `json:"analyzer,omitempty"`
+		Normalizer               interface{} `json:"normalizer,omitempty"`
+		DocValues                bool        `json:"doc_values,omitempty"`
+		Boost                    float64     `json:"boost,omitempty"`
+		Coerce                   bool        `json:"coerce,omitempty"`
+		Enabled                  bool        `json:"enabled,omitempty"`
+		FieldData                bool        `json:"fielddata,omitempty"`
+		FieldDataFrequencyFilter struct {
+			Min            float64 `json:"min,omitempty"`
+			Max            float64 `json:"max,omitempty"`
+			MinSegmentSize int     `json:"min_segment_size,omitempty"`
+		} `json:"fielddata_frequency_filter,omitempty"`
+		Format               string                        `json:"format,omitempty"`
+		IgnoreAbove          int                           `json:"ignore_above,omitempty"`
+		IgnoreMalformed      bool                          `json:"ignore_malformed,omitempty"`
+		IncludeInAll         bool                          `json:"include_in_all,omitempty"`
+		Index                bool                          `json:"index,omitempty"`
+		IndexOptions         bool                          `json:"index_options,omitempty"`
+		Fields               map[string]KuzzleFieldMapping `json:"fields,omitempty"`
+		Norms                bool                          `json:"norms,omitempty"`
+		NullValue            bool                          `json:"null_value,omitempty"`
+		PositionIncrementGap bool                          `json:"position_increment_gap,omitempty"`
+		Type                 string                        `json:"type,omitempty"`
+		All                  *struct {
+			Enabled bool   `json:"enabled,omitempty"`
+			Format  string `json:"format, omitempty"`
+		} `json:"_all,omitempty"`
+		Properties               KuzzleFieldsMapping    `json:"properties,omitempty"`
+		SearchAnalyzer           string                 `json:"search_analyzer,omitempty"`
+		Similarity               string                 `json:"similarity,omitempty"`
+		Store                    bool                   `json:"store,omitempty"`
+		TermVector               string                 `json:"term_vector,omitempty"`
+		Tree                     string                 `json:"tree,omitempty"`
+		Precision                string                 `json:"precision,omitempty"`
+		TreeLevels               int                    `json:"tree_levels,omitempty"`
+		Strategy                 string                 `json:"strategy,omitempty"`
+		DistanceErrorPct         float64                `json:"distance_error_pct,omitempty"`
+		Orientation              string                 `json:"orientation,omitempty"`
+		PointsOnly               bool                   `json:"points_only,omitempty"`
+		EagerGlobalOrdinals      bool                   `json:"eager_global_ordinals,omitempty"`
+		Dynamic                  interface{}            `json:"dynamic,omitempty"`
+		SearchQuoteAnalyzer      string                 `json:"search_quote_analyzer,omitempty"`
+		EnablePositionIncrements bool                   `json:"enable_position_increments,omitempty"`
+		Relations                map[string]interface{} `json:"relations,omitempty"`
 	}
 
-	KuzzleFieldsMapping map[string]*KuzzleFieldMapping
+	KuzzleFieldsMapping map[string]KuzzleFieldMapping
 
 	KuzzleSpecifications map[string]map[string]*KuzzleValidation
 

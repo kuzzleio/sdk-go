@@ -102,6 +102,10 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
   Changes made by this function won’t be applied until you call the apply method
 */
 func (cm *CollectionMapping) Set(mappings *types.KuzzleFieldsMapping) *CollectionMapping {
+	if cm.Mapping == nil {
+		return cm
+	}
+
 	for field, mapping := range *mappings {
 		(*(cm.Mapping))[field] = mapping
 	}
