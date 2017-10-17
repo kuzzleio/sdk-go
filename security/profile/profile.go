@@ -81,7 +81,7 @@ func (p Profile) Delete(options types.QueryOptions) (string, error) {
 // Fetch retrieves a Profile using its provided unique id.
 func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profile, error) {
 	if id == "" {
-		return &Profile{}, errors.New("Security.Profile.Fetch: profile id required")
+		return nil, errors.New("Security.Profile.Fetch: profile id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -97,7 +97,7 @@ func (sp *SecurityProfile) Fetch(id string, options types.QueryOptions) (*Profil
 	res := <-ch
 
 	if res.Error != nil {
-		return &Profile{}, errors.New(res.Error.Message)
+		return nil, errors.New(res.Error.Message)
 	}
 
 	profile := &Profile{}
