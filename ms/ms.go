@@ -2,15 +2,15 @@
 package ms
 
 import (
-	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type Ms struct {
-	Kuzzle *kuzzle.Kuzzle
+	Kuzzle types.IKuzzle
 }
 
 // NewMs initializes a new Ms struct
-func NewMs(kuzzle *kuzzle.Kuzzle) *Ms {
+func NewMs(kuzzle types.IKuzzle) *Ms {
 	return &Ms{
 		Kuzzle: kuzzle,
 	}

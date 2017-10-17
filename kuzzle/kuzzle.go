@@ -3,17 +3,15 @@ package kuzzle
 
 import (
 	"errors"
+	"time"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"time"
+	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/security"
 )
 
 const version = "1.0.0"
-
-type IKuzzle interface {
-	Query(*types.KuzzleRequest, chan<- *types.KuzzleResponse, types.QueryOptions)
-}
 
 type Kuzzle struct {
 	Host   string
@@ -28,9 +26,12 @@ type Kuzzle struct {
 	headers        map[string]interface{}
 	version        string
 	RequestHistory map[string]time.Time
+
+	Ms             *ms.Ms
+	Security       *security.Security
 }
 
-// NewKuzzle is the Kuzzle constructor
+// New is the Kuzzle constructor
 func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
 	if c == nil {
 		return nil, errors.New("Connection is nil")
@@ -45,6 +46,10 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 		headers: options.GetHeaders(),
 		version: version,
 	}
+
+	k.Ms = &ms.Ms{k}
+	k.Security = &security.Security{k}
+
 	k.RequestHistory = k.socket.GetRequestHistory()
 
 	headers := options.GetHeaders()
