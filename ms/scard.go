@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Scard returns the number of members stored in a set of unique values.
 func (ms Ms) Scard(key string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Scard: key required")
+		return 0, types.NewError("Ms.Scard: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Scard(key string, options types.QueryOptions) (int, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var scanResponse int

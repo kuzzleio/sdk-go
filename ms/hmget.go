@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hmget returns the values of the specified hash’s fields.
 func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return nil, errors.New("Ms.Hmget: key required")
+		return nil, types.NewError("Ms.Hmget: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]s
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var returnedResult []string

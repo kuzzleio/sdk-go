@@ -21,7 +21,7 @@ type QueryFilters struct {
 func TestFetchNextError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -41,7 +41,7 @@ func TestFetchNextNotPossible(t *testing.T) {
 	_, err := ksr.FetchNext()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
+	assert.Equal(t, "[400] SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
 }
 
 func TestFetchNextWithScroll(t *testing.T) {
@@ -281,7 +281,8 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 
 	tooFarRes, _ := fetchNextRes.FetchNext()
 
-	assert.Equal(t, &collection.SearchResult{}, tooFarRes)
+	var expected *collection.SearchResult
+	assert.Equal(t, expected, tooFarRes)
 }
 
 func ExampleSearchResult_FetchNext() {

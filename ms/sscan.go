@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Sscan is identical to scan, except that sscan iterates the members held by a set of unique values.
 func (ms Ms) Sscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	if key == "" {
-		return &types.MSScanResponse{}, errors.New("Ms.Sscan: key required")
+		return nil, types.NewError("Ms.Sscan: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -36,7 +35,7 @@ func (ms Ms) Sscan(key string, cursor int, options types.QueryOptions) (*types.M
 	res := <-result
 
 	if res.Error != nil {
-		return &types.MSScanResponse{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var sscanResponse = &types.MSScanResponse{}

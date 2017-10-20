@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 // First position starts at 0.
 func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []*types.MSSortedSet{}, errors.New("Ms.Zrange: key required")
+		return nil, types.NewError("Ms.Zrange: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -33,13 +32,13 @@ func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions)
 	res := <-result
 
 	if res.Error != nil {
-		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return mapZrangeResults(returnedResult), nil
+	return mapZrangeResults(returnedResult)
 }
 
 func assignZrangeOptions(query *types.KuzzleRequest, options types.QueryOptions) {
@@ -56,7 +55,7 @@ func assignZrangeOptions(query *types.KuzzleRequest, options types.QueryOptions)
 	query.Options = []interface{}(opts)
 }
 
-func mapZrangeResults(results []string) []*types.MSSortedSet {
+func mapZrangeResults(results []string) ([]*types.MSSortedSet, error) {
 	buffer := ""
 	sortedSet := make([]*types.MSSortedSet, 0, len(results))
 
@@ -64,11 +63,16 @@ func mapZrangeResults(results []string) []*types.MSSortedSet {
 		if buffer == "" {
 			buffer = value
 		} else {
-			score, _ := strconv.ParseFloat(value, 64)
+			score, err := strconv.ParseFloat(value, 64)
+
+			if err != nil {
+				return nil, types.NewError(err.Error())
+			}
+
 			sortedSet = append(sortedSet, &types.MSSortedSet{Member: buffer, Score: score})
 			buffer = ""
 		}
 	}
 
-	return sortedSet
+	return sortedSet, nil
 }

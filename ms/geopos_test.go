@@ -20,13 +20,13 @@ func TestGeoposEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Geopos("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Geopos: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Geopos: key required", fmt.Sprint(err))
 }
 
 func TestGeoposError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

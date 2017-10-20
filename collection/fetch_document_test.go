@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -15,7 +14,7 @@ import (
 func TestFetchDocumentEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.FetchDocument: document id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.FetchDocument: document id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -27,7 +26,7 @@ func TestFetchDocumentEmptyId(t *testing.T) {
 func TestFetchDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -83,7 +82,7 @@ func ExampleCollection_FetchDocument() {
 func TestMGetDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.MGetDocument: please provide at least one id of document to retrieve"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.MGetDocument: please provide at least one id of document to retrieve"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -95,7 +94,7 @@ func TestMGetDocumentEmptyIds(t *testing.T) {
 func TestMGetDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

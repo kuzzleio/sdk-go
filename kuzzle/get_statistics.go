@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"time"
 )
@@ -33,7 +32,7 @@ func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) 
 	res := <-result
 
 	if res.Error != nil {
-		return &types.Statistics{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	s := &types.Statistics{}

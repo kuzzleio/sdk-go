@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -20,15 +19,14 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.Kuzzl
 
 	res := <-ch
 
-	specification := &types.KuzzleSpecificationsResult{}
-
 	if res.Error != nil {
-		return specification, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
-	json.Unmarshal(res.Result, specification)
+	specifications := &types.KuzzleSpecificationsResult{}
+	json.Unmarshal(res.Result, specifications)
 
-	return specification, nil
+	return specifications, nil
 }
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
@@ -56,12 +54,12 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 
 	res := <-ch
 
-	specifications := &types.KuzzleSpecificationSearchResult{}
 
 	if res.Error != nil {
-		return specifications, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
+	specifications := &types.KuzzleSpecificationSearchResult{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
@@ -69,10 +67,8 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 
 // ScrollSpecifications retrieves next result of a specification search with scroll query.
 func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
-	specifications := &types.KuzzleSpecificationSearchResult{}
-
 	if scrollId == "" {
-		return specifications, errors.New("Collection.ScrollSpecifications: scroll id required")
+		return nil, types.NewError("Collection.ScrollSpecifications: scroll id required")
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -95,9 +91,10 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 	res := <-ch
 
 	if res.Error != nil {
-		return specifications, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
+	specifications := &types.KuzzleSpecificationSearchResult{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
@@ -123,12 +120,12 @@ func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidati
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
-	response := &types.ValidResponse{}
 
 	if res.Error != nil {
-		return response, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
+	response := &types.ValidResponse{}
 	json.Unmarshal(res.Result, response)
 
 	return response, nil
@@ -154,12 +151,12 @@ func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
-	specification := &types.KuzzleSpecifications{}
 
 	if res.Error != nil {
-		return specification, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
+	specification := &types.KuzzleSpecifications{}
 	json.Unmarshal(res.Result, specification)
 
 	return specification, nil
@@ -180,7 +177,7 @@ func (dc Collection) DeleteSpecifications(options types.QueryOptions) (*types.Ac
 	res := <-ch
 
 	if res.Error != nil {
-		return &types.AckResponse{Acknowledged: false}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	response := &types.AckResponse{}

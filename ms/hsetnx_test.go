@@ -20,7 +20,7 @@ func TestHsetnxEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hsetnx("", "bar", "barbar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hsetnx: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hsetnx: key required", fmt.Sprint(err))
 }
 
 func TestHsetnxEmptyField(t *testing.T) {
@@ -31,13 +31,13 @@ func TestHsetnxEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hsetnx("foo", "", "barbar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hsetnx: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hsetnx: field required", fmt.Sprint(err))
 }
 
 func TestHsetnxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

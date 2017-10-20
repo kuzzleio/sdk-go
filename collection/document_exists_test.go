@@ -15,7 +15,7 @@ import (
 func TestDocumentExistsEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.DocumentExists: document id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.DocumentExists: document id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -27,7 +27,7 @@ func TestDocumentExistsEmptyId(t *testing.T) {
 func TestDocumentExistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

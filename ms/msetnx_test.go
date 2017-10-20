@@ -20,13 +20,13 @@ func TestMsetNxEmptyEntries(t *testing.T) {
 	_, err := memoryStorage.MsetNx([]*types.MSKeyValue{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.MsetNx: please provide at least one key/value entry", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.MsetNx: please provide at least one key/value entry", fmt.Sprint(err))
 }
 
 func TestMsetNxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -20,7 +20,7 @@ func TestZaddEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Zadd("", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zadd: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zadd: key required", fmt.Sprint(err))
 }
 
 func TestZaddEmptyElements(t *testing.T) {
@@ -31,13 +31,13 @@ func TestZaddEmptyElements(t *testing.T) {
 	_, err := memoryStorage.Zadd("foo", []*types.MSSortedSet{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Zadd: please provide at least one element", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zadd: please provide at least one element", fmt.Sprint(err))
 }
 
 func TestZaddError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

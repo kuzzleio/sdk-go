@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -10,7 +9,7 @@ import (
 // ZrevRangeByScore is identical to zrangebyscore except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	if key == "" {
-		return []*types.MSSortedSet{}, errors.New("Ms.ZrevRangeByScore: key required")
+		return nil, types.NewError("Ms.ZrevRangeByScore: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,11 +29,11 @@ func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options type
 	res := <-result
 
 	if res.Error != nil {
-		return []*types.MSSortedSet{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return mapZrangeResults(returnedResult), nil
+	return mapZrangeResults(returnedResult)
 }

@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -11,7 +10,7 @@ import (
 // The timestamp parameter accepts an Epoch time value, in milliseconds.
 func (ms Ms) PexpireAt(key string, timestamp int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.PexpireAt: key required")
+		return 0, types.NewError("Ms.PexpireAt: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (ms Ms) PexpireAt(key string, timestamp int, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

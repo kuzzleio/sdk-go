@@ -20,7 +20,7 @@ func TestZrangeByLexEmptyKey(t *testing.T) {
 	_, err := memoryStorage.ZrangeByLex("", "-", "(g", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrangeByLex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrangeByLex: key required", fmt.Sprint(err))
 }
 
 func TestZrangeByLexEmptyMin(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZrangeByLexEmptyMin(t *testing.T) {
 	_, err := memoryStorage.ZrangeByLex("foo", "", "(g", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrangeByLex: min required", fmt.Sprint(err))
 }
 
 func TestZrangeByLexEmptyMax(t *testing.T) {
@@ -42,13 +42,13 @@ func TestZrangeByLexEmptyMax(t *testing.T) {
 	_, err := memoryStorage.ZrangeByLex("foo", "-", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrangeByLex: max required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrangeByLex: max required", fmt.Sprint(err))
 }
 
 func TestZrangeByLexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

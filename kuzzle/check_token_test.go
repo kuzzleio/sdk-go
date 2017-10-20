@@ -20,12 +20,13 @@ func TestCheckTokenTokenNull(t *testing.T) {
 func TestCheckTokenQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.NewError("error", 123)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	_, err := k.CheckToken("token")
 	assert.NotNil(t, err)
+	assert.Equal(t, 123, err.(*types.KuzzleError).Status)
 }
 
 func TestCheckToken(t *testing.T) {

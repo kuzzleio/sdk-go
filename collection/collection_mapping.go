@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -39,7 +38,7 @@ func (cm *CollectionMapping) Apply(options types.QueryOptions) (*CollectionMappi
 	res := <-ch
 
 	if res.Error != nil {
-		return cm, errors.New(res.Error.Message)
+		return cm, res.Error
 	}
 
 	return cm.Refresh(nil)
@@ -61,7 +60,7 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 	res := <-ch
 
 	if res.Error != nil {
-		return cm, errors.New(res.Error.Message)
+		return cm, res.Error
 	}
 
 	type mappingResult map[string]struct {
@@ -81,10 +80,10 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 
 			return cm, nil
 		} else {
-			return cm, errors.New("No mapping found for collection " + cm.Collection.collection)
+			return cm, types.NewError("No mapping found for collection " + cm.Collection.collection, 404)
 		}
 	} else {
-		return cm, errors.New("No mapping found for index " + cm.Collection.index)
+		return cm, types.NewError("No mapping found for index " + cm.Collection.index, 404)
 	}
 }
 

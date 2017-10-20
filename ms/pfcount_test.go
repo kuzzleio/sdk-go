@@ -20,13 +20,13 @@ func TestPfcountEmptyKeys(t *testing.T) {
 	_, err := memoryStorage.Pfcount([]string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Pfcount: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfcount: please provide at least one key", fmt.Sprint(err))
 }
 
 func TestPfcountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

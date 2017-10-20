@@ -20,13 +20,13 @@ func TestHmsetEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hmset: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hmset: key required", fmt.Sprint(err))
 }
 
 func TestHmsetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

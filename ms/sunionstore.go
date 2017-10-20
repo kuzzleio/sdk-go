@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,10 +9,10 @@ import (
 // If the destination key already exists, it is overwritten.
 func (ms Ms) SunionStore(destination string, sets []string, options types.QueryOptions) (int, error) {
 	if destination == "" {
-		return 0, errors.New("Ms.SunionStore: destination required")
+		return 0, types.NewError("Ms.SunionStore: destination required", 400)
 	}
 	if len(sets) < 2 {
-		return 0, errors.New("Ms.SunionStore: please provide at least 2 sets")
+		return 0, types.NewError("Ms.SunionStore: please provide at least 2 sets", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +33,7 @@ func (ms Ms) SunionStore(destination string, sets []string, options types.QueryO
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

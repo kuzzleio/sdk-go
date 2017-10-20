@@ -2,20 +2,19 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // ZremRangeByLex removes members from a sorted set where all elements have the same score, using lexicographical ordering. The min and max interval are inclusive, see the Redis documentation to change this behavior.
 func (ms Ms) ZremRangeByLex(key string, min string, max string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.ZremRangeByLex: key required")
+		return 0, types.NewError("Ms.ZremRangeByLex: key required", 400)
 	}
 	if min == "" {
-		return 0, errors.New("Ms.ZremRangeByLex: min required")
+		return 0, types.NewError("Ms.ZremRangeByLex: min required", 400)
 	}
 	if max == "" {
-		return 0, errors.New("Ms.ZremRangeByLex: max required")
+		return 0, types.NewError("Ms.ZremRangeByLex: max required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -37,7 +36,7 @@ func (ms Ms) ZremRangeByLex(key string, min string, max string, options types.Qu
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

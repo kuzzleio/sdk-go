@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -12,7 +11,7 @@ import (
 // This behavior can be changed using the syntax described in the Redis ZRANGEBYSCORE documentation.
 func (ms Ms) Zcount(key string, min int, max int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Zcount: key required")
+		return 0, types.NewError("Ms.Zcount: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) Zcount(key string, min int, max int, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

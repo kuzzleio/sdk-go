@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // contain only the specified range of elements specified.
 func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Ltrim: key required")
+		return "", types.NewError("Ms.Ltrim: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -32,7 +31,7 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

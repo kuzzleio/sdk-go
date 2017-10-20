@@ -19,7 +19,7 @@ func TestGetMyCredentialsQueryError(t *testing.T) {
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "getMyCredentials", request.Action)
 			assert.Equal(t, "local", request.Strategy)
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -31,7 +31,7 @@ func TestGetMyCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	_, err := k.GetMyCredentials("", nil)
-	assert.Equal(t, "Kuzzle.GetMyCredentials: strategy is required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Kuzzle.GetMyCredentials: strategy is required", fmt.Sprint(err))
 }
 
 func TestGetMyCredentials(t *testing.T) {

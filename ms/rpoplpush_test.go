@@ -20,7 +20,7 @@ func TestRpoplPushEmptySource(t *testing.T) {
 	_, err := memoryStorage.RpoplPush("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.RpoplPush: source required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.RpoplPush: source required", fmt.Sprint(err))
 }
 
 func TestRpoplPushEmptyDestination(t *testing.T) {
@@ -31,13 +31,13 @@ func TestRpoplPushEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.RpoplPush("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.RpoplPush: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.RpoplPush: destination required", fmt.Sprint(err))
 }
 
 func TestRpoplPushError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

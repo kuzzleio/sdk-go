@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lrem removes the first count occurences of elements equal to value from a list.
 func (ms Ms) Lrem(key string, count int, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Lrem: key required")
+		return 0, types.NewError("Ms.Lrem: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (ms Ms) Lrem(key string, count int, value string, options types.QueryOption
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

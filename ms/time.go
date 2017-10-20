@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -19,7 +18,7 @@ func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)

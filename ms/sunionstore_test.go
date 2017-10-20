@@ -20,7 +20,7 @@ func TestSunionStoreEmptyDestination(t *testing.T) {
 	_, err := memoryStorage.SunionStore("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.SunionStore: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.SunionStore: destination required", fmt.Sprint(err))
 }
 
 func TestSunionStoreEmptySet(t *testing.T) {
@@ -31,7 +31,7 @@ func TestSunionStoreEmptySet(t *testing.T) {
 	_, err := memoryStorage.SunionStore("destination", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.SunionStore: please provide at least 2 sets", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.SunionStore: please provide at least 2 sets", fmt.Sprint(err))
 }
 
 func TestSunionStoreSingleSet(t *testing.T) {
@@ -42,13 +42,13 @@ func TestSunionStoreSingleSet(t *testing.T) {
 	_, err := memoryStorage.SunionStore("destination", []string{"foo"}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.SunionStore: please provide at least 2 sets", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.SunionStore: please provide at least 2 sets", fmt.Sprint(err))
 }
 
 func TestSunionStoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

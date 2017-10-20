@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Rpop removes and returns the last element of a list.
 func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 	if key == "" {
-		return "", errors.New("Ms.Rpop: key required")
+		return "", types.NewError("Ms.Rpop: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -28,7 +27,7 @@ func (ms Ms) Rpop(key string, options types.QueryOptions) (interface{}, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult interface{}
 	json.Unmarshal(res.Result, &returnedResult)

@@ -2,14 +2,13 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Scroll passes a "scroll" option to search queries, creating persistent paginated results.
 func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*SearchResult, error) {
 	if scrollId == "" {
-		return &SearchResult{}, errors.New("Collection.Scroll: scroll id required")
+		return nil, types.NewError("Collection.Scroll: scroll id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -24,7 +23,7 @@ func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*Sear
 	res := <-ch
 
 	if res.Error != nil {
-		return &SearchResult{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	searchResult := &SearchResult{

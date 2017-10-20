@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lset sets the list element at index with the provided value.
 func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Lset: key required")
+		return "", types.NewError("Ms.Lset: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (ms Ms) Lset(key string, index int, value string, options types.QueryOption
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

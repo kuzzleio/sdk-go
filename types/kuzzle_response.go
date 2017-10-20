@@ -1,12 +1,14 @@
 package types
 
 import (
+	"fmt"
 	"encoding/json"
 )
 
 type (
-	MessageError struct {
+	KuzzleError struct {
 		Message string `json:"message"`
+		Stack   string `json:"stack"`
 		Status  int    `json:"status"`
 	}
 
@@ -31,7 +33,7 @@ type (
 		RequestId string        `json:"requestId"`
 		Result    *KuzzleResult `json:"result"`
 		RoomId    string        `json:"room"`
-		Error     *MessageError `json:"error"`
+		Error     *KuzzleError  `json:"error"`
 	}
 
 	KuzzleResponse struct {
@@ -39,7 +41,8 @@ type (
 		Result    json.RawMessage  `json:"result"`
 		RoomId    string           `json:"room"`
 		Channel   string           `json:"channel"`
-		Error     *MessageError    `json:"error"`
+		Status		int 						 `json:"status"`
+		Error     *KuzzleError     `json:"error"`
 	}
 
 	KuzzleValidationFields map[string]*struct {
@@ -190,3 +193,27 @@ type (
 		Values []string `json:"values"`
 	}
 )
+
+func (e *KuzzleError) Error() string {
+	msg := e.Message
+
+  if len(e.Stack) > 0 {
+    msg = fmt.Sprintf("%s\n%s", msg, e.Stack)
+  }
+
+  if e.Status > 0 {
+  	msg = fmt.Sprintf("[%d] %s", e.Status, msg)
+  }
+
+  return msg
+}
+
+func NewError(msg string, status ...int)  *KuzzleError {
+	err := &KuzzleError{Message: msg}
+
+	if len(status) == 1 {
+		err.Status = status[0]
+	} 
+
+	return err
+}

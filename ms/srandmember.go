@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -11,7 +10,7 @@ import (
 // If count is negative, a set member can be returned multiple times.
 func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, errors.New("Ms.SrandMember: key required")
+		return nil, types.NewError("Ms.SrandMember: key required", 400)
 	}
 
 	if options == nil || options.GetCount() == 0 {
@@ -37,7 +36,7 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, erro
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	if options.GetCount() == 1 {

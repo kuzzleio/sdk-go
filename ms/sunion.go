@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Sunion returns the union of the provided sets of unique values.
 func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error) {
 	if len(sets) < 2 {
-		return []string{}, errors.New("Ms.Sunion: please provide at least 2 sets")
+		return nil, types.NewError("Ms.Sunion: please provide at least 2 sets", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error)
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	var returnedResult []string

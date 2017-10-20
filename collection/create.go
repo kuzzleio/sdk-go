@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -20,12 +19,11 @@ func (dc Collection) Create(options types.QueryOptions) (*types.AckResponse, err
 
 	res := <-ch
 
-	ack := &types.AckResponse{}
-
 	if res.Error != nil {
-		return ack, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
+	ack := &types.AckResponse{}
 	json.Unmarshal(res.Result, ack)
 
 	return ack, nil

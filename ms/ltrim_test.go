@@ -20,13 +20,13 @@ func TestLtrimEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Ltrim("", 1, 2, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Ltrim: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Ltrim: key required", fmt.Sprint(err))
 }
 
 func TestLtrimError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

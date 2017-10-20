@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Sdiff returns the difference between the set of unique values stored at key and the other provided sets.
 func (ms Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]string, error) {
 	if key == "" {
-		return []string{}, errors.New("Ms.Sdiff: key required")
+		return nil, types.NewError("Ms.Sdiff: key required", 400)
 	}
 	if len(sets) == 0 {
-		return []string{}, errors.New("Ms.Sdiff: please provide at least one set")
+		return nil, types.NewError("Ms.Sdiff: please provide at least one set", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]str
 	res := <-result
 
 	if res.Error != nil {
-		return []string{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
