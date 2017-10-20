@@ -20,10 +20,14 @@ type IDocument interface {
 
 type Document struct {
 	Id         string            `json:"_id"`
+	Index      string 					 `json:"_index"`
 	Meta       *types.KuzzleMeta `json:"_meta"`
+	Shards     map[string]int    `json:"_shards"`
 	Content    json.RawMessage   `json:"_source"`
 	Version    int               `json:"_version"`
-	Collection string            `json:"collection"`
+	Result     string            `json:"result"`
+	Created    bool 						 `json:"created"`
+	Collection string            `json:"_collection"`
 	collection *Collection       `json:"-"`
 }
 
@@ -56,9 +60,13 @@ func (d *Document) Fetch(id string) (*Document, error) {
 	}
 
 	d.Id = id
+	d.Index = doc.Index
 	d.Meta = doc.Meta
+	d.Shards = doc.Shards
 	d.Content = doc.Content
 	d.Version = doc.Version
+	d.Result = doc.Result
+	d.Created = doc.Created
 	d.Collection = doc.Collection
 	d.collection = doc.collection
 
