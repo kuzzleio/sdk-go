@@ -4,7 +4,7 @@ set -e
 workdir=$(pwd)/.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(kuzzle connection collection security security/profile security/role security/user ms)
+dirs=(kuzzle connection collection security security/user ms)
 
 generate_cover_data() {
     rm -rf "$workdir"

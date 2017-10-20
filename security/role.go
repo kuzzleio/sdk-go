@@ -8,9 +8,9 @@ import (
 )
 
 type Role struct {
-	Id	string						`json:"_id"`
-	Controllers	map[string]types.Controller
-	Kuzzle types.IKuzzle
+	Id           string  `json:"_id"`
+	Controllers  map[string]*types.Controller
+	Security     *Security
 }
 
 type RoleSearchResult struct {
@@ -19,25 +19,7 @@ type RoleSearchResult struct {
 }
 
 func (r *Role) Delete(options types.QueryOptions) (string, error) {
-	ch := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "security",
-		Action:     "deleteRole",
-		Id:         r.Id,
-	}
-	go r.Kuzzle.Query(query, options, ch)
-
-	res := <-ch
-
-	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
-	}
-
-	shardResponse := types.ShardResponse{}
-	json.Unmarshal(res.Result, &shardResponse)
-
-	return shardResponse.Id, nil
+	return r.Security.rawDelete("deleteRole", r.Id, options)
 }
 
 func (r *Role) Save(options types.QueryOptions) (*Role, error) {
@@ -58,13 +40,8 @@ func (r *Role) Save(options types.QueryOptions) (*Role, error) {
 	return r.persist(action, options)
 }
 
-func (r *Role) SetContent(controllers *types.Controllers) *Role {
-	r.Controllers = controllers.Controllers
-	return r
-}
-
 func (r *Role) Update(controllers *types.Controllers, options types.QueryOptions) (*Role, error) {
-	r.SetContent(controllers)
+	r.Controllers = controllers.Controllers
 	return r.persist("updateRole", options)
 }
 
@@ -87,7 +64,7 @@ func (r *Role) persist(action string, options types.QueryOptions) (*Role, error)
 		},
 		Id: r.Id,
 	}
-	go r.Kuzzle.Query(query, options, ch)
+	go r.Security.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
@@ -99,6 +76,7 @@ func (r *Role) persist(action string, options types.QueryOptions) (*Role, error)
 	json.Unmarshal(res.Result, jsonRole)
 
 	r.Controllers = jsonRole.Source.Controllers
+	r.Id = jsonRole.Id
 
 	return r, nil
 }

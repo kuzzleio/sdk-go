@@ -26,7 +26,7 @@ func TestRoleSetContent(t *testing.T) {
 
 			res := security.Role{
 				Id: id,
-				Controllers: map[string]types.Controller {
+				Controllers: map[string]*types.Controller {
 					"*": {
 						Actions: map[string]bool {
 							"*": true,
@@ -41,17 +41,16 @@ func TestRoleSetContent(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r, _ := k.Security.FetchRole(id, nil)
 
-	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+	newContent := types.Controllers{Controllers: map[string]*types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
-	r.SetContent(&newContent)
-
+	r.Controllers = newContent.Controllers
 	assert.Equal(t, newContent.Controllers, r.Controllers)
 }
 
 func TestRoleSave(t *testing.T) {
 	id := "roleId"
 	callCount := 0
-	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+	newContent := types.Controllers{Controllers: map[string]*types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -66,7 +65,7 @@ func TestRoleSave(t *testing.T) {
 
 				res := security.Role{
 					Id: id,
-					Controllers: map[string]types.Controller {
+					Controllers: map[string]*types.Controller {
 						"*": {
 							Actions: map[string]bool {
 								"*": true,
@@ -97,7 +96,7 @@ func TestRoleSave(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r, _ := k.Security.FetchRole(id, nil)
 
-	r.SetContent(&newContent)
+	r.Controllers = newContent.Controllers
 	r.Save(nil)
 
 	assert.Equal(t, newContent.Controllers, r.Controllers)
@@ -108,9 +107,9 @@ func ExampleRole_Save() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r, _ := k.Security.FetchRole(id, nil)
-	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+	newContent := types.Controllers{Controllers: map[string]*types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
-	r.SetContent(&newContent)
+	r.Controllers = newContent.Controllers
 	res, err := r.Save(nil)
 
 	if err != nil {
@@ -138,7 +137,7 @@ func TestRoleUpdate(t *testing.T) {
 
 				res := security.Role{
 					Id: id,
-					Controllers: map[string]types.Controller {
+					Controllers: map[string]*types.Controller {
 						"*": {
 							Actions: map[string]bool {
 								"*": true,
@@ -157,7 +156,7 @@ func TestRoleUpdate(t *testing.T) {
 
 				res := security.Role{
 					Id: id,
-					Controllers: map[string]types.Controller {
+					Controllers: map[string]*types.Controller {
 						"document": {
 							Actions: map[string]bool {
 								"get": true,
@@ -175,7 +174,7 @@ func TestRoleUpdate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r, _ := k.Security.FetchRole(id, nil)
 
-	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+	newContent := types.Controllers{Controllers: map[string]*types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
 	updatedRole, _ := r.Update(&newContent, nil)
 
@@ -188,7 +187,7 @@ func ExampleRole_Update() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r, _ := k.Security.FetchRole(id, nil)
 
-	newContent := types.Controllers{Controllers: map[string]types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
+	newContent := types.Controllers{Controllers: map[string]*types.Controller{"document": {Actions: map[string]bool{"get": true}}}}
 
 	res, err := r.Update(&newContent, nil)
 
@@ -217,7 +216,7 @@ func TestRoleDelete(t *testing.T) {
 
 				res := security.Role{
 					Id: id,
-					Controllers: map[string]types.Controller {
+					Controllers: map[string]*types.Controller {
 						"*": {
 							Actions: map[string]bool {
 								"*": true,
@@ -266,7 +265,7 @@ func ExampleRole_Delete() {
 	fmt.Println(res)
 }
 
-func TestFetchEmptyId(t *testing.T) {
+func TestFetchRoleEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Security.Role.Fetch: role id required"}}
@@ -278,7 +277,7 @@ func TestFetchEmptyId(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestFetchError(t *testing.T) {
+func TestFetchRoleError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
@@ -290,7 +289,7 @@ func TestFetchError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestFetch(t *testing.T) {
+func TestFetchRole(t *testing.T) {
 	id := "roleId"
 
 	c := &internal.MockedConnection{
@@ -304,7 +303,7 @@ func TestFetch(t *testing.T) {
 
 			res := security.Role{
 				Id: id,
-				Controllers: map[string]types.Controller {
+				Controllers: map[string]*types.Controller {
 					"*": {
 						Actions: map[string]bool {
 							"*": true,
@@ -337,7 +336,7 @@ func ExampleSecurityRole_Fetch() {
 	fmt.Println(res.Id, res.Controllers)
 }
 
-func TestSearchError(t *testing.T) {
+func TestSearchRolesError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
@@ -349,7 +348,7 @@ func TestSearchError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestSearch(t *testing.T) {
+func TestSearchRoles(t *testing.T) {
 	jsonResult := []byte(`{"total":42,"hits":[{"_id":"role42","_source":{"controllers":{"*":{"actions":{"*":true}}}}}]}`)
 
 	c := &internal.MockedConnection{
@@ -367,7 +366,6 @@ func TestSearch(t *testing.T) {
 	res, _ := k.Security.SearchRoles(nil, nil)
 
 	assert.Equal(t, 42, res.Total)
-	fmt.Printf("%#v \n", res.Hits[0])
 	assert.Equal(t, res.Hits[0].Controllers["*"].Actions["*"], true)
 }
 
@@ -422,7 +420,6 @@ func TestSearchWithOptions(t *testing.T) {
 	opts.SetScroll("1m")
 
 	res, _ := k.Security.SearchRoles(nil, opts)
-	fmt.Printf("%#v \n", res.Hits[0])
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, res.Hits[0].Id, "role42")
 	assert.Equal(t, res.Hits[0].Controllers["*"].Actions["*"], true)

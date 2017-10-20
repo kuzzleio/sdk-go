@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -23,8 +22,7 @@ func TestGetAllCredentialFieldsError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.GetAllCredentialFields(nil)
+	_, err := k.Security.GetAllCredentialFields(nil)
 	assert.NotNil(t, err)
 }
 
@@ -44,8 +42,7 @@ func TestGetAllCredentialFields(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.GetAllCredentialFields(nil)
+	res, err := k.Security.GetAllCredentialFields(nil)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "username", res["local"][0])
@@ -55,8 +52,7 @@ func TestGetAllCredentialFields(t *testing.T) {
 func ExampleSecurity_GetAllCredentialFields() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.GetAllCredentialFields(nil)
+	res, err := k.Security.GetAllCredentialFields(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

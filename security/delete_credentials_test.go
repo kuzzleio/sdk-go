@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -23,8 +22,7 @@ func TestDeleteCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.DeleteCredentials("local", "someId", nil)
+	_, err := k.Security.DeleteCredentials("local", "someId", nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,8 +33,7 @@ func TestDeleteCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.DeleteCredentials("", "someId", nil)
+	_, err := k.Security.DeleteCredentials("", "someId", nil)
 	assert.NotNil(t, err)
 }
 
@@ -47,8 +44,7 @@ func TestDeleteCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.DeleteCredentials("local", "", nil)
+	_, err := k.Security.DeleteCredentials("local", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -71,8 +67,7 @@ func TestDeleteCredentials(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, _ := s.DeleteCredentials("local", "someId", nil)
+	res, _ := k.Security.DeleteCredentials("local", "someId", nil)
 
 	assert.Equal(t, true, res.Acknowledged)
 	assert.Equal(t, true, res.ShardsAcknowledged)
@@ -81,8 +76,7 @@ func TestDeleteCredentials(t *testing.T) {
 func ExampleSecurity_DeleteCredentials() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.DeleteCredentials("local", "someId", nil)
+	res, err := k.Security.DeleteCredentials("local", "someId", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

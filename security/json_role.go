@@ -10,16 +10,17 @@ type jsonRole struct {
 	Source types.Controllers `json:"_source"`
 }
 
-type jsonSearchResult struct {
+type jsonRoleSearchResult struct {
 	Hits []*jsonRole `json:"hits"`
-	Total int        `json:"total"`
+	Total int `json:"total"`
+	ScrollId string `json:"scrollId"`
 }
 
 func (s *Security) jsonRoleToRole(j *jsonRole) *Role {
 	r := &Role{}
 	r.Id = j.Id
 	r.Controllers = j.Source.Controllers
-	r.Kuzzle = s.Kuzzle
+	r.Security = s
 
 	return r
 }
