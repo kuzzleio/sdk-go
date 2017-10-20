@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -20,7 +19,7 @@ func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (*types.S
 	res := <-result
 
 	if res.Error != nil {
-		return &types.Shards{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	type s struct {

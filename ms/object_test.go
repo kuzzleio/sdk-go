@@ -20,7 +20,7 @@ func TestObjectEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Object("", "encoding", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Object: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Object: key required", fmt.Sprint(err))
 }
 
 func TestObjectInvalidSubcommand(t *testing.T) {
@@ -31,13 +31,13 @@ func TestObjectInvalidSubcommand(t *testing.T) {
 	_, err := memoryStorage.Object("foo", "invalid", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Object: subcommand required, possible values: refcount|encoding|idletime", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Object: subcommand required, possible values: refcount|encoding|idletime", fmt.Sprint(err))
 }
 
 func TestObjectError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

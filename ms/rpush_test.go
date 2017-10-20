@@ -20,7 +20,7 @@ func TestRpushEmptySource(t *testing.T) {
 	_, err := memoryStorage.Rpush("", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Rpush: source required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Rpush: source required", fmt.Sprint(err))
 }
 
 func TestRpushEmptyValues(t *testing.T) {
@@ -31,13 +31,13 @@ func TestRpushEmptyValues(t *testing.T) {
 	_, err := memoryStorage.Rpush("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Rpush: please provide at least one value", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Rpush: please provide at least one value", fmt.Sprint(err))
 }
 
 func TestRpushError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

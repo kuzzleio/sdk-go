@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
-			return false, errors.New("Kuzzle.SetAutoRefresh: index required")
+			return false, types.NewError("Kuzzle.SetAutoRefresh: index required", 400)
 		}
 		index = k.defaultIndex
 	}
@@ -30,7 +29,7 @@ func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.Que
 	res := <-result
 
 	if res.Error != nil {
-		return false, errors.New(res.Error.Message)
+		return false, res.Error
 	}
 
 	type autoRefreshResponse struct {

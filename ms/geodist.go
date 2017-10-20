@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Geodist gets the distance between two geospatial members of a key (see geoadd)
 func (ms Ms) Geodist(key string, member1 string, member2 string, options types.QueryOptions) (float64, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Geodist: key required")
+		return 0, types.NewError("Ms.Geodist: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult float64
 	json.Unmarshal(res.Result, &returnedResult)

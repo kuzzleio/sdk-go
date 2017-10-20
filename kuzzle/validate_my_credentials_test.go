@@ -19,7 +19,7 @@ func TestValidateMyCredentialsQueryError(t *testing.T) {
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "validateMyCredentials", request.Action)
 			assert.Equal(t, "local", request.Strategy)
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

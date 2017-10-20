@@ -18,7 +18,7 @@ func TestListIndexesQueryError(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "index", request.Controller)
 			assert.Equal(t, "list", request.Action)
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

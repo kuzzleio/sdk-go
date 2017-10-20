@@ -16,7 +16,7 @@ func TestReplaceDocumentEmptyId(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.ReplaceDocument: document id required"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.ReplaceDocument: document id required"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -29,7 +29,7 @@ func TestReplaceDocumentError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -93,7 +93,7 @@ func TestMReplaceDocumentEmptyDocuments(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.MReplaceDocument: please provide at least one document to replace"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Collection.MReplaceDocument: please provide at least one document to replace"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -110,7 +110,7 @@ func TestMReplaceDocumentError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -20,7 +20,7 @@ func TestZincrByEmptyKey(t *testing.T) {
 	_, err := memoryStorage.ZincrBy("", "bar", 1.337, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZincrBy: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZincrBy: key required", fmt.Sprint(err))
 }
 
 func TestZincrByEmptyMember(t *testing.T) {
@@ -31,13 +31,13 @@ func TestZincrByEmptyMember(t *testing.T) {
 	_, err := memoryStorage.ZincrBy("foo", "", 1.337, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZincrBy: member required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZincrBy: member required", fmt.Sprint(err))
 }
 
 func TestZincrByError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

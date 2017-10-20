@@ -5,7 +5,7 @@ import (
 )
 
 type (
-	MessageError struct {
+	KuzzleError struct {
 		Message string `json:"message"`
 		Status  int    `json:"status"`
 	}
@@ -20,26 +20,27 @@ type (
 	}
 
 	KuzzleResult struct {
-		Id         string          `json:"_id"`
-		Meta       *KuzzleMeta     `json:"_meta"`
-		Content    json.RawMessage `json:"_source"`
-		Version    int             `json:"_version"`
-		Collection string          `json:"collection"`
+		Id         string           `json:"_id"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Content    json.RawMessage  `json:"_source"`
+		Version    int              `json:"_version"`
+		Collection string           `json:"collection"`
 	}
 
 	KuzzleNotification struct {
 		RequestId string        `json:"requestId"`
 		Result    *KuzzleResult `json:"result"`
 		RoomId    string        `json:"room"`
-		Error     *MessageError `json:"error"`
+		Error     *KuzzleError  `json:"error"`
 	}
 
 	KuzzleResponse struct {
-		RequestId string          `json:"requestId"`
-		Result    json.RawMessage `json:"result"`
-		RoomId    string          `json:"room"`
-		Channel   string          `json:"channel"`
-		Error     *MessageError   `json:"error"`
+		RequestId string           `json:"requestId"`
+		Result    json.RawMessage  `json:"result"`
+		RoomId    string           `json:"room"`
+		Channel   string           `json:"channel"`
+		Status		int            `json:"status"`
+		Error     *KuzzleError     `json:"error"`
 	}
 
 	KuzzleValidationFields map[string]*struct {
@@ -205,10 +206,10 @@ type (
 	}
 
 	SecurityDocument struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       *KuzzleMeta     `json:"_meta"`
-		Strategies []string        `json:"strategies"`
+		Id         string           `json:"_id"`
+		Source     json.RawMessage  `json:"_source"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Strategies []string         `json:"strategies"`
 	}
 
 	Profile SecurityDocument
@@ -228,10 +229,10 @@ type (
 	}
 
 	User struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       *KuzzleMeta     `json:"_meta"`
-		Strategies []string        `json:"strategies"`
+		Id         string           `json:"_id"`
+		Source     json.RawMessage  `json:"_source"`
+		Meta       *KuzzleMeta      `json:"_meta"`
+		Strategies []string         `json:"strategies"`
 	}
 
 	GeoradiusPointWithCoord struct {
@@ -257,3 +258,27 @@ type (
 		Values []string `json:"values"`
 	}
 )
+
+func (e *KuzzleError) Error() string {
+	msg := e.Message
+
+  if len(e.Stack) > 0 {
+    msg = fmt.Sprintf("%s\n%s", msg, e.Stack)
+  }
+
+  if e.Status > 0 {
+  	msg = fmt.Sprintf("[%d] %s", e.Status, msg)
+  }
+
+  return msg
+}
+
+func NewError(msg string, status ...int)  *KuzzleError {
+	err := &KuzzleError{Message: msg}
+
+	if len(status) == 1 {
+		err.Status = status[0]
+	} 
+
+	return err
+}

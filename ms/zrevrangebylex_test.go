@@ -20,7 +20,7 @@ func TestZrevRangeByLexEmptyKey(t *testing.T) {
 	_, err := memoryStorage.ZrevRangeByLex("", "-", "(g", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrevRangeByLex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByLex: key required", fmt.Sprint(err))
 }
 
 func TestZrevRangeByLexEmptyMin(t *testing.T) {
@@ -31,7 +31,7 @@ func TestZrevRangeByLexEmptyMin(t *testing.T) {
 	_, err := memoryStorage.ZrevRangeByLex("foo", "", "(g", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrevRangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByLex: min required", fmt.Sprint(err))
 }
 
 func TestZrevRangeByLexEmptyMax(t *testing.T) {
@@ -42,13 +42,13 @@ func TestZrevRangeByLexEmptyMax(t *testing.T) {
 	_, err := memoryStorage.ZrevRangeByLex("foo", "-", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.ZrevRangeByLex: max required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByLex: max required", fmt.Sprint(err))
 }
 
 func TestZrevRangeByLexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

@@ -20,7 +20,7 @@ func TestSremEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Srem("", []string{"foo", "bar"}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Srem: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Srem: key required", fmt.Sprint(err))
 }
 
 func TestSremEmptyValues(t *testing.T) {
@@ -31,13 +31,13 @@ func TestSremEmptyValues(t *testing.T) {
 	_, err := memoryStorage.Srem("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Srem: please provide at least one value to remove", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Srem: please provide at least one value to remove", fmt.Sprint(err))
 }
 
 func TestSremError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

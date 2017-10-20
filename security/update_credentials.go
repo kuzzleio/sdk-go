@@ -2,7 +2,6 @@ package security
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 	"reflect"
 )
@@ -10,11 +9,11 @@ import (
 // UpdateCredentials updates credentials of the specified strategy for the given user.
 func (s Security) UpdateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (map[string]interface{}, error) {
 	if strategy == "" {
-		return nil, errors.New("Security.UpdateCredentials: strategy is required")
+		return nil, types.NewError("Security.UpdateCredentials: strategy is required", 400)
 	}
 
 	if kuid == "" {
-		return nil, errors.New("Security.UpdateCredentials: kuid is required")
+		return nil, types.NewError("Security.UpdateCredentials: kuid is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +30,7 @@ func (s Security) UpdateCredentials(strategy string, kuid string, credentials in
 	res := <-result
 
 	if res.Error != nil {
-		return nil, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()

@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lindex returns all keys matching the provided pattern.
 func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Lindex: key required")
+		return "", types.NewError("Ms.Lindex: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, 
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

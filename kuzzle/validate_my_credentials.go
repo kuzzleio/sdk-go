@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -22,7 +21,7 @@ func (k Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, 
 	res := <-result
 
 	if res.Error != nil {
-		return false, errors.New(res.Error.Message)
+		return false, res.Error
 	}
 
 	var r bool

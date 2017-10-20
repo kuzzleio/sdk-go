@@ -10,7 +10,7 @@ import (
 // Takes an optional argument object with the following properties:
 //   - volatile (object, default: null):
 //     Additional information passed to notifications to other users
-func (dc Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (*types.RealtimeResponse, error) {
+func (dc Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (*Collection, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -24,13 +24,5 @@ func (dc Collection) PublishMessage(message map[string]interface{}, options type
 
 	res := <-ch
 
-	response := &types.RealtimeResponse{}
-
-	if res.Error != nil {
-		return response, errors.New(res.Error.Message)
-	}
-
-	json.Unmarshal(res.Result, response)
-
-	return response, nil
+	return dc, res.Error
 }

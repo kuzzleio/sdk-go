@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Getbit returns the bit value at offset, in the string value stored in a key.
 func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Getbit: key required")
+		return -1, types.NewError("Ms.Getbit: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -26,7 +25,7 @@ func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, er
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return -1, res.Error
 	}
 
 	var returnedResult int

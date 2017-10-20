@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -13,10 +12,10 @@ import (
 // its score is updated and the member is reinserted at the right position in the set.
 func (ms Ms) Zadd(key string, elements []*types.MSSortedSet, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Zadd: key required")
+		return 0, types.NewError("Ms.Zadd: key required", 400)
 	}
 	if len(elements) == 0 {
-		return 0, errors.New("Ms.Zadd: please provide at least one element")
+		return 0, types.NewError("Ms.Zadd: please provide at least one element", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -50,7 +49,7 @@ func (ms Ms) Zadd(key string, elements []*types.MSSortedSet, options types.Query
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

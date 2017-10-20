@@ -2,8 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
 )
@@ -50,13 +48,14 @@ func (d Document) SourceToMap() DocumentContent {
 // Helper function to initialize a document into Document using fetch query.
 func (d *Document) Fetch(id string) (*Document, error) {
 	if id == "" {
-		return d, errors.New("Document.Fetch: missing document id")
+		return d, types.NewError("Document.Fetch: missing document id", 400)
 	}
 
 	doc, err := d.collection.FetchDocument(id, nil)
 
 	if err != nil {
-		return d, errors.New("Document.Fetch: an error occurred: " + fmt.Sprint(err))
+		err.(*types.KuzzleError).Message = "Document.Fetch: an error occurred: " + err.(*types.KuzzleError).Message
+		return d, err
 	}
 
 	d.Id = id
@@ -78,7 +77,7 @@ func (d *Document) Fetch(id string) (*Document, error) {
 func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) chan *types.SubscribeResponse {
 	if d.Id == "" {
 		errorResponse := make(chan *types.SubscribeResponse, 1)
-		errorResponse <- &types.SubscribeResponse{Error: errors.New("Document.Subscribe: cannot subscribe to a document if no ID has been provided")}
+		errorResponse <- &types.SubscribeResponse{Error: types.NewError("Document.Subscribe: cannot subscribe to a document if no ID has been provided", 400)}
 
 		return errorResponse
 	}
@@ -100,7 +99,7 @@ func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNo
 */
 func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 	if d.Id == "" {
-		return d, errors.New("Document.Save: missing document id")
+		return d, types.NewError("Document.Save: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -119,7 +118,7 @@ func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 	res := <-ch
 
 	if res.Error != nil {
-		return d, errors.New(res.Error.Message)
+		return d, res.Error
 	}
 
 	return d, nil
@@ -130,7 +129,7 @@ func (d *Document) Save(options types.QueryOptions) (*Document, error) {
 */
 func (d *Document) Refresh(options types.QueryOptions) (*Document, error) {
 	if d.Id == "" {
-		return d, errors.New("Document.Refresh: missing document id")
+		return d, types.NewError("Document.Refresh: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -147,7 +146,7 @@ func (d *Document) Refresh(options types.QueryOptions) (*Document, error) {
 
 	res := <-ch
 	if res.Error != nil {
-		return d, errors.New(res.Error.Message)
+		return d, res.Error
 	}
 
 	json.Unmarshal(res.Result, d)
@@ -229,7 +228,7 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 	res := <-ch
 
 	if res.Error != nil {
-		return false, errors.New(res.Error.Message)
+		return false, res.Error
 	}
 
 	response := types.RealtimeResponse{}
@@ -244,7 +243,7 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 */
 func (d Document) Exists(options types.QueryOptions) (bool, error) {
 	if d.Id == "" {
-		return false, errors.New("Document.Exists: missing document id")
+		return false, types.NewError("Document.Exists: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -262,7 +261,7 @@ func (d Document) Exists(options types.QueryOptions) (bool, error) {
 	res := <-ch
 
 	if res.Error != nil {
-		return false, errors.New(res.Error.Message)
+		return false, res.Error
 	}
 
 	exists, _ := strconv.ParseBool(string(res.Result))
@@ -275,7 +274,7 @@ func (d Document) Exists(options types.QueryOptions) (bool, error) {
 */
 func (d Document) Delete(options types.QueryOptions) (string, error) {
 	if d.Id == "" {
-		return "", errors.New("Document.Delete: missing document id")
+		return "", types.NewError("Document.Delete: missing document id", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -293,7 +292,7 @@ func (d Document) Delete(options types.QueryOptions) (string, error) {
 	res := <-ch
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	document := Document{collection: d.collection}

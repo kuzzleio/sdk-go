@@ -11,11 +11,10 @@ import (
 	"testing"
 )
 
-func TestPublishMessageError(t *testing.T) {
-
+func TestPublishKuzzleError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -37,7 +36,7 @@ func TestPublishMessage(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["title"])
+			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["Title"])
 
 			res := types.KuzzleResponse{Result: []byte(`{"published":true}`)}
 			r, _ := json.Marshal(res.Result)
@@ -48,9 +47,10 @@ func TestPublishMessage(t *testing.T) {
 
 	message := make(map[string]interface{})
 	message["title"] = interface{}("yolo")
-	res, _ := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
+	coll := collection.NewCollection(k, "collection", "index")
+	res, _ := coll.PublishMessage(message, nil)
 
-	assert.Equal(t, true, res.Published)
+	assert.Equal(t, coll, res)
 }
 
 func ExampleCollection_PublishMessage() {
@@ -70,5 +70,5 @@ func ExampleCollection_PublishMessage() {
 		return
 	}
 
-	fmt.Println(res.Published)
+	fmt.Println(res)
 }

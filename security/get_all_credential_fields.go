@@ -2,7 +2,6 @@ package security
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -19,7 +18,7 @@ func (s Security) GetAllCredentialFields(options types.QueryOptions) (types.Cred
 	res := <-ch
 
 	if res.Error != nil {
-		return types.CredentialFields{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	credentialFields := types.CredentialFields{}

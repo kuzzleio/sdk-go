@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // After the timeout has expired, the key will automatically be deleted.
 func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Pexpire: key required")
+		return 0, types.NewError("Ms.Pexpire: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, erro
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

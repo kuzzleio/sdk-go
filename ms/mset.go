@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +9,7 @@ import (
 // If a key does not exist, it is created. Otherwise, the key’s value is overwritten.
 func (ms Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) (string, error) {
 	if len(entries) == 0 {
-		return "", errors.New("Ms.Mset: please provide at least one key/value entry")
+		return "", types.NewError("Ms.Mset: please provide at least one key/value entry", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) (stri
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

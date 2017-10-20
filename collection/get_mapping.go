@@ -2,12 +2,11 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
+func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -21,7 +20,7 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
 	res := <-ch
 
 	if res.Error != nil {
-		return &Mapping{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	type mappingResult map[string]struct {
@@ -37,14 +36,11 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
 		indexMappings := result[dc.index].Mappings
 
 		if _, ok := indexMappings[dc.collection]; ok {
-			cm := NewMapping(dc)
-			cm.Set(indexMappings[dc.collection].Properties)
-
-			return cm, nil
+			return &CollectionMapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
 		} else {
-			return &Mapping{}, errors.New("No mapping found for collection " + dc.collection)
+			return nil, types.NewError("No mapping found for collection " + dc.collection, 404)
 		}
 	} else {
-		return &Mapping{}, errors.New("No mapping found for index " + dc.index)
+		return nil, types.NewError("No mapping found for index " + dc.index, 404)
 	}
 }

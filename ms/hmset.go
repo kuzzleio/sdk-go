@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hmset sets multiple fields at once in a hash.
 func (ms Ms) Hmset(key string, entries []*types.MsHashField, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Hmset: key required")
+		return "", types.NewError("Ms.Hmset: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -30,7 +29,7 @@ func (ms Ms) Hmset(key string, entries []*types.MsHashField, options types.Query
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 
 	var returnedResult string

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -15,25 +14,27 @@ import (
 func TestDeleteDocumentEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.DeleteDocument: document id required"}}
+			return &types.KuzzleResponse{Error: types.NewError("should have stopped before receiving a response")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").DeleteDocument("", nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Collection.DeleteDocument: document id required", err.(*types.KuzzleError).Message)
 }
 
 func TestDeleteDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").DeleteDocument("myId", nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
 func TestDeleteDocument(t *testing.T) {
@@ -83,25 +84,27 @@ func ExampleCollection_DeleteDocument() {
 func TestMDeleteDocumentEmptyIds(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Collection.MDeleteDocument: please provide at least one id of document to delete"}}
+			return &types.KuzzleResponse{Error: types.NewError("should have failed before that line")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{}, nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Collection.MDeleteDocument: please provide at least one id of document to delete", err.(*types.KuzzleError).Message)
 }
 
 func TestMDeleteDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	_, err := collection.NewCollection(k, "collection", "index").MDeleteDocument([]string{"foo", "bar"}, nil)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
 func TestMDeleteDocument(t *testing.T) {

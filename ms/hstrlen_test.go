@@ -20,7 +20,7 @@ func TestHstrlenEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hstrlen("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hstrlen: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hstrlen: key required", fmt.Sprint(err))
 }
 
 func TestHstrlenEmptyField(t *testing.T) {
@@ -31,13 +31,13 @@ func TestHstrlenEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hstrlen("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hstrlen: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hstrlen: field required", fmt.Sprint(err))
 }
 
 func TestHstrlenError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

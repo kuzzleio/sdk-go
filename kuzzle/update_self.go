@@ -2,7 +2,6 @@ package kuzzle
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -21,7 +20,7 @@ func (k Kuzzle) UpdateSelf(credentials interface{}, options types.QueryOptions) 
 	res := <-result
 
 	if res.Error != nil {
-		return &types.User{}, errors.New(res.Error.Message)
+		return nil, res.Error
 	}
 
 	u := &types.User{}

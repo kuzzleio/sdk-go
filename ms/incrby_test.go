@@ -20,13 +20,13 @@ func TestIncrbyEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Incrby("", 42, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Incrby: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Incrby: key required", fmt.Sprint(err))
 }
 
 func TestIncrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

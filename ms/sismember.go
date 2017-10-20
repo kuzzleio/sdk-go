@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // SisMember checks if member is a member of the set of unique values stored at key.
 func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.SisMember: key required")
+		return 0, types.NewError("Ms.SisMember: key required", 400)
 	}
 	if member == "" {
-		return 0, errors.New("Ms.SisMember: member required")
+		return 0, types.NewError("Ms.SisMember: member required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -29,7 +28,7 @@ func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

@@ -20,7 +20,7 @@ func TestHincrbyEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hincrby("", "bar", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hincrby: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hincrby: key required", fmt.Sprint(err))
 }
 
 func TestHincrbyEmptyField(t *testing.T) {
@@ -31,13 +31,13 @@ func TestHincrbyEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hincrby("foo", "", 1, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hincrby: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hincrby: field required", fmt.Sprint(err))
 }
 
 func TestHincrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

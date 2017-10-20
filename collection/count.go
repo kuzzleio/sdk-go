@@ -2,7 +2,6 @@ package collection
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -12,7 +11,8 @@ import (
 // That means that a document that was just been created won’t be returned by this function
 func (dc Collection) Count(filters *types.SearchFilters, options types.QueryOptions) (int, error) {
 	type countResult struct {
-		Count int `json:"count"`
+		Count  int `json:"count"`
+		Status int
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -28,7 +28,7 @@ func (dc Collection) Count(filters *types.SearchFilters, options types.QueryOpti
 	res := <-ch
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return -1, res.Error
 	}
 
 	result := &countResult{}

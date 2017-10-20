@@ -20,7 +20,7 @@ func TestHexistsEmptyKey(t *testing.T) {
 	_, err := memoryStorage.Hexists("", "bar", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hexists: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hexists: key required", fmt.Sprint(err))
 }
 
 func TestHexistsEmptyField(t *testing.T) {
@@ -31,13 +31,13 @@ func TestHexistsEmptyField(t *testing.T) {
 	_, err := memoryStorage.Hexists("foo", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Ms.Hexists: field required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hexists: field required", fmt.Sprint(err))
 }
 
 func TestHexistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "Unit test error"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

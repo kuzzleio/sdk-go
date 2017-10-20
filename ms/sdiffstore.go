@@ -2,7 +2,6 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -11,13 +10,13 @@ import (
 // If the destination key already exists, it is overwritten.
 func (ms Ms) SdiffStore(key string, sets []string, destination string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.SdiffStore: key required")
+		return 0, types.NewError("Ms.SdiffStore: key required", 400)
 	}
 	if len(sets) == 0 {
-		return 0, errors.New("Ms.SdiffStore: please provide at least one set")
+		return 0, types.NewError("Ms.SdiffStore: please provide at least one set", 400)
 	}
 	if destination == "" {
-		return 0, errors.New("Ms.SdiffStore: destination required")
+		return 0, types.NewError("Ms.SdiffStore: destination required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -39,7 +38,7 @@ func (ms Ms) SdiffStore(key string, sets []string, destination string, options t
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

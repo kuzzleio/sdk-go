@@ -2,17 +2,16 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Hsetnx sets a field and its value in a hash, only if the field does not already exist.
 func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryOptions) (int, error) {
 	if key == "" {
-		return 0, errors.New("Ms.Hsetnx: key required")
+		return 0, types.NewError("Ms.Hsetnx: key required", 400)
 	}
 	if field == "" {
-		return 0, errors.New("Ms.Hsetnx: field required")
+		return 0, types.NewError("Ms.Hsetnx: field required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -34,7 +33,7 @@ func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryO
 	res := <-result
 
 	if res.Error != nil {
-		return 0, errors.New(res.Error.Message)
+		return 0, res.Error
 	}
 
 	var returnedResult int

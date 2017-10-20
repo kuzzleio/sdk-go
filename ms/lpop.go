@@ -2,14 +2,13 @@ package ms
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lpop removes and returns the first element of a list.
 func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return "", errors.New("Ms.Lpop: key required")
+		return "", types.NewError("Ms.Lpop: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,7 +24,7 @@ func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return "", errors.New(res.Error.Message)
+		return "", res.Error
 	}
 	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)

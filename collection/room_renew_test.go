@@ -36,7 +36,7 @@ func TestRenewQueryError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.MessageError{Message: "ah!"}}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "ah!"}}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
