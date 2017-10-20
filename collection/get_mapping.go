@@ -6,7 +6,7 @@ import (
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping, error) {
+func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -36,7 +36,7 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*CollectionMapping
 		indexMappings := result[dc.index].Mappings
 
 		if _, ok := indexMappings[dc.collection]; ok {
-			return &CollectionMapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
+			return &Mapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
 		} else {
 			return nil, types.NewError("No mapping found for collection " + dc.collection, 404)
 		}

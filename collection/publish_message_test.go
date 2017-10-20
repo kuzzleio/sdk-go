@@ -36,7 +36,7 @@ func TestPublishMessage(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["Title"])
+			assert.Equal(t, "yolo", parsedQuery.Body.(map[string]interface{})["title"])
 
 			res := types.KuzzleResponse{Result: []byte(`{"published":true}`)}
 			r, _ := json.Marshal(res.Result)

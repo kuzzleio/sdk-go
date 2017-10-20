@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestCollectionMappingApplyError(t *testing.T) {
+func TestMappingApplyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -34,7 +34,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCollectionMappingApply(t *testing.T) {
+func TestMappingApply(t *testing.T) {
 	callCount := 0
 
 	c := &internal.MockedConnection{
@@ -93,7 +93,7 @@ func TestCollectionMappingApply(t *testing.T) {
 	assert.Equal(t, cm, res)
 }
 
-func ExampleCollectionMapping_Apply() {
+func ExampleMapping_Apply() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
@@ -117,7 +117,7 @@ func ExampleCollectionMapping_Apply() {
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingRefreshError(t *testing.T) {
+func TestMappingRefreshError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -140,7 +140,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
+func TestMappingRefreshUnknownIndex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -175,7 +175,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
-func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
+func TestMappingRefreshUnknownCollection(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -210,7 +210,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
-func TestCollectionMappingRefresh(t *testing.T) {
+func TestMappingRefresh(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -252,7 +252,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 	assert.Equal(t, *updatedCm.Mapping, *cm.Mapping)
 }
 
-func ExampleCollectionMapping_Refresh() {
+func ExampleMapping_Refresh() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
@@ -278,7 +278,7 @@ func ExampleCollectionMapping_Refresh() {
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingSet(t *testing.T) {
+func TestMappingSet(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -310,7 +310,7 @@ func TestCollectionMappingSet(t *testing.T) {
 	assert.Equal(t, 100, (*cm.Mapping)["foo"].IgnoreAbove)
 }
 
-func ExampleCollectionMapping_Set() {
+func ExampleMapping_Set() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
@@ -328,7 +328,7 @@ func ExampleCollectionMapping_Set() {
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingSetHeaders(t *testing.T) {
+func TestMappingSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
@@ -362,7 +362,7 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 	assert.NotEqual(t, newHeaders, k.GetHeaders())
 }
 
-func TestCollectionMappingSetHeadersReplace(t *testing.T) {
+func TestMappingSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
@@ -396,7 +396,7 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 	assert.NotEqual(t, headers, k.GetHeaders())
 }
 
-func ExampleCollectionMapping_SetHeaders() {
+func ExampleMapping_SetHeaders() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")

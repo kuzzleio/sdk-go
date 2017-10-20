@@ -45,7 +45,7 @@ func TestGetMappingUnknownIndex(t *testing.T) {
 
 	_, err := cl.GetMapping(nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "No mapping found for index wrong-index", fmt.Sprint(err))
+	assert.Equal(t, "[404] No mapping found for index wrong-index", fmt.Sprint(err))
 }
 
 func TestGetMappingUnknownCollection(t *testing.T) {
@@ -93,8 +93,8 @@ func TestGetMapping(t *testing.T) {
 
 	res, _ := cl.GetMapping(nil)
 
-	expected := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	expected := collection.Mapping{
+		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
 				Type:   "text",
 				IgnoreAbove: 255,

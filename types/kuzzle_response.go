@@ -2,11 +2,13 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 type (
 	KuzzleError struct {
 		Message string `json:"message"`
+		Stack   string `json:"stack"`
 		Status  int    `json:"status"`
 	}
 

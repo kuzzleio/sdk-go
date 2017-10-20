@@ -1,8 +1,6 @@
 package collection
 
 import (
-	"encoding/json"
-	"errors"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -10,7 +8,7 @@ import (
 // Takes an optional argument object with the following properties:
 //   - volatile (object, default: null):
 //     Additional information passed to notifications to other users
-func (dc Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (*Collection, error) {
+func (dc *Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (*Collection, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
