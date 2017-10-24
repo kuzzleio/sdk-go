@@ -2,14 +2,13 @@ package security_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
-	"fmt"
 )
 
 func TestCreateCredentialsQueryError(t *testing.T) {
@@ -23,8 +22,7 @@ func TestCreateCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.CreateCredentials("local", "someId", nil, nil)
+	_, err := k.Security.CreateCredentials("local", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,8 +33,7 @@ func TestCreateCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.CreateCredentials("", "someId", nil, nil)
+	_, err := k.Security.CreateCredentials("", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -47,8 +44,7 @@ func TestCreateCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.CreateCredentials("local", "", nil, nil)
+	_, err := k.Security.CreateCredentials("local", "", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -74,8 +70,7 @@ func TestCreateCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	s := security.NewSecurity(k)
-	res, err := s.CreateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
+	res, err := k.Security.CreateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "foo", res["username"])
@@ -91,8 +86,7 @@ func ExampleSecurity_CreateCredentials() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	s := security.NewSecurity(k)
-	res, err := s.CreateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
+	res, err := k.Security.CreateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
