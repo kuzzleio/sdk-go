@@ -66,7 +66,7 @@ func (ro *roomOptions) SetVolatile(volatile VolatileData) *roomOptions {
 	return ro
 }
 
-func NewRoomOptions() *roomOptions {
+func NewRoomOptions() RoomOptions {
 	return &roomOptions{
 		scope:           SCOPE_ALL,
 		state:           STATE_DONE,

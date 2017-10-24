@@ -88,10 +88,10 @@ func (cm *Mapping) Refresh(options types.QueryOptions) (*Mapping, error) {
 
 			return cm, nil
 		} else {
-			return cm, types.NewError("No mapping found for collection " + cm.Collection.collection, 404)
+			return cm, types.NewError("No mapping found for collection "+cm.Collection.collection, 404)
 		}
 	} else {
-		return cm, types.NewError("No mapping found for index " + cm.Collection.index, 404)
+		return cm, types.NewError("No mapping found for index "+cm.Collection.index, 404)
 	}
 }
 

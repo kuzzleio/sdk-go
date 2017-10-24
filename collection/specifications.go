@@ -54,7 +54,6 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 
 	res := <-ch
 
-
 	if res.Error != nil {
 		return nil, res.Error
 	}

@@ -38,9 +38,9 @@ func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
 		if _, ok := indexMappings[dc.collection]; ok {
 			return &Mapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
 		} else {
-			return nil, types.NewError("No mapping found for collection " + dc.collection, 404)
+			return nil, types.NewError("No mapping found for collection "+dc.collection, 404)
 		}
 	} else {
-		return nil, types.NewError("No mapping found for index " + dc.index, 404)
+		return nil, types.NewError("No mapping found for index "+dc.index, 404)
 	}
 }

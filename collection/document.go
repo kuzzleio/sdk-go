@@ -18,13 +18,13 @@ type IDocument interface {
 
 type Document struct {
 	Id         string            `json:"_id"`
-	Index      string 					 `json:"_index"`
+	Index      string            `json:"_index"`
 	Meta       *types.KuzzleMeta `json:"_meta"`
-	Shards     map[string]int    `json:"_shards"`
+	Shards     *types.Shards     `json:"_shards"`
 	Content    json.RawMessage   `json:"_source"`
 	Version    int               `json:"_version"`
 	Result     string            `json:"result"`
-	Created    bool 						 `json:"created"`
+	Created    bool              `json:"created"`
 	Collection string            `json:"_collection"`
 	collection *Collection       `json:"-"`
 }

@@ -96,7 +96,7 @@ func TestGetMapping(t *testing.T) {
 	expected := collection.Mapping{
 		Mapping: &types.KuzzleFieldsMapping{
 			"foo": {
-				Type:   "text",
+				Type:        "text",
 				IgnoreAbove: 255,
 			},
 		},

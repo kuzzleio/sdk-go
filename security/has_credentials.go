@@ -1,8 +1,8 @@
 package security
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // HasCredentials gets credential information of the specified strategy for the given user.

@@ -80,7 +80,7 @@ func (sr *SecurityRole) Fetch(id string, options types.QueryOptions) (*Role, err
 
 	role := &Role{SR: sr}
 	json.Unmarshal(res.Result, role)
-	
+
 	return role, nil
 }
 
