@@ -50,7 +50,7 @@ func TestPublishMessage(t *testing.T) {
 	coll := collection.NewCollection(k, "collection", "index")
 	res, _ := coll.PublishMessage(message, nil)
 
-	assert.Equal(t, coll, res)
+	assert.Equal(t, true, res)
 }
 
 func ExampleCollection_PublishMessage() {
