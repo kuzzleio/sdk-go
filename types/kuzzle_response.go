@@ -12,7 +12,7 @@ type (
 		Status  int    `json:"status"`
 	}
 
-	KuzzleMeta struct {
+	Meta struct {
 		Author    string `json:"author"`
 		CreatedAt int    `json:"createdAt"`
 		UpdatedAt int    `json:"updatedAt"`
@@ -23,7 +23,7 @@ type (
 
 	KuzzleResult struct {
 		Id         string          `json:"_id"`
-		Meta       *KuzzleMeta     `json:"_meta"`
+		Meta       *Meta           `json:"_meta"`
 		Content    json.RawMessage `json:"_source"`
 		Version    int             `json:"_version"`
 		Collection string          `json:"collection"`
@@ -45,7 +45,7 @@ type (
 		Error     *KuzzleError    `json:"error"`
 	}
 
-	KuzzleValidationFields map[string]*struct {
+	ValidationField struct {
 		Type        string `json:"type,omitempty"`
 		Depth       int    `json:"depth,omitempty"`
 		Mandatory   bool   `json:"mandatory,omitempty"`
@@ -73,10 +73,12 @@ type (
 		} `json:"typeOptions,omitempty"`
 	}
 
+	ValidationFields map[string]ValidationField
+
 	Validation struct {
-		Strict     bool                    `json:"strict,omitempty"`
-		Fields     *KuzzleValidationFields `json:"fields,omitempty"`
-		Validators json.RawMessage         `json:"validators,omitempty"`
+		Strict     bool              `json:"strict,omitempty"`
+		Fields     ValidationFields  `json:"fields,omitempty"`
+		Validators json.RawMessage   `json:"validators,omitempty"`
 	}
 
 	MappingField struct {
@@ -128,18 +130,20 @@ type (
 
 	MappingFields map[string]MappingField
 
-	KuzzleSpecifications map[string]map[string]*Validation
+	Specifications map[string]map[string]*Validation
 
-	KuzzleSpecificationsResult struct {
-		Validation *Validation `json:"validation"`
+	SpecificationsResult struct {
+		Validation Validation `json:"validation"`
 		Index      string      `json:"index"`
 		Collection string      `json:"collection"`
 	}
 
-	KuzzleSpecificationSearchResult struct {
-		Hits []*struct {
-			Source *KuzzleSpecificationsResult `json:"_source"`
-		} `json:"hits"`
+	SpecificationSearchResultHit struct {
+		Source SpecificationsResult `json:"_source"`
+	}
+
+	SpecificationSearchResult struct {
+		Hits []SpecificationSearchResultHit `json:"hits"`
 		Total    int    `json:"total"`
 		ScrollId string `json:"scrollId"`
 	}
@@ -210,7 +214,7 @@ type (
 	SecurityDocument struct {
 		Id         string          `json:"_id"`
 		Source     json.RawMessage `json:"_source"`
-		Meta       *KuzzleMeta     `json:"_meta"`
+		Meta       *Meta           `json:"_meta"`
 		Strategies []string        `json:"strategies"`
 	}
 
@@ -233,7 +237,7 @@ type (
 	User struct {
 		Id         string          `json:"_id"`
 		Source     json.RawMessage `json:"_source"`
-		Meta       *KuzzleMeta     `json:"_meta"`
+		Meta       *Meta           `json:"_meta"`
 		Strategies []string        `json:"strategies"`
 	}
 

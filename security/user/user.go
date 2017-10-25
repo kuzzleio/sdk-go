@@ -12,10 +12,10 @@ type SecurityUser struct {
 }
 
 type User struct {
-	Id     string            `json:"_id"`
-	Source json.RawMessage   `json:"_source"`
-	Meta   *types.KuzzleMeta `json:"_meta"`
-	SU     *SecurityUser     `json:"-"`
+	Id     string          `json:"_id"`
+	Source json.RawMessage `json:"_source"`
+	Meta   *types.Meta     `json:"_meta"`
+	SU     *SecurityUser   `json:"-"`
 }
 
 type UserSearchResult struct {

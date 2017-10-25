@@ -6,7 +6,7 @@ import (
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.KuzzleSpecificationsResult, error) {
+func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.SpecificationsResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -23,14 +23,14 @@ func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.Kuzz
 		return nil, res.Error
 	}
 
-	specifications := &types.KuzzleSpecificationsResult{}
+	specifications := &types.SpecificationsResult{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
 }
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
-func (dc *Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+func (dc *Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (*types.SpecificationSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -58,14 +58,14 @@ func (dc *Collection) SearchSpecifications(filters interface{}, options types.Qu
 		return nil, res.Error
 	}
 
-	specifications := &types.KuzzleSpecificationSearchResult{}
+	specifications := &types.SpecificationSearchResult{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
 }
 
 // ScrollSpecifications retrieves next result of a specification search with scroll query.
-func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.SpecificationSearchResult, error) {
 	if scrollId == "" {
 		return nil, types.NewError("Collection.ScrollSpecifications: scroll id required")
 	}
@@ -93,7 +93,7 @@ func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryO
 		return nil, res.Error
 	}
 
-	specifications := &types.KuzzleSpecificationSearchResult{}
+	specifications := &types.SpecificationSearchResult{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil
@@ -103,7 +103,7 @@ func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryO
 func (dc *Collection) ValidateSpecifications(specifications *types.Validation, options types.QueryOptions) (*types.ValidResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-	specificationsData := types.KuzzleSpecifications{
+	specificationsData := types.Specifications{
 		dc.index: {
 			dc.collection: specifications,
 		},
@@ -131,10 +131,10 @@ func (dc *Collection) ValidateSpecifications(specifications *types.Validation, o
 }
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(specifications *types.Validation, options types.QueryOptions) (*types.KuzzleSpecifications, error) {
+func (dc *Collection) UpdateSpecifications(specifications *types.Validation, options types.QueryOptions) (*types.Specifications, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-	specificationsData := &types.KuzzleSpecifications{
+	specificationsData := &types.Specifications{
 		dc.index: {
 			dc.collection: specifications,
 		},
@@ -155,7 +155,7 @@ func (dc *Collection) UpdateSpecifications(specifications *types.Validation, opt
 		return nil, res.Error
 	}
 
-	specification := &types.KuzzleSpecifications{}
+	specification := &types.Specifications{}
 	json.Unmarshal(res.Result, specification)
 
 	return specification, nil

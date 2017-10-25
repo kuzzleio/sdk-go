@@ -17,16 +17,16 @@ type IDocument interface {
 }
 
 type Document struct {
-	Id         string            `json:"_id"`
-	Index      string            `json:"_index"`
-	Meta       *types.KuzzleMeta `json:"_meta"`
-	Shards     *types.Shards     `json:"_shards"`
-	Content    json.RawMessage   `json:"_source"`
-	Version    int               `json:"_version"`
-	Result     string            `json:"result"`
-	Created    bool              `json:"created"`
-	Collection string            `json:"_collection"`
-	collection *Collection       `json:"-"`
+	Id         string          `json:"_id"`
+	Index      string          `json:"_index"`
+	Meta       *types.Meta     `json:"_meta"`
+	Shards     *types.Shards   `json:"_shards"`
+	Content    json.RawMessage `json:"_source"`
+	Version    int             `json:"_version"`
+	Result     string          `json:"result"`
+	Created    bool            `json:"created"`
+	Collection string          `json:"_collection"`
+	collection *Collection     `json:"-"`
 }
 
 type DocumentContent map[string]interface{}
@@ -204,10 +204,10 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	type message struct {
-		Id      string            `json:"_id,omitempty"`
-		Version int               `json:"_version,omitempty"`
-		Body    json.RawMessage   `json:"body"`
-		Meta    *types.KuzzleMeta `json:"meta"`
+		Id      string          `json:"_id,omitempty"`
+		Version int             `json:"_version,omitempty"`
+		Body    json.RawMessage `json:"body"`
+		Meta    *types.Meta     `json:"meta"`
 	}
 
 	query := &types.KuzzleRequest{

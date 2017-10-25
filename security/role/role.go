@@ -12,10 +12,10 @@ type SecurityRole struct {
 }
 
 type Role struct {
-	Id     string            `json:"_id"`
-	Source json.RawMessage   `json:"_source"`
-	Meta   *types.KuzzleMeta `json:"_meta"`
-	SR     *SecurityRole     `json:"-"`
+	Id     string          `json:"_id"`
+	Source json.RawMessage `json:"_source"`
+	Meta   *types.Meta     `json:"_meta"`
+	SR     *SecurityRole   `json:"-"`
 }
 
 type RoleSearchResult struct {
