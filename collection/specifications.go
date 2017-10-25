@@ -6,7 +6,7 @@ import (
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.KuzzleSpecificationsResult, error) {
+func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.KuzzleSpecificationsResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -30,7 +30,7 @@ func (dc Collection) GetSpecifications(options types.QueryOptions) (*types.Kuzzl
 }
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
-func (dc Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+func (dc *Collection) SearchSpecifications(filters interface{}, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -65,7 +65,7 @@ func (dc Collection) SearchSpecifications(filters interface{}, options types.Que
 }
 
 // ScrollSpecifications retrieves next result of a specification search with scroll query.
-func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
+func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryOptions) (*types.KuzzleSpecificationSearchResult, error) {
 	if scrollId == "" {
 		return nil, types.NewError("Collection.ScrollSpecifications: scroll id required")
 	}
@@ -100,7 +100,7 @@ func (dc Collection) ScrollSpecifications(scrollId string, options types.QueryOp
 }
 
 // ValidateSpecifications validates the provided specifications.
-func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.ValidResponse, error) {
+func (dc *Collection) ValidateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.ValidResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	specificationsData := types.KuzzleSpecifications{
@@ -131,7 +131,7 @@ func (dc Collection) ValidateSpecifications(specifications *types.KuzzleValidati
 }
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.KuzzleSpecifications, error) {
+func (dc *Collection) UpdateSpecifications(specifications *types.KuzzleValidation, options types.QueryOptions) (*types.KuzzleSpecifications, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	specificationsData := &types.KuzzleSpecifications{
@@ -162,7 +162,7 @@ func (dc Collection) UpdateSpecifications(specifications *types.KuzzleValidation
 }
 
 // DeleteSpecifications deletes the current specifications of this collection.
-func (dc Collection) DeleteSpecifications(options types.QueryOptions) (*types.AckResponse, error) {
+func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (*types.AckResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

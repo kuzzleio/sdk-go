@@ -35,7 +35,7 @@ func (dc *Collection) DeleteDocument(id string, options types.QueryOptions) (str
 }
 
 // MDeleteDocument deletes specific documents according to given IDs.
-func (dc Collection) MDeleteDocument(ids []string, options types.QueryOptions) ([]string, error) {
+func (dc *Collection) MDeleteDocument(ids []string, options types.QueryOptions) ([]string, error) {
 	if len(ids) == 0 {
 		return nil, types.NewError("Collection.MDeleteDocument: please provide at least one id of document to delete", 400)
 	}

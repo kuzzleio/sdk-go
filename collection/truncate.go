@@ -6,7 +6,7 @@ import (
 )
 
 // Truncate delete every Documents from the provided Collection.
-func (dc Collection) Truncate(options types.QueryOptions) (*types.AckResponse, error) {
+func (dc *Collection) Truncate(options types.QueryOptions) (*types.AckResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
