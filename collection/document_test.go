@@ -253,7 +253,7 @@ func TestDocumentSubscribe(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
 	d, _ := dc.Document().Fetch(id)
 
@@ -272,7 +272,7 @@ func ExampleDocument_Subscribe() {
 
 	c := &internal.MockedConnection{}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
 	d, _ := dc.Document().Fetch(id)
 

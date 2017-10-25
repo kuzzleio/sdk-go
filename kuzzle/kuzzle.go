@@ -17,7 +17,7 @@ type IKuzzle interface {
 type Kuzzle struct {
 	Host   string
 	socket connection.Connection
-	State  int
+	State  *int
 
 	wasConnected   bool
 	lastUrl        string
@@ -93,7 +93,6 @@ func (k Kuzzle) Connect() error {
 		}
 		return nil
 	}
-
 	return types.NewError(err.Error())
 }
 

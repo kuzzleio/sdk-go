@@ -13,7 +13,7 @@ type Connection interface {
 	Send([]byte, types.QueryOptions, chan<- *types.KuzzleResponse, string) error
 	Close() error
 	GetOfflineQueue() *[]*types.QueryObject
-	GetState() int
+	GetState() *int
 	EmitEvent(int, interface{})
 	RegisterRoom(string, string, types.IRoom)
 	UnregisterRoom(string)

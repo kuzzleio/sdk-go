@@ -16,7 +16,7 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 		room.filters = filters
 	}
 
-	if room.collection.Kuzzle.State != state.Connected {
+	if *room.collection.Kuzzle.State != state.Connected {
 		room.RealtimeNotificationChannel = realtimeNotificationChannel
 		room.pendingSubscriptions[room.id] = realtimeNotificationChannel
 		return

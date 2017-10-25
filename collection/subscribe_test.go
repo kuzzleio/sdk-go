@@ -18,7 +18,7 @@ func TestSubscribeError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
@@ -39,7 +39,7 @@ func TestSubscribe(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
@@ -50,7 +50,7 @@ func TestSubscribe(t *testing.T) {
 func ExampleCollection_Subscribe() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
