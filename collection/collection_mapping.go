@@ -13,12 +13,12 @@ type IMapping interface {
 }
 
 type Mapping struct {
-	Mapping    types.KuzzleFieldsMapping
+	Mapping    types.MappingFields
 	Collection *Collection
 }
 
 func NewMapping(col *Collection) *Mapping {
-	fm := make(types.KuzzleFieldsMapping)
+	fm := make(types.MappingFields)
 	return &Mapping{
 		Collection: col,
 		Mapping:    fm,
@@ -30,7 +30,7 @@ func (cm *Mapping) Apply(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Properties types.KuzzleFieldsMapping `json:"properties"`
+		Properties types.MappingFields `json:"properties"`
 	}
 
 	query := &types.KuzzleRequest{
@@ -73,7 +73,7 @@ func (cm *Mapping) Refresh(options types.QueryOptions) (*Mapping, error) {
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties types.KuzzleFieldsMapping `json:"properties"`
+			Properties types.MappingFields `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -100,7 +100,7 @@ func (cm *Mapping) Refresh(options types.QueryOptions) (*Mapping, error) {
 
   Changes made by this function won’t be applied until you call the apply method
 */
-func (cm *Mapping) Set(mappings *types.KuzzleFieldsMapping) *Mapping {
+func (cm *Mapping) Set(mappings *types.MappingFields) *Mapping {
 	if cm.Mapping == nil {
 		return cm
 	}

@@ -73,13 +73,13 @@ type (
 		} `json:"typeOptions,omitempty"`
 	}
 
-	KuzzleValidation struct {
+	Validation struct {
 		Strict     bool                    `json:"strict,omitempty"`
 		Fields     *KuzzleValidationFields `json:"fields,omitempty"`
 		Validators json.RawMessage         `json:"validators,omitempty"`
 	}
 
-	KuzzleFieldMapping struct {
+	MappingField struct {
 		Analyzer                 string      `json:"analyzer,omitempty"`
 		Normalizer               interface{} `json:"normalizer,omitempty"`
 		DocValues                bool        `json:"doc_values,omitempty"`
@@ -92,22 +92,22 @@ type (
 			Max            float64 `json:"max,omitempty"`
 			MinSegmentSize int     `json:"min_segment_size,omitempty"`
 		} `json:"fielddata_frequency_filter,omitempty"`
-		Format               string                        `json:"format,omitempty"`
-		IgnoreAbove          int                           `json:"ignore_above,omitempty"`
-		IgnoreMalformed      bool                          `json:"ignore_malformed,omitempty"`
-		IncludeInAll         bool                          `json:"include_in_all,omitempty"`
-		Index                bool                          `json:"index,omitempty"`
-		IndexOptions         bool                          `json:"index_options,omitempty"`
-		Fields               map[string]KuzzleFieldMapping `json:"fields,omitempty"`
-		Norms                bool                          `json:"norms,omitempty"`
-		NullValue            bool                          `json:"null_value,omitempty"`
-		PositionIncrementGap bool                          `json:"position_increment_gap,omitempty"`
-		Type                 string                        `json:"type,omitempty"`
+		Format               string                  `json:"format,omitempty"`
+		IgnoreAbove          int                     `json:"ignore_above,omitempty"`
+		IgnoreMalformed      bool                    `json:"ignore_malformed,omitempty"`
+		IncludeInAll         bool                    `json:"include_in_all,omitempty"`
+		Index                bool                    `json:"index,omitempty"`
+		IndexOptions         bool                    `json:"index_options,omitempty"`
+		Fields               map[string]MappingField `json:"fields,omitempty"`
+		Norms                bool                    `json:"norms,omitempty"`
+		NullValue            bool                    `json:"null_value,omitempty"`
+		PositionIncrementGap bool                    `json:"position_increment_gap,omitempty"`
+		Type                 string                  `json:"type,omitempty"`
 		All                  *struct {
 			Enabled bool   `json:"enabled,omitempty"`
 			Format  string `json:"format, omitempty"`
 		} `json:"_all,omitempty"`
-		Properties               KuzzleFieldsMapping    `json:"properties,omitempty"`
+		Properties               MappingFields          `json:"properties,omitempty"`
 		SearchAnalyzer           string                 `json:"search_analyzer,omitempty"`
 		Similarity               string                 `json:"similarity,omitempty"`
 		Store                    bool                   `json:"store,omitempty"`
@@ -126,14 +126,14 @@ type (
 		Relations                map[string]interface{} `json:"relations,omitempty"`
 	}
 
-	KuzzleFieldsMapping map[string]KuzzleFieldMapping
+	MappingFields map[string]MappingField
 
-	KuzzleSpecifications map[string]map[string]*KuzzleValidation
+	KuzzleSpecifications map[string]map[string]*Validation
 
 	KuzzleSpecificationsResult struct {
-		Validation *KuzzleValidation `json:"validation"`
-		Index      string            `json:"index"`
-		Collection string            `json:"collection"`
+		Validation *Validation `json:"validation"`
+		Index      string      `json:"index"`
+		Collection string      `json:"collection"`
 	}
 
 	KuzzleSpecificationSearchResult struct {

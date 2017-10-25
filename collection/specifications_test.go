@@ -38,7 +38,7 @@ func TestGetSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			validation := types.KuzzleValidation{
+			validation := types.Validation{
 				Strict: false,
 				Fields: &types.KuzzleValidationFields{
 					"foo": {
@@ -117,7 +117,7 @@ func TestSearchSpecifications(t *testing.T) {
 				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: &types.KuzzleValidation{
+					Validation: &types.Validation{
 						Strict: false,
 						Fields: &types.KuzzleValidationFields{
 							"foo": {
@@ -214,7 +214,7 @@ func TestScrollSpecifications(t *testing.T) {
 				}{{Source: &types.KuzzleSpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: &types.KuzzleValidation{
+					Validation: &types.Validation{
 						Strict: false,
 						Fields: &types.KuzzleValidationFields{
 							"bar": {
@@ -270,7 +270,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&types.KuzzleValidation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&types.Validation{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -292,7 +292,7 @@ func TestValidateSpecifications(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.KuzzleValidation{
+	specifications := types.Validation{
 		Strict: false,
 		Fields: &types.KuzzleValidationFields{
 			"foo": {
@@ -311,7 +311,7 @@ func ExampleCollection_ValidateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.KuzzleValidation{
+	specifications := types.Validation{
 		Strict: false,
 		Fields: &types.KuzzleValidationFields{
 			"foo": {
@@ -343,7 +343,7 @@ func TestUpdateSpecificationsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&types.KuzzleValidation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&types.Validation{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -360,7 +360,7 @@ func TestUpdateSpecifications(t *testing.T) {
 
 			res := types.KuzzleSpecifications{
 				"index": {
-					"collection": &types.KuzzleValidation{
+					"collection": &types.Validation{
 						Strict: true,
 						Fields: &types.KuzzleValidationFields{
 							"foo": {
@@ -378,7 +378,7 @@ func TestUpdateSpecifications(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.KuzzleValidation{
+	specifications := types.Validation{
 		Strict: true,
 		Fields: &types.KuzzleValidationFields{
 			"foo": {
@@ -405,7 +405,7 @@ func ExampleCollection_UpdateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.KuzzleValidation{
+	specifications := types.Validation{
 		Strict: true,
 		Fields: &types.KuzzleValidationFields{
 			"foo": {
