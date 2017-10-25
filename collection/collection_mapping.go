@@ -13,7 +13,7 @@ type IMapping interface {
 }
 
 type Mapping struct {
-	Mapping    *types.KuzzleFieldsMapping
+	Mapping    types.KuzzleFieldsMapping
 	Collection *Collection
 }
 
@@ -21,7 +21,7 @@ func NewMapping(col *Collection) *Mapping {
 	fm := make(types.KuzzleFieldsMapping)
 	return &Mapping{
 		Collection: col,
-		Mapping:    &fm,
+		Mapping:    fm,
 	}
 }
 
@@ -30,7 +30,7 @@ func (cm *Mapping) Apply(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Properties *types.KuzzleFieldsMapping `json:"properties"`
+		Properties types.KuzzleFieldsMapping `json:"properties"`
 	}
 
 	query := &types.KuzzleRequest{
@@ -73,7 +73,7 @@ func (cm *Mapping) Refresh(options types.QueryOptions) (*Mapping, error) {
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties *types.KuzzleFieldsMapping `json:"properties"`
+			Properties types.KuzzleFieldsMapping `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -106,7 +106,7 @@ func (cm *Mapping) Set(mappings *types.KuzzleFieldsMapping) *Mapping {
 	}
 
 	for field, mapping := range *mappings {
-		(*(cm.Mapping))[field] = mapping
+		(cm.Mapping)[field] = mapping
 	}
 
 	return cm

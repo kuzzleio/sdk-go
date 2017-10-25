@@ -21,7 +21,7 @@ func TestMappingApplyError(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:  "text",
 				Index: true,
@@ -127,7 +127,7 @@ func TestMappingRefreshError(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -160,7 +160,7 @@ func TestMappingRefreshUnknownIndex(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "wrong-index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -195,7 +195,7 @@ func TestMappingRefreshUnknownCollection(t *testing.T) {
 	cl := collection.NewCollection(k, "wrong-collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -230,7 +230,7 @@ func TestMappingRefresh(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -239,7 +239,7 @@ func TestMappingRefresh(t *testing.T) {
 		Collection: cl,
 	}
 	updatedCm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 255,
@@ -249,7 +249,7 @@ func TestMappingRefresh(t *testing.T) {
 	}
 
 	cm.Refresh(nil)
-	assert.Equal(t, *updatedCm.Mapping, *cm.Mapping)
+	assert.Equal(t, updatedCm.Mapping, cm.Mapping)
 }
 
 func ExampleMapping_Refresh() {
@@ -259,7 +259,7 @@ func ExampleMapping_Refresh() {
 	qo := types.NewQueryOptions()
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": types.KuzzleFieldMapping{
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -307,7 +307,7 @@ func TestMappingSet(t *testing.T) {
 
 	cm.Set(fieldMapping)
 
-	assert.Equal(t, 100, (*cm.Mapping)["foo"].IgnoreAbove)
+	assert.Equal(t, 100, cm.Mapping["foo"].IgnoreAbove)
 }
 
 func ExampleMapping_Set() {
@@ -333,7 +333,7 @@ func TestMappingSetHeaders(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -367,7 +367,7 @@ func TestMappingSetHeadersReplace(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",
 				IgnoreAbove: 100,
@@ -405,7 +405,7 @@ func ExampleMapping_SetHeaders() {
 	fields["ignore_above"] = interface{}(100)
 
 	cm := collection.Mapping{
-		Mapping: &types.KuzzleFieldsMapping{
+		Mapping: types.KuzzleFieldsMapping{
 			"foo": {
 				Type:        "text",
 				IgnoreAbove: 100,
