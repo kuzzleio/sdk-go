@@ -34,9 +34,9 @@ func (c MockedConnection) Close() error {
 
 func (c MockedConnection) AddListener(event int, channel chan<- interface{}) {}
 
-func (c MockedConnection) GetState() int {
+func (c MockedConnection) GetState() *int {
 	state := 2
-	return state
+	return &state
 }
 
 func (c MockedConnection) GetOfflineQueue() *[]*types.QueryObject {

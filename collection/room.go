@@ -63,7 +63,7 @@ func (room Room) GetRealtimeChannel() chan<- *types.KuzzleNotification {
 
 // isReady returns true if the room is ready
 func (room Room) isReady() bool {
-	return room.collection.Kuzzle.State == state.Connected && !room.subscribing
+	return *room.collection.Kuzzle.State == state.Connected && !room.subscribing
 }
 
 // GetRoomId returns the room's id
