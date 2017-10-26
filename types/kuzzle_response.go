@@ -130,14 +130,14 @@ type (
 
 	MappingFields map[string]MappingField
 
-	SpecificationsResult struct {
+	SpecificationEntry struct {
 		Validation *Specification `json:"validation"`
 		Index      string         `json:"index"`
 		Collection string         `json:"collection"`
 	}
 
 	SpecificationSearchResultHit struct {
-		Source SpecificationsResult `json:"_source"`
+		Source SpecificationEntry `json:"_source"`
 	}
 
 	SpecificationSearchResult struct {

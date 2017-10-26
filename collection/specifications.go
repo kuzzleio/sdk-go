@@ -6,7 +6,7 @@ import (
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.SpecificationsResult, error) {
+func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.SpecificationEntry, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -23,7 +23,7 @@ func (dc *Collection) GetSpecifications(options types.QueryOptions) (*types.Spec
 		return nil, res.Error
 	}
 
-	specifications := &types.SpecificationsResult{}
+	specifications := &types.SpecificationEntry{}
 	json.Unmarshal(res.Result, specifications)
 
 	return specifications, nil

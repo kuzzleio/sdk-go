@@ -49,7 +49,7 @@ func TestGetSpecifications(t *testing.T) {
 				},
 			}
 
-			res := types.SpecificationsResult{
+			res := types.SpecificationEntry{
 				Index:      parsedQuery.Index,
 				Collection: parsedQuery.Collection,
 				Validation: &validation,
@@ -115,7 +115,7 @@ func TestSearchSpecifications(t *testing.T) {
 				Hits:     make([]types.SpecificationSearchResultHit, 1),
 			}
 			res.Hits[0] = types.SpecificationSearchResultHit{
-				Source: types.SpecificationsResult{
+				Source: types.SpecificationEntry{
 					Index:      "index",
 					Collection: "collection",
 					Validation: &types.Specification{
@@ -214,7 +214,7 @@ func TestScrollSpecifications(t *testing.T) {
 				Hits:     make([]types.SpecificationSearchResultHit, 1),
 			}
 			res.Hits[0] = types.SpecificationSearchResultHit{
-				Source: types.SpecificationsResult{
+				Source: types.SpecificationEntry{
 					Index:      "index",
 					Collection: "collection",
 					Validation: &types.Specification{
