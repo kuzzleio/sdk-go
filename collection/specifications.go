@@ -103,7 +103,9 @@ func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryO
 func (dc *Collection) ValidateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.ValidResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-	specificationsData := types.Specifications{
+	type Specifications map[string]map[string]*types.Specification
+
+	specificationsData := Specifications{
 		dc.index: {
 			dc.collection: specifications,
 		},
@@ -131,10 +133,12 @@ func (dc *Collection) ValidateSpecifications(specifications *types.Specification
 }
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.Specifications, error) {
+func (dc *Collection) UpdateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.Specification, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-	specificationsData := &types.Specifications{
+	type Specifications map[string]map[string]*types.Specification
+
+	specificationsData := &Specifications{
 		dc.index: {
 			dc.collection: specifications,
 		},
@@ -155,10 +159,12 @@ func (dc *Collection) UpdateSpecifications(specifications *types.Specification, 
 		return nil, res.Error
 	}
 
-	specification := &types.Specifications{}
+	specification := &Specifications{}
 	json.Unmarshal(res.Result, specification)
 
-	return specification, nil
+	result := (*specification)[dc.index][dc.collection]
+
+	return result, nil
 }
 
 // DeleteSpecifications deletes the current specifications of this collection.

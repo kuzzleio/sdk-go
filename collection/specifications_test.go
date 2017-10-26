@@ -353,6 +353,8 @@ func TestUpdateSpecificationsError(t *testing.T) {
 func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			type Specifications map[string]map[string]*types.Specification
+
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
@@ -361,7 +363,7 @@ func TestUpdateSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.Specifications{
+			res := Specifications{
 				"index": {
 					"collection": &types.Specification{
 						Strict: true,
@@ -392,9 +394,8 @@ func TestUpdateSpecifications(t *testing.T) {
 		},
 	}
 
-	res, _ := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&specifications, nil)
+	specs, _ := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&specifications, nil)
 
-	specs := (*res)["index"]["collection"]
 	fields := specs.Fields
 
 	assert.Equal(t, true, specs.Strict)
@@ -426,7 +427,7 @@ func ExampleCollection_UpdateSpecifications() {
 		return
 	}
 
-	fmt.Println((*res)["index"]["collection"].Strict, (*res)["index"]["collection"].Fields)
+	fmt.Println(res.Strict, res.Fields)
 }
 
 func TestDeleteSpecificationsError(t *testing.T) {
