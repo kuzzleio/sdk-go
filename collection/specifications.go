@@ -100,7 +100,7 @@ func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryO
 }
 
 // ValidateSpecifications validates the provided specifications.
-func (dc *Collection) ValidateSpecifications(specifications *types.Validation, options types.QueryOptions) (*types.ValidResponse, error) {
+func (dc *Collection) ValidateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.ValidResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	specificationsData := types.Specifications{
@@ -131,7 +131,7 @@ func (dc *Collection) ValidateSpecifications(specifications *types.Validation, o
 }
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(specifications *types.Validation, options types.QueryOptions) (*types.Specifications, error) {
+func (dc *Collection) UpdateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.Specifications, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	specificationsData := &types.Specifications{

@@ -38,9 +38,9 @@ func TestGetSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			validation := types.Validation{
+			validation := types.Specification{
 				Strict: false,
-				Fields: types.ValidationFields{
+				Fields: types.SpecificationFields{
 					"foo": {
 						Mandatory:    false,
 						Type:         "bool",
@@ -118,10 +118,10 @@ func TestSearchSpecifications(t *testing.T) {
 				Source: types.SpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.Validation{
+					Validation: types.Specification{
 						Strict: false,
-						Fields: types.ValidationFields{
-							"foo": types.ValidationField{
+						Fields: types.SpecificationFields{
+							"foo": types.SpecificationField{
 								Mandatory:    true,
 								Type:         "string",
 								DefaultValue: "Value found with search",
@@ -217,10 +217,10 @@ func TestScrollSpecifications(t *testing.T) {
 				Source: types.SpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.Validation{
+					Validation: types.Specification{
 						Strict: false,
-						Fields: types.ValidationFields{
-							"foo": types.ValidationField{
+						Fields: types.SpecificationFields{
+							"foo": types.SpecificationField{
 								Mandatory:    true,
 								Type:         "string",
 								DefaultValue: "Value found with search",
@@ -273,7 +273,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&types.Validation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").ValidateSpecifications(&types.Specification{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -295,9 +295,9 @@ func TestValidateSpecifications(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.Validation{
+	specifications := types.Specification{
 		Strict: false,
-		Fields: types.ValidationFields{
+		Fields: types.SpecificationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -314,9 +314,9 @@ func ExampleCollection_ValidateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.Validation{
+	specifications := types.Specification{
 		Strict: false,
-		Fields: types.ValidationFields{
+		Fields: types.SpecificationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -346,7 +346,7 @@ func TestUpdateSpecificationsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&types.Validation{}, nil)
+	_, err := collection.NewCollection(k, "collection", "index").UpdateSpecifications(&types.Specification{}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -363,9 +363,9 @@ func TestUpdateSpecifications(t *testing.T) {
 
 			res := types.Specifications{
 				"index": {
-					"collection": &types.Validation{
+					"collection": &types.Specification{
 						Strict: true,
-						Fields: types.ValidationFields{
+						Fields: types.SpecificationFields{
 							"foo": {
 								Mandatory:    true,
 								Type:         "string",
@@ -381,9 +381,9 @@ func TestUpdateSpecifications(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.Validation{
+	specifications := types.Specification{
 		Strict: true,
-		Fields: types.ValidationFields{
+		Fields: types.SpecificationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",
@@ -408,9 +408,9 @@ func ExampleCollection_UpdateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	specifications := types.Validation{
+	specifications := types.Specification{
 		Strict: true,
-		Fields: types.ValidationFields{
+		Fields: types.SpecificationFields{
 			"foo": {
 				Mandatory:    true,
 				Type:         "string",

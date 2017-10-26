@@ -45,7 +45,7 @@ type (
 		Error     *KuzzleError    `json:"error"`
 	}
 
-	ValidationField struct {
+	SpecificationField struct {
 		Type        string `json:"type,omitempty"`
 		Depth       int    `json:"depth,omitempty"`
 		Mandatory   bool   `json:"mandatory,omitempty"`
@@ -73,12 +73,12 @@ type (
 		} `json:"typeOptions,omitempty"`
 	}
 
-	ValidationFields map[string]ValidationField
+	SpecificationFields map[string]SpecificationField
 
-	Validation struct {
-		Strict     bool              `json:"strict,omitempty"`
-		Fields     ValidationFields  `json:"fields,omitempty"`
-		Validators json.RawMessage   `json:"validators,omitempty"`
+	Specification struct {
+		Strict     bool                `json:"strict,omitempty"`
+		Fields     SpecificationFields `json:"fields,omitempty"`
+		Validators json.RawMessage     `json:"validators,omitempty"`
 	}
 
 	MappingField struct {
@@ -130,12 +130,12 @@ type (
 
 	MappingFields map[string]MappingField
 
-	Specifications map[string]map[string]*Validation
+	Specifications map[string]map[string]*Specification
 
 	SpecificationsResult struct {
-		Validation Validation `json:"validation"`
-		Index      string      `json:"index"`
-		Collection string      `json:"collection"`
+		Validation Specification `json:"validation"`
+		Index      string        `json:"index"`
+		Collection string        `json:"collection"`
 	}
 
 	SpecificationSearchResultHit struct {
