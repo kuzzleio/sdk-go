@@ -55,7 +55,7 @@ func TestRoomGetFilters(t *testing.T) {
 		},
 	}
 
-	k.State = state.Connected
+	*k.State = state.Connected
 	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
@@ -79,7 +79,7 @@ func ExampleRoom_GetFilters() {
 		},
 	}
 
-	k.State = state.Connected
+	*k.State = state.Connected
 	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
@@ -114,7 +114,7 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 		},
 	}
 
-	k.State = state.Connected
+	*k.State = state.Connected
 	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
@@ -138,7 +138,7 @@ func ExampleRoom_GetRealtimeChannel() {
 		},
 	}
 
-	k.State = state.Connected
+	*k.State = state.Connected
 	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 	rtChannel := res.Room.GetRealtimeChannel()

@@ -9,14 +9,14 @@ import (
 )
 
 type Room struct {
-	RequestId       string           `json:"RequestId"`
-	RoomId          string           `json:"roomId"`
-	Channel         string           `json:"channel"`
-	result          json.RawMessage  `json:"-"`
-	scope           string           `json:"-"`
-	state           string           `json:"-"`
-	user            string           `json:"-"`
-	subscribeToSelf bool             `json:"-"`
+	RequestId       string          `json:"RequestId"`
+	RoomId          string          `json:"roomId"`
+	Channel         string          `json:"channel"`
+	result          json.RawMessage `json:"-"`
+	scope           string          `json:"-"`
+	state           string          `json:"-"`
+	user            string          `json:"-"`
+	subscribeToSelf bool            `json:"-"`
 
 	collection                  *Collection                      `json:"-"`
 	RealtimeNotificationChannel chan<- *types.KuzzleNotification `json:"-"`
@@ -49,7 +49,7 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),
 		subscribeToSelf:      opts.GetSubscribeToSelf(),
 		Volatile:             opts.GetVolatile(),
-		queue:								&list.List{},
+		queue:                &list.List{},
 	}
 	r.queue.Init()
 
@@ -63,7 +63,7 @@ func (room Room) GetRealtimeChannel() chan<- *types.KuzzleNotification {
 
 // isReady returns true if the room is ready
 func (room Room) isReady() bool {
-	return room.collection.Kuzzle.State == state.Connected && !room.subscribing
+	return *room.collection.Kuzzle.State == state.Connected && !room.subscribing
 }
 
 // GetRoomId returns the room's id

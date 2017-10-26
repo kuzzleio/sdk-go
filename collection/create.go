@@ -6,7 +6,7 @@ import (
 )
 
 // Create creates a new empty data collection, with no associated mapping.
-func (dc Collection) Create(options types.QueryOptions) (*types.AckResponse, error) {
+func (dc *Collection) Create(options types.QueryOptions) (*types.AckResponse, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

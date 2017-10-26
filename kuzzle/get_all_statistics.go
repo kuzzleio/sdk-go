@@ -15,7 +15,7 @@ func (k Kuzzle) GetAllStatistics(options types.QueryOptions) ([]*types.Statistic
 	}
 
 	type stats struct {
-		Hits []json.RawMessage  `json:"hits"`
+		Hits []json.RawMessage `json:"hits"`
 	}
 
 	go k.Query(query, nil, result)

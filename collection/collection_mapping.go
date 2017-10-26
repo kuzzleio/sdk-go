@@ -5,24 +5,32 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-type ICollectionMapping interface {
+type IMapping interface {
 	Apply()
 	Refresh()
 	Set()
 	SetHeaders()
 }
 
-type CollectionMapping struct {
-	Mapping    *types.KuzzleFieldMapping
+type Mapping struct {
+	Mapping    types.MappingFields
 	Collection *Collection
 }
 
+func NewMapping(col *Collection) *Mapping {
+	fm := make(types.MappingFields)
+	return &Mapping{
+		Collection: col,
+		Mapping:    fm,
+	}
+}
+
 // Apply applies the new mapping to the data collection.
-func (cm *CollectionMapping) Apply(options types.QueryOptions) (*CollectionMapping, error) {
+func (cm *Mapping) Apply(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Properties *types.KuzzleFieldMapping `json:"properties"`
+		Properties types.MappingFields `json:"properties"`
 	}
 
 	query := &types.KuzzleRequest{
@@ -46,7 +54,7 @@ func (cm *CollectionMapping) Apply(options types.QueryOptions) (*CollectionMappi
 
 // Refresh Replaces the current content with the mapping stored in Kuzzle.
 // Calling this function will discard any uncommitted changes. You can commit changes by calling the “apply” function
-func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMapping, error) {
+func (cm *Mapping) Refresh(options types.QueryOptions) (*Mapping, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -65,7 +73,7 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 
 	type mappingResult map[string]struct {
 		Mappings map[string]struct {
-			Properties *types.KuzzleFieldMapping `json:"properties"`
+			Properties types.MappingFields `json:"properties"`
 		} `json:"mappings"`
 	}
 
@@ -80,10 +88,10 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 
 			return cm, nil
 		} else {
-			return cm, types.NewError("No mapping found for collection " + cm.Collection.collection, 404)
+			return cm, types.NewError("No mapping found for collection "+cm.Collection.collection, 404)
 		}
 	} else {
-		return cm, types.NewError("No mapping found for index " + cm.Collection.index, 404)
+		return cm, types.NewError("No mapping found for index "+cm.Collection.index, 404)
 	}
 }
 
@@ -92,9 +100,13 @@ func (cm *CollectionMapping) Refresh(options types.QueryOptions) (*CollectionMap
 
   Changes made by this function won’t be applied until you call the apply method
 */
-func (cm *CollectionMapping) Set(mappings *types.KuzzleFieldMapping) *CollectionMapping {
+func (cm *Mapping) Set(mappings *types.MappingFields) *Mapping {
+	if cm.Mapping == nil {
+		return cm
+	}
+
 	for field, mapping := range *mappings {
-		(*cm.Mapping)[field] = mapping
+		(cm.Mapping)[field] = mapping
 	}
 
 	return cm
@@ -103,7 +115,7 @@ func (cm *CollectionMapping) Set(mappings *types.KuzzleFieldMapping) *Collection
 // SetHeaders is is a helper function returning itself, allowing to easily chain calls.
 // If the replace argument is set to true, replace the current headers with the provided content.
 // Otherwise, it appends the content to the current headers, only replacing already existing values
-func (cm *CollectionMapping) SetHeaders(content map[string]interface{}, replace bool) *CollectionMapping {
+func (cm *Mapping) SetHeaders(content map[string]interface{}, replace bool) *Mapping {
 	cm.Collection.SetHeaders(content, replace)
 
 	return cm

@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestCollectionMappingApplyError(t *testing.T) {
+func TestMappingApplyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -20,11 +20,11 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
 			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Type:  "text",
+				Index: true,
 			},
 		},
 		Collection: cl,
@@ -34,7 +34,7 @@ func TestCollectionMappingApplyError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCollectionMappingApply(t *testing.T) {
+func TestMappingApply(t *testing.T) {
 	callCount := 0
 
 	c := &internal.MockedConnection{
@@ -49,7 +49,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":256}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -59,7 +59,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":100}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":100}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -69,7 +69,7 @@ func TestCollectionMappingApply(t *testing.T) {
 				assert.Equal(t, "index", parsedQuery.Index)
 				assert.Equal(t, "collection", parsedQuery.Collection)
 
-				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":100}}}}}}}`)}
+				res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":100}}}}}}`)}
 				r, _ := json.Marshal(res.Result)
 				return &types.KuzzleResponse{Result: r}
 			}
@@ -81,33 +81,33 @@ func TestCollectionMappingApply(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	fieldMapping := types.KuzzleFieldMapping{
-		"foo": {
-			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+	fieldMapping := &types.MappingFields{
+		"foo": types.MappingField{
+			Type:        "text",
+			IgnoreAbove: 100,
 		},
 	}
 
-	res, _ := cm.Set(&fieldMapping).Apply(nil)
+	res, _ := cm.Set(fieldMapping).Apply(nil)
 
 	assert.Equal(t, cm, res)
 }
 
-func ExampleCollectionMapping_Apply() {
+func ExampleMapping_Apply() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 	qo := types.NewQueryOptions()
 
-	var fieldMapping = types.KuzzleFieldMapping{
-		"foo": {
-			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+	fieldMapping := &types.MappingFields{
+		"foo": types.MappingField{
+			Type:        "text",
+			IgnoreAbove: 100,
 		},
 	}
 
-	res, err := cm.Set(&fieldMapping).Apply(qo)
+	res, err := cm.Set(fieldMapping).Apply(qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -117,7 +117,7 @@ func ExampleCollectionMapping_Apply() {
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingRefreshError(t *testing.T) {
+func TestMappingRefreshError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -126,11 +126,11 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -140,7 +140,7 @@ func TestCollectionMappingRefreshError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
+func TestMappingRefreshUnknownIndex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -151,7 +151,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 			assert.Equal(t, "wrong-index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":256}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -159,11 +159,11 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "wrong-index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -175,7 +175,7 @@ func TestCollectionMappingRefreshUnknownIndex(t *testing.T) {
 	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
-func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
+func TestMappingRefreshUnknownCollection(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -186,7 +186,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "wrong-collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":256}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -194,11 +194,11 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "wrong-collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -210,7 +210,7 @@ func TestCollectionMappingRefreshUnknownCollection(t *testing.T) {
 	assert.Equal(t, 404, err.(*types.KuzzleError).Status)
 }
 
-func TestCollectionMappingRefresh(t *testing.T) {
+func TestMappingRefresh(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -221,7 +221,7 @@ func TestCollectionMappingRefresh(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":255}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -229,40 +229,40 @@ func TestCollectionMappingRefresh(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
 	}
-	updatedCm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+	updatedCm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 255,
 			},
 		},
 		Collection: cl,
 	}
 
 	cm.Refresh(nil)
-	assert.Equal(t, *updatedCm.Mapping, *cm.Mapping)
+	assert.Equal(t, updatedCm.Mapping, cm.Mapping)
 }
 
-func ExampleCollectionMapping_Refresh() {
+func ExampleMapping_Refresh() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	qo := types.NewQueryOptions()
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
-			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
+			"foo": types.MappingField{
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -278,7 +278,7 @@ func ExampleCollectionMapping_Refresh() {
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingSet(t *testing.T) {
+func TestMappingSet(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -289,7 +289,7 @@ func TestCollectionMappingSet(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":256}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -298,52 +298,45 @@ func TestCollectionMappingSet(t *testing.T) {
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	fieldMapping := types.KuzzleFieldMapping{
-		"foo": {
-			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+	fieldMapping := &types.MappingFields{
+		"foo": types.MappingField{
+			Type:        "text",
+			IgnoreAbove: 100,
 		},
 	}
 
-	cm.Set(&fieldMapping)
+	cm.Set(fieldMapping)
 
-	type FieldsStruct struct {
-		Type        string `json:"type"`
-		IgnoreAbove int    `json:"ignore_above"`
-	}
-	fieldStruct := FieldsStruct{}
-	json.Unmarshal((*cm.Mapping)["foo"].Fields, &fieldStruct)
-
-	assert.Equal(t, 100, fieldStruct.IgnoreAbove)
+	assert.Equal(t, 100, cm.Mapping["foo"].IgnoreAbove)
 }
 
-func ExampleCollectionMapping_Set() {
+func ExampleMapping_Set() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 	cm, _ := cl.GetMapping(nil)
 
-	fieldMapping := types.KuzzleFieldMapping{
+	fieldMapping := &types.MappingFields{
 		"foo": {
-			Type:   "text",
-			Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+			Type:        "text",
+			IgnoreAbove: 100,
 		},
 	}
 
-	res := cm.Set(&fieldMapping)
+	res := cm.Set(fieldMapping)
 
 	fmt.Println(res.Collection, res.Mapping)
 }
 
-func TestCollectionMappingSetHeaders(t *testing.T) {
+func TestMappingSetHeaders(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
 			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -369,15 +362,15 @@ func TestCollectionMappingSetHeaders(t *testing.T) {
 	assert.NotEqual(t, newHeaders, k.GetHeaders())
 }
 
-func TestCollectionMappingSetHeadersReplace(t *testing.T) {
+func TestMappingSetHeadersReplace(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
 			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,
@@ -403,16 +396,19 @@ func TestCollectionMappingSetHeadersReplace(t *testing.T) {
 	assert.NotEqual(t, headers, k.GetHeaders())
 }
 
-func ExampleCollectionMapping_SetHeaders() {
+func ExampleMapping_SetHeaders() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
+	fields := make(map[string]interface{})
+	fields["type"] = interface{}("keyword")
+	fields["ignore_above"] = interface{}(100)
 
-	cm := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	cm := collection.Mapping{
+		Mapping: types.MappingFields{
 			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":100}`),
+				Type:        "text",
+				IgnoreAbove: 100,
 			},
 		},
 		Collection: cl,

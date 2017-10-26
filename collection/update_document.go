@@ -6,7 +6,7 @@ import (
 )
 
 // UpdateDocument updates a document in Kuzzle.
-func (dc *Collection) UpdateDocument(id string, document interface{}, options types.QueryOptions) (*Document, error) {
+func (dc *Collection) UpdateDocument(id string, document *Document, options types.QueryOptions) (*Document, error) {
 	if id == "" {
 		return nil, types.NewError("Collection.UpdateDocument: document id required", 400)
 	}
@@ -18,7 +18,7 @@ func (dc *Collection) UpdateDocument(id string, document interface{}, options ty
 		Index:      dc.index,
 		Controller: "document",
 		Action:     "update",
-		Body:       document,
+		Body:       document.Content,
 		Id:         id,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
@@ -44,8 +44,8 @@ func (dc *Collection) MUpdateDocument(documents []*Document, options types.Query
 	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string       `json:"_id"`
-		Body interface{}  `json:"body"`
+		Id   string      `json:"_id"`
+		Body interface{} `json:"body"`
 	}
 	docs := []*CreationDocument{}
 

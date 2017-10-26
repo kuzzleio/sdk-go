@@ -42,7 +42,7 @@ func (ms Ms) ZincrBy(key string, member string, increment float64, options types
 
 	converted, err := strconv.ParseFloat(returnedResult, 64)
 
-	if (err != nil) {
+	if err != nil {
 		err = types.NewError(err.Error())
 	}
 

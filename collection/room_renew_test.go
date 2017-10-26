@@ -22,7 +22,7 @@ func TestRenewNotConnected(t *testing.T) {
 
 func TestRenewSubscribing(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	room := NewRoom(NewCollection(k, "collection", "index"), nil)
 	room.subscribing = true
@@ -40,7 +40,7 @@ func TestRenewQueryError(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	subResChan := make(chan *types.SubscribeResponse)
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
@@ -63,7 +63,7 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	subResChan := make(chan *types.SubscribeResponse)
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
@@ -85,7 +85,7 @@ func TestRenew(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
 }
@@ -93,7 +93,7 @@ func TestRenew(t *testing.T) {
 func ExampleRoom_Renew() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	k.State = state.Connected
+	*k.State = state.Connected
 
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
 }
