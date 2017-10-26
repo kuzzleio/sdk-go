@@ -133,9 +133,9 @@ type (
 	Specifications map[string]map[string]*Specification
 
 	SpecificationsResult struct {
-		Validation Specification `json:"validation"`
-		Index      string        `json:"index"`
-		Collection string        `json:"collection"`
+		Validation *Specification `json:"validation"`
+		Index      string         `json:"index"`
+		Collection string         `json:"collection"`
 	}
 
 	SpecificationSearchResultHit struct {

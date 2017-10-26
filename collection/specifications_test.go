@@ -52,7 +52,7 @@ func TestGetSpecifications(t *testing.T) {
 			res := types.SpecificationsResult{
 				Index:      parsedQuery.Index,
 				Collection: parsedQuery.Collection,
-				Validation: validation,
+				Validation: &validation,
 			}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
@@ -118,7 +118,7 @@ func TestSearchSpecifications(t *testing.T) {
 				Source: types.SpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.Specification{
+					Validation: &types.Specification{
 						Strict: false,
 						Fields: types.SpecificationFields{
 							"foo": types.SpecificationField{
@@ -217,7 +217,7 @@ func TestScrollSpecifications(t *testing.T) {
 				Source: types.SpecificationsResult{
 					Index:      "index",
 					Collection: "collection",
-					Validation: types.Specification{
+					Validation: &types.Specification{
 						Strict: false,
 						Fields: types.SpecificationFields{
 							"foo": types.SpecificationField{
