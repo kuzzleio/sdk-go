@@ -3,6 +3,7 @@ package role_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
@@ -10,7 +11,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestRoleSetContent(t *testing.T) {
@@ -347,7 +347,7 @@ func ExampleSecurityRole_Search() {
 
 func TestSearchWithOptions(t *testing.T) {
 	hits := []*role.Role{
-		{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)},	
+		{Id: "role42", Source: json.RawMessage(`{"controllers":{"*":{"actions":{"*":true}}}}`)},
 	}
 	results := role.RoleSearchResult{Total: 42, Hits: hits}
 

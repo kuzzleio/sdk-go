@@ -12,10 +12,10 @@ type SecurityUser struct {
 }
 
 type User struct {
-	Id     string            `json:"_id"`
-	Source json.RawMessage   `json:"_source"`
-	Meta   *types.KuzzleMeta `json:"_meta"`
-	SU     *SecurityUser     `json:"-"`
+	Id     string          `json:"_id"`
+	Source json.RawMessage `json:"_source"`
+	Meta   *types.Meta     `json:"_meta"`
+	SU     *SecurityUser   `json:"-"`
 }
 
 type UserSearchResult struct {
@@ -257,7 +257,7 @@ func (su *SecurityUser) Create(kuid string, content *types.UserData, options typ
 		ud[key] = value
 	}
 	type createBody struct {
-		Content     *userData              `json:"content"`
+		Content     *userData             `json:"content"`
 		Credentials types.UserCredentials `json:"credentials"`
 	}
 
@@ -295,7 +295,7 @@ func (su *SecurityUser) CreateRestrictedUser(kuid string, content *types.UserDat
 		ud[key] = value
 	}
 	type createBody struct {
-		Content     *userData              `json:"content"`
+		Content     *userData             `json:"content"`
 		Credentials types.UserCredentials `json:"credentials"`
 	}
 

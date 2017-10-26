@@ -134,7 +134,7 @@ func TestMGetDocument(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").MGetDocument(ids, nil)
 	assert.Equal(t, results.Total, res.Total)
 
-	for i, _ := range res.Hits {
+	for i := range res.Hits {
 		assert.Equal(t, hits[i].Id, res.Hits[i].Id)
 		assert.Equal(t, hits[i].Content, res.Hits[i].Content)
 	}

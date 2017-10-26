@@ -68,7 +68,7 @@ func (c MockedConnection) GetRooms() *types.RoomList {
 
 func (c MockedConnection) StartQueuing() {}
 
-func (c MockedConnection) StopQueuing() {}
+func (c MockedConnection) StopQueuing()             {}
 func (c MockedConnection) RemoveListener(event int) {}
 
 func (c MockedConnection) ReplayQueue() {}

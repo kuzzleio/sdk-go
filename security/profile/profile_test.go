@@ -3,6 +3,7 @@ package profile_test
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
@@ -10,7 +11,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestProfileAddPolicy(t *testing.T) {
@@ -37,8 +37,8 @@ func TestProfileAddPolicy(t *testing.T) {
 	policy := types.Policy{
 		RoleId:             "roleId",
 		AllowInternalIndex: true,
-		RestrictedTo:       []*types.PolicyRestriction{
-			{Index: "index"}, 
+		RestrictedTo: []*types.PolicyRestriction{
+			{Index: "index"},
 			{Index: "other-index", Collections: []string{"foo", "bar"}},
 		},
 	}
@@ -49,10 +49,10 @@ func TestProfileAddPolicy(t *testing.T) {
 		{RoleId: "admin"},
 		{RoleId: "other"},
 		{
-			RoleId: "roleId", 
-			AllowInternalIndex: true, 
+			RoleId:             "roleId",
+			AllowInternalIndex: true,
 			RestrictedTo: []*types.PolicyRestriction{
-				{Index: "index"}, 
+				{Index: "index"},
 				{Index: "other-index", Collections: []string{"foo", "bar"}},
 			},
 		},
@@ -68,8 +68,8 @@ func ExampleProfile_AddPolicy() {
 	policy := types.Policy{
 		RoleId:             "roleId",
 		AllowInternalIndex: true,
-		RestrictedTo:       []*types.PolicyRestriction{
-			{Index: "index"}, 
+		RestrictedTo: []*types.PolicyRestriction{
+			{Index: "index"},
 			{Index: "other-index", Collections: []string{"foo", "bar"}},
 		},
 	}
@@ -599,7 +599,7 @@ func TestScrollError(t *testing.T) {
 
 func TestScroll(t *testing.T) {
 	type response struct {
-		Total int               `json:"total"`
+		Total int                `json:"total"`
 		Hits  []*profile.Profile `json:"hits"`
 	}
 

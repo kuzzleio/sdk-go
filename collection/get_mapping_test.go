@@ -59,7 +59,7 @@ func TestGetMappingUnknownCollection(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "wrong-collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":255}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -83,7 +83,7 @@ func TestGetMapping(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","fields":{"type":"keyword","ignore_above":256}}}}}}}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"index":{"mappings":{"collection":{"properties":{"foo":{"type":"text","ignore_above":255}}}}}}`)}
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -93,17 +93,17 @@ func TestGetMapping(t *testing.T) {
 
 	res, _ := cl.GetMapping(nil)
 
-	expected := collection.CollectionMapping{
-		Mapping: &types.KuzzleFieldMapping{
+	expected := collection.Mapping{
+		Mapping: types.MappingFields{
 			"foo": {
-				Type:   "text",
-				Fields: []byte(`{"type":"keyword","ignore_above":256}`),
+				Type:        "text",
+				IgnoreAbove: 255,
 			},
 		},
 		Collection: cl,
 	}
 
-	assert.Equal(t, *expected.Mapping, *res.Mapping)
+	assert.Equal(t, expected.Mapping, res.Mapping)
 }
 
 func ExampleCollection_GetMapping() {

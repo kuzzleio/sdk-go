@@ -2,14 +2,14 @@ package security_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"fmt"
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 )
 
 func TestGetCredentialFieldsEmptyStrategy(t *testing.T) {
@@ -63,7 +63,6 @@ func TestGetCredentialFields(t *testing.T) {
 	assert.Equal(t, "username", res[0])
 	assert.Equal(t, "password", res[1])
 }
-
 
 func ExampleSecurity_GetCredentialFields() {
 	c := websocket.NewWebSocket("localhost:7512", nil)

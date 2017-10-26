@@ -210,7 +210,7 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 
 func (ws *webSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
 	if responseChannel != nil {
-		responseChannel <- &types.KuzzleResponse{Status: 400, Error: types.NewError("Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: " + string(query), 400)}
+		responseChannel <- &types.KuzzleResponse{Status: 400, Error: types.NewError("Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: "+string(query), 400)}
 	}
 }
 

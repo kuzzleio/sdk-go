@@ -12,10 +12,10 @@ type SecurityProfile struct {
 }
 
 type Profile struct {
-	Id     string            `json:"_id"`
-	Source json.RawMessage   `json:"_source"`
-	Meta   *types.KuzzleMeta `json:"_meta"`
-	SP     *SecurityProfile  `json:"-"`
+	Id     string           `json:"_id"`
+	Source json.RawMessage  `json:"_source"`
+	Meta   *types.Meta      `json:"_meta"`
+	SP     *SecurityProfile `json:"-"`
 }
 
 type ProfileSearchResult struct {

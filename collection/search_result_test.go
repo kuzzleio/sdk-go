@@ -46,13 +46,17 @@ func TestFetchNextNotPossible(t *testing.T) {
 
 func TestFetchNextWithScroll(t *testing.T) {
 	requestCount := 0
+	type field struct {
+		Price string `json:"price,omitempty"`
+		Label string `json:"label,omitempty"`
+	}
 
-	sort := []map[string]string{}
-	sort = append(sort, map[string]string{"price": "asc"})
+	sort := make([]interface{}, 1)
+	sort = append(sort, field{Price: "asc"})
 
 	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-		Sort:  sort,
+		Sort:  ([]interface{})(sort),
 	}
 
 	options := types.NewQueryOptions()
@@ -127,10 +131,14 @@ func TestFetchNextWithScroll(t *testing.T) {
 
 func TestFetchNextWithSearchAfter(t *testing.T) {
 	requestCount := 0
+	type field struct {
+		Price string `json:"price,omitempty"`
+		Label string `json:"label,omitempty"`
+	}
 
-	sort := []map[string]string{}
-	sort = append(sort, map[string]string{"price": "desc"})
-	sort = append(sort, map[string]string{"label": "asc"})
+	sort := make([]interface{}, 2)
+	sort = append(sort, field{Price: "desc"})
+	sort = append(sort, field{Label: "asc"})
 
 	filters := &types.SearchFilters{
 		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},

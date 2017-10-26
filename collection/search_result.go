@@ -25,19 +25,24 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 
 	if ksr.Options != nil && ksr.Filters != nil {
 		if ksr.Options.GetSize() != 0 && len(ksr.Filters.Sort) > 0 {
-			filters := *ksr.Filters
+			var filters = ksr.Filters
+			var source = ksr.Hits[len(ksr.Hits)-1].SourceToMap()
 
 			for _, sortRules := range filters.Sort {
-				for field := range sortRules {
-					source := ksr.Hits[len(ksr.Hits)-1].SourceToMap()
-					filters.SearchAfter = append(filters.SearchAfter, source[field])
+				switch t := sortRules.(type) {
+				case string:
+					filters.SearchAfter = append(filters.SearchAfter, source[t])
+				case map[string]interface{}:
+					for field := range t {
+						filters.SearchAfter = append(filters.SearchAfter, source[field])
+					}
 				}
 			}
 
 			options := ksr.Options
 			options.SetFrom(0)
 
-			return ksr.Collection.Search(&filters, options)
+			return ksr.Collection.Search(filters, options)
 		}
 
 		if ksr.Options.GetSize() != 0 {

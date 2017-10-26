@@ -6,7 +6,7 @@ import (
 )
 
 // ReplaceDocument replaces a document in Kuzzle.
-func (dc *Collection) ReplaceDocument(id string, document interface{}, options types.QueryOptions) (*Document, error) {
+func (dc *Collection) ReplaceDocument(id string, document *Document, options types.QueryOptions) (*Document, error) {
 	if id == "" {
 		return nil, types.NewError("Collection.ReplaceDocument: document id required", 400)
 	}
@@ -18,7 +18,7 @@ func (dc *Collection) ReplaceDocument(id string, document interface{}, options t
 		Index:      dc.index,
 		Controller: "document",
 		Action:     "replace",
-		Body:       document,
+		Body:       document.Content,
 		Id:         id,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
@@ -44,8 +44,8 @@ func (dc *Collection) MReplaceDocument(documents []*Document, options types.Quer
 	ch := make(chan *types.KuzzleResponse)
 
 	type CreationDocument struct {
-		Id   string       `json:"_id"`
-		Body interface{}  `json:"body"`
+		Id   string      `json:"_id"`
+		Body interface{} `json:"body"`
 	}
 	docs := []*CreationDocument{}
 

@@ -1,8 +1,8 @@
 package types
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type (
@@ -12,7 +12,7 @@ type (
 		Status  int    `json:"status"`
 	}
 
-	KuzzleMeta struct {
+	Meta struct {
 		Author    string `json:"author"`
 		CreatedAt int    `json:"createdAt"`
 		UpdatedAt int    `json:"updatedAt"`
@@ -22,11 +22,11 @@ type (
 	}
 
 	KuzzleResult struct {
-		Id         string           `json:"_id"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Content    json.RawMessage  `json:"_source"`
-		Version    int              `json:"_version"`
-		Collection string           `json:"collection"`
+		Id         string          `json:"_id"`
+		Meta       *Meta           `json:"_meta"`
+		Content    json.RawMessage `json:"_source"`
+		Version    int             `json:"_version"`
+		Collection string          `json:"collection"`
 	}
 
 	KuzzleNotification struct {
@@ -37,42 +37,111 @@ type (
 	}
 
 	KuzzleResponse struct {
-		RequestId string           `json:"requestId"`
-		Result    json.RawMessage  `json:"result"`
-		RoomId    string           `json:"room"`
-		Channel   string           `json:"channel"`
-		Status		int 						 `json:"status"`
-		Error     *KuzzleError     `json:"error"`
+		RequestId string          `json:"requestId"`
+		Result    json.RawMessage `json:"result"`
+		RoomId    string          `json:"room"`
+		Channel   string          `json:"channel"`
+		Status    int             `json:"status"`
+		Error     *KuzzleError    `json:"error"`
 	}
 
-	KuzzleValidationFields map[string]*struct {
-		Type         string `json:"type"`
-		Mandatory    bool   `json:"mandatory"`
-		DefaultValue string `json:"defaultValue"`
+	SpecificationField struct {
+		Type        string `json:"type,omitempty"`
+		Depth       int    `json:"depth,omitempty"`
+		Mandatory   bool   `json:"mandatory,omitempty"`
+		Description string `json:"description,omitempty"`
+		Multivalued struct {
+			Value    bool `json:"value,omitempty"`
+			MinCount int  `json:"minCount,omitempty"`
+			MaxCount int  `json:"maxCount,omitempty"`
+		} `json:"multivalued,omitempty"`
+		DefaultValue interface{} `json:"defaultValue,omitempty"`
+		TypeOptions  struct {
+			Range struct {
+				Min interface{} `json:"min,omitempty"`
+				Max interface{} `json:"max,omitempty"`
+			} `json:"range,omitempty"`
+			Length struct {
+				Min int         `json:"min,omitempty"`
+				Max interface{} `json:"max,omitempty"`
+			} `json:"length"`
+			NotEmpty   bool     `json:"notEmpty,omitempty"`
+			Formats    []string `json:"formats,omitempty"`
+			Strict     bool     `json:"strict,omitempty"`
+			Values     []string `json:"values,omitempty"`
+			ShapeTypes []string `json:"shapeTypes,omitempty"`
+		} `json:"typeOptions,omitempty"`
 	}
 
-	KuzzleValidation struct {
-		Strict bool                    `json:"strict"`
-		Fields *KuzzleValidationFields `json:"fields"`
+	SpecificationFields map[string]SpecificationField
+
+	Specification struct {
+		Strict     bool                `json:"strict,omitempty"`
+		Fields     SpecificationFields `json:"fields,omitempty"`
+		Validators json.RawMessage     `json:"validators,omitempty"`
 	}
 
-	KuzzleFieldMapping map[string]*struct {
-		Type   string           `json:"type"`
-		Fields json.RawMessage  `json:"fields"`
+	MappingField struct {
+		Analyzer                 string      `json:"analyzer,omitempty"`
+		Normalizer               interface{} `json:"normalizer,omitempty"`
+		DocValues                bool        `json:"doc_values,omitempty"`
+		Boost                    float64     `json:"boost,omitempty"`
+		Coerce                   bool        `json:"coerce,omitempty"`
+		Enabled                  bool        `json:"enabled,omitempty"`
+		FieldData                bool        `json:"fielddata,omitempty"`
+		FieldDataFrequencyFilter struct {
+			Min            float64 `json:"min,omitempty"`
+			Max            float64 `json:"max,omitempty"`
+			MinSegmentSize int     `json:"min_segment_size,omitempty"`
+		} `json:"fielddata_frequency_filter,omitempty"`
+		Format               string                  `json:"format,omitempty"`
+		IgnoreAbove          int                     `json:"ignore_above,omitempty"`
+		IgnoreMalformed      bool                    `json:"ignore_malformed,omitempty"`
+		IncludeInAll         bool                    `json:"include_in_all,omitempty"`
+		Index                bool                    `json:"index,omitempty"`
+		IndexOptions         bool                    `json:"index_options,omitempty"`
+		Fields               map[string]MappingField `json:"fields,omitempty"`
+		Norms                bool                    `json:"norms,omitempty"`
+		NullValue            bool                    `json:"null_value,omitempty"`
+		PositionIncrementGap bool                    `json:"position_increment_gap,omitempty"`
+		Type                 string                  `json:"type,omitempty"`
+		All                  *struct {
+			Enabled bool   `json:"enabled,omitempty"`
+			Format  string `json:"format, omitempty"`
+		} `json:"_all,omitempty"`
+		Properties               MappingFields          `json:"properties,omitempty"`
+		SearchAnalyzer           string                 `json:"search_analyzer,omitempty"`
+		Similarity               string                 `json:"similarity,omitempty"`
+		Store                    bool                   `json:"store,omitempty"`
+		TermVector               string                 `json:"term_vector,omitempty"`
+		Tree                     string                 `json:"tree,omitempty"`
+		Precision                string                 `json:"precision,omitempty"`
+		TreeLevels               int                    `json:"tree_levels,omitempty"`
+		Strategy                 string                 `json:"strategy,omitempty"`
+		DistanceErrorPct         float64                `json:"distance_error_pct,omitempty"`
+		Orientation              string                 `json:"orientation,omitempty"`
+		PointsOnly               bool                   `json:"points_only,omitempty"`
+		EagerGlobalOrdinals      bool                   `json:"eager_global_ordinals,omitempty"`
+		Dynamic                  interface{}            `json:"dynamic,omitempty"`
+		SearchQuoteAnalyzer      string                 `json:"search_quote_analyzer,omitempty"`
+		EnablePositionIncrements bool                   `json:"enable_position_increments,omitempty"`
+		Relations                map[string]interface{} `json:"relations,omitempty"`
 	}
 
-	KuzzleSpecifications map[string]map[string]*KuzzleValidation
+	MappingFields map[string]MappingField
 
-	KuzzleSpecificationsResult struct {
-		Validation *KuzzleValidation `json:"validation"`
-		Index      string            `json:"index"`
-		Collection string            `json:"collection"`
+	SpecificationEntry struct {
+		Validation *Specification `json:"validation"`
+		Index      string         `json:"index"`
+		Collection string         `json:"collection"`
 	}
 
-	KuzzleSpecificationSearchResult struct {
-		Hits []*struct {
-			Source *KuzzleSpecificationsResult `json:"_source"`
-		} `json:"hits"`
+	SpecificationSearchResultHit struct {
+		Source SpecificationEntry `json:"_source"`
+	}
+
+	SpecificationSearchResult struct {
+		Hits []SpecificationSearchResultHit `json:"hits"`
 		Total    int    `json:"total"`
 		ScrollId string `json:"scrollId"`
 	}
@@ -141,10 +210,10 @@ type (
 	}
 
 	SecurityDocument struct {
-		Id         string           `json:"_id"`
-		Source     json.RawMessage  `json:"_source"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Strategies []string         `json:"strategies"`
+		Id         string          `json:"_id"`
+		Source     json.RawMessage `json:"_source"`
+		Meta       *Meta           `json:"_meta"`
+		Strategies []string        `json:"strategies"`
 	}
 
 	Profile SecurityDocument
@@ -164,10 +233,10 @@ type (
 	}
 
 	User struct {
-		Id         string           `json:"_id"`
-		Source     json.RawMessage  `json:"_source"`
-		Meta       *KuzzleMeta      `json:"_meta"`
-		Strategies []string         `json:"strategies"`
+		Id         string          `json:"_id"`
+		Source     json.RawMessage `json:"_source"`
+		Meta       *Meta           `json:"_meta"`
+		Strategies []string        `json:"strategies"`
 	}
 
 	GeoradiusPointWithCoord struct {
@@ -197,23 +266,23 @@ type (
 func (e *KuzzleError) Error() string {
 	msg := e.Message
 
-  if len(e.Stack) > 0 {
-    msg = fmt.Sprintf("%s\n%s", msg, e.Stack)
-  }
+	if len(e.Stack) > 0 {
+		msg = fmt.Sprintf("%s\n%s", msg, e.Stack)
+	}
 
-  if e.Status > 0 {
-  	msg = fmt.Sprintf("[%d] %s", e.Status, msg)
-  }
+	if e.Status > 0 {
+		msg = fmt.Sprintf("[%d] %s", e.Status, msg)
+	}
 
-  return msg
+	return msg
 }
 
-func NewError(msg string, status ...int)  *KuzzleError {
+func NewError(msg string, status ...int) *KuzzleError {
 	err := &KuzzleError{Message: msg}
 
 	if len(status) == 1 {
 		err.Status = status[0]
-	} 
+	}
 
 	return err
 }
