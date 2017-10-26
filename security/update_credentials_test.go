@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -23,8 +22,7 @@ func TestUpdateCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.UpdateCredentials("local", "someId", nil, nil)
+	_, err := k.Security.UpdateCredentials("local", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,8 +33,7 @@ func TestUpdateCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.UpdateCredentials("", "someId", nil, nil)
+	_, err := k.Security.UpdateCredentials("", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -47,8 +44,7 @@ func TestUpdateCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.UpdateCredentials("local", "", nil, nil)
+	_, err := k.Security.UpdateCredentials("local", "", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -74,8 +70,7 @@ func TestUpdateCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	s := security.NewSecurity(k)
-	res, err := s.UpdateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
+	res, err := k.Security.UpdateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "foo", res["username"])
@@ -90,8 +85,7 @@ func ExampleSecurity_UpdateCredentials() {
 
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.UpdateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
+	res, err := k.Security.UpdateCredentials("local", "someId", myCredentials{"foo", "bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

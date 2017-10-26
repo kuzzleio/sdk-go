@@ -206,7 +206,7 @@ type (
 	}
 
 	Controllers struct {
-		Controllers map[string]Controller `json:"controllers"`
+		Controllers map[string]*Controller `json:"controllers"`
 	}
 
 	SecurityDocument struct {

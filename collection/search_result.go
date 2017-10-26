@@ -5,7 +5,7 @@ import (
 )
 
 type SearchResult struct {
-	Collection *Collection
+	Collection *Collection `json:"-"`
 	Hits       []*Document `json:"hits"`
 	Total      int         `json:"total"`
 	ScrollId   string      `json:"_scroll_id"`

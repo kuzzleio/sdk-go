@@ -60,7 +60,7 @@ type UserCredentials map[string]interface{}
 type UserData struct {
 	ProfileIds  []string               `json:"profileIds"`
 	Content     map[string]interface{} `json:"content"`
-	Credentials UserCredentials        `json:"credentials"`
+	Credentials UserCredentials        `json:"credentials,omitempty"`
 }
 
 type PolicyRestriction struct {
@@ -71,7 +71,6 @@ type PolicyRestriction struct {
 type Policy struct {
 	RoleId             string               `json:"roleId"`
 	RestrictedTo       []*PolicyRestriction `json:"restrictedTo,omitempty"`
-	AllowInternalIndex bool                 `json:"allowInternalIndex,omitempty"`
 }
 
 type Policies struct {

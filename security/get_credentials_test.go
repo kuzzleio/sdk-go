@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -25,8 +24,7 @@ func TestGetCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.GetCredentials("local", "someId", nil)
+	_, err := k.Security.GetCredentials("local", "someId", nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,8 +35,7 @@ func TestGetCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.GetCredentials("", "someId", nil)
+	_, err := k.Security.GetCredentials("", "someId", nil)
 	assert.NotNil(t, err)
 }
 
@@ -49,8 +46,7 @@ func TestGetCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	_, err := s.GetCredentials("local", "", nil)
+	_, err := k.Security.GetCredentials("local", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -77,8 +73,7 @@ func TestGetCredentials(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.GetCredentials("local", "someId", nil)
+	res, err := k.Security.GetCredentials("local", "someId", nil)
 	assert.Nil(t, err)
 
 	type credentials struct {
@@ -96,8 +91,7 @@ func TestGetCredentials(t *testing.T) {
 func ExampleSecurity_GetCredentials() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	s := security.NewSecurity(k)
-	res, err := s.GetCredentials("local", "someId", nil)
+	res, err := k.Security.GetCredentials("local", "someId", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

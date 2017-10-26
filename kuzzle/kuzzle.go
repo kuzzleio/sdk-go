@@ -2,10 +2,12 @@
 package kuzzle
 
 import (
+	"time"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"time"
+	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/security"
 )
 
 const version = "1.0.0"
@@ -27,6 +29,9 @@ type Kuzzle struct {
 	headers        map[string]interface{}
 	version        string
 	RequestHistory map[string]time.Time
+
+	MemoryStorage  *ms.Ms
+	Security       *security.Security
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -44,6 +49,10 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 		headers: options.GetHeaders(),
 		version: version,
 	}
+
+	k.MemoryStorage = &ms.Ms{k}
+	k.Security = &security.Security{k}
+
 	k.RequestHistory = k.socket.GetRequestHistory()
 
 	headers := options.GetHeaders()
