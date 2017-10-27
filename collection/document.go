@@ -45,33 +45,6 @@ func (d Document) SourceToMap() DocumentContent {
 	return sourceMap
 }
 
-// Helper function to initialize a document into Document using fetch query.
-func (d *Document) Fetch(id string) (*Document, error) {
-	if id == "" {
-		return d, types.NewError("Document.Fetch: missing document id", 400)
-	}
-
-	doc, err := d.collection.FetchDocument(id, nil)
-
-	if err != nil {
-		err.(*types.KuzzleError).Message = "Document.Fetch: an error occurred: " + err.(*types.KuzzleError).Message
-		return d, err
-	}
-
-	d.Id = id
-	d.Index = doc.Index
-	d.Meta = doc.Meta
-	d.Shards = doc.Shards
-	d.Content = doc.Content
-	d.Version = doc.Version
-	d.Result = doc.Result
-	d.Created = doc.Created
-	d.Collection = doc.Collection
-	d.collection = doc.collection
-
-	return d, nil
-}
-
 // Subscribe listens to events concerning this document. Has no effect if the document does not have an ID
 // (i.e. if the document has not yet been created as a persisted document).
 func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) chan *types.SubscribeResponse {
