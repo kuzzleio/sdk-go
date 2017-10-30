@@ -59,6 +59,10 @@ type QueryOptions interface {
 	SetAlpha(bool) *queryOptions
 	GetUnit() string
 	SetUnit(string) *queryOptions
+	GetWithdist() bool
+	SetWithdist(bool) *queryOptions
+	GetWithcoord() bool
+	SetWithcoord(bool) *queryOptions
 }
 
 type queryOptions struct {
@@ -91,6 +95,8 @@ type queryOptions struct {
 	get             []string
 	alpha           bool
 	unit            string
+	withcoord				bool
+	withdist				bool
 }
 
 func (qo queryOptions) GetQueuable() bool {
@@ -353,6 +359,25 @@ func (qo *queryOptions) SetUnit(unit string) *queryOptions {
 	qo.unit = unit
 	return qo
 }
+
+func (qo *queryOptions) GetWithcoord() bool {
+	return qo.withcoord
+}
+
+func (qo *queryOptions) SetWithcoord(withcoord bool) *queryOptions {
+	qo.withcoord = withcoord
+	return qo
+}
+
+func (qo *queryOptions) GetWithdist() bool {
+	return qo.withdist
+}
+
+func (qo *queryOptions) SetWithdist(withdist bool) *queryOptions {
+	qo.withdist = withdist
+	return qo
+}
+
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size:    10,
