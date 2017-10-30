@@ -15,7 +15,7 @@ type Room struct {
 	result          json.RawMessage `json:"-"`
 	scope           string          `json:"-"`
 	state           string          `json:"-"`
-	user            string          `json:"-"`
+	users           string          `json:"-"`
 	subscribeToSelf bool            `json:"-"`
 
 	collection                  *Collection                      `json:"-"`
@@ -43,7 +43,7 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 	r := &Room{
 		scope:                opts.GetScope(),
 		state:                opts.GetState(),
-		user:                 opts.GetUser(),
+		users:                opts.GetUsers(),
 		id:                   uuid.NewV4().String(),
 		collection:           c,
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),

@@ -3,6 +3,7 @@ package websocket
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
@@ -265,6 +266,8 @@ func (ws *webSocket) listen() {
 
 		msg := <-ws.listenChan
 
+		fmt.Printf("%s", msg)
+
 		json.Unmarshal(msg, &message)
 		m := message
 
@@ -272,13 +275,13 @@ func (ws *webSocket) listen() {
 
 		s, ok := ws.subscriptions.Load(m.RoomId)
 		if m.RoomId != "" && ok {
-			var notification *types.KuzzleNotification
+			var notification types.KuzzleNotification
 
-			json.Unmarshal(m.Result, &notification.Result)
+			json.Unmarshal(m.Result, notification.Result)
 			s.(*sync.Map).Range(func(key, value interface{}) bool {
 				channel := value.(types.IRoom).GetRealtimeChannel()
 				if channel != nil {
-					value.(types.IRoom).GetRealtimeChannel() <- notification
+					value.(types.IRoom).GetRealtimeChannel() <- &notification
 				}
 				return true
 			})

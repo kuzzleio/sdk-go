@@ -2,12 +2,12 @@
 package kuzzle
 
 import (
-	"time"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
-	"github.com/kuzzleio/sdk-go/types"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/types"
+	"time"
 )
 
 const version = "1.0.0"
@@ -30,8 +30,8 @@ type Kuzzle struct {
 	version        string
 	RequestHistory map[string]time.Time
 
-	MemoryStorage  *ms.Ms
-	Security       *security.Security
+	MemoryStorage *ms.Ms
+	Security      *security.Security
 }
 
 // NewKuzzle is the Kuzzle constructor

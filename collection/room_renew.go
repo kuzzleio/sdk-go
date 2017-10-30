@@ -50,7 +50,7 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 			Collection: room.collection.collection,
 			Scope:      room.scope,
 			State:      room.state,
-			User:       room.user,
+			Users:      room.users,
 			Body:       filters,
 		}, opts, result)
 
