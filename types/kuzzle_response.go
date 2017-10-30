@@ -21,7 +21,7 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
-	KuzzleResult struct {
+	NotificationResult struct {
 		Id      string          `json:"_id"`
 		Meta    *Meta           `json:"_meta"`
 		Content json.RawMessage `json:"_source"`
@@ -29,22 +29,22 @@ type (
 	}
 
 	KuzzleNotification struct {
-		RequestId  string        `json:"requestId"`
-		Result     *KuzzleResult `json:"result"`
-		Volatile   VolatileData  `json:"volatile"`
-		Index      string        `json:"index"`
-		Collection string        `json:"collection"`
-		Controller string        `json:"controller"`
-		Action     string        `json:"action"`
-		Protocol   string        `json:"protocol"`
-		Scope      string        `json:"scope"`
-		State      string        `json:"state"`
-		User       string        `json:"user"`
-		Type       string        `json:"type"`
-		RoomId     string        `json:"room"`
-		Timestamp  int           `json:"timestamp"`
-		Status     int           `json:"status"`
-		Error      *KuzzleError  `json:"error"`
+		RequestId  string              `json:"requestId"`
+		Result     *NotificationResult `json:"result"`
+		Volatile   VolatileData        `json:"volatile"`
+		Index      string              `json:"index"`
+		Collection string              `json:"collection"`
+		Controller string              `json:"controller"`
+		Action     string              `json:"action"`
+		Protocol   string              `json:"protocol"`
+		Scope      string              `json:"scope"`
+		State      string              `json:"state"`
+		User       string              `json:"user"`
+		Type       string              `json:"type"`
+		RoomId     string              `json:"room"`
+		Timestamp  int                 `json:"timestamp"`
+		Status     int                 `json:"status"`
+		Error      *KuzzleError        `json:"error"`
 	}
 
 	KuzzleResponse struct {
