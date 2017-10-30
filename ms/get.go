@@ -6,9 +6,9 @@ import (
 )
 
 // Get returns the value of a key, or null if the key doesn’t exist.
-func (ms Ms) Get(key string, options types.QueryOptions) (interface{}, error) {
+func (ms Ms) Get(key string, options types.QueryOptions) (string, error) {
 	if key == "" {
-		return nil, types.NewError("Ms.Get: key required", 400)
+		return "", types.NewError("Ms.Get: key required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -24,10 +24,10 @@ func (ms Ms) Get(key string, options types.QueryOptions) (interface{}, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return nil, res.Error
+		return "", res.Error
 	}
 
-	var returnedResult interface{}
+	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil
