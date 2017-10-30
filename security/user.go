@@ -114,14 +114,16 @@ func (u *User) SetProfiles(profiles []*Profile) *User {
 
 // Update the user in kuzzle.
 func (u *User) Update(content *types.UserData, options types.QueryOptions) (*User, error) {
-	for k, v := range content.Content {
-		if u.Content == nil {
-			u.Content = make(map[string]interface{})
+	if content != nil {
+		for k, v := range content.Content {
+			if u.Content == nil {
+				u.Content = make(map[string]interface{})
+			}
+			u.Content[k] = v
 		}
-		u.Content[k] = v
-	}
 
-	u.addProfileIds(content.ProfileIds...)
+		u.addProfileIds(content.ProfileIds...)
+	}
 
 	return u.persist("updateUser", u.getFlatBody(), options)
 }

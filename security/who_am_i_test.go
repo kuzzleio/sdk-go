@@ -1,15 +1,15 @@
-package kuzzle_test
+package security_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"log"
-	"testing"
 )
 
 func TestWhoAmIQueryError(t *testing.T) {
@@ -35,14 +35,9 @@ func TestWhoAmI(t *testing.T) {
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "getCurrentUser", request.Action)
 
-			toMarshal := types.User{Id: "id"}
-
-			h, err := json.Marshal(toMarshal)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			return &types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"_id": "id"
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -75,5 +70,5 @@ func ExampleKuzzle_WhoAmI() {
 		return
 	}
 
-	fmt.Println(res.Id, res.Strategies, res.Meta, res.Source)
+	fmt.Printf("%#v\n", res)
 }

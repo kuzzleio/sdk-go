@@ -42,4 +42,3 @@ func (s *Security) jsonUserToUser(j *jsonUser) *User {
 
 	return u
 }
-
