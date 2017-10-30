@@ -3,7 +3,6 @@ package websocket
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
@@ -265,8 +264,6 @@ func (ws *webSocket) listen() {
 		var r collection.Room
 
 		msg := <-ws.listenChan
-
-		fmt.Printf("%s", msg)
 
 		json.Unmarshal(msg, &message)
 		m := message
