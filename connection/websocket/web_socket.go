@@ -274,7 +274,8 @@ func (ws *webSocket) listen() {
 		if m.RoomId != "" && ok {
 			var notification types.KuzzleNotification
 
-			json.Unmarshal(m.Result, notification.Result)
+			json.Unmarshal(msg, &notification)
+
 			s.(*sync.Map).Range(func(key, value interface{}) bool {
 				channel := value.(types.IRoom).GetRealtimeChannel()
 				if channel != nil {
