@@ -36,16 +36,21 @@ func TestCreateIndex(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			ack := ackResult{Acknowledged: true, ShardsAcknowledged: true}
-			r, _ := json.Marshal(ack)
-			return &types.KuzzleResponse{Result: r}
+			q := &types.KuzzleRequest{}
+			json.Unmarshal(query, q)
+
+			assert.Equal(t, "index", q.Controller)
+			assert.Equal(t, "create", q.Action)
+			assert.Equal(t, "index", q.Index)
+
+			return &types.KuzzleResponse{}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.CreateIndex("index", nil)
-	assert.Equal(t, true, res.Acknowledged)
-	assert.Equal(t, true, res.ShardsAcknowledged)
+	_, err := k.CreateIndex("index", nil)
+
+	assert.Nil(t, err)
 }
 
 func ExampleKuzzle_CreateIndex() {
@@ -58,5 +63,5 @@ func ExampleKuzzle_CreateIndex() {
 		return
 	}
 
-	fmt.Println(res.Acknowledged, res.ShardsAcknowledged)
+	fmt.Printf("%#v\n", res)
 }

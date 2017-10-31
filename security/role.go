@@ -42,13 +42,6 @@ func (r *Role) Save(options types.QueryOptions) (*Role, error) {
 	return r.persist(action, options)
 }
 
-// Update sets the role controllers and persists it in Kuzzle
-// NB: The role must exist in Kuzzle.
-func (r *Role) Update(controllers *types.Controllers, options types.QueryOptions) (*Role, error) {
-	r.Controllers = controllers.Controllers
-	return r.persist("updateRole", options)
-}
-
 func (r *Role) persist(action string, options types.QueryOptions) (*Role, error) {
 	if options == nil {
 		options = types.NewQueryOptions()

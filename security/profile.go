@@ -48,12 +48,6 @@ func (p Profile) Save(options types.QueryOptions) (*Profile, error) {
 	return p.persist(action, options)
 }
 
-// Update performs a partial content update on this object.
-func (p *Profile) Update(policies []*types.Policy, options types.QueryOptions) (*Profile, error) {
-	p.Policies = policies
-	return p.persist("updateProfile", options)
-}
-
 func (p *Profile) persist(action string, options types.QueryOptions) (*Profile, error) {
 	if options == nil {
 		options = types.NewQueryOptions()

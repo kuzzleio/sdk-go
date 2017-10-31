@@ -1,12 +1,11 @@
 package collection
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Create creates a new empty data collection, with no associated mapping.
-func (dc *Collection) Create(options types.QueryOptions) (*types.AckResponse, error) {
+func (dc *Collection) Create(options types.QueryOptions) (bool, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -20,11 +19,8 @@ func (dc *Collection) Create(options types.QueryOptions) (*types.AckResponse, er
 	res := <-ch
 
 	if res.Error != nil {
-		return nil, res.Error
+		return false, res.Error
 	}
 
-	ack := &types.AckResponse{}
-	json.Unmarshal(res.Result, ack)
-
-	return ack, nil
+	return true, nil
 }

@@ -168,7 +168,7 @@ func (dc *Collection) UpdateSpecifications(specifications *types.Specification, 
 }
 
 // DeleteSpecifications deletes the current specifications of this collection.
-func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (*types.AckResponse, error) {
+func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (bool, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -182,11 +182,8 @@ func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (*types.A
 	res := <-ch
 
 	if res.Error != nil {
-		return nil, res.Error
+		return false, res.Error
 	}
 
-	response := &types.AckResponse{}
-	json.Unmarshal(res.Result, response)
-
-	return response, nil
+	return true, nil
 }
