@@ -56,6 +56,7 @@ type (
 		Controller string          `json:"controller"`
 		Action     string          `json:"action"`
 		RoomId     string          `json:"room"`
+		Channel    string          `json:"channel"`
 		Status     int             `json:"status"`
 		Error      *KuzzleError    `json:"error"`
 	}
