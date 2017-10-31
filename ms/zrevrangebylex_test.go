@@ -12,37 +12,24 @@ import (
 	"testing"
 )
 
-func TestZrevRangeByLexEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrevRangeByLex("", "-", "(g", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: key required", fmt.Sprint(err))
-}
-
 func TestZrevRangeByLexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByLex("foo", "", "(g", qo)
+	_, err := memoryStorage.ZrevRangeByLex("foo", "", "(g", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
 func TestZrevRangeByLexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByLex("foo", "-", "", qo)
+	_, err := memoryStorage.ZrevRangeByLex("foo", "-", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: max required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrevRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
 func TestZrevRangeByLexError(t *testing.T) {

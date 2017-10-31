@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSremEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Srem("", []string{"foo", "bar"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Srem: key required", fmt.Sprint(err))
-}
-
 func TestSremEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)

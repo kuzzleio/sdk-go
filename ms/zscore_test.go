@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestZscoreEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zscore("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscore: key required", fmt.Sprint(err))
-}
-
-func TestZscoreEmptyMember(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zscore("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscore: member required", fmt.Sprint(err))
-}
-
 func TestZscoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

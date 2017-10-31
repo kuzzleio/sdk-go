@@ -8,13 +8,6 @@ import (
 
 // Zscore returns the score of a member in a sorted set.
 func (ms Ms) Zscore(key string, member string, options types.QueryOptions) (float64, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Zscore: key required", 400)
-	}
-	if member == "" {
-		return 0, types.NewError("Ms.Zscore: member required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

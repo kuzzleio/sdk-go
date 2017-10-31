@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestKeysEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Keys("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Keys: pattern required", fmt.Sprint(err))
-}
-
 func TestKeysError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

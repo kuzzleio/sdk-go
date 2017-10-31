@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZcountEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zcount("", 0, 10, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zcount: key required", fmt.Sprint(err))
-}
-
 func TestZcountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

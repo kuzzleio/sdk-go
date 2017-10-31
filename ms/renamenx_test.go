@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestRenameNxEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.RenameNx("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.RenameNx: key required", fmt.Sprint(err))
-}
-
-func TestRenameNxEmptyNewkey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.RenameNx("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.RenameNx: newkey required", fmt.Sprint(err))
-}
-
 func TestRenameNxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

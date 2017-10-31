@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZremRangeByScoreEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZremRangeByScore("", 0, 42.42, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZremRangeByScore: key required", fmt.Sprint(err))
-}
-
 func TestZremRangeByScoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

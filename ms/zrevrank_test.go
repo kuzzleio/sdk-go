@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestZrevRankEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrevRank("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRank: key required", fmt.Sprint(err))
-}
-
-func TestZrevRankEmptyMember(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrevRank("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRank: member required", fmt.Sprint(err))
-}
-
 func TestZrevRankError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

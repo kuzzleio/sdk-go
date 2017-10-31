@@ -12,15 +12,14 @@ import (
 	"testing"
 )
 
-func TestHmsetEmptyKey(t *testing.T) {
+func TestHmsetEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, qo)
+	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hmset: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hmset: at least one entry field to set is required", fmt.Sprint(err))
 }
 
 func TestHmsetError(t *testing.T) {

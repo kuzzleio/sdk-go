@@ -7,8 +7,8 @@ import (
 
 // Hdel removes fields from a hash
 func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return -1, types.NewError("Ms.Hdel: key required", 400)
+	if len(fields) == 0 {
+		return -1, types.NewError("Ms.Hdel: at least one hash field to remove is required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

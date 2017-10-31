@@ -10,10 +10,6 @@ import (
 // their position in the set between start and stop (inclusive).
 // Positions are 0-based, meaning the first member of the set has a position of 0.
 func (ms Ms) ZremRangeByRank(key string, min int, max int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.ZremRangeByRank: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

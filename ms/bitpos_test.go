@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestBitposEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Bitpos("", 0, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Bitpos: key required", fmt.Sprint(err))
-}
-
 func TestBitposError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

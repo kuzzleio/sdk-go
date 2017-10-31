@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestHgetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hget("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hget: key required", fmt.Sprint(err))
-}
-
-func TestHgetEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hget("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hget: field required", fmt.Sprint(err))
-}
-
 func TestHgetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -70,7 +48,7 @@ func TestHget(t *testing.T) {
 
 	res, _ := memoryStorage.Hget("foo", "bar", qo)
 
-	assert.Equal(t, "result", res)
+	assert.Equal(t, "result", *res)
 }
 
 func ExampleMs_Hget() {

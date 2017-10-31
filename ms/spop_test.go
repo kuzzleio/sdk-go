@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSpopEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Spop("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Spop: key required", fmt.Sprint(err))
-}
-
 func TestSpopError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -57,7 +46,7 @@ func TestSpop(t *testing.T) {
 
 	res, _ := memoryStorage.Spop("foo", qo)
 
-	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, &[]string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func TestSpopWithOptions(t *testing.T) {
@@ -81,7 +70,7 @@ func TestSpopWithOptions(t *testing.T) {
 
 	res, _ := memoryStorage.Spop("foo", qo)
 
-	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, &[]string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func ExampleMs_Spop() {

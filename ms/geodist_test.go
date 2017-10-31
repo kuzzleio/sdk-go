@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGeodistEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Geodist("", "bar", "barbar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Geodist: key required", fmt.Sprint(err))
-}
-
 func TestGeodistError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

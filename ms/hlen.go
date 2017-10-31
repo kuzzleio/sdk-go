@@ -7,10 +7,6 @@ import (
 
 // Hlen returns the number of members of a hash
 func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return -1, types.NewError("Ms.Hlen: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

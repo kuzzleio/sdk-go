@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestHmgetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hmget("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hmget: key required", fmt.Sprint(err))
-}
-
 func TestHmgetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -58,7 +47,13 @@ func TestHmget(t *testing.T) {
 
 	res, _ := memoryStorage.Hmget("foo", []string{"some", "fields"}, qo)
 
-	assert.Equal(t, []string{"some", "result"}, res)
+	result := make([]*string, 2)
+	r1 := "some"
+	result[0] = &r1
+	r2 := "result"
+	result[1] = &r2
+
+	assert.Equal(t, result, res)
 }
 
 func ExampleMs_Hmget() {

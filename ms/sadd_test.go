@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSaddEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Sadd("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sadd: key required", fmt.Sprint(err))
-}
-
 func TestSaddEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)

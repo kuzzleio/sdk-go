@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestBitopEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Bitop("", "", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Bitop: key required", fmt.Sprint(err))
-}
-
 func TestBitopError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

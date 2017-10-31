@@ -12,15 +12,13 @@ import (
 	"testing"
 )
 
-func TestHdelEmptyKey(t *testing.T) {
+func TestHdelEmptyFields(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hdel("", []string{}, qo)
+	_, err := memoryStorage.Hdel("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hdel: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Hdel: at least one hash field to remove is required", fmt.Sprint(err))
 }
 
 func TestHdelError(t *testing.T) {

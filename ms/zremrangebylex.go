@@ -7,14 +7,8 @@ import (
 
 // ZremRangeByLex removes members from a sorted set where all elements have the same score, using lexicographical ordering. The min and max interval are inclusive, see the Redis documentation to change this behavior.
 func (ms Ms) ZremRangeByLex(key string, min string, max string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.ZremRangeByLex: key required", 400)
-	}
-	if min == "" {
-		return 0, types.NewError("Ms.ZremRangeByLex: min required", 400)
-	}
-	if max == "" {
-		return 0, types.NewError("Ms.ZremRangeByLex: max required", 400)
+	if min == "" || max == "" {
+		return 0, types.NewError("Ms.ZremRangeByLex: an empty string is not a valid string range item", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

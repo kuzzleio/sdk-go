@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestHvalsEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hvals("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hvals: key required", fmt.Sprint(err))
-}
-
 func TestHvalsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

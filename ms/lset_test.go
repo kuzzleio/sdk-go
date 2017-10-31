@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestLsetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Lset("", 1, "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Lset: key required", fmt.Sprint(err))
-}
-
 func TestLsetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

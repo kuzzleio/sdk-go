@@ -7,10 +7,6 @@ import (
 
 // Set creates a key holding the provided value, or overwrites it if it already exists.
 func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Set: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

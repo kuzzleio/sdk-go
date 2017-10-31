@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestStrlenEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Strlen("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Strlen: key required", fmt.Sprint(err))
-}
-
 func TestStrlenError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

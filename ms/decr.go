@@ -7,10 +7,6 @@ import (
 
 // Decr decrements the value of a key by 1
 func (ms Ms) Decr(key string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Decr: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

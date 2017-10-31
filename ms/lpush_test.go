@@ -12,15 +12,15 @@ import (
 	"testing"
 )
 
-func TestLpushEmptyKey(t *testing.T) {
+func TestLpushEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Lpush("", []string{}, qo)
+	_, err := memoryStorage.Lpush("", nil, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Lpush: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Lpush: at least one value to push is required", fmt.Sprint(err))
 }
 
 func TestLpushError(t *testing.T) {

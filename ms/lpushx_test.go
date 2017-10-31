@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestLpushxEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Lpushx("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Lpushx: key required", fmt.Sprint(err))
-}
-
 func TestLpushxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

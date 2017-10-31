@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestPfmergeEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Pfmerge("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pfmerge: key required", fmt.Sprint(err))
-}
-
 func TestPfmergeEmptySources(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
@@ -31,7 +20,7 @@ func TestPfmergeEmptySources(t *testing.T) {
 	_, err := memoryStorage.Pfmerge("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pfmerge: please provide at least one source", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfmerge: please provide at least one source to merge", fmt.Sprint(err))
 }
 
 func TestPfmergeError(t *testing.T) {

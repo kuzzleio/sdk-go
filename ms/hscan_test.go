@@ -12,18 +12,6 @@ import (
 	"testing"
 )
 
-func TestHscanEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cur := 0
-	_, err := memoryStorage.Hscan("", cur, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hscan: key required", fmt.Sprint(err))
-}
-
 func TestHscanError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

@@ -46,7 +46,7 @@ func TestRandomKey(t *testing.T) {
 
 	res, _ := memoryStorage.RandomKey(qo)
 
-	assert.Equal(t, "foo", res)
+	assert.Equal(t, "foo", *res)
 }
 
 func ExampleMs_RandomKey() {

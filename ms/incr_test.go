@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestIncrEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Incr("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Incr: key required", fmt.Sprint(err))
-}
-
 func TestIncrError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

@@ -6,14 +6,7 @@ import (
 )
 
 // Hget returns the field's value of a hash
-func (ms Ms) Hget(key string, field string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Hget: key required", 400)
-	}
-	if field == "" {
-		return "", types.NewError("Ms.Hget: field required", 400)
-	}
-
+func (ms Ms) Hget(key string, field string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -28,10 +21,10 @@ func (ms Ms) Hget(key string, field string, options types.QueryOptions) (string,
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var returnedResult string
+	var returnedResult *string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

@@ -7,10 +7,6 @@ import (
 
 // ZrevRange is identical to zrange, except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.ZrevRange: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

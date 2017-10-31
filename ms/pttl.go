@@ -7,10 +7,6 @@ import (
 
 // Pttl returns the remaining time to live of a key, in milliseconds.
 func (ms Ms) Pttl(key string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Pttl: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

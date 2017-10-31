@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestRpushEmptySource(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Rpush("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Rpush: source required", fmt.Sprint(err))
-}
-
 func TestRpushEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)

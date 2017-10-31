@@ -13,10 +13,6 @@ type HscanResponse struct {
 
 // Hscan is identical to scan, except that hscan iterates the fields contained in a hash.
 func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanResponse, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Hscan: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

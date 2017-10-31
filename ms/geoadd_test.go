@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGeoaddEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Geoadd("", []*types.GeoPoint{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Geoadd: key required", fmt.Sprint(err))
-}
-
 func TestGeoaddError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

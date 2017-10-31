@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestPersistEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Persist("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Persist: key required", fmt.Sprint(err))
-}
-
 func TestPersistError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

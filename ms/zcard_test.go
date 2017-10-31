@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZcardEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zcard("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zcard: key required", fmt.Sprint(err))
-}
-
 func TestZcardError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

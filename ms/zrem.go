@@ -7,11 +7,8 @@ import (
 
 // Zrem removes members from a sorted set.
 func (ms Ms) Zrem(key string, members []string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Zrem: key required", 400)
-	}
 	if len(members) == 0 {
-		return 0, types.NewError("Ms.Zrem: please provide at least one member", 400)
+		return 0, types.NewError("Ms.Zrem: please provide at least one member to remove", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

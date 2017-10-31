@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZrevRangeEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrevRange("", 0, -1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRange: key required", fmt.Sprint(err))
-}
-
 func TestZrevRangeError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

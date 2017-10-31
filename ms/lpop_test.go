@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestLpopEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Lpop("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Lpop: key required", fmt.Sprint(err))
-}
-
 func TestLpopError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -54,11 +43,10 @@ func TestLpop(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Lpop("foo", qo)
+	res, _ := memoryStorage.Lpop("foo", nil)
 
-	assert.Equal(t, "result", res)
+	assert.Equal(t, "result", *res)
 }
 
 func ExampleMs_Lpop() {

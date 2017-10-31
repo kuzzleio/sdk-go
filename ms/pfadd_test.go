@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestPfaddEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Pfadd("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pfadd: key required", fmt.Sprint(err))
-}
-
 func TestPfaddEmptyElements(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
@@ -31,7 +20,7 @@ func TestPfaddEmptyElements(t *testing.T) {
 	_, err := memoryStorage.Pfadd("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pfadd: please provide at least one element", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Pfadd: please provide at least one element to add", fmt.Sprint(err))
 }
 
 func TestPfaddError(t *testing.T) {

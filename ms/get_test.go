@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Get("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Get: key required", fmt.Sprint(err))
-}
-
 func TestGetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -57,7 +46,7 @@ func TestGet(t *testing.T) {
 
 	res, _ := memoryStorage.Get("foo", qo)
 
-	assert.Equal(t, "bar", res)
+	assert.Equal(t, "bar", *res)
 }
 
 func ExampleMs_Get() {

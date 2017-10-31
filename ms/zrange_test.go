@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZrangeEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zrange("", 0, -1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zrange: key required", fmt.Sprint(err))
-}
-
 func TestZrangeError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

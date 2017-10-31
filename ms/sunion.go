@@ -7,8 +7,8 @@ import (
 
 // Sunion returns the union of the provided sets of unique values.
 func (ms Ms) Sunion(sets []string, options types.QueryOptions) ([]string, error) {
-	if len(sets) < 2 {
-		return nil, types.NewError("Ms.Sunion: please provide at least 2 sets", 400)
+	if len(sets) == 0 {
+		return nil, types.NewError("Ms.Sunion: please provide at least 1 set", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

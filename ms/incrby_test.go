@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestIncrbyEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Incrby("", 42, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Incrby: key required", fmt.Sprint(err))
-}
-
 func TestIncrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

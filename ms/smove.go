@@ -7,16 +7,6 @@ import (
 
 // Smove moves a member from a set of unique values to another.
 func (ms Ms) Smove(key string, destination string, member string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Smove: key required", 400)
-	}
-	if destination == "" {
-		return 0, types.NewError("Ms.Smove: destination required", 400)
-	}
-	if member == "" {
-		return 0, types.NewError("Ms.Smove: member required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

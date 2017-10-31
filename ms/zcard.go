@@ -7,10 +7,6 @@ import (
 
 // Zcard returns the number of elements held by a sorted set.
 func (ms Ms) Zcard(key string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Zcard: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

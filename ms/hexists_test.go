@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestHexistsEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hexists("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hexists: key required", fmt.Sprint(err))
-}
-
-func TestHexistsEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hexists("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hexists: field required", fmt.Sprint(err))
-}
-
 func TestHexistsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

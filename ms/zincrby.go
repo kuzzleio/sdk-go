@@ -8,13 +8,6 @@ import (
 
 // ZincrBy increments the score of a member in a sorted set by the provided value.
 func (ms Ms) ZincrBy(key string, member string, increment float64, options types.QueryOptions) (float64, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.ZincrBy: key required", 400)
-	}
-	if member == "" {
-		return 0, types.NewError("Ms.ZincrBy: member required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

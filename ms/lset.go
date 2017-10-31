@@ -7,10 +7,6 @@ import (
 
 // Lset sets the list element at index with the provided value.
 func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Lset: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

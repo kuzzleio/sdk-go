@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestBitcountEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Bitcount("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Bitcount: key required", fmt.Sprint(err))
-}
-
 func TestBitcountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

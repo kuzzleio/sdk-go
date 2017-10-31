@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestObjectEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Object("", "encoding", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Object: key required", fmt.Sprint(err))
-}
-
 func TestObjectInvalidSubcommand(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
@@ -68,7 +57,7 @@ func TestObject(t *testing.T) {
 
 	res, _ := memoryStorage.Object("foo", "encoding", qo)
 
-	assert.Equal(t, "embstr", res)
+	assert.Equal(t, "embstr", *res)
 }
 
 func ExampleMs_Object() {

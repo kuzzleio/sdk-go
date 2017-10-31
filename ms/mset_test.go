@@ -15,9 +15,7 @@ import (
 func TestMsetEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Mset([]*types.MSKeyValue{}, qo)
+	_, err := memoryStorage.Mset([]*types.MSKeyValue{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Mset: please provide at least one key/value entry", fmt.Sprint(err))

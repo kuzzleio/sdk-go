@@ -8,9 +8,6 @@ import (
 // ZunionStore computes the union of the provided sorted sets and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
 func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryOptions) (int, error) {
-	if destination == "" {
-		return 0, types.NewError("Ms.ZunionStore: destination required", 400)
-	}
 	if len(keys) == 0 {
 		return 0, types.NewError("Ms.ZunionStore: please provide at least one key", 400)
 	}

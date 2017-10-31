@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZrangeByLexEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrangeByLex("", "-", "(g", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: key required", fmt.Sprint(err))
-}
-
 func TestZrangeByLexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
@@ -31,7 +20,7 @@ func TestZrangeByLexEmptyMin(t *testing.T) {
 	_, err := memoryStorage.ZrangeByLex("foo", "", "(g", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
 func TestZrangeByLexEmptyMax(t *testing.T) {
@@ -42,7 +31,7 @@ func TestZrangeByLexEmptyMax(t *testing.T) {
 	_, err := memoryStorage.ZrangeByLex("foo", "-", "", qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: max required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.ZrangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
 func TestZrangeByLexError(t *testing.T) {

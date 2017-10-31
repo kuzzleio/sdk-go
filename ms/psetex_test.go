@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestPsetexEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Psetex("", "bar", 60000, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Psetex: key required", fmt.Sprint(err))
-}
-
-func TestPsetexEmptyValue(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Psetex("foo", "", 60000, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Psetex: value required", fmt.Sprint(err))
-}
-
 func TestPsetexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

@@ -12,6 +12,15 @@ import (
 	"testing"
 )
 
+func TestDelEmptyList(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	memoryStorage := MemoryStorage.NewMs(k)
+	_, err := memoryStorage.Del(nil, nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "[400] Ms.Del: at least one key is required", fmt.Sprint(err))
+}
+
 func TestDelError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

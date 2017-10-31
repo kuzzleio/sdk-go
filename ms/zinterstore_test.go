@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZinterStoreEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZinterStore("", []string{"bar", "rab"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZinterStore: destination required", fmt.Sprint(err))
-}
-
 func TestZinterStoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)

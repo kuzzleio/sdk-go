@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZunionStoreEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZunionStore("", []string{"bar", "rab"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZunionStore: destination required", fmt.Sprint(err))
-}
-
 func TestZunionStoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)

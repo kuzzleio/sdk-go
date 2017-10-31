@@ -12,18 +12,6 @@ import (
 	"testing"
 )
 
-func TestZscanEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 42
-	_, err := memoryStorage.Zscan("", cursor, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscan: key required", fmt.Sprint(err))
-}
-
 func TestZscanError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

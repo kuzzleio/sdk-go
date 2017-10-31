@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGeoradiusEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Georadius("", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Georadius: key required", fmt.Sprint(err))
-}
-
 func TestGeoradiusError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

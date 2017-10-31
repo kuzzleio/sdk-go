@@ -12,39 +12,6 @@ import (
 	"testing"
 )
 
-func TestSmoveEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Smove("", "suchDestination", "muchMember", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Smove: key required", fmt.Sprint(err))
-}
-
-func TestSmoveEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Smove("wowKey", "", "muchMember", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Smove: destination required", fmt.Sprint(err))
-}
-
-func TestSmoveEmptyMember(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Smove("wowKey", "suchDestination", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Smove: member required", fmt.Sprint(err))
-}
-
 func TestSmoveError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

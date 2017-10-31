@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestHincrbyEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hincrby("", "bar", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hincrby: key required", fmt.Sprint(err))
-}
-
-func TestHincrbyEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hincrby("foo", "", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hincrby: field required", fmt.Sprint(err))
-}
-
 func TestHincrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

@@ -7,10 +7,6 @@ import (
 
 // Keys returns all keys matching the provided pattern.
 func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) {
-	if pattern == "" {
-		return nil, types.NewError("Ms.Keys: pattern required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGetrangeEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Getrange("", 1, 2, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Getrange: key required", fmt.Sprint(err))
-}
-
 func TestGetrangeError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

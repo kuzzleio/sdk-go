@@ -20,18 +20,7 @@ func TestSunionEmptySet(t *testing.T) {
 	_, err := memoryStorage.Sunion([]string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sunion: please provide at least 2 sets", fmt.Sprint(err))
-}
-
-func TestSunionSingleSet(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Sunion([]string{"foo"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sunion: please provide at least 2 sets", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sunion: please provide at least 1 set", fmt.Sprint(err))
 }
 
 func TestSunionError(t *testing.T) {

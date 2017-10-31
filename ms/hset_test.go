@@ -12,28 +12,6 @@ import (
 	"testing"
 )
 
-func TestHsetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hset("", "bar", "barbar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hset: key required", fmt.Sprint(err))
-}
-
-func TestHsetEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hset("foo", "", "barbar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hset: field required", fmt.Sprint(err))
-}
-
 func TestHsetError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

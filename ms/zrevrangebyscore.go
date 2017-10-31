@@ -8,10 +8,6 @@ import (
 
 // ZrevRangeByScore is identical to zrangebyscore except that the sorted set is traversed in descending order.
 func (ms Ms) ZrevRangeByScore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.ZrevRangeByScore: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

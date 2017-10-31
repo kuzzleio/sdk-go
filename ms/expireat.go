@@ -7,10 +7,6 @@ import (
 
 // Expireat sets an expiration timestamp to a key
 func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Expireat: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

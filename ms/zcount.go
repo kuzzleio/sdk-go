@@ -10,10 +10,6 @@ import (
 // By default, the provided min and max values are inclusive.
 // This behavior can be changed using the syntax described in the Redis ZRANGEBYSCORE documentation.
 func (ms Ms) Zcount(key string, min int, max int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Zcount: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

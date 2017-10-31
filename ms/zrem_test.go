@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestZremEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zrem("", []string{"bar"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zrem: key required", fmt.Sprint(err))
-}
-
 func TestZremEmptyMembers(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
@@ -31,7 +20,7 @@ func TestZremEmptyMembers(t *testing.T) {
 	_, err := memoryStorage.Zrem("foo", []string{}, qo)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zrem: please provide at least one member", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrem: please provide at least one member to remove", fmt.Sprint(err))
 }
 
 func TestZremError(t *testing.T) {

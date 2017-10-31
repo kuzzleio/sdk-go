@@ -15,9 +15,8 @@ import (
 func TestMgetEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Mget([]string{}, qo)
+	_, err := memoryStorage.Mget([]string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Mget: please provide at least one key", fmt.Sprint(err))
@@ -57,7 +56,12 @@ func TestMget(t *testing.T) {
 
 	res, _ := memoryStorage.Mget([]string{"foo", "bar"}, qo)
 
-	assert.Equal(t, []string{"john", "smith"}, res)
+	result := make([]*string, 2)
+	r1 := "john"
+	r2 := "smith"
+	result[0] = &r1
+	result[1] = &r2
+	assert.Equal(t, result, res)
 }
 
 func ExampleMs_Mget() {

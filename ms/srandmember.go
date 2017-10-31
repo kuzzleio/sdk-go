@@ -8,11 +8,7 @@ import (
 // SrandMember returns one or more members of a set of unique values, at random.
 // If count is provided and is positive, the returned values are unique.
 // If count is negative, a set member can be returned multiple times.
-func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.SrandMember: key required", 400)
-	}
-
+func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, error) {
 	if options == nil || options.GetCount() == 0 {
 		options.SetCount(1)
 	}
@@ -39,13 +35,14 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) ([]string, erro
 		return nil, res.Error
 	}
 
+
 	if options.GetCount() == 1 {
 		var returnedResult string
 		json.Unmarshal(res.Result, &returnedResult)
 
-		return []string{returnedResult}, nil
+		return &[]string{returnedResult}, nil
 	} else {
-		var returnedResult []string
+		var returnedResult *[]string
 		json.Unmarshal(res.Result, &returnedResult)
 
 		return returnedResult, nil

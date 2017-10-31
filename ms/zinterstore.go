@@ -8,9 +8,6 @@ import (
 // ZinterStore computes the intersection of the provided sorted sets and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
 func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
-	if destination == "" {
-		return 0, types.NewError("Ms.ZinterStore: destination required", 400)
-	}
 	if len(keys) == 0 {
 		return 0, types.NewError("Ms.ZinterStore: please provide at least one key", 400)
 	}

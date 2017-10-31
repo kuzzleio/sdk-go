@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSortEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Sort("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sort: key required", fmt.Sprint(err))
-}
-
 func TestSortError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -31,9 +20,8 @@ func TestSortError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Sort("foo", qo)
+	_, err := memoryStorage.Sort("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -53,11 +41,10 @@ func TestSort(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Sort("foo", qo)
+	res, _ := memoryStorage.Sort("foo", nil)
 
-	assert.Equal(t, []interface{}{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
+	assert.Equal(t, []string{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
 }
 
 func TestSortWithOptions(t *testing.T) {
@@ -85,7 +72,7 @@ func TestSortWithOptions(t *testing.T) {
 
 	res, _ := memoryStorage.Sort("foo", qo)
 
-	assert.Equal(t, []interface{}{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
+	assert.Equal(t, []string{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
 }
 
 func ExampleMs_Sort() {

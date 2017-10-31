@@ -9,11 +9,8 @@ import (
 // the result in the destination key.
 // If the destination key already exists, it is overwritten.
 func (ms Ms) SinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
-	if destination == "" {
-		return 0, types.NewError("Ms.SinterStore: destination required", 400)
-	}
 	if len(keys) == 0 {
-		return 0, types.NewError("Ms.SinterStore: please provide at least one key", 400)
+		return 0, types.NewError("Ms.SinterStore: please provide at least one key to intersect", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

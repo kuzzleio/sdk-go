@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestGetbitEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Getbit("", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Getbit: key required", fmt.Sprint(err))
-}
-
 func TestGetbitError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

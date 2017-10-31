@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSrandMemberEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SrandMember("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SrandMember: key required", fmt.Sprint(err))
-}
-
 func TestSrandMemberError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -57,7 +46,7 @@ func TestSrandMemberSingleMember(t *testing.T) {
 
 	res, _ := memoryStorage.SrandMember("foo", qo)
 
-	assert.Equal(t, []string{"RANDOM!!"}, res)
+	assert.Equal(t, &[]string{"RANDOM!!"}, res)
 }
 
 func TestSrandMemberMultipleMembers(t *testing.T) {
@@ -80,7 +69,7 @@ func TestSrandMemberMultipleMembers(t *testing.T) {
 	qo.SetCount(42)
 	res, _ := memoryStorage.SrandMember("foo", qo)
 
-	assert.Equal(t, []string{"dude", "thats", "so", "random.."}, res)
+	assert.Equal(t, &[]string{"dude", "thats", "so", "random.."}, res)
 }
 
 func ExampleMs_SrandMember() {

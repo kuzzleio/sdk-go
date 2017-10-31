@@ -13,10 +13,6 @@ type ZScanResponse struct {
 
 // Zscan is identical to scan, except that zscan iterates the members held by a sorted set.
 func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Zscan: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -7,13 +7,6 @@ import (
 
 // Hincrby increments the number stored in a hash field by the provided integer value.
 func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Hincrby: key required", 400)
-	}
-	if field == "" {
-		return 0, types.NewError("Ms.Hincrby: field required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

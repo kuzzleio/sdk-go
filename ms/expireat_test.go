@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestExpireatEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Expireat("", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Expireat: key required", fmt.Sprint(err))
-}
-
 func TestExpireatError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

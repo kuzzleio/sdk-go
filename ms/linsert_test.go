@@ -12,15 +12,13 @@ import (
 	"testing"
 )
 
-func TestLinsertEmptyKey(t *testing.T) {
+func TestLinsertInvalidPivot(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Linsert("", "position", "pivot", "bar", qo)
+	_, err := memoryStorage.Linsert("", "position", "pivot", "bar", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Linsert: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Linsert: invalid position argument (must be 'before' or 'after')", fmt.Sprint(err))
 }
 
 func TestLinsertError(t *testing.T) {
@@ -47,7 +45,7 @@ func TestLinsert(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "linsert", parsedQuery.Action)
 			assert.Equal(t, "bar", parsedQuery.Body.(map[string]interface{})["value"].(string))
-			assert.Equal(t, "position", parsedQuery.Body.(map[string]interface{})["position"].(string))
+			assert.Equal(t, "before", parsedQuery.Body.(map[string]interface{})["position"].(string))
 			assert.Equal(t, "pivot", parsedQuery.Body.(map[string]interface{})["pivot"].(string))
 
 			r, _ := json.Marshal(1)
@@ -58,7 +56,7 @@ func TestLinsert(t *testing.T) {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Linsert("foo", "position", "pivot", "bar", qo)
+	res, _ := memoryStorage.Linsert("foo", "before", "pivot", "bar", qo)
 
 	assert.Equal(t, 1, res)
 }

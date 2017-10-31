@@ -6,11 +6,7 @@ import (
 )
 
 // Lpop removes and returns the first element of a list.
-func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Lpop: key required", 400)
-	}
-
+func (ms Ms) Lpop(key string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -24,9 +20,9 @@ func (ms Ms) Lpop(key string, options types.QueryOptions) (string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
-	var returnedResult string
+	var returnedResult *string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

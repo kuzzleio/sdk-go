@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestSetExEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SetEx("", "bar", 60, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SetEx: key required", fmt.Sprint(err))
-}
-
 func TestSetExError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

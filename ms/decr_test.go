@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestDecrEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Decr("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Decr: key required", fmt.Sprint(err))
-}
-
 func TestDecrError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

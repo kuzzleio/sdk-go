@@ -12,37 +12,14 @@ import (
 	"testing"
 )
 
-func TestSdiffStoreEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SdiffStore("", []string{"bar", "rab"}, "destination", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: key required", fmt.Sprint(err))
-}
-
 func TestSdiffStoreEmptySets(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SdiffStore("foo", []string{}, "destination", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: please provide at least one set", fmt.Sprint(err))
-}
-
-func TestSdiffStoreEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "", qo)
+	_, err := memoryStorage.SdiffStore("foo", []string{}, "destination", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.SdiffStore: please provide at least one set to compare", fmt.Sprint(err))
 }
 
 func TestSdiffStoreError(t *testing.T) {

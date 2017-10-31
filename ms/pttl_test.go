@@ -12,17 +12,6 @@ import (
 	"testing"
 )
 
-func TestPttlEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Pttl("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pttl: key required", fmt.Sprint(err))
-}
-
 func TestPttlError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
