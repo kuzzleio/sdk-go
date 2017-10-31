@@ -239,18 +239,7 @@ type (
 		Strategies []string        `json:"strategies"`
 	}
 
-	GeoradiusPointWithCoord struct {
-		Name string
-		Lon  float64
-		Lat  float64
-	}
-
-	GeoradiusPointWithDist struct {
-		Name string
-		Dist float64
-	}
-
-	GeoradiusPointWithCoordAndDist struct {
+	Georadius struct {
 		Name string
 		Lon  float64
 		Lat  float64
