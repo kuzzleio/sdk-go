@@ -225,16 +225,6 @@ type (
 		Controllers map[string]*Controller `json:"controllers"`
 	}
 
-	SecurityDocument struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       *Meta           `json:"_meta"`
-		Strategies []string        `json:"strategies"`
-	}
-
-	Profile SecurityDocument
-	Role    SecurityDocument
-
 	CredentialStrategyFields []string
 	CredentialFields         map[string]CredentialStrategyFields
 
@@ -246,13 +236,6 @@ type (
 		Index      string `json:"index"`
 		Collection string `json:"collection"`
 		Value      string `json:"value"`
-	}
-
-	User struct {
-		Id         string          `json:"_id"`
-		Source     json.RawMessage `json:"_source"`
-		Meta       *Meta           `json:"_meta"`
-		Strategies []string        `json:"strategies"`
 	}
 
 	GeoradiusPointWithCoord struct {
