@@ -8,9 +8,9 @@ import (
 // SdiffStore computes the difference between the set of unique values stored at key
 // and the other provided sets, and stores the result in the key stored at destination.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) SdiffStore(key string, sets []string, destination string, options types.QueryOptions) (int, error) {
+func (ms Ms) Sdiffstore(key string, sets []string, destination string, options types.QueryOptions) (int, error) {
 	if len(sets) == 0 {
-		return 0, types.NewError("Ms.SdiffStore: please provide at least one set to compare", 400)
+		return 0, types.NewError("Ms.Sdiffstore: please provide at least one set to compare", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -11,16 +11,16 @@ import (
 	"testing"
 )
 
-func TestSdiffStoreEmptySets(t *testing.T) {
+func TestSdiffstoreEmptySets(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.SdiffStore("foo", []string{}, "destination", nil)
+	_, err := k.MemoryStorage.Sdiffstore("foo", []string{}, "destination", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: please provide at least one set to compare", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sdiffstore: please provide at least one set to compare", fmt.Sprint(err))
 }
 
-func TestSdiffStoreError(t *testing.T) {
+func TestSdiffstoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -28,12 +28,12 @@ func TestSdiffStoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
+	_, err := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestSdiffStore(t *testing.T) {
+func TestSdiffstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -48,16 +48,16 @@ func TestSdiffStore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
+	res, _ := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.Equal(t, 42, res)
 }
 
-func ExampleMs_SdiffStore() {
+func ExampleMs_Sdiffstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
+	res, err := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
