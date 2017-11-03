@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestSisMemberError(t *testing.T) {
+func TestSismemberError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestSisMemberError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.SisMember("foo", "bar", nil)
+	_, err := k.MemoryStorage.Sismember("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestSisMember(t *testing.T) {
+func TestSismember(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,16 +39,16 @@ func TestSisMember(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.SisMember("foo", "bar", nil)
+	res, _ := k.MemoryStorage.Sismember("foo", "bar", nil)
 
 	assert.Equal(t, 1, res)
 }
 
-func ExampleMs_SisMember() {
+func ExampleMs_Sismember() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.SisMember("foo", "bar", nil)
+	res, err := k.MemoryStorage.Sismember("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

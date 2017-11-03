@@ -6,7 +6,7 @@ import (
 )
 
 // Spop removes and returns one or more elements at random from a set of unique values.
-func (ms Ms) Spop(key string, options types.QueryOptions) (*[]string, error) {
+func (ms Ms) Spop(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -29,7 +29,7 @@ func (ms Ms) Spop(key string, options types.QueryOptions) (*[]string, error) {
 		return nil, res.Error
 	}
 
-	var returnedResult *[]string
+	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

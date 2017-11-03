@@ -41,7 +41,7 @@ func TestSpop(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Spop("foo", nil)
 
-	assert.Equal(t, &[]string{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, []string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func TestSpopWithOptions(t *testing.T) {
@@ -64,7 +64,7 @@ func TestSpopWithOptions(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Spop("foo", qo)
 
-	assert.Equal(t, &[]string{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, []string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func ExampleMs_Spop() {
