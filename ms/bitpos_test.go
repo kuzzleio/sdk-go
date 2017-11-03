@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestBitposError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Bitpos("foo", 0, qo)
+	_, err := k.MemoryStorage.Bitpos("foo", 0, nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +40,8 @@ func TestBitpos(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Bitpos("foo", 2, qo)
+	res, _ := k.MemoryStorage.Bitpos("foo", 2, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -69,11 +64,10 @@ func TestBitposOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetStart(1).SetEnd(2)
 
-	res, _ := memoryStorage.Bitpos("foo", 2, qo)
+	res, _ := k.MemoryStorage.Bitpos("foo", 2, qo)
 
 	assert.Equal(t, 1, res)
 }
@@ -81,10 +75,8 @@ func TestBitposOptions(t *testing.T) {
 func ExampleMs_Bitpos() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Bitpos("foo", 2, qo)
+	res, err := k.MemoryStorage.Bitpos("foo", 2, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

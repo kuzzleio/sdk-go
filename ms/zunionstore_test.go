@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestZunionStoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZunionStore("foo", []string{}, qo)
+	_, err := k.MemoryStorage.ZunionStore("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.ZunionStore: please provide at least one key", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestZunionStoreError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	_, err := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestZunionStore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 2, res)
 }
@@ -76,12 +69,11 @@ func TestZunionStoreWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, _ := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, 2, res)
 }
@@ -89,12 +81,11 @@ func TestZunionStoreWithOptions(t *testing.T) {
 func ExampleMs_ZunionStore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, err := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

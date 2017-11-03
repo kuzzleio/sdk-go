@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestGeoposError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geopos("foo", []string{}, qo)
+	_, err := k.MemoryStorage.Geopos("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +40,8 @@ func TestGeopos(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Geopos("foo", []string{"some", "members"}, qo)
+	res, _ := k.MemoryStorage.Geopos("foo", []string{"some", "members"}, nil)
 
 	assert.Equal(t, []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "some"}, {float64(25.176), float64(14.466577), "members"}}, res)
 }
@@ -67,10 +62,8 @@ func TestGeoposLonConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geopos("foo", []string{"members"}, qo)
+	_, err := k.MemoryStorage.Geopos("foo", []string{"members"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -91,10 +84,8 @@ func TestGeoposLatConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geopos("foo", []string{"members"}, qo)
+	_, err := k.MemoryStorage.Geopos("foo", []string{"members"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -102,10 +93,8 @@ func TestGeoposLatConvError(t *testing.T) {
 func ExampleMs_Geopos() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Geopos("foo", []string{"members"}, qo)
+	res, err := k.MemoryStorage.Geopos("foo", []string{"members"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

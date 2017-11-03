@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestGeoaddError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{}, qo)
+	_, err := k.MemoryStorage.Geoadd("foo", []*types.GeoPoint{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -45,10 +42,8 @@ func TestGeoadd(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, _ := k.MemoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -56,10 +51,8 @@ func TestGeoadd(t *testing.T) {
 func ExampleMs_Geoadd() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, qo)
+	res, err := k.MemoryStorage.Geoadd("foo", []*types.GeoPoint{{float64(43.6075274), float64(3.9128795), "Montpellier"}}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestZremEmptyMembers(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zrem("foo", []string{}, qo)
+	_, err := k.MemoryStorage.Zrem("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Zrem: please provide at least one member to remove", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestZremError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zrem("foo", []string{"bar"}, qo)
+	_, err := k.MemoryStorage.Zrem("foo", []string{"bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestZrem(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Zrem("foo", []string{"bar"}, qo)
+	res, _ := k.MemoryStorage.Zrem("foo", []string{"bar"}, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -63,10 +56,8 @@ func TestZrem(t *testing.T) {
 func ExampleMs_Zrem() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Zrem("foo", []string{"bar"}, qo)
+	res, err := k.MemoryStorage.Zrem("foo", []string{"bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

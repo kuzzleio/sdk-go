@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestZrankError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zrank("foo", "bar", qo)
+	_, err := k.MemoryStorage.Zrank("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestZrank(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Zrank("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Zrank("foo", "bar", nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -52,10 +47,8 @@ func TestZrank(t *testing.T) {
 func ExampleMs_Zrank() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Zrank("foo", "bar", qo)
+	res, err := k.MemoryStorage.Zrank("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

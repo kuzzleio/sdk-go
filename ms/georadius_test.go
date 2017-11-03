@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestGeoradiusError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", nil)
 
 	assert.NotNil(t, err)
 }
@@ -49,11 +46,10 @@ func TestGeoradius(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42)
 
-	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.Equal(t, []*types.Georadius{{Name: "some"}, {Name: "results"}}, res)
 }
@@ -61,12 +57,11 @@ func TestGeoradius(t *testing.T) {
 func ExampleMs_Georadius() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetSort("ASC").SetCount(42)
 
-	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -109,11 +104,10 @@ func TestGeoradiusWithCoordLonConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -151,11 +145,10 @@ func TestGeoradiusWithCoordLatConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -193,11 +186,10 @@ func TestGeoradiusWithCoord(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
@@ -205,12 +197,11 @@ func TestGeoradiusWithCoord(t *testing.T) {
 func ExampleMs_GeoradiusWithCoord() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -250,11 +241,10 @@ func TestGeoradiusWithDistDistConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -289,11 +279,10 @@ func TestGeoradiusWithDist(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Dist: 125}}, res)
 }
@@ -301,12 +290,11 @@ func TestGeoradiusWithDist(t *testing.T) {
 func ExampleMs_GeoradiusWithDist() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -351,11 +339,10 @@ func TestGeoradiusWithCoordAndDist(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetSort("ASC").SetCount(42).SetWithdist(true).SetWithcoord(true)
 
-	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
@@ -363,12 +350,11 @@ func TestGeoradiusWithCoordAndDist(t *testing.T) {
 func ExampleMs_GeoradiusWithCoordAndDist() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetSort("ASC").SetCount(42).SetWithcoord(true).SetWithdist(true)
 
-	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := k.MemoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

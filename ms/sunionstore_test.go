@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestSunionStoreEmptySet(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SunionStore("destination", []string{}, qo)
+	_, err := k.MemoryStorage.SunionStore("destination", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.SunionStore: please provide at least 1 set", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestSunionStoreError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SunionStore("destination", []string{"foo", "bar"}, qo)
+	_, err := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestSunionStore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.SunionStore("destination", []string{"foo", "bar"}, qo)
+	res, _ := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
 
 	assert.Equal(t, 4, res)
 }
@@ -63,10 +56,8 @@ func TestSunionStore(t *testing.T) {
 func ExampleMs_SunionStore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.SunionStore("destination", []string{"foo", "bar"}, qo)
+	res, err := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestExistsError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Exists([]string{}, qo)
+	_, err := k.MemoryStorage.Exists([]string{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +40,8 @@ func TestExists(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Exists([]string{"some", "keys"}, qo)
+	res, _ := k.MemoryStorage.Exists([]string{"some", "keys"}, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -54,10 +49,8 @@ func TestExists(t *testing.T) {
 func ExampleMs_Exists() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Exists([]string{"some", "keys"}, qo)
+	res, err := k.MemoryStorage.Exists([]string{"some", "keys"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

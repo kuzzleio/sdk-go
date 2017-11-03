@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestPfcountEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Pfcount([]string{}, qo)
+	_, err := k.MemoryStorage.Pfcount([]string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Pfcount: please provide at least one key", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestPfcountError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Pfcount([]string{"foo", "bar"}, qo)
+	_, err := k.MemoryStorage.Pfcount([]string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestPfcount(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Pfcount([]string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Pfcount([]string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -63,10 +56,8 @@ func TestPfcount(t *testing.T) {
 func ExampleMs_Pfcount() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Pfcount([]string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Pfcount([]string{"bar", "rab"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

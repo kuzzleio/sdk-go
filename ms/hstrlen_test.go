@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestHstrlenError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hstrlen("foo", "bar", qo)
+	_, err := k.MemoryStorage.Hstrlen("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +40,8 @@ func TestHstrlen(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hstrlen("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Hstrlen("foo", "bar", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -54,10 +49,8 @@ func TestHstrlen(t *testing.T) {
 func ExampleMs_Hstrlen() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hstrlen("foo", "bar", qo)
+	res, err := k.MemoryStorage.Hstrlen("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

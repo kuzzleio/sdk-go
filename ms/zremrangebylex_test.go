@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,9 +13,8 @@ import (
 
 func TestZremRangeByLexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	_, err := memoryStorage.ZremRangeByLex("foo", "", "(f", nil)
+	_, err := k.MemoryStorage.ZremRangeByLex("foo", "", "(f", nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.ZremRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
@@ -24,9 +22,8 @@ func TestZremRangeByLexEmptyMin(t *testing.T) {
 
 func TestZremRangeByLexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	_, err := memoryStorage.ZremRangeByLex("foo", "[b", "", nil)
+	_, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "", nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.ZremRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
@@ -39,10 +36,8 @@ func TestZremRangeByLexError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZremRangeByLex("foo", "[b", "(f", qo)
+	_, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
 
 	assert.NotNil(t, err)
 }
@@ -61,10 +56,8 @@ func TestZremRangeByLex(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZremRangeByLex("foo", "[b", "(f", qo)
+	res, _ := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -72,10 +65,8 @@ func TestZremRangeByLex(t *testing.T) {
 func ExampleMs_ZremRangeByLex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.ZremRangeByLex("foo", "[b", "(f", qo)
+	res, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

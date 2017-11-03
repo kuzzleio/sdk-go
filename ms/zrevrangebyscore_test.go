@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestZrevRangeByScoreError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	_, err := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestZrevRangeByScore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	res, _ := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, nil)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -70,11 +65,10 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	res, _ := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
 
 	expectedResult := []*types.MSSortedSet{{Member: "bar", Score: 5}}
 
@@ -84,11 +78,10 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 func ExampleMs_ZrevRangeByScore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, err := memoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	res, err := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestZincrByError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	_, err := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestZincrBy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	res, _ := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
 
 	assert.Equal(t, 11.337, res)
 }
@@ -52,10 +47,8 @@ func TestZincrBy(t *testing.T) {
 func ExampleMs_ZincrBy() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	res, err := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

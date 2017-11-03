@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,9 +13,8 @@ import (
 
 func TestHmsetEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	_, err := memoryStorage.Hmset("", []*types.MsHashField{}, nil)
+	_, err := k.MemoryStorage.Hmset("", []*types.MsHashField{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Hmset: at least one entry field to set is required", fmt.Sprint(err))
@@ -29,10 +27,8 @@ func TestHmsetError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hmset("foo", []*types.MsHashField{}, qo)
+	_, err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -54,10 +50,8 @@ func TestHmset(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, _ := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
 
 	assert.Equal(t, "result", res)
 }
@@ -65,10 +59,8 @@ func TestHmset(t *testing.T) {
 func ExampleMs_Hmset() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, qo)
+	res, err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

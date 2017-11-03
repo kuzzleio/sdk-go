@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestLrangeError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Lrange("foo", 1, 2, qo)
+	_, err := k.MemoryStorage.Lrange("foo", 1, 2, nil)
 
 	assert.NotNil(t, err)
 }
@@ -44,10 +41,8 @@ func TestLrange(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Lrange("foo", 1, 2, qo)
+	res, _ := k.MemoryStorage.Lrange("foo", 1, 2, nil)
 
 	assert.Equal(t, []string{"some", "results"}, res)
 }
@@ -55,10 +50,8 @@ func TestLrange(t *testing.T) {
 func ExampleMs_Lrange() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Lrange("foo", 1, 2, qo)
+	res, err := k.MemoryStorage.Lrange("foo", 1, 2, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

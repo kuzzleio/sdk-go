@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,9 +18,8 @@ func TestSortError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	_, err := memoryStorage.Sort("foo", nil)
+	_, err := k.MemoryStorage.Sort("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -40,9 +38,8 @@ func TestSort(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	res, _ := memoryStorage.Sort("foo", nil)
+	res, _ := k.MemoryStorage.Sort("foo", nil)
 
 	assert.Equal(t, []string{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
 }
@@ -61,7 +58,6 @@ func TestSortWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAlpha(true)
@@ -70,7 +66,7 @@ func TestSortWithOptions(t *testing.T) {
 	qo.SetGet([]string{"jet", "set"})
 	qo.SetLimit([]int{0, 42})
 
-	res, _ := memoryStorage.Sort("foo", qo)
+	res, _ := k.MemoryStorage.Sort("foo", qo)
 
 	assert.Equal(t, []string{"duuude", "iam", "so", "sorted", "right", "now.."}, res)
 }
@@ -78,7 +74,6 @@ func TestSortWithOptions(t *testing.T) {
 func ExampleMs_Sort() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAlpha(true)
@@ -87,7 +82,7 @@ func ExampleMs_Sort() {
 	qo.SetGet([]string{"jet", "set"})
 	qo.SetLimit([]int{0, 42})
 
-	res, err := memoryStorage.Sort("foo", qo)
+	res, err := k.MemoryStorage.Sort("foo", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestRpushEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Rpush("foo", []string{}, qo)
+	_, err := k.MemoryStorage.Rpush("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Rpush: please provide at least one value", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestRpushError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Rpush("foo", []string{"bar", "rab"}, qo)
+	_, err := k.MemoryStorage.Rpush("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestRpush(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Rpush("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Rpush("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 6, res)
 }
@@ -63,10 +56,8 @@ func TestRpush(t *testing.T) {
 func ExampleMs_Rpush() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Rpush("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Rpush("foo", []string{"bar", "rab"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestSetNxError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SetNx("foo", "bar", qo)
+	_, err := k.MemoryStorage.SetNx("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestSetNx(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.SetNx("foo", "bar", qo)
+	res, _ := k.MemoryStorage.SetNx("foo", "bar", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -52,10 +47,8 @@ func TestSetNx(t *testing.T) {
 func ExampleMs_SetNx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.SetNx("foo", "bar", qo)
+	res, err := k.MemoryStorage.SetNx("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

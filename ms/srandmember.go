@@ -9,7 +9,11 @@ import (
 // If count is provided and is positive, the returned values are unique.
 // If count is negative, a set member can be returned multiple times.
 func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, error) {
-	if options == nil || options.GetCount() == 0 {
+	if options == nil {
+		options = types.NewQueryOptions()
+	}
+
+	if options.GetCount() == 0 {
 		options.SetCount(1)
 	}
 
@@ -19,12 +23,7 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, err
 		Controller: "ms",
 		Action:     "srandmember",
 		Id:         key,
-	}
-
-	if options != nil {
-		if options.GetCount() != 0 {
-			query.Count = options.GetCount()
-		}
+		Count:			options.GetCount(),
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
@@ -34,7 +33,6 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, err
 	if res.Error != nil {
 		return nil, res.Error
 	}
-
 
 	if options.GetCount() == 1 {
 		var returnedResult string

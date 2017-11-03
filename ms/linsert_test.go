@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,8 +13,7 @@ import (
 
 func TestLinsertInvalidPivot(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	_, err := memoryStorage.Linsert("", "position", "pivot", "bar", nil)
+	_, err := k.MemoryStorage.Linsert("", "position", "pivot", "bar", nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Linsert: invalid position argument (must be 'before' or 'after')", fmt.Sprint(err))
@@ -28,10 +26,8 @@ func TestLinsertError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Linsert("foo", "position", "pivot", "bar", qo)
+	_, err := k.MemoryStorage.Linsert("foo", "position", "pivot", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -53,10 +49,8 @@ func TestLinsert(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Linsert("foo", "before", "pivot", "bar", qo)
+	res, _ := k.MemoryStorage.Linsert("foo", "before", "pivot", "bar", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -64,10 +58,8 @@ func TestLinsert(t *testing.T) {
 func ExampleMs_Linsert() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Linsert("foo", "position", "pivot", "bar", qo)
+	res, err := k.MemoryStorage.Linsert("foo", "position", "pivot", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

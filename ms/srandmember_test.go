@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestSrandMemberError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SrandMember("foo", qo)
+	_, err := k.MemoryStorage.SrandMember("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestSrandMemberSingleMember(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.SrandMember("foo", qo)
+	res, _ := k.MemoryStorage.SrandMember("foo", nil)
 
 	assert.Equal(t, &[]string{"RANDOM!!"}, res)
 }
@@ -63,11 +58,10 @@ func TestSrandMemberMultipleMembers(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
-	res, _ := memoryStorage.SrandMember("foo", qo)
+	res, _ := k.MemoryStorage.SrandMember("foo", qo)
 
 	assert.Equal(t, &[]string{"dude", "thats", "so", "random.."}, res)
 }
@@ -75,10 +69,8 @@ func TestSrandMemberMultipleMembers(t *testing.T) {
 func ExampleMs_SrandMember() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.SrandMember("foo", qo)
+	res, err := k.MemoryStorage.SrandMember("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

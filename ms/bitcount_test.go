@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,7 @@ func TestBitcountError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Bitcount("foo", qo)
+	_, err := k.MemoryStorage.Bitcount("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -42,10 +38,8 @@ func TestBitcount(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Bitcount("foo", qo)
+	res, _ := k.MemoryStorage.Bitcount("foo", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -67,11 +61,10 @@ func TestBitcountOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 	qo.SetStart(1).SetEnd(2)
 
-	res, _ := memoryStorage.Bitcount("foo", qo)
+	res, _ := k.MemoryStorage.Bitcount("foo", qo)
 
 	assert.Equal(t, 1, res)
 }
@@ -79,10 +72,8 @@ func TestBitcountOptions(t *testing.T) {
 func ExampleMs_Bitcount() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Bitcount("foo", qo)
+	res, err := k.MemoryStorage.Bitcount("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

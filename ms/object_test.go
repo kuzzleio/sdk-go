@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestObjectInvalidSubcommand(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Object("foo", "invalid", qo)
+	_, err := k.MemoryStorage.Object("foo", "invalid", nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Object: subcommand required, possible values: refcount|encoding|idletime", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestObjectError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Object("foo", "encoding", qo)
+	_, err := k.MemoryStorage.Object("foo", "encoding", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestObject(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Object("foo", "encoding", qo)
+	res, _ := k.MemoryStorage.Object("foo", "encoding", nil)
 
 	assert.Equal(t, "embstr", *res)
 }
@@ -63,10 +56,8 @@ func TestObject(t *testing.T) {
 func ExampleMs_Object() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Object("foo", "encoding", qo)
+	res, err := k.MemoryStorage.Object("foo", "encoding", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

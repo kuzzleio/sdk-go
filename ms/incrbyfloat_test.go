@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestIncrbyfloatError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Incrbyfloat("foo", 42, qo)
+	_, err := k.MemoryStorage.Incrbyfloat("foo", 42, nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +40,8 @@ func TestIncrbyfloat(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Incrbyfloat("foo", 42, qo)
+	res, _ := k.MemoryStorage.Incrbyfloat("foo", 42, nil)
 
 	assert.Equal(t, 3.14, res)
 }
@@ -54,10 +49,8 @@ func TestIncrbyfloat(t *testing.T) {
 func ExampleMs_Incrbyfloat() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Incrbyfloat("foo", 42, qo)
+	res, err := k.MemoryStorage.Incrbyfloat("foo", 42, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

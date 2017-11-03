@@ -22,12 +22,14 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 
 	bodyContent := body{Keys: keys}
 
-	if len(options.GetWeights()) > 0 {
-		bodyContent.Weights = options.GetWeights()
-	}
+	if options != nil {
+		if len(options.GetWeights()) > 0 {
+			bodyContent.Weights = options.GetWeights()
+		}
 
-	if options.GetAggregate() != "" {
-		bodyContent.Aggregate = options.GetAggregate()
+		if options.GetAggregate() != "" {
+			bodyContent.Aggregate = options.GetAggregate()
+		}
 	}
 
 	query := &types.KuzzleRequest{

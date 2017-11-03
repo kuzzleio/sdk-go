@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,9 +13,8 @@ import (
 
 func TestSdiffStoreEmptySets(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 
-	_, err := memoryStorage.SdiffStore("foo", []string{}, "destination", nil)
+	_, err := k.MemoryStorage.SdiffStore("foo", []string{}, "destination", nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.SdiffStore: please provide at least one set to compare", fmt.Sprint(err))
@@ -29,10 +27,8 @@ func TestSdiffStoreError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	_, err := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.NotNil(t, err)
 }
@@ -51,10 +47,8 @@ func TestSdiffStore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	res, _ := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -62,10 +56,8 @@ func TestSdiffStore(t *testing.T) {
 func ExampleMs_SdiffStore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	res, err := k.MemoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestHkeysError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hkeys("foo", qo)
+	_, err := k.MemoryStorage.Hkeys("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -42,10 +39,8 @@ func TestHkeys(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hkeys("foo", qo)
+	res, _ := k.MemoryStorage.Hkeys("foo", nil)
 
 	assert.Equal(t, []string{"some", "result"}, res)
 }
@@ -53,10 +48,8 @@ func TestHkeys(t *testing.T) {
 func ExampleMs_Hkeys() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hkeys("foo", qo)
+	res, err := k.MemoryStorage.Hkeys("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

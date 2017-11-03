@@ -17,7 +17,7 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 		Member2:    member2,
 	}
 
-	if options.GetUnit() != "" {
+	if options != nil && options.GetUnit() != "" {
 		query.Unit = options.GetUnit()
 	}
 

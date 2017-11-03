@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestSmoveError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Smove("wowKey", "suchDestination", "muchMember", qo)
+	_, err := k.MemoryStorage.Smove("wowKey", "suchDestination", "muchMember", nil)
 
 	assert.NotNil(t, err)
 }
@@ -41,10 +38,8 @@ func TestSmove(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Smove("wowKey", "suchDestination", "muchMember", qo)
+	res, _ := k.MemoryStorage.Smove("wowKey", "suchDestination", "muchMember", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -52,10 +47,8 @@ func TestSmove(t *testing.T) {
 func ExampleMs_Smove() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Smove("wowKey", "suchDestination", "muchMember", qo)
+	res, err := k.MemoryStorage.Smove("wowKey", "suchDestination", "muchMember", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

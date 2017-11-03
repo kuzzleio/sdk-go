@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,8 +18,7 @@ func TestRandomkeyError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	_, err := memoryStorage.Randomkey(nil)
+	_, err := k.MemoryStorage.Randomkey(nil)
 
 	assert.NotNil(t, err)
 }
@@ -39,8 +37,7 @@ func TestRandomkey(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	res, _ := memoryStorage.Randomkey(nil)
+	res, _ := k.MemoryStorage.Randomkey(nil)
 
 	assert.Equal(t, "foo", *res)
 }
@@ -48,8 +45,7 @@ func TestRandomkey(t *testing.T) {
 func ExampleMs_RandomKey() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	res, err := memoryStorage.Randomkey(nil)
+	res, err := k.MemoryStorage.Randomkey(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
