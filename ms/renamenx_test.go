@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestRenameNxError(t *testing.T) {
+func TestRenamenxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -20,14 +20,13 @@ func TestRenameNxError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.RenameNx("foo", "bar", qo)
+	_, err := memoryStorage.Renamenx("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestRenameNx(t *testing.T) {
+func TestRenamenx(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -42,20 +41,18 @@ func TestRenameNx(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.RenameNx("foo", "bar", qo)
+	res, _ := memoryStorage.Renamenx("foo", "bar", nil)
 
 	assert.Equal(t, 1, res)
 }
 
-func ExampleMs_RenameNx() {
+func ExampleMs_Renamenx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	res, err := memoryStorage.RenameNx("foo", "bar", qo)
+	
+	res, err := memoryStorage.Renamenx("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
