@@ -185,5 +185,10 @@ func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (bool, er
 		return false, res.Error
 	}
 
-	return true, nil
+	ack := struct {
+		Acknowledged bool `json:"acknowledged"`
+	}{}
+	json.Unmarshal(res.Result, ack)
+
+	return ack.Acknowledged, nil
 }

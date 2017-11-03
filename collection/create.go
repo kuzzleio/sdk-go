@@ -2,6 +2,8 @@ package collection
 
 import (
 	"github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
+	"fmt"
 )
 
 // Create creates a new empty data collection, with no associated mapping.
@@ -22,5 +24,10 @@ func (dc *Collection) Create(options types.QueryOptions) (bool, error) {
 		return false, res.Error
 	}
 
-	return true, nil
+	ack := struct {
+		Acknowledged bool `json:"acknowledged"`
+	}{}
+	json.Unmarshal(res.Result, ack)
+
+	return ack.Acknowledged, nil
 }

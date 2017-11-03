@@ -2,6 +2,7 @@ package kuzzle
 
 import (
 	"github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
 )
 
 // CreateIndex create a new empty data index, with no associated mapping.
@@ -25,5 +26,10 @@ func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (bool, err
 		return false, res.Error
 	}
 
-	return true, nil
+	ack := struct{
+		Acknowledged bool `json:"acknowledged"`
+	}{}
+	json.Unmarshal(res.Result, ack)
+
+	return ack.Acknowledged, nil
 }

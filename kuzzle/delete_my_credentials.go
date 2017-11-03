@@ -2,6 +2,7 @@ package kuzzle
 
 import (
 	"github.com/kuzzleio/sdk-go/types"
+	"encoding/json"
 )
 
 // DeleteMyCredentials delete credentials of the specified strategy for the current user.
@@ -29,5 +30,10 @@ func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions)
 		return false, res.Error
 	}
 
-	return true, nil
+	ack := struct{
+		Acknowledged bool `json:"acknowledged"`
+	}{}
+	json.Unmarshal(res.Result, ack)
+
+	return ack.Acknowledged, nil
 }
