@@ -1,8 +1,9 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
+
+	"github.com/kuzzleio/sdk-go/types"
 	"fmt"
 )
 
@@ -24,10 +25,13 @@ func (dc *Collection) Create(options types.QueryOptions) (bool, error) {
 		return false, res.Error
 	}
 
-	ack := struct {
+	ack := &struct {
 		Acknowledged bool `json:"acknowledged"`
 	}{}
-	json.Unmarshal(res.Result, ack)
+	err := json.Unmarshal(res.Result, ack)
+	if err != nil {
+		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
 
 	return ack.Acknowledged, nil
 }

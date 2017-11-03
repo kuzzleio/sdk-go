@@ -457,7 +457,9 @@ func TestDeleteSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			return &types.KuzzleResponse{Result: []byte{}}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"acknowledged": true
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

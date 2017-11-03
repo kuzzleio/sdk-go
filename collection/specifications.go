@@ -3,6 +3,7 @@ package collection
 import (
 	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
+	"fmt"
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
@@ -185,10 +186,12 @@ func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (bool, er
 		return false, res.Error
 	}
 
-	ack := struct {
+	ack := &struct {
 		Acknowledged bool `json:"acknowledged"`
 	}{}
-	json.Unmarshal(res.Result, ack)
-
+	err := json.Unmarshal(res.Result, ack)
+	if err != nil {
+		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
 	return ack.Acknowledged, nil
 }

@@ -43,7 +43,7 @@ func TestCreateIndex(t *testing.T) {
 			assert.Equal(t, "create", q.Action)
 			assert.Equal(t, "index", q.Index)
 
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: []byte(`{"acknowledged":true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

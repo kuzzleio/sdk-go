@@ -27,7 +27,9 @@ func TestCreateError(t *testing.T) {
 func TestCreate(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"acknowledged":true
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

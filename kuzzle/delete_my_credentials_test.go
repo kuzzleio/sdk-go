@@ -52,7 +52,7 @@ func TestDeleteMyCredentials(t *testing.T) {
 			assert.Equal(t, "deleteMyCredentials", request.Action)
 			assert.Equal(t, "local", request.Strategy)
 
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: []byte(`{"acknowledged":true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

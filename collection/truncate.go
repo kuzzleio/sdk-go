@@ -3,6 +3,7 @@ package collection
 import (
 	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
+	"fmt"
 )
 
 // Truncate delete every Documents from the provided Collection.
@@ -23,10 +24,12 @@ func (dc *Collection) Truncate(options types.QueryOptions) (bool, error) {
 		return false, res.Error
 	}
 
-	ack := struct{
+	ack := &struct {
 		Acknowledged bool `json:"acknowledged"`
 	}{}
-	json.Unmarshal(res.Result, ack)
-
+	err := json.Unmarshal(res.Result, ack)
+	if err != nil {
+		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
 	return ack.Acknowledged, nil
 }
