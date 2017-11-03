@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptions, withCoord bool, withDist bool) {
+func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptions) {
 	opts := make([]interface{}, 0, 5)
 
 	if options != nil {
@@ -20,19 +20,69 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 		}
 	}
 
-	if withCoord {
+	if options.GetWithcoord() {
 		opts = append(opts, "withcoord")
 	}
 
-	if withDist {
+	if options.GetWithdist() {
 		opts = append(opts, "withdist")
 	}
 
 	query.Options = []interface{}(opts)
 }
 
+func responseToGeoradius(response *types.KuzzleResponse, options types.QueryOptions) ([]*types.Georadius, error) {
+	var stringResults []interface{}
+
+	json.Unmarshal(response.Result, &stringResults)
+	returnedResults := make([]*types.Georadius, len(stringResults))
+
+	for i, value := range stringResults {
+		var err error
+
+		// if none of the 2 options below are provided, then we have
+		// a simple array of strings and not an array of arrays
+		if !options.GetWithdist() && !options.GetWithcoord() {
+			returnedResults[i] = &types.Georadius{Name: value.(string)}
+		} else {
+			returnedResults[i] = &types.Georadius{Name: value.([]interface{})[0].(string)}
+		}
+
+		if options.GetWithdist() {
+			returnedResults[i].Dist, err = strconv.ParseFloat(value.([]interface{})[1].(string), 64)
+			if err != nil {
+				return nil, types.NewError(err.Error())
+			}
+		}
+
+		if options.GetWithcoord() {
+			coordstart := 1
+
+			if (options.GetWithdist()) {
+				coordstart++
+			}
+
+			tmp := value.([]interface{})[coordstart].([]interface{})[0].(string)
+			returnedResults[i].Lon, err = strconv.ParseFloat(tmp, 64)
+
+			if err != nil {
+				return nil, types.NewError(err.Error())
+			}
+
+			tmp = value.([]interface{})[coordstart].([]interface{})[1].(string)
+			returnedResults[i].Lat, err = strconv.ParseFloat(tmp, 64)
+
+			if err != nil {
+				return nil, types.NewError(err.Error())
+			}
+		}
+	}
+
+	return returnedResults, nil
+}
+
 // Georadius returns the geospatial members of a key inside the provided radius
-func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]string, error) {
+func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.Georadius, error) {
 	if key == "" {
 		return nil, types.NewError("Ms.Georadius: key required", 400)
 	}
@@ -49,7 +99,7 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 		Unit:       unit,
 	}
 
-	assignGeoradiusOptions(query, options, false, false)
+	assignGeoradiusOptions(query, options)
 
 	go ms.Kuzzle.Query(query, options, result)
 
@@ -58,171 +108,6 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 	if res.Error != nil {
 		return nil, res.Error
 	}
-	var returnedResults []string
-	json.Unmarshal(res.Result, &returnedResults)
 
-	return returnedResults, nil
-}
-
-// GeoradiusWithCoord returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithCoord(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoord, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusWithCoord: key required", 400)
-	}
-
-	result := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "ms",
-		Action:     "georadius",
-		Id:         key,
-		Lon:        lon,
-		Lat:        lat,
-		Distance:   distance,
-		Unit:       unit,
-	}
-
-	assignGeoradiusOptions(query, options, true, false)
-
-	go ms.Kuzzle.Query(query, options, result)
-
-	res := <-result
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	var stringResults [][]interface{}
-	json.Unmarshal(res.Result, &stringResults)
-
-	returnedResults := make([]*types.GeoradiusPointWithCoord, len(stringResults))
-
-	for i, value := range stringResults {
-		returnedResults[i] = &types.GeoradiusPointWithCoord{Name: value[0].(string)}
-
-		tmp := value[1].([]interface{})[0].(string)
-		tmpF, err := strconv.ParseFloat(tmp, 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Lon = tmpF
-
-		tmp = value[1].([]interface{})[1].(string)
-		tmpF, err = strconv.ParseFloat(tmp, 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Lat = tmpF
-	}
-
-	return returnedResults, nil
-}
-
-// GeoradiusWithDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithDist, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusWithDist: key required", 400)
-	}
-
-	result := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "ms",
-		Action:     "georadius",
-		Id:         key,
-		Lon:        lon,
-		Lat:        lat,
-		Distance:   distance,
-		Unit:       unit,
-	}
-
-	assignGeoradiusOptions(query, options, false, true)
-
-	go ms.Kuzzle.Query(query, options, result)
-
-	res := <-result
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	var stringResults [][]interface{}
-	json.Unmarshal(res.Result, &stringResults)
-
-	returnedResults := make([]*types.GeoradiusPointWithDist, len(stringResults))
-
-	for i, value := range stringResults {
-		returnedResults[i] = &types.GeoradiusPointWithDist{Name: value[0].(string)}
-
-		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Dist = tmpF
-	}
-
-	return returnedResults, nil
-}
-
-// GeoradiusWithCoordAndDist returns the geospatial members of a key inside the provided radius
-func (ms Ms) GeoradiusWithCoordAndDist(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.GeoradiusPointWithCoordAndDist, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.GeoradiusWithCoordAndDist: key required", 400)
-	}
-
-	result := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "ms",
-		Action:     "georadius",
-		Id:         key,
-		Lon:        lon,
-		Lat:        lat,
-		Distance:   distance,
-		Unit:       unit,
-	}
-
-	assignGeoradiusOptions(query, options, true, true)
-
-	go ms.Kuzzle.Query(query, options, result)
-
-	res := <-result
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	var stringResults [][]interface{}
-	json.Unmarshal(res.Result, &stringResults)
-
-	returnedResults := make([]*types.GeoradiusPointWithCoordAndDist, len(stringResults))
-
-	for i, value := range stringResults {
-		returnedResults[i] = &types.GeoradiusPointWithCoordAndDist{Name: value[0].(string)}
-
-		tmpF, err := strconv.ParseFloat(value[1].(string), 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Dist = tmpF
-
-		tmp := value[2].([]interface{})[0].(string)
-		tmpF, err = strconv.ParseFloat(tmp, 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Lon = tmpF
-
-		tmp = value[2].([]interface{})[1].(string)
-		tmpF, err = strconv.ParseFloat(tmp, 64)
-		if err != nil {
-			return nil, types.NewError(err.Error())
-		}
-
-		returnedResults[i].Lat = tmpF
-	}
-
-	return returnedResults, nil
+	return responseToGeoradius(res, options)	
 }

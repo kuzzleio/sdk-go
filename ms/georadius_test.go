@@ -66,7 +66,7 @@ func TestGeoradius(t *testing.T) {
 
 	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []string{"some", "results"}, res)
+	assert.Equal(t, []*types.Georadius{{Name: "some"}, {Name: "results"}}, res)
 }
 
 func ExampleMs_Georadius() {
@@ -85,32 +85,6 @@ func ExampleMs_Georadius() {
 	}
 
 	fmt.Println(res)
-}
-
-func TestGeoradiusWithCoordEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithCoord("", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.GeoradiusWithCoord: key required", fmt.Sprint(err))
-}
-
-func TestGeoradiusWithCoordError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
 }
 
 func TestGeoradiusWithCoordLonConvError(t *testing.T) {
@@ -148,9 +122,9 @@ func TestGeoradiusWithCoordLonConvError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	_, err := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -190,9 +164,9 @@ func TestGeoradiusWithCoordLatConvError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	_, err := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -232,11 +206,11 @@ func TestGeoradiusWithCoord(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	res, _ := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []*types.GeoradiusPointWithCoord{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusWithCoord() {
@@ -245,9 +219,9 @@ func ExampleMs_GeoradiusWithCoord() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithcoord(true)
 
-	res, err := memoryStorage.GeoradiusWithCoord("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -255,32 +229,6 @@ func ExampleMs_GeoradiusWithCoord() {
 	}
 
 	fmt.Println(res[0].Name, res[0].Lon, res[0].Lat)
-}
-
-func TestGeoradiusWithDistEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithDist("", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.GeoradiusWithDist: key required", fmt.Sprint(err))
-}
-
-func TestGeoradiusWithDistError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
 }
 
 func TestGeoradiusWithDistDistConvError(t *testing.T) {
@@ -315,9 +263,9 @@ func TestGeoradiusWithDistDistConvError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	_, err := memoryStorage.GeoradiusWithDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	_, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	assert.NotNil(t, err)
 }
@@ -354,11 +302,11 @@ func TestGeoradiusWithDist(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	res, _ := memoryStorage.GeoradiusWithDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []*types.GeoradiusPointWithDist{{Name: "Montpellier", Dist: 125}}, res)
+	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Dist: 125}}, res)
 }
 
 func ExampleMs_GeoradiusWithDist() {
@@ -367,9 +315,9 @@ func ExampleMs_GeoradiusWithDist() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithdist(true)
 
-	res, err := memoryStorage.GeoradiusWithDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -377,164 +325,6 @@ func ExampleMs_GeoradiusWithDist() {
 	}
 
 	fmt.Println(res[0].Name, res[0].Dist)
-}
-
-func TestGeoradiusWithCoordAndDistEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithCoordAndDist("", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.GeoradiusWithCoordAndDist: key required", fmt.Sprint(err))
-}
-
-func TestGeoradiusWithCoordAndDistError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-}
-
-func TestGeoradiusWithCoordAndDistDistConvError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "ms", parsedQuery.Controller)
-			assert.Equal(t, "georadius", parsedQuery.Action)
-			assert.Equal(t, "foo", parsedQuery.Id)
-
-			var opts []interface{}
-			opts = append(opts, "count")
-			opts = append(opts, float64(42))
-			opts = append(opts, "ASC")
-			opts = append(opts, "withcoord")
-			opts = append(opts, "withdist")
-
-			assert.Equal(t, opts, parsedQuery.Options)
-
-			var response [][]interface{}
-			var location []interface{}
-			var point []interface{}
-
-			point = append(point, "43.6075274")
-			point = append(point, "3.9128795")
-			location = append(location, "Montpellier")
-			location = append(location, "125.23abc")
-			location = append(location, point)
-			response = append(response, location)
-
-			r, _ := json.Marshal(response)
-			return &types.KuzzleResponse{Result: r}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
-
-	_, err := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-}
-
-func TestGeoradiusWithCoordAndDistLonConvError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "ms", parsedQuery.Controller)
-			assert.Equal(t, "georadius", parsedQuery.Action)
-			assert.Equal(t, "foo", parsedQuery.Id)
-
-			var opts []interface{}
-			opts = append(opts, "count")
-			opts = append(opts, float64(42))
-			opts = append(opts, "ASC")
-			opts = append(opts, "withcoord")
-			opts = append(opts, "withdist")
-
-			assert.Equal(t, opts, parsedQuery.Options)
-
-			var response [][]interface{}
-			var location []interface{}
-			var point []interface{}
-
-			point = append(point, "43.6075abc")
-			point = append(point, "3.9128795")
-			location = append(location, "Montpellier")
-			location = append(location, "125")
-			location = append(location, point)
-			response = append(response, location)
-
-			r, _ := json.Marshal(response)
-			return &types.KuzzleResponse{Result: r}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
-
-	_, err := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
-}
-
-func TestGeoradiusWithCoordAndDistLatConvError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "ms", parsedQuery.Controller)
-			assert.Equal(t, "georadius", parsedQuery.Action)
-			assert.Equal(t, "foo", parsedQuery.Id)
-
-			var opts []interface{}
-			opts = append(opts, "count")
-			opts = append(opts, float64(42))
-			opts = append(opts, "ASC")
-			opts = append(opts, "withcoord")
-			opts = append(opts, "withdist")
-
-			assert.Equal(t, opts, parsedQuery.Options)
-
-			var response [][]interface{}
-			var location []interface{}
-			var point []interface{}
-
-			point = append(point, "43.6075274")
-			point = append(point, "3.9128abc")
-			location = append(location, "Montpellier")
-			location = append(location, "125")
-			location = append(location, point)
-			response = append(response, location)
-
-			r, _ := json.Marshal(response)
-			return &types.KuzzleResponse{Result: r}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
-
-	_, err := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
-
-	assert.NotNil(t, err)
 }
 
 func TestGeoradiusWithCoordAndDist(t *testing.T) {
@@ -574,11 +364,11 @@ func TestGeoradiusWithCoordAndDist(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithdist(true).SetWithcoord(true)
 
-	res, _ := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, _ := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
-	assert.Equal(t, []*types.GeoradiusPointWithCoordAndDist{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
+	assert.Equal(t, []*types.Georadius{{Name: "Montpellier", Dist: 125, Lon: 43.6075274, Lat: 3.9128795}}, res)
 }
 
 func ExampleMs_GeoradiusWithCoordAndDist() {
@@ -587,9 +377,9 @@ func ExampleMs_GeoradiusWithCoordAndDist() {
 	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	qo.SetSort("ASC").SetCount(42)
+	qo.SetSort("ASC").SetCount(42).SetWithcoord(true).SetWithdist(true)
 
-	res, err := memoryStorage.GeoradiusWithCoordAndDist("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
+	res, err := memoryStorage.Georadius("foo", float64(43.6075274), float64(3.9128795), float64(200), "km", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
