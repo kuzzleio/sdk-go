@@ -11,13 +11,13 @@ import (
 	"testing"
 )
 
-func TestSunionStoreEmptySet(t *testing.T) {
+func TestSunionstoreEmptySet(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.SunionStore("destination", []string{}, nil)
+	_, err := k.MemoryStorage.Sunionstore("destination", []string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SunionStore: please provide at least 1 set", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sunionstore: please provide at least 1 set", fmt.Sprint(err))
 }
 
 func TestSunionStoreError(t *testing.T) {
@@ -28,12 +28,12 @@ func TestSunionStoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
+	_, err := k.MemoryStorage.Sunionstore("destination", []string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestSunionStore(t *testing.T) {
+func TestSunionstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -48,16 +48,16 @@ func TestSunionStore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
+	res, _ := k.MemoryStorage.Sunionstore("destination", []string{"foo", "bar"}, nil)
 
 	assert.Equal(t, 4, res)
 }
 
-func ExampleMs_SunionStore() {
+func ExampleMs_Sunionstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.SunionStore("destination", []string{"foo", "bar"}, nil)
+	res, err := k.MemoryStorage.Sunionstore("destination", []string{"foo", "bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

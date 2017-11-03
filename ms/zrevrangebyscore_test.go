@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZrevRangeByScoreError(t *testing.T) {
+func TestZrevrangebyscoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZrevRangeByScoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, nil)
+	_, err := k.MemoryStorage.Zrevrangebyscore("foo", 1, 6, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrevRangeByScore(t *testing.T) {
+func TestZrevrangebyscore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,7 +39,7 @@ func TestZrevRangeByScore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, nil)
+	res, _ := k.MemoryStorage.Zrevrangebyscore("foo", 1, 6, nil)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -49,7 +49,7 @@ func TestZrevRangeByScore(t *testing.T) {
 	assert.Equal(t, expectedResult, res)
 }
 
-func TestZrevRangeByScoreWithLimits(t *testing.T) {
+func TestZrevrangebyscoreWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -68,20 +68,20 @@ func TestZrevRangeByScoreWithLimits(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	res, _ := k.MemoryStorage.Zrevrangebyscore("foo", 1, 6, qo)
 
 	expectedResult := []*types.MSSortedSet{{Member: "bar", Score: 5}}
 
 	assert.Equal(t, expectedResult, res)
 }
 
-func ExampleMs_ZrevRangeByScore() {
+func ExampleMs_Zrevrangebyscore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, err := k.MemoryStorage.ZrevRangeByScore("foo", 1, 6, qo)
+	res, err := k.MemoryStorage.Zrevrangebyscore("foo", 1, 6, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZincrByError(t *testing.T) {
+func TestZincrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZincrByError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
+	_, err := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZincrBy(t *testing.T) {
+func TestZincrby(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,16 +39,16 @@ func TestZincrBy(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
+	res, _ := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	assert.Equal(t, 11.337, res)
 }
 
-func ExampleMs_ZincrBy() {
+func ExampleMs_Zincrby() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZincrBy("foo", "bar", 1.337, nil)
+	res, err := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

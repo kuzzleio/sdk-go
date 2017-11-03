@@ -11,16 +11,16 @@ import (
 	"testing"
 )
 
-func TestZinterStoreEmptyKeys(t *testing.T) {
+func TestZinterstoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZinterStore("foo", []string{}, nil)
+	_, err := k.MemoryStorage.Zinterstore("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZinterStore: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zinterstore: please provide at least one key", fmt.Sprint(err))
 }
 
-func TestZinterStoreError(t *testing.T) {
+func TestZinterstoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -28,12 +28,12 @@ func TestZinterStoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZinterStore("foo", []string{"bar", "rab"}, nil)
+	_, err := k.MemoryStorage.Zinterstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZinterStore(t *testing.T) {
+func TestZinterstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -48,12 +48,12 @@ func TestZinterStore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZinterStore("foo", []string{"bar", "rab"}, nil)
+	res, _ := k.MemoryStorage.Zinterstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 2, res)
 }
 
-func TestZinterStoreWithOptions(t *testing.T) {
+func TestZinterstoreWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -73,19 +73,19 @@ func TestZinterStoreWithOptions(t *testing.T) {
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, _ := k.MemoryStorage.ZinterStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Zinterstore("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, 2, res)
 }
 
-func ExampleMs_ZinterStore() {
+func ExampleMs_Zinterstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, err := k.MemoryStorage.ZinterStore("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Zinterstore("foo", []string{"bar", "rab"}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

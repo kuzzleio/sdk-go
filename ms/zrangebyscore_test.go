@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZrangeByScoreError(t *testing.T) {
+func TestZrangebyscoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZrangeByScoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZrangeByScore("foo", 1, 6, nil)
+	_, err := k.MemoryStorage.Zrangebyscore("foo", 1, 6, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrangeByScore(t *testing.T) {
+func TestZrangebyscore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,7 +39,7 @@ func TestZrangeByScore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZrangeByScore("foo", 1, 6, nil)
+	res, _ := k.MemoryStorage.Zrangebyscore("foo", 1, 6, nil)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -49,7 +49,7 @@ func TestZrangeByScore(t *testing.T) {
 	assert.Equal(t, expectedResult, res)
 }
 
-func TestZrangeByScoreWithLimits(t *testing.T) {
+func TestZrangebyscoreWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -68,7 +68,7 @@ func TestZrangeByScoreWithLimits(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := k.MemoryStorage.ZrangeByScore("foo", 1, 6, qo)
+	res, _ := k.MemoryStorage.Zrangebyscore("foo", 1, 6, qo)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -77,11 +77,11 @@ func TestZrangeByScoreWithLimits(t *testing.T) {
 	assert.Equal(t, expectedResult, res)
 }
 
-func ExampleMs_ZrangeByScore() {
+func ExampleMs_Zrangebyscore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZrangeByScore("foo", 1, 6, nil)
+	res, err := k.MemoryStorage.Zrangebyscore("foo", 1, 6, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

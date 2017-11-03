@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZrevRangeError(t *testing.T) {
+func TestZrevrangeError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZrevRangeError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZrevRange("foo", 0, -1, nil)
+	_, err := k.MemoryStorage.Zrevrange("foo", 0, -1, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrevRange(t *testing.T) {
+func TestZrevrange(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -40,7 +40,7 @@ func TestZrevRange(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZrevRange("foo", 0, -1, nil)
+	res, _ := k.MemoryStorage.Zrevrange("foo", 0, -1, nil)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -50,11 +50,11 @@ func TestZrevRange(t *testing.T) {
 	assert.Equal(t, expectedResult, res)
 }
 
-func ExampleMs_ZrevRange() {
+func ExampleMs_Zrevrange() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZrevRange("foo", 0, -1, nil)
+	res, err := k.MemoryStorage.Zrevrange("foo", 0, -1, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

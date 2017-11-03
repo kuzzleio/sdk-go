@@ -11,25 +11,25 @@ import (
 	"testing"
 )
 
-func TestZlexCountEmptyMin(t *testing.T) {
+func TestZlexcountEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZlexCount("foo", "", "[f", nil)
+	_, err := k.MemoryStorage.Zlexcount("foo", "", "[f", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZlexCount: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zlexcount: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZlexCountEmptyMax(t *testing.T) {
+func TestZlexcountEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZlexCount("foo", "[b", "", nil)
+	_, err := k.MemoryStorage.Zlexcount("foo", "[b", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZlexCount: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zlexcount: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZlexCountError(t *testing.T) {
+func TestZlexcountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -37,12 +37,12 @@ func TestZlexCountError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZlexCount("foo", "[b", "[f", nil)
+	_, err := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZlexCount(t *testing.T) {
+func TestZlexcount(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -57,16 +57,16 @@ func TestZlexCount(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZlexCount("foo", "[b", "[f", nil)
+	res, _ := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	assert.Equal(t, 2, res)
 }
 
-func ExampleMs_ZlexCount() {
+func ExampleMs_Zlexcount() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZlexCount("foo", "[b", "[f", nil)
+	res, err := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

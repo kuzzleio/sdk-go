@@ -33,7 +33,7 @@ func TestTime(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "time", parsedQuery.Action)
 
-			r, _ := json.Marshal([]string{"1488791347", "494938"})
+			r, _ := json.Marshal([]int{1488791347, 494938})
 			return &types.KuzzleResponse{Result: r}
 		},
 	}
@@ -41,7 +41,7 @@ func TestTime(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Time(nil)
 
-	assert.Equal(t, []string{"1488791347", "494938"}, res)
+	assert.Equal(t, []int{1488791347, 494938}, res)
 }
 
 func ExampleMs_Time() {

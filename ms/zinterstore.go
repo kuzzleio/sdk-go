@@ -7,9 +7,9 @@ import (
 
 // ZinterStore computes the intersection of the provided sorted sets and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) ZinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
+func (ms Ms) Zinterstore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, types.NewError("Ms.ZinterStore: please provide at least one key", 400)
+		return 0, types.NewError("Ms.Zinterstore: please provide at least one key", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZremRangeByRankError(t *testing.T) {
+func TestZremrangebyrankError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZremRangeByRankError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZremRangeByRank("foo", 0, 42, nil)
+	_, err := k.MemoryStorage.Zremrangebyrank("foo", 0, 42, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZremRangeByRank(t *testing.T) {
+func TestZremrangebyrank(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,16 +39,16 @@ func TestZremRangeByRank(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZremRangeByRank("foo", 0, 42, nil)
+	res, _ := k.MemoryStorage.Zremrangebyrank("foo", 0, 42, nil)
 
 	assert.Equal(t, 42, res)
 }
 
-func ExampleMs_ZremRangeByRank() {
+func ExampleMs_Zremrangebyrank() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZremRangeByRank("foo", 0, 42, nil)
+	res, err := k.MemoryStorage.Zremrangebyrank("foo", 0, 42, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

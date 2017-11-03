@@ -5,16 +5,18 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// SrandMember returns one or more members of a set of unique values, at random.
+// Srandmember returns one or more members of a set of unique values, at random.
 // If count is provided and is positive, the returned values are unique.
 // If count is negative, a set member can be returned multiple times.
-func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, error) {
-	if options == nil {
-		options = types.NewQueryOptions()
-	}
+func (ms Ms) Srandmember(key string, options types.QueryOptions) ([]string, error) {
+	count := 1
 
-	if options.GetCount() == 0 {
-		options.SetCount(1)
+	if options != nil {
+		count = options.GetCount()
+
+		if count < 1 {
+			count = 1
+		}
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -23,7 +25,7 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, err
 		Controller: "ms",
 		Action:     "srandmember",
 		Id:         key,
-		Count:			options.GetCount(),
+		Count:			count,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
@@ -34,13 +36,13 @@ func (ms Ms) SrandMember(key string, options types.QueryOptions) (*[]string, err
 		return nil, res.Error
 	}
 
-	if options.GetCount() == 1 {
+	if count == 1 {
 		var returnedResult string
 		json.Unmarshal(res.Result, &returnedResult)
 
-		return &[]string{returnedResult}, nil
+		return []string{returnedResult}, nil
 	} else {
-		var returnedResult *[]string
+		var returnedResult []string
 		json.Unmarshal(res.Result, &returnedResult)
 
 		return returnedResult, nil

@@ -7,7 +7,7 @@ import (
 )
 
 // ZincrBy increments the score of a member in a sorted set by the provided value.
-func (ms Ms) ZincrBy(key string, member string, increment float64, options types.QueryOptions) (float64, error) {
+func (ms Ms) Zincrby(key string, member string, increment float64, options types.QueryOptions) (float64, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

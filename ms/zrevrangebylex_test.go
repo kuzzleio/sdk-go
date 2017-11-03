@@ -11,25 +11,25 @@ import (
 	"testing"
 )
 
-func TestZrevRangeByLexEmptyMin(t *testing.T) {
+func TestZrevrangebylexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZrevRangeByLex("foo", "", "(g", nil)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "", "(g", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrevrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrevRangeByLexEmptyMax(t *testing.T) {
+func TestZrevrangebylexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZrevRangeByLex("foo", "-", "", nil)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrevrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrevRangeByLexError(t *testing.T) {
+func TestZrevrangebylexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -37,12 +37,12 @@ func TestZrevRangeByLexError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZrevRangeByLex("foo", "-", "(g", nil)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrevRangeByLex(t *testing.T) {
+func TestZrevrangebylex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -58,12 +58,12 @@ func TestZrevRangeByLex(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZrevRangeByLex("foo", "-", "(g", nil)
+	res, _ := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", nil)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func TestZrevRangeByLexWithLimits(t *testing.T) {
+func TestZrevrangebylexWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -82,18 +82,18 @@ func TestZrevRangeByLexWithLimits(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := k.MemoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	res, _ := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", qo)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func ExampleMs_ZrevRangeByLex() {
+func ExampleMs_Zrevrangebylex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, err := k.MemoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	res, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

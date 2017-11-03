@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestSrandMemberError(t *testing.T) {
+func TestSrandmemberError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestSrandMemberError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.SrandMember("foo", nil)
+	_, err := k.MemoryStorage.Srandmember("foo", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestSrandMemberSingleMember(t *testing.T) {
+func TestSrandmemberSingleMember(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,12 +39,12 @@ func TestSrandMemberSingleMember(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.SrandMember("foo", nil)
+	res, _ := k.MemoryStorage.Srandmember("foo", nil)
 
-	assert.Equal(t, &[]string{"RANDOM!!"}, res)
+	assert.Equal(t, []string{"RANDOM!!"}, res)
 }
 
-func TestSrandMemberMultipleMembers(t *testing.T) {
+func TestSrandmemberMultipleMembers(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -61,16 +61,16 @@ func TestSrandMemberMultipleMembers(t *testing.T) {
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
-	res, _ := k.MemoryStorage.SrandMember("foo", qo)
+	res, _ := k.MemoryStorage.Srandmember("foo", qo)
 
-	assert.Equal(t, &[]string{"dude", "thats", "so", "random.."}, res)
+	assert.Equal(t, []string{"dude", "thats", "so", "random.."}, res)
 }
 
-func ExampleMs_SrandMember() {
+func ExampleMs_Srandmember() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.SrandMember("foo", nil)
+	res, err := k.MemoryStorage.Srandmember("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

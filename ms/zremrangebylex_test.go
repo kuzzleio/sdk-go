@@ -11,25 +11,25 @@ import (
 	"testing"
 )
 
-func TestZremRangeByLexEmptyMin(t *testing.T) {
+func TestZremrangebylexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZremRangeByLex("foo", "", "(f", nil)
+	_, err := k.MemoryStorage.Zremrangebylex("foo", "", "(f", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZremRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zremrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZremRangeByLexEmptyMax(t *testing.T) {
+func TestZremrangebylexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "", nil)
+	_, err := k.MemoryStorage.Zremrangebylex("foo", "[b", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZremRangeByLex: an empty string is not a valid string range item", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zremrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZremRangeByLexError(t *testing.T) {
+func TestZremrangebylexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -37,12 +37,12 @@ func TestZremRangeByLexError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
+	_, err := k.MemoryStorage.Zremrangebylex("foo", "[b", "(f", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZremRangeByLex(t *testing.T) {
+func TestZremrangebylex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -57,16 +57,16 @@ func TestZremRangeByLex(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
+	res, _ := k.MemoryStorage.Zremrangebylex("foo", "[b", "(f", nil)
 
 	assert.Equal(t, 42, res)
 }
 
-func ExampleMs_ZremRangeByLex() {
+func ExampleMs_Zremrangebylex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZremRangeByLex("foo", "[b", "(f", nil)
+	res, err := k.MemoryStorage.Zremrangebylex("foo", "[b", "(f", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

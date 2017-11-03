@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestZrevRankError(t *testing.T) {
+func TestZrevrankError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestZrevRankError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZrevRank("foo", "bar", nil)
+	_, err := k.MemoryStorage.Zrevrank("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrevRank(t *testing.T) {
+func TestZrevrank(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,16 +39,16 @@ func TestZrevRank(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZrevRank("foo", "bar", nil)
+	res, _ := k.MemoryStorage.Zrevrank("foo", "bar", nil)
 
 	assert.Equal(t, 42, res)
 }
 
-func ExampleMs_ZrevRank() {
+func ExampleMs_Zrevrank() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.ZrevRank("foo", "bar", nil)
+	res, err := k.MemoryStorage.Zrevrank("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -11,16 +11,16 @@ import (
 	"testing"
 )
 
-func TestZunionStoreEmptyKeys(t *testing.T) {
+func TestZunionstoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.ZunionStore("foo", []string{}, nil)
+	_, err := k.MemoryStorage.Zunionstore("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZunionStore: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zunionstore: please provide at least one key", fmt.Sprint(err))
 }
 
-func TestZunionStoreError(t *testing.T) {
+func TestZunionstoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -28,12 +28,12 @@ func TestZunionStoreError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, nil)
+	_, err := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZunionStore(t *testing.T) {
+func TestZunionstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -48,12 +48,12 @@ func TestZunionStore(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, nil)
+	res, _ := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 2, res)
 }
 
-func TestZunionStoreWithOptions(t *testing.T) {
+func TestZunionstoreWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -73,19 +73,19 @@ func TestZunionStoreWithOptions(t *testing.T) {
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, _ := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, 2, res)
 }
 
-func ExampleMs_ZunionStore() {
+func ExampleMs_Zunionstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, err := k.MemoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,7 +6,7 @@ import (
 )
 
 // Time returns the current server time.
-func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
+func (ms Ms) Time(options types.QueryOptions) ([]int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -20,7 +20,7 @@ func (ms Ms) Time(options types.QueryOptions) ([]string, error) {
 	if res.Error != nil {
 		return nil, res.Error
 	}
-	var returnedResult []string
+	var returnedResult []int
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

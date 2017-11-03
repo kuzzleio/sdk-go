@@ -7,9 +7,9 @@ import (
 
 // SunionStore computes the union of the provided sets of unique values and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) SunionStore(destination string, sets []string, options types.QueryOptions) (int, error) {
+func (ms Ms) Sunionstore(destination string, sets []string, options types.QueryOptions) (int, error) {
 	if len(sets) == 0 {
-		return 0, types.NewError("Ms.SunionStore: please provide at least 1 set", 400)
+		return 0, types.NewError("Ms.Sunionstore: please provide at least 1 set", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
