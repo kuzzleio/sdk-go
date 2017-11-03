@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestRandomKeyError(t *testing.T) {
+func TestRandomkeyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -20,14 +20,12 @@ func TestRandomKeyError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.RandomKey(qo)
+	_, err := memoryStorage.Randomkey(nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestRandomKey(t *testing.T) {
+func TestRandomkey(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -42,9 +40,7 @@ func TestRandomKey(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	res, _ := memoryStorage.RandomKey(qo)
+	res, _ := memoryStorage.Randomkey(nil)
 
 	assert.Equal(t, "foo", *res)
 }
@@ -53,9 +49,7 @@ func ExampleMs_RandomKey() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	res, err := memoryStorage.RandomKey(qo)
+	res, err := memoryStorage.Randomkey(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
