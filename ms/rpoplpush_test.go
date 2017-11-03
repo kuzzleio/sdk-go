@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestRpoplPushError(t *testing.T) {
+func TestRpoplpushError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -20,14 +20,13 @@ func TestRpoplPushError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.RpoplPush("foo", "bar", qo)
+	_, err := memoryStorage.Rpoplpush("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestRpoplPush(t *testing.T) {
+func TestRpoplpush(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -42,20 +41,18 @@ func TestRpoplPush(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.RpoplPush("foo", "bar", qo)
+	res, _ := memoryStorage.Rpoplpush("foo", "bar", nil)
 
-	assert.Equal(t, "bar", res)
+	assert.Equal(t, "bar", *res)
 }
 
-func ExampleMs_RpoplPush() {
+func ExampleMs_Rpoplpush() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.RpoplPush("foo", "bar", qo)
+	res, err := memoryStorage.Rpoplpush("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

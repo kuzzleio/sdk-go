@@ -7,7 +7,7 @@ import (
 
 // RpoplPush removes the last element of the list at source and pushes it
 // back at the start of the list at destination.
-func (ms Ms) RpoplPush(source string, destination string, options types.QueryOptions) (interface{}, error) {
+func (ms Ms) Rpoplpush(source string, destination string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -25,10 +25,10 @@ func (ms Ms) RpoplPush(source string, destination string, options types.QueryOpt
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
-	var returnedResult interface{}
+	var returnedResult string
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return &returnedResult, nil
 }
