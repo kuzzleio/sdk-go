@@ -9,7 +9,7 @@ import (
 // If a key exists, then the whole operation is aborted and no key is set.
 func (ms Ms) Msetnx(entries []*types.MSKeyValue, options types.QueryOptions) (int, error) {
 	if len(entries) == 0 {
-		return 0, types.NewError("Ms.MsetNx: please provide at least one key/value entry", 400)
+		return 0, types.NewError("Ms.Msetnx: please provide at least one key/value entry", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
