@@ -1,15 +1,15 @@
-package kuzzle_test
+package security_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"log"
-	"testing"
 )
 
 func TestUpdateSelfQueryError(t *testing.T) {
@@ -19,15 +19,11 @@ func TestUpdateSelfQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.UpdateSelf("index", nil)
+	_, err := k.UpdateSelf(nil, nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateSelf(t *testing.T) {
-	q := struct {
-		Username string `json:"username"`
-	}{"foo"}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -37,19 +33,20 @@ func TestUpdateSelf(t *testing.T) {
 
 			assert.Equal(t, "foo", request.Body.(map[string]interface{})["username"])
 
-			u := &types.User{Id: "login"}
-
-			h, err := json.Marshal(u)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			return &types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"_id": "login",
+				"_source": {
+					"username": "foo"
+				}
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	res, _ := k.UpdateSelf(q, nil)
+	res, _ := k.UpdateSelf(&types.UserData{
+		Content: map[string]interface{}{
+			"username": "foo",
+		},
+	}, nil)
 
 	assert.Equal(t, "login", res.Id)
 }
@@ -62,7 +59,6 @@ func ExampleKuzzle_UpdateSelf() {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
-
 	myCredentials := credentials{"foo", "bar"}
 
 	_, err := k.Login("local", myCredentials, nil)
@@ -71,8 +67,11 @@ func ExampleKuzzle_UpdateSelf() {
 		return
 	}
 
-	newCredentials := credentials{"new", "foo"}
-	res, err := k.UpdateSelf(newCredentials, nil)
+	res, err := k.UpdateSelf(&types.UserData{
+		Content: map[string]interface{}{
+			"foo": "bar",
+		},
+	}, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

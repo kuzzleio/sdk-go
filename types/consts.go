@@ -18,8 +18,8 @@ const (
 
 // user notifications constants
 const (
-	USER_ALL  = "all"
-	USER_IN   = "in"
-	USER_OUT  = "out"
-	USER_NONE = "none"
+	USERS_ALL  = "all"
+	USERS_IN   = "in"
+	USERS_OUT  = "out"
+	USERS_NONE = "none"
 )
