@@ -1,7 +1,6 @@
 package collection_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 
@@ -27,18 +26,18 @@ func TestTruncateError(t *testing.T) {
 func TestTruncate(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			res := types.AckResponse{Acknowledged: true}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"acknowledged": true
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").Truncate(nil)
-	assert.Equal(t, true, res.Acknowledged)
+	assert.Equal(t, true, res)
 }
 
-func ExampleCollection_Truncate(t *testing.T) {
+func ExampleCollection_Truncate() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
@@ -49,5 +48,5 @@ func ExampleCollection_Truncate(t *testing.T) {
 		return
 	}
 
-	fmt.Println(res.Acknowledged, res.ShardsAcknowledged)
+	fmt.Printf("%#v\n", res)
 }

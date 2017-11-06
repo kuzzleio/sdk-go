@@ -13,48 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserAddProfile(t *testing.T) {
-	id := "userId"
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "security", parsedQuery.Controller)
-			assert.Equal(t, "getUser", parsedQuery.Action)
-			assert.Equal(t, id, parsedQuery.Id)
-
-			return &types.KuzzleResponse{Result: []byte(`{
-				"_id": "userId",
-				"_source": {
-					"profileIds": ["admin", "other"],
-					"name": "Luke",
-					"function": "Jedi"
-				}
-			}`)}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	u.AddProfile(&security.Profile{Id: "adminNew"})
-
-	assert.Equal(t, []string{"admin", "other", "adminNew"}, u.ProfileIds)
-}
-
-func ExampleUser_AddProfile() {
-	id := "userId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	res := u.AddProfile(&security.Profile{Id: "adminNew"})
-
-	fmt.Println(res.Id, res.ProfileIds)
-}
-
-func TestUserGetProfilesEmptyProfileIds(t *testing.T) {
+func TestUser_GetProfiles_EmptyProfileIds(t *testing.T) {
 	id := "userId"
 
 	c := &internal.MockedConnection{
@@ -84,7 +43,7 @@ func TestUserGetProfilesEmptyProfileIds(t *testing.T) {
 	assert.Equal(t, []*security.Profile{}, profiles)
 }
 
-func TestUserGetProfilesError(t *testing.T) {
+func TestUser_GetProfiles_Error(t *testing.T) {
 	id := "userId"
 	callCount := 0
 
@@ -125,7 +84,7 @@ func TestUserGetProfilesError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestUserGetProfiles(t *testing.T) {
+func TestUser_GetProfiles(t *testing.T) {
 	id := "userId"
 	callCount := 0
 
@@ -218,54 +177,23 @@ func ExampleUser_GetProfiles() {
 	fmt.Println(res[0].Id, res[0].Policies)
 }
 
-func TestUserSetProfiles(t *testing.T) {
-	id := "userId"
-
+func TestUser_Create_Error(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "security", parsedQuery.Controller)
-			assert.Equal(t, "getUser", parsedQuery.Action)
-			assert.Equal(t, id, parsedQuery.Id)
-
-			return &types.KuzzleResponse{Result: []byte(`{
-				"_id": "userId",
-				"_source": {
-					"profileIds": ["admin", "other"],
-					"name": "Luke",
-					"function": "Jedi"
-				}
-			}`)}
+			return &types.KuzzleResponse{
+				Error: types.NewError("Test error"),
+			}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
 
-	u.SetProfiles([]*security.Profile{
-		{Id: "adminNew"},
-		{Id: "otherNew"},
-	})
+	user := k.Security.NewUser("userId", nil)
 
-	assert.Equal(t, []string{"adminNew", "otherNew"}, u.ProfileIds)
+	_, err := user.Create(nil)
+	assert.NotNil(t, err)
 }
 
-func ExampleUser_SetProfiles() {
-	id := "userId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	res := u.SetProfiles([]*security.Profile{
-		{Id: "adminNew"},
-		{Id: "otherNew"},
-	})
-
-	fmt.Println(res.ProfileIds)
-}
-
-func TestUserCreate(t *testing.T) {
+func TestUser_Create(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -276,9 +204,6 @@ func TestUserCreate(t *testing.T) {
 			assert.Equal(t, map[string]interface{}{
 				"content": map[string]interface{}{
 					"function": "Master Jedi",
-				},
-				"credentials": map[string]interface{}{
-					"local": "credentials",
 				},
 				"profileIds": []interface{}{"admin"},
 			}, parsedQuery.Body)
@@ -294,7 +219,6 @@ func TestUserCreate(t *testing.T) {
 		},
 		ProfileIds: []string{"admin"},
 	})
-	u.SetCredentials("local", "credentials")
 
 	_, err := u.Create(nil)
 	assert.Nil(t, err)
@@ -320,12 +244,316 @@ func ExampleUser_Create() {
 	fmt.Println(res.Id, res.Content)
 }
 
+func TestUser_CreateCredentials(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "createCredentials", parsedQuery.Action)
+			assert.Equal(t, "strategy", parsedQuery.Strategy)
+			assert.Equal(t, "userid", parsedQuery.Id)
+			assert.Equal(t, "myCredentials", parsedQuery.Body)
+
+			return &types.KuzzleResponse{Result: []byte{}}
+		},
+	}
+
+	k, err := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+	_, err = user.CreateCredentials("strategy", "myCredentials", nil)
+
+	assert.Nil(t, err)
+}
+
+func TestUser_CreateWithCredentials(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "createUser", parsedQuery.Action)
+			assert.Equal(t, map[string]interface{}{
+				"content": map[string]interface{}{
+					"function": "Jedi",
+				},
+				"credentials": map[string]interface{}{
+					"strategy": "myCredentials",
+				},
+				"profileIds": []interface{}{"profile1", "profile2"},
+			}, parsedQuery.Body)
+
+			return &types.KuzzleResponse{Result: []byte{}}
+		},
+	}
+
+	k, err := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", &types.UserData{
+		Content:    map[string]interface{}{"function": "Jedi"},
+		ProfileIds: []string{"profile1", "profile2"},
+	})
+	_, err = user.CreateWithCredentials(types.Credentials{"strategy": "myCredentials"}, nil)
+
+	assert.Nil(t, err)
+}
+
+func TestUser_Delete_EmptyId(t *testing.T) {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("", nil)
+
+	_, err := user.Delete(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_Delete_Error(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{
+				Error: types.NewError("Test error"),
+			}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userId", nil)
+
+	_, err := user.Delete(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_Delete(t *testing.T) {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	callCount := 0
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			if callCount == 0 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "getUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				return &types.KuzzleResponse{Result: []byte(`{
+					"_id": "` + id + `",
+					"_source": {
+						"profileIds": ["admin", "other"],
+						"name": "Luke",
+						"function": "Jedi"
+					}
+				}`)}
+			}
+			if callCount == 1 {
+				callCount++
+				assert.Equal(t, "security", parsedQuery.Controller)
+				assert.Equal(t, "deleteUser", parsedQuery.Action)
+				assert.Equal(t, id, parsedQuery.Id)
+
+				res := types.ShardResponse{Id: id}
+				r, _ := json.Marshal(res)
+				return &types.KuzzleResponse{Result: r}
+			}
+
+			return &types.KuzzleResponse{Result: nil}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := k.Security.FetchUser(id, nil)
+
+	inTheEnd, _ := u.Delete(nil)
+	assert.Equal(t, id, inTheEnd)
+}
+
+func ExampleUser_Delete() {
+	id := "SomeMenJustWantToWatchTheWorldBurn"
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	u, _ := k.Security.FetchUser(id, nil)
+
+	res, err := u.Delete(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
+}
+
+func TestUser_DeleteCredentials(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "deleteCredentials", parsedQuery.Action)
+			assert.Equal(t, "strategy", parsedQuery.Strategy)
+			assert.Equal(t, "userid", parsedQuery.Id)
+
+			return &types.KuzzleResponse{}
+		},
+	}
+
+	k, err := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+
+	_, err = user.DeleteCredentials("strategy", nil)
+
+	assert.Nil(t, err)
+}
+
+func TestUser_GetCredentialsInfo_EmptyStrategy(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	user := k.Security.NewUser("userid", nil)
+	_, err := user.GetCredentialsInfo("", nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, 400, err.(*types.KuzzleError).Status)
+	assert.Equal(t, "Security.getCredentials: strategy is required", err.(*types.KuzzleError).Message)
+}
+
+func TestUser_GetCredentialsInfo_EmptyUserId(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	user := k.Security.NewUser("", nil)
+	_, err := user.GetCredentialsInfo("strategy", nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, 400, err.(*types.KuzzleError).Status)
+	assert.Equal(t, "Security.getCredentials: user id is required", err.(*types.KuzzleError).Message)
+}
+
+func TestUser_GetCredentialsInfo(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			q := &types.KuzzleRequest{}
+			json.Unmarshal(query, q)
+
+			assert.Equal(t, "security", q.Controller)
+			assert.Equal(t, "getCredentials", q.Action)
+			assert.Equal(t, "strategy", q.Strategy)
+			assert.Equal(t, "userid", q.Id)
+
+			return &types.KuzzleResponse{}
+		},
+	}
+
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+
+	_, err := user.GetCredentialsInfo("strategy", nil)
+	assert.Nil(t, err)
+}
+
+func TestUser_GetRights_EmptyId(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{
+				Error: types.NewError("Test error"),
+			}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("", nil)
+	_, err := user.GetRights(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_GetRights_Error(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{
+				Error: types.NewError("Test error"),
+			}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+	_, err := user.GetRights(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_GetRights(t *testing.T) {
+	id := "userId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "getUserRights", parsedQuery.Action)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			type resultUserRights struct {
+				UserRights []*types.UserRights `json:"hits"`
+			}
+			userRights := []*types.UserRights{
+				{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
+			}
+			actualRights := resultUserRights{UserRights: userRights}
+			r, _ := json.Marshal(actualRights)
+			return &types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser(id, nil)
+	res, _ := user.GetRights(nil)
+
+	expectedRights := []*types.UserRights{
+		{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
+	}
+
+	assert.Equal(t, expectedRights, res)
+}
+
+func ExampleUser_GetRights() {
+	c := websocket.NewWebSocket("localhost:7512", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+
+	res, err := user.GetRights(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res[0].Index, res[0].Collection, res[0].Controller, res[0].Action, res[0].Value)
+}
+
+func TestUser_HasCredentials(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "security", parsedQuery.Controller)
+			assert.Equal(t, "hasCredentials", parsedQuery.Action)
+			assert.Equal(t, "strategy", parsedQuery.Strategy)
+			assert.Equal(t, "userid", parsedQuery.Id)
+
+			return &types.KuzzleResponse{}
+		},
+	}
+
+	k, err := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("userid", nil)
+
+	_, err = user.HasCredentials("strategy", nil)
+	assert.Nil(t, err)
+}
+
 func TestUserSaveRestrictedEmptyId(t *testing.T) {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	user := k.Security.NewUser("", nil)
 
-	_, err := user.SaveRestricted(nil)
+	_, err := user.SaveRestricted(nil, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, 400, err.(*types.KuzzleError).Status)
 	assert.Equal(t, "User.SaveRestricted: id is required", err.(*types.KuzzleError).Message)
@@ -365,7 +593,6 @@ func TestUserSaveRestricted(t *testing.T) {
 						"name":     "Luke",
 						"function": "Master Jedi",
 					},
-					"credentials": map[string]interface{}{"local": "credentials"},
 				}, parsedQuery.Body)
 
 				return &types.KuzzleResponse{Result: []byte{}}
@@ -378,8 +605,7 @@ func TestUserSaveRestricted(t *testing.T) {
 	u, _ := k.Security.FetchUser(id, nil)
 
 	u.Content["function"] = "Master Jedi"
-	u.SetCredentials("local", "credentials")
-	_, err := u.SaveRestricted(nil)
+	_, err := u.SaveRestricted(nil, nil)
 	assert.Nil(t, err)
 }
 
@@ -393,7 +619,7 @@ func ExampleUser_SaveRestricted() {
 		u.Content = make(map[string]interface{})
 	}
 	u.Content["function"] = "Master Jedi"
-	res, err := u.SaveRestricted(nil)
+	res, err := u.SaveRestricted(nil, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -403,7 +629,31 @@ func ExampleUser_SaveRestricted() {
 	fmt.Println(res.Id, res.Content)
 }
 
-func TestUserReplace(t *testing.T) {
+func TestUser_Replace_EmptyId(t *testing.T) {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("", nil)
+
+	_, err := user.Replace(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_Replace_Error(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{
+				Error: types.NewError("Test error"),
+			}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	user := k.Security.NewUser("", nil)
+
+	_, err := user.Replace(nil)
+	assert.NotNil(t, err)
+}
+
+func TestUser_Replace(t *testing.T) {
 	id := "userId"
 	callCount := 0
 
@@ -472,346 +722,25 @@ func ExampleUser_Replace() {
 	fmt.Println(res.Id, res.Content)
 }
 
-func TestUserUpdate(t *testing.T) {
-	id := "userId"
-	callCount := 0
-
+func TestUser_UpdateCredentials(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
+			q := &types.KuzzleRequest{}
+			json.Unmarshal(query, q)
 
-			if callCount == 0 {
-				callCount++
-				assert.Equal(t, "security", parsedQuery.Controller)
-				assert.Equal(t, "getUser", parsedQuery.Action)
-				assert.Equal(t, id, parsedQuery.Id)
+			assert.Equal(t, "security", q.Controller)
+			assert.Equal(t, "updateCredentials", q.Action)
+			assert.Equal(t, "strategy", q.Strategy)
+			assert.Equal(t, "userid", q.Id)
+			assert.Equal(t, "myCredentials", q.Body)
 
-				return &types.KuzzleResponse{Result: []byte(`{
-					"_id": "userId",
-					"_source": {
-						"profileIds": ["admin", "other"],
-						"name": "Luke",
-						"function": "Jedi"
-					}
-				}`)}
-			}
-			if callCount == 1 {
-				callCount++
-				assert.Equal(t, "security", parsedQuery.Controller)
-				assert.Equal(t, "updateUser", parsedQuery.Action)
-				assert.Equal(t, id, parsedQuery.Id)
-				// nb: profile ids order is not guaranteed
-				assert.Equal(t, map[string]interface{}{
-					"profileIds": []interface{}{"admin", "other", "adminNew", "otherNew"},
-					"name":       "Luke",
-					"function":   "Jedi",
-					"weapon":     "lightsaber",
-				}, parsedQuery.Body.(map[string]interface{}))
-
-				jsonBody, _ := json.Marshal(parsedQuery.Body)
-				return &types.KuzzleResponse{Result: []byte(`{
-					"_id": "` + fmt.Sprintf("%s", id) + `",
-					"_source": ` + fmt.Sprintf("%s", jsonBody) + `
-				}`)}
-			}
-
-			return &types.KuzzleResponse{Result: nil}
+			return &types.KuzzleResponse{}
 		},
 	}
+
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
+	user := k.Security.NewUser("userid", nil)
 
-	newContent := types.UserData{
-		ProfileIds: []string{"adminNew", "other", "otherNew"},
-		Content: map[string]interface{}{
-			"weapon": "lightsaber",
-		},
-	}
-	updatedUser, _ := u.Update(&newContent, nil)
-
-	assert.Equal(t, []string{"admin", "other", "adminNew", "otherNew"}, updatedUser.ProfileIds)
-	assert.Equal(t, map[string]interface{}{
-		"name":     "Luke",
-		"function": "Jedi",
-		"weapon":   "lightsaber",
-	}, updatedUser.Content)
-}
-
-func ExampleUser_Update() {
-	id := "userId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	newContent := types.UserData{ProfileIds: []string{"adminNew", "otherNew"}}
-	res, err := u.Update(&newContent, nil)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res.Id, res.Content)
-}
-
-func TestUserDelete(t *testing.T) {
-	id := "SomeMenJustWantToWatchTheWorldBurn"
-	callCount := 0
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			if callCount == 0 {
-				callCount++
-				assert.Equal(t, "security", parsedQuery.Controller)
-				assert.Equal(t, "getUser", parsedQuery.Action)
-				assert.Equal(t, id, parsedQuery.Id)
-
-				return &types.KuzzleResponse{Result: []byte(`{
-					"_id": "` + id + `",
-					"_source": {
-						"profileIds": ["admin", "other"],
-						"name": "Luke",
-						"function": "Jedi"
-					}
-				}`)}
-			}
-			if callCount == 1 {
-				callCount++
-				assert.Equal(t, "security", parsedQuery.Controller)
-				assert.Equal(t, "deleteUser", parsedQuery.Action)
-				assert.Equal(t, id, parsedQuery.Id)
-
-				res := types.ShardResponse{Id: id}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-
-			return &types.KuzzleResponse{Result: nil}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	inTheEnd, _ := u.Delete(nil)
-	assert.Equal(t, id, inTheEnd)
-}
-
-func ExampleUser_Delete() {
-	id := "SomeMenJustWantToWatchTheWorldBurn"
-	c := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	u, _ := k.Security.FetchUser(id, nil)
-
-	res, err := u.Delete(nil)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res)
-}
-
-func TestUserCreateError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	user := k.Security.NewUser("userId", nil)
-
-	_, err := user.Create(nil)
-	assert.NotNil(t, err)
-}
-
-func TestReplaceEmptyId(t *testing.T) {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("", nil)
-
-	_, err := user.Replace(nil)
-	assert.NotNil(t, err)
-}
-
-func TestReplaceError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("", nil)
-
-	_, err := user.Replace(nil)
-	assert.NotNil(t, err)
-}
-
-func TestReplace(t *testing.T) {
-	id := "userId"
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "security", parsedQuery.Controller)
-			assert.Equal(t, "replaceUser", parsedQuery.Action)
-			assert.Equal(t, id, parsedQuery.Id)
-
-			return &types.KuzzleResponse{Result: []byte(`{
-				"_id": "userId",
-				"_source": {
-					"profileIds": ["admin", "other"],
-					"name": "Luke",
-					"function": "Jedi"
-				}
-			}`)}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	user := k.Security.NewUser(id, &types.UserData{
-		Content: map[string]interface{}{
-			"foo": "bar",
-		},
-		ProfileIds: []string{"default", "anonymous"},
-	})
-	user.SetCredentials("local", map[string]string{
-		"Username": "username",
-		"Password": "password",
-	})
-
-	user.Replace(nil)
-}
-
-func TestUserUpdateEmptyId(t *testing.T) {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("", nil)
-
-	_, err := user.Update(&types.UserData{}, nil)
-	assert.NotNil(t, err)
-}
-
-func TestUpdateError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("userId", nil)
-
-	_, err := user.Update(&types.UserData{}, nil)
-	assert.NotNil(t, err)
-}
-
-func TestUserDeleteEmptyId(t *testing.T) {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("", nil)
-
-	_, err := user.Delete(nil)
-	assert.NotNil(t, err)
-}
-
-func TestDeleteError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	user := k.Security.NewUser("userId", nil)
-
-	_, err := user.Delete(nil)
-	assert.NotNil(t, err)
-}
-
-func TestGetRightsEmptyId(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.GetUserRights("", nil)
-	assert.NotNil(t, err)
-}
-
-func TestGetRightsError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{
-				Error: types.NewError("Test error"),
-			}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.GetUserRights("userId", nil)
-	assert.NotNil(t, err)
-}
-
-func TestGetRights(t *testing.T) {
-	id := "userId"
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "security", parsedQuery.Controller)
-			assert.Equal(t, "getUserRights", parsedQuery.Action)
-			assert.Equal(t, id, parsedQuery.Id)
-
-			type resultUserRights struct {
-				UserRights []*types.UserRights `json:"hits"`
-			}
-			userRights := []*types.UserRights{
-				{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
-			}
-			actualRights := resultUserRights{UserRights: userRights}
-			r, _ := json.Marshal(actualRights)
-			return &types.KuzzleResponse{Result: r}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, _ := k.Security.GetUserRights(id, nil)
-
-	expectedRights := []*types.UserRights{
-		{Controller: "wow-controller", Action: "such-action", Index: "much indexes", Collection: "very collection", Value: "wow"},
-	}
-
-	assert.Equal(t, expectedRights, res)
-}
-
-func ExampleSecurityUser_GetRights() {
-	id := "userId"
-	c := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	res, err := k.Security.GetUserRights(id, nil)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res[0].Index, res[0].Collection, res[0].Controller, res[0].Action, res[0].Value)
+	_, err := user.UpdateCredentials("strategy", "myCredentials", nil)
+	assert.Nil(t, err)
 }

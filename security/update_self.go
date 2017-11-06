@@ -5,15 +5,15 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateSelf(content *types.UserData, options types.QueryOptions) (*User, error) {
+func (s *Security) UpdateSelf(data *types.UserData, options types.QueryOptions) (*User, error) {
 	// using a dummy user is marginally helpful
 	u := &User{
 		Security: s,
 	}
 
-	if content != nil {
-		u.Content = content.Content
-		u.addProfileIds(content.ProfileIds...)
+	if data != nil {
+		u.Content = data.Content
+		u.ProfileIds = data.ProfileIds
 	}
 
 	body := u.getFlatBody()
