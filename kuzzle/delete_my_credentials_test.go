@@ -45,22 +45,20 @@ func TestDeleteMyCredentials(t *testing.T) {
 				ShardsAcknowledged bool
 			}
 
-			ack := ackResult{Acknowledged: true, ShardsAcknowledged: true}
-			r, _ := json.Marshal(ack)
-
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
+
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "deleteMyCredentials", request.Action)
-			return &types.KuzzleResponse{Result: r}
+			assert.Equal(t, "local", request.Strategy)
+
+			return &types.KuzzleResponse{Result: []byte(`{"acknowledged":true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.DeleteMyCredentials("local", nil)
-
-	assert.Equal(t, true, res.Acknowledged)
-	assert.Equal(t, true, res.ShardsAcknowledged)
+	_, err := k.DeleteMyCredentials("local", nil)
+	assert.Nil(t, err)
 }
 
 func ExampleKuzzle_DeleteMyCredentials() {
@@ -86,5 +84,5 @@ func ExampleKuzzle_DeleteMyCredentials() {
 		return
 	}
 
-	fmt.Println(res.Acknowledged, res.Acknowledged)
+	fmt.Printf("%#v\n", res)
 }

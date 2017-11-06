@@ -170,11 +170,6 @@ type (
 		Published bool `json:"published"`
 	}
 
-	AckResponse struct {
-		Acknowledged       bool `json:"acknowledged"`
-		ShardsAcknowledged bool `json:"shardsAcknowledged"`
-	}
-
 	ShardResponse struct {
 		Found   bool    `json:"found"`
 		Index   string  `json:"_index"`

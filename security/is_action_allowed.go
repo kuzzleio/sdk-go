@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	ActionIsAllowed     = iota
-	ActionIsConditional = iota
-	ActionIsDenied      = iota
+	ActionIsAllowed = iota
+	ActionIsConditional
+	ActionIsDenied
 )
 
 // IsActionAllowed indicates whether an action is allowed, denied or conditional based on user rights provided as the first argument.

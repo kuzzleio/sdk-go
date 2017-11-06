@@ -457,15 +457,15 @@ func TestDeleteSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.AckResponse{Acknowledged: true}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"acknowledged": true
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").DeleteSpecifications(nil)
-	assert.Equal(t, true, res.Acknowledged)
+	assert.Equal(t, true, res)
 }
 
 func ExampleCollection_DeleteSpecifications() {
@@ -479,5 +479,5 @@ func ExampleCollection_DeleteSpecifications() {
 		return
 	}
 
-	fmt.Println(res.Acknowledged, res.ShardsAcknowledged)
+	fmt.Printf("%#v\n", res)
 }
