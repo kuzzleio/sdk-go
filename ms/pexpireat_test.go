@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestPexpireAtError(t *testing.T) {
+func TestPexpireatError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -19,12 +19,12 @@ func TestPexpireAtError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.PexpireAt("foo", 1488540242465, nil)
+	_, err := k.MemoryStorage.Pexpireat("foo", 1488540242465, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestPexpireAt(t *testing.T) {
+func TestPexpireat(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -39,16 +39,16 @@ func TestPexpireAt(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.PexpireAt("foo", 1488540242465, nil)
+	res, _ := k.MemoryStorage.Pexpireat("foo", 1488540242465, nil)
 
 	assert.Equal(t, 1, res)
 }
 
-func ExampleMs_PexpireAt() {
+func ExampleMs_Pexpireat() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.PexpireAt("foo", 1488540242465, nil)
+	res, err := k.MemoryStorage.Pexpireat("foo", 1488540242465, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
