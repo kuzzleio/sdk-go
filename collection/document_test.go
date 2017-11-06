@@ -140,70 +140,6 @@ func TestDocumentSetHeadersReplace(t *testing.T) {
 	assert.NotEqual(t, headers, k.GetHeaders())
 }
 
-func TestDocumentFetchEmptyId(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	dc := collection.NewCollection(k, "collection", "index")
-	_, err := dc.Document().Fetch("")
-
-	assert.Equal(t, "[400] Document.Fetch: missing document id", fmt.Sprint(err))
-}
-
-func TestDocumentFetchError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Not found"}}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	dc := collection.NewCollection(k, "collection", "index")
-	_, err := dc.Document().Fetch("docId")
-
-	assert.Equal(t, "Document.Fetch: an error occurred: Not found", fmt.Sprint(err))
-}
-
-func TestDocumentFetch(t *testing.T) {
-	id := "docid"
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "document", parsedQuery.Controller)
-			assert.Equal(t, "get", parsedQuery.Action)
-			assert.Equal(t, "index", parsedQuery.Index)
-			assert.Equal(t, "collection", parsedQuery.Collection)
-			assert.Equal(t, id, parsedQuery.Id)
-
-			res := collection.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	dc := collection.NewCollection(k, "collection", "index")
-	d, _ := dc.Document().Fetch(id)
-	r := collection.Document{Id: id, Content: []byte(`{"foo":"bar"}`)}
-
-	assert.Equal(t, r.Id, d.Id)
-	assert.Equal(t, r.Content, d.Content)
-}
-
-func ExampleDocument_Fetch() {
-	id := "docid"
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	dc := collection.NewCollection(k, "collection", "index")
-	res, err := dc.Document().Fetch(id)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res.Id, res.Collection)
-}
-
 func TestDocumentSubscribeEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -255,7 +191,8 @@ func TestDocumentSubscribe(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
-	d, _ := dc.Document().Fetch(id)
+	d := dc.Document()
+	d.Id = id
 
 	ch := make(chan *types.KuzzleNotification)
 	subRes := d.Subscribe(types.NewRoomOptions(), ch)
@@ -274,7 +211,8 @@ func ExampleDocument_Subscribe() {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	*k.State = state.Connected
 	dc := collection.NewCollection(k, "collection", "index")
-	d, _ := dc.Document().Fetch(id)
+	d := dc.Document()
+	d.Id = id
 
 	ch := make(chan *types.KuzzleNotification)
 	subRes := d.Subscribe(types.NewRoomOptions(), ch)

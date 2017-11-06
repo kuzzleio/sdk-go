@@ -21,28 +21,44 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
-	KuzzleResult struct {
-		Id         string          `json:"_id"`
-		Meta       *Meta           `json:"_meta"`
-		Content    json.RawMessage `json:"_source"`
-		Version    int             `json:"_version"`
-		Collection string          `json:"collection"`
+	NotificationResult struct {
+		Id      string          `json:"_id"`
+		Meta    *Meta           `json:"_meta"`
+		Content json.RawMessage `json:"_source"`
+		Count   int             `json:"count"`
 	}
 
 	KuzzleNotification struct {
-		RequestId string        `json:"requestId"`
-		Result    *KuzzleResult `json:"result"`
-		RoomId    string        `json:"room"`
-		Error     *KuzzleError  `json:"error"`
+		RequestId  string              `json:"requestId"`
+		Result     *NotificationResult `json:"result"`
+		Volatile   VolatileData        `json:"volatile"`
+		Index      string              `json:"index"`
+		Collection string              `json:"collection"`
+		Controller string              `json:"controller"`
+		Action     string              `json:"action"`
+		Protocol   string              `json:"protocol"`
+		Scope      string              `json:"scope"`
+		State      string              `json:"state"`
+		User       string              `json:"user"`
+		Type       string              `json:"type"`
+		RoomId     string              `json:"room"`
+		Timestamp  int                 `json:"timestamp"`
+		Status     int                 `json:"status"`
+		Error      *KuzzleError        `json:"error"`
 	}
 
 	KuzzleResponse struct {
-		RequestId string          `json:"requestId"`
-		Result    json.RawMessage `json:"result"`
-		RoomId    string          `json:"room"`
-		Channel   string          `json:"channel"`
-		Status    int             `json:"status"`
-		Error     *KuzzleError    `json:"error"`
+		RequestId  string          `json:"requestId"`
+		Result     json.RawMessage `json:"result"`
+		Volatile   VolatileData    `json:"volatile"`
+		Index      string          `json:"index"`
+		Collection string          `json:"collection"`
+		Controller string          `json:"controller"`
+		Action     string          `json:"action"`
+		RoomId     string          `json:"room"`
+		Channel    string          `json:"channel"`
+		Status     int             `json:"status"`
+		Error      *KuzzleError    `json:"error"`
 	}
 
 	SpecificationField struct {
@@ -141,9 +157,9 @@ type (
 	}
 
 	SpecificationSearchResult struct {
-		Hits []SpecificationSearchResultHit `json:"hits"`
-		Total    int    `json:"total"`
-		ScrollId string `json:"scrollId"`
+		Hits     []SpecificationSearchResultHit `json:"hits"`
+		Total    int                            `json:"total"`
+		ScrollId string                         `json:"scrollId"`
 	}
 
 	ValidResponse struct {
@@ -217,18 +233,8 @@ type (
 		Value      string `json:"value"`
 	}
 
-	GeoradiusPointWithCoord struct {
-		Name string
-		Lon  float64
-		Lat  float64
-	}
 
-	GeoradiusPointWithDist struct {
-		Name string
-		Dist float64
-	}
-
-	GeoradiusPointWithCoordAndDist struct {
+	Georadius struct {
 		Name string
 		Lon  float64
 		Lat  float64

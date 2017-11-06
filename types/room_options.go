@@ -3,7 +3,7 @@ package types
 type roomOptions struct {
 	scope           string
 	state           string
-	user            string
+	users           string
 	subscribeToSelf bool
 	volatile        VolatileData
 }
@@ -13,8 +13,8 @@ type RoomOptions interface {
 	SetScope(string) *roomOptions
 	GetState() string
 	SetState(string) *roomOptions
-	GetUser() string
-	SetUser(string) *roomOptions
+	GetUsers() string
+	SetUsers(string) *roomOptions
 	GetSubscribeToSelf() bool
 	SetSubscribeToSelf(bool) *roomOptions
 	GetVolatile() VolatileData
@@ -39,12 +39,12 @@ func (ro *roomOptions) SetState(state string) *roomOptions {
 	return ro
 }
 
-func (ro roomOptions) GetUser() string {
-	return ro.user
+func (ro roomOptions) GetUsers() string {
+	return ro.users
 }
 
-func (ro *roomOptions) SetUser(user string) *roomOptions {
-	ro.user = user
+func (ro *roomOptions) SetUsers(users string) *roomOptions {
+	ro.users = users
 	return ro
 }
 
@@ -70,7 +70,7 @@ func NewRoomOptions() RoomOptions {
 	return &roomOptions{
 		scope:           SCOPE_ALL,
 		state:           STATE_DONE,
-		user:            USER_NONE,
+		users:           USERS_NONE,
 		subscribeToSelf: true,
 	}
 }

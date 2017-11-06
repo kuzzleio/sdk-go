@@ -17,7 +17,7 @@ type KuzzleRequest struct {
 	Volatile   VolatileData  `json:"volatile"`
 	Scope      string        `json:"scope"`
 	State      string        `json:"state"`
-	User       string        `json:"user"`
+	Users      string        `json:"users"`
 	Start      int           `json:"start,omitempty"`
 	Stop       int           `json:"stop,omitempty"`
 	End        int           `json:"end,omitempty"`
@@ -66,8 +66,8 @@ type PolicyRestriction struct {
 }
 
 type Policy struct {
-	RoleId             string               `json:"roleId"`
-	RestrictedTo       []*PolicyRestriction `json:"restrictedTo,omitempty"`
+	RoleId       string               `json:"roleId"`
+	RestrictedTo []*PolicyRestriction `json:"restrictedTo,omitempty"`
 }
 
 type Policies struct {
