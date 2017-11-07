@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,13 +13,11 @@ import (
 
 func TestSinterEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Sinter([]string{}, qo)
+	_, err := k.MemoryStorage.Sinter([]string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sinter: please provide at least one key", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sinter: please provide at least one key to intersect", fmt.Sprint(err))
 }
 
 func TestSinterError(t *testing.T) {
@@ -30,10 +27,8 @@ func TestSinterError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Sinter([]string{"foo", "bar"}, qo)
+	_, err := k.MemoryStorage.Sinter([]string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestSinter(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Sinter([]string{"foo", "bar"}, qo)
+	res, _ := k.MemoryStorage.Sinter([]string{"foo", "bar"}, nil)
 
 	assert.Equal(t, []string{"diff1", "diff2"}, res)
 }
@@ -63,10 +56,8 @@ func TestSinter(t *testing.T) {
 func ExampleMs_Sinter() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Sinter([]string{"foo", "bar"}, qo)
+	res, err := k.MemoryStorage.Sinter([]string{"foo", "bar"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

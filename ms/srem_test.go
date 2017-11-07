@@ -6,29 +6,15 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestSremEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Srem("", []string{"foo", "bar"}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Srem: key required", fmt.Sprint(err))
-}
-
 func TestSremEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Srem("foo", []string{}, qo)
+	_, err := k.MemoryStorage.Srem("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Srem: please provide at least one value to remove", fmt.Sprint(err))
@@ -41,10 +27,8 @@ func TestSremError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Srem("foo", []string{"foo", "bar"}, qo)
+	_, err := k.MemoryStorage.Srem("foo", []string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -63,10 +47,8 @@ func TestSrem(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, qo)
+	res, _ := k.MemoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, nil)
 
 	assert.Equal(t, 4, res)
 }
@@ -74,10 +56,8 @@ func TestSrem(t *testing.T) {
 func ExampleMs_Srem() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, qo)
+	res, err := k.MemoryStorage.Srem("foo", []string{"get", "out", "of", "here"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

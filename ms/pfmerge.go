@@ -8,11 +8,8 @@ import (
 // Pfmerge merges multiple HyperLogLog data structures into an unique HyperLogLog
 // structure stored at key, approximating the cardinality of the union of the source structures.
 func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Pfmerge: key required", 400)
-	}
 	if len(sources) == 0 {
-		return "", types.NewError("Ms.Pfmerge: please provide at least one source", 400)
+		return "", types.NewError("Ms.Pfmerge: please provide at least one source to merge", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

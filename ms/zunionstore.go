@@ -5,14 +5,11 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ZunionStore computes the union of the provided sorted sets and stores the result in the destination key.
+// Zunionstore computes the union of the provided sorted sets and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryOptions) (int, error) {
-	if destination == "" {
-		return 0, types.NewError("Ms.ZunionStore: destination required", 400)
-	}
+func (ms Ms) Zunionstore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, types.NewError("Ms.ZunionStore: please provide at least one key", 400)
+		return 0, types.NewError("Ms.Zunionstore: please provide at least one key", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -25,12 +22,14 @@ func (ms Ms) ZunionStore(destination string, keys []string, options types.QueryO
 
 	bodyContent := body{Keys: keys}
 
-	if len(options.GetWeights()) > 0 {
-		bodyContent.Weights = options.GetWeights()
-	}
+	if options != nil {
+		if len(options.GetWeights()) > 0 {
+			bodyContent.Weights = options.GetWeights()
+		}
 
-	if options.GetAggregate() != "" {
-		bodyContent.Aggregate = options.GetAggregate()
+		if options.GetAggregate() != "" {
+			bodyContent.Aggregate = options.GetAggregate()
+		}
 	}
 
 	query := &types.KuzzleRequest{

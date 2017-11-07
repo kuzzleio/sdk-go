@@ -11,10 +11,6 @@ import (
 // Zrange returns elements from a sorted set depending on their position in the set, from a start position index to a stop position index (inclusive).
 // First position starts at 0.
 func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Zrange: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

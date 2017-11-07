@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestSpopEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Spop("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Spop: key required", fmt.Sprint(err))
-}
 
 func TestSpopError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestSpopError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Spop("foo", qo)
+	_, err := k.MemoryStorage.Spop("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,12 +38,10 @@ func TestSpop(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Spop("foo", qo)
+	res, _ := k.MemoryStorage.Spop("foo", nil)
 
-	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, []string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func TestSpopWithOptions(t *testing.T) {
@@ -74,25 +58,23 @@ func TestSpopWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 
-	res, _ := memoryStorage.Spop("foo", qo)
+	res, _ := k.MemoryStorage.Spop("foo", qo)
 
-	assert.Equal(t, []interface{}{"you", "removed", "me", "thats", "rude.."}, res)
+	assert.Equal(t, []string{"you", "removed", "me", "thats", "rude.."}, res)
 }
 
 func ExampleMs_Spop() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 
-	res, err := memoryStorage.Spop("foo", qo)
+	res, err := k.MemoryStorage.Spop("foo", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

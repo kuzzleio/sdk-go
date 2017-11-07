@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -14,10 +13,8 @@ import (
 
 func TestTouchEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Touch([]string{}, qo)
+	_, err := k.MemoryStorage.Touch([]string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Touch: please provide at least one key", fmt.Sprint(err))
@@ -30,10 +27,8 @@ func TestTouchError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Touch([]string{"foo", "bar"}, qo)
+	_, err := k.MemoryStorage.Touch([]string{"foo", "bar"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +47,8 @@ func TestTouch(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Touch([]string{"Hall", "and", "Oates", "YouRe", "Out", "Of", "Touch"}, qo)
+	res, _ := k.MemoryStorage.Touch([]string{"Hall", "and", "Oates", "YouRe", "Out", "Of", "Touch"}, nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -63,10 +56,8 @@ func TestTouch(t *testing.T) {
 func ExampleMs_Touch() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Touch([]string{"Hall", "and", "Oates", "YouRe", "Out", "Of", "Touch"}, qo)
+	res, err := k.MemoryStorage.Touch([]string{"Hall", "and", "Oates", "YouRe", "Out", "Of", "Touch"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

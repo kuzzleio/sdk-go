@@ -6,10 +6,6 @@ import (
 
 // Georadiusbymember returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadiusbymember(key string, member string, distance float64, unit string, options types.QueryOptions) ([]*types.Georadius, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Georadiusbymember: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

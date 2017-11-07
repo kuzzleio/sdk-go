@@ -6,7 +6,7 @@ import (
 )
 
 // RandomKey returns a random key from the memory storage.
-func (ms Ms) RandomKey(options types.QueryOptions) (string, error) {
+func (ms Ms) Randomkey(options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -18,9 +18,9 @@ func (ms Ms) RandomKey(options types.QueryOptions) (string, error) {
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
-	var returnedResult string
+	var returnedResult *string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

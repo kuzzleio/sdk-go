@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,10 +18,8 @@ func TestTimeError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Time(qo)
+	_, err := k.MemoryStorage.Time(nil)
 
 	assert.NotNil(t, err)
 }
@@ -36,26 +33,22 @@ func TestTime(t *testing.T) {
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "time", parsedQuery.Action)
 
-			r, _ := json.Marshal([]string{"1488791347", "494938"})
+			r, _ := json.Marshal([]int{1488791347, 494938})
 			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Time(qo)
+	res, _ := k.MemoryStorage.Time(nil)
 
-	assert.Equal(t, []string{"1488791347", "494938"}, res)
+	assert.Equal(t, []int{1488791347, 494938}, res)
 }
 
 func ExampleMs_Time() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Time(qo)
+	res, err := k.MemoryStorage.Time(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

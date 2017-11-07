@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestDecrbyEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Decrby("", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Decrby: key required", fmt.Sprint(err))
-}
 
 func TestDecrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestDecrbyError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Decrby("foo", 42, qo)
+	_, err := k.MemoryStorage.Decrby("foo", 42, nil)
 
 	assert.NotNil(t, err)
 }
@@ -54,10 +40,8 @@ func TestDecrby(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Decrby("foo", 42, qo)
+	res, _ := k.MemoryStorage.Decrby("foo", 42, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -65,10 +49,8 @@ func TestDecrby(t *testing.T) {
 func ExampleMs_Decrby() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Decrby("foo", 42, qo)
+	res, err := k.MemoryStorage.Decrby("foo", 42, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

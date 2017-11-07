@@ -6,50 +6,25 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestRpoplPushEmptySource(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.RpoplPush("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.RpoplPush: source required", fmt.Sprint(err))
-}
-
-func TestRpoplPushEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.RpoplPush("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.RpoplPush: destination required", fmt.Sprint(err))
-}
-
-func TestRpoplPushError(t *testing.T) {
+func TestRpoplpushError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.RpoplPush("foo", "bar", qo)
+	_, err := k.MemoryStorage.Rpoplpush("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestRpoplPush(t *testing.T) {
+func TestRpoplpush(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -63,21 +38,17 @@ func TestRpoplPush(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.RpoplPush("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Rpoplpush("foo", "bar", nil)
 
-	assert.Equal(t, "bar", res)
+	assert.Equal(t, "bar", *res)
 }
 
-func ExampleMs_RpoplPush() {
+func ExampleMs_Rpoplpush() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.RpoplPush("foo", "bar", qo)
+	res, err := k.MemoryStorage.Rpoplpush("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

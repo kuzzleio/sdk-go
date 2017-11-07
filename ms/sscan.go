@@ -7,10 +7,6 @@ import (
 
 // Sscan is identical to scan, except that sscan iterates the members held by a set of unique values.
 func (ms Ms) Sscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Sscan: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

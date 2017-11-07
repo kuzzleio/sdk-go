@@ -6,61 +6,43 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestZrevRangeByLexEmptyKey(t *testing.T) {
+func TestZrevrangebylexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByLex("", "-", "(g", qo)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "", "(g", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrevrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrevRangeByLexEmptyMin(t *testing.T) {
+func TestZrevrangebylexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByLex("foo", "", "(g", qo)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrevrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrevRangeByLexEmptyMax(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrevRangeByLex("foo", "-", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrevRangeByLex: max required", fmt.Sprint(err))
-}
-
-func TestZrevRangeByLexError(t *testing.T) {
+func TestZrevrangebylexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	_, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrevRangeByLex(t *testing.T) {
+func TestZrevrangebylex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -75,15 +57,13 @@ func TestZrevRangeByLex(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	res, _ := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", nil)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func TestZrevRangeByLexWithLimits(t *testing.T) {
+func TestZrevrangebylexWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -99,23 +79,21 @@ func TestZrevRangeByLexWithLimits(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	res, _ := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", qo)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func ExampleMs_ZrevRangeByLex() {
+func ExampleMs_Zrevrangebylex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, err := memoryStorage.ZrevRangeByLex("foo", "-", "(g", qo)
+	res, err := k.MemoryStorage.Zrevrangebylex("foo", "-", "(g", qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

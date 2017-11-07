@@ -8,13 +8,6 @@ import (
 // Rpushx appends the specified value at the end of a list,
 // only if the key already exists and if it holds a list.
 func (ms Ms) Rpushx(key string, value string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Rpushx: key required", 400)
-	}
-	if value == "" {
-		return 0, types.NewError("Ms.Rpushx: value required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

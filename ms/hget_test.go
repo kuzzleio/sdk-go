@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestHgetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hget("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hget: key required", fmt.Sprint(err))
-}
-
-func TestHgetEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hget("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hget: field required", fmt.Sprint(err))
-}
 
 func TestHgetError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestHgetError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hget("foo", "bar", qo)
+	_, err := k.MemoryStorage.Hget("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -65,21 +40,17 @@ func TestHget(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hget("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Hget("foo", "bar", nil)
 
-	assert.Equal(t, "result", res)
+	assert.Equal(t, "result", *res)
 }
 
 func ExampleMs_Hget() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hget("foo", "bar", qo)
+	res, err := k.MemoryStorage.Hget("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

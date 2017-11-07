@@ -6,50 +6,34 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestZunionStoreEmptyDestination(t *testing.T) {
+func TestZunionstoreEmptyKeys(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZunionStore("", []string{"bar", "rab"}, qo)
+	_, err := k.MemoryStorage.Zunionstore("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZunionStore: destination required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zunionstore: please provide at least one key", fmt.Sprint(err))
 }
 
-func TestZunionStoreEmptyKeys(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZunionStore("foo", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZunionStore: please provide at least one key", fmt.Sprint(err))
-}
-
-func TestZunionStoreError(t *testing.T) {
+func TestZunionstoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	_, err := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZunionStore(t *testing.T) {
+func TestZunionstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -63,15 +47,13 @@ func TestZunionStore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 2, res)
 }
 
-func TestZunionStoreWithOptions(t *testing.T) {
+func TestZunionstoreWithOptions(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -87,25 +69,23 @@ func TestZunionStoreWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, _ := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, qo)
 
 	assert.Equal(t, 2, res)
 }
 
-func ExampleMs_ZunionStore() {
+func ExampleMs_Zunionstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetAggregate("sum")
 	qo.SetWeights([]int{1, 2})
-	res, err := memoryStorage.ZunionStore("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Zunionstore("foo", []string{"bar", "rab"}, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())

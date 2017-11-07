@@ -6,23 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestZscanEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 42
-	_, err := memoryStorage.Zscan("", cursor, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscan: key required", fmt.Sprint(err))
-}
 
 func TestZscanError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -31,11 +18,7 @@ func TestZscanError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 42
-	_, err := memoryStorage.Zscan("foo", cursor, qo)
+	_, err := k.MemoryStorage.Zscan("foo", 42, nil)
 
 	assert.NotNil(t, err)
 }
@@ -59,11 +42,7 @@ func TestZscan(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 42
-	res, _ := memoryStorage.Zscan("foo", cursor, qo)
+	res, _ := k.MemoryStorage.Zscan("foo", 42, nil)
 
 	assert.Equal(t, &scanResponse, res)
 }
@@ -89,13 +68,12 @@ func TestZscanWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, _ := memoryStorage.Zscan("foo", cursor, qo)
+
+	res, _ := k.MemoryStorage.Zscan("foo", 42, qo)
 
 	assert.Equal(t, &scanResponse, res)
 }
@@ -103,18 +81,17 @@ func TestZscanWithOptions(t *testing.T) {
 func ExampleMs_Zscan() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
-	cursor := 42
 	qo.SetCount(10)
 	qo.SetMatch("*")
-	res, err := memoryStorage.Zscan("foo", cursor, qo)
+
+	res, err := k.MemoryStorage.Zscan("foo", 42, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res.Cursor, res.Values, cursor)
+	fmt.Println(res.Cursor, res.Values)
 }

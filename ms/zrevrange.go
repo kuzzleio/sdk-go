@@ -5,12 +5,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ZrevRange is identical to zrange, except that the sorted set is traversed in descending order.
-func (ms Ms) ZrevRange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.ZrevRange: key required", 400)
-	}
-
+// Zrevrange is identical to zrange, except that the sorted set is traversed in descending order.
+func (ms Ms) Zrevrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

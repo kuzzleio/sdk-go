@@ -5,15 +5,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ZrevRank returns the position of an element in a sorted set, with scores in descending order. The index returned is 0-based (the lowest score member has an index of 0).
-func (ms Ms) ZrevRank(key string, member string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.ZrevRank: key required", 400)
-	}
-	if member == "" {
-		return 0, types.NewError("Ms.ZrevRank: member required", 400)
-	}
-
+// Zrevrank returns the position of an element in a sorted set, with scores in descending order. The index returned is 0-based (the lowest score member has an index of 0).
+func (ms Ms) Zrevrank(key string, member string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

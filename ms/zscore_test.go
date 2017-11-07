@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestZscoreEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zscore("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscore: key required", fmt.Sprint(err))
-}
-
-func TestZscoreEmptyMember(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zscore("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zscore: member required", fmt.Sprint(err))
-}
 
 func TestZscoreError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestZscoreError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zscore("foo", "bar", qo)
+	_, err := k.MemoryStorage.Zscore("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -65,10 +40,8 @@ func TestZscore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Zscore("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Zscore("foo", "bar", nil)
 
 	assert.Equal(t, result, res)
 }
@@ -76,10 +49,8 @@ func TestZscore(t *testing.T) {
 func ExampleMs_Zscore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Zscore("foo", "bar", qo)
+	res, err := k.MemoryStorage.Zscore("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

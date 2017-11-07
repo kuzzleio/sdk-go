@@ -12,18 +12,6 @@ import (
 	"testing"
 )
 
-func TestHscanEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cur := 0
-	_, err := memoryStorage.Hscan("", cur, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hscan: key required", fmt.Sprint(err))
-}
-
 func TestHscanError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -31,11 +19,8 @@ func TestHscanError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	cur := 0
-	_, err := memoryStorage.Hscan("foo", cur, qo)
+	_, err := k.MemoryStorage.Hscan("foo", 0, nil)
 
 	assert.NotNil(t, err)
 }
@@ -62,11 +47,7 @@ func TestHscanCursorConvError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 1
-	_, err := memoryStorage.Hscan("foo", cursor, qo)
+	_, err := k.MemoryStorage.Hscan("foo", 1, nil)
 
 	assert.NotNil(t, err)
 }
@@ -93,11 +74,7 @@ func TestHscan(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 1
-	res, _ := memoryStorage.Hscan("foo", cursor, qo)
+	res, _ := k.MemoryStorage.Hscan("foo", 1, nil)
 
 	assert.Equal(t, &MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
 }
@@ -124,14 +101,12 @@ func TestHscanWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 	qo.SetMatch("*")
 
-	cursor := 1
-	res, _ := memoryStorage.Hscan("foo", cursor, qo)
+	res, _ := k.MemoryStorage.Hscan("foo", 1, qo)
 
 	assert.Equal(t, &MemoryStorage.HscanResponse{Cursor: 12, Values: []string{"some", "results"}}, res)
 }
@@ -139,20 +114,17 @@ func TestHscanWithOptions(t *testing.T) {
 func ExampleMs_Hscan() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 	qo.SetMatch("*")
 
-	cursor := 1
-
-	res, err := memoryStorage.Hscan("foo", cursor, qo)
+	res, err := k.MemoryStorage.Hscan("foo", 0, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res.Cursor, res.Values, cursor)
+	fmt.Println(res.Cursor, res.Values)
 }

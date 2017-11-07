@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestExpireatEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Expireat("", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Expireat: key required", fmt.Sprint(err))
-}
 
 func TestExpireatError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestExpireatError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Expireat("foo", 1, qo)
+	_, err := k.MemoryStorage.Expireat("foo", 1, nil)
 
 	assert.NotNil(t, err)
 }
@@ -54,10 +40,8 @@ func TestExpireat(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Expireat("foo", 2, qo)
+	res, _ := k.MemoryStorage.Expireat("foo", 2, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -65,10 +49,8 @@ func TestExpireat(t *testing.T) {
 func ExampleMs_Expireat() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Expireat("foo", 2, qo)
+	res, err := k.MemoryStorage.Expireat("foo", 2, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -8,10 +8,6 @@ import (
 // Lpushx prepends the specified value to a list,
 // only if the key already exists and if it holds a list.
 func (ms Ms) Lpushx(key string, value string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Lpushx: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

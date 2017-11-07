@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestRpopEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Rpop("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Rpop: key required", fmt.Sprint(err))
-}
 
 func TestRpopError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestRpopError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Rpop("foo", qo)
+	_, err := k.MemoryStorage.Rpop("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,21 +38,17 @@ func TestRpop(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Rpop("foo", qo)
+	res, _ := k.MemoryStorage.Rpop("foo", nil)
 
-	assert.Equal(t, "bar", res)
+	assert.Equal(t, "bar", *res)
 }
 
 func ExampleMs_Rpop() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Rpop("foo", qo)
+	res, err := k.MemoryStorage.Rpop("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

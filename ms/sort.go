@@ -8,11 +8,7 @@ import (
 // Sort sorts and returns elements contained in a list, a set of unique values or a sorted set.
 // By default, sorting is numeric and elements are compared by their value interpreted
 // as double precision floating point number.
-func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Sort: key required", 400)
-	}
-
+func (ms Ms) Sort(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -61,7 +57,7 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]interface{}, error)
 		return nil, res.Error
 	}
 
-	var returnedResult []interface{}
+	var returnedResult []string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

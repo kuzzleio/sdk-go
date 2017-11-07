@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestRpushxEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Rpushx("", "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Rpushx: key required", fmt.Sprint(err))
-}
-
-func TestRpushxEmptyValue(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Rpushx("foo", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Rpushx: value required", fmt.Sprint(err))
-}
 
 func TestRpushxError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestRpushxError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Rpushx("foo", "bar", qo)
+	_, err := k.MemoryStorage.Rpushx("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -63,10 +38,8 @@ func TestRpushx(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Rpushx("foo", "bar", qo)
+	res, _ := k.MemoryStorage.Rpushx("foo", "bar", nil)
 
 	assert.Equal(t, 6, res)
 }
@@ -74,10 +47,8 @@ func TestRpushx(t *testing.T) {
 func ExampleMs_Rpushx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Rpushx("foo", "bar", qo)
+	res, err := k.MemoryStorage.Rpushx("foo", "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

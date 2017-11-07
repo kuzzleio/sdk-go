@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestPersistEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Persist("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Persist: key required", fmt.Sprint(err))
-}
 
 func TestPersistError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestPersistError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Persist("foo", qo)
+	_, err := k.MemoryStorage.Persist("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +38,8 @@ func TestPersists(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Persist("foo", qo)
+	res, _ := k.MemoryStorage.Persist("foo", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -63,10 +47,8 @@ func TestPersists(t *testing.T) {
 func ExampleMs_Persist() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Persist("foo", qo)
+	res, err := k.MemoryStorage.Persist("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,29 +6,15 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestSaddEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Sadd("", []string{}, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Sadd: key required", fmt.Sprint(err))
-}
-
 func TestSaddEmptyValues(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Sadd("foo", []string{}, qo)
+	_, err := k.MemoryStorage.Sadd("foo", []string{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Sadd: please provide at least one value", fmt.Sprint(err))
@@ -41,10 +27,8 @@ func TestSaddError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Sadd("foo", []string{"bar", "rab"}, qo)
+	_, err := k.MemoryStorage.Sadd("foo", []string{"bar", "rab"}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -63,10 +47,8 @@ func TestSadd(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Sadd("foo", []string{"bar", "rab"}, qo)
+	res, _ := k.MemoryStorage.Sadd("foo", []string{"bar", "rab"}, nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -74,10 +56,8 @@ func TestSadd(t *testing.T) {
 func ExampleMs_Sadd() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Sadd("foo", []string{"bar", "rab"}, qo)
+	res, err := k.MemoryStorage.Sadd("foo", []string{"bar", "rab"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

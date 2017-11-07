@@ -6,11 +6,7 @@ import (
 )
 
 // Getset sets a new value for a key and returns its previous value.
-func (ms Ms) Getset(key string, value string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Getset: key required", 400)
-	}
-
+func (ms Ms) Getset(key string, value string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -28,9 +24,9 @@ func (ms Ms) Getset(key string, value string, options types.QueryOptions) (strin
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
-	var returnedResult string
+	var returnedResult *string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestPttlEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Pttl("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Pttl: key required", fmt.Sprint(err))
-}
 
 func TestPttlError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestPttlError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Pttl("foo", qo)
+	_, err := k.MemoryStorage.Pttl("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +38,8 @@ func TestPttl(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Pttl("foo", qo)
+	res, _ := k.MemoryStorage.Pttl("foo", nil)
 
 	assert.Equal(t, 39414, res)
 }
@@ -63,10 +47,8 @@ func TestPttl(t *testing.T) {
 func ExampleMs_Pttl() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Pttl("foo", qo)
+	res, err := k.MemoryStorage.Pttl("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

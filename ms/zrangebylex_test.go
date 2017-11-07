@@ -6,61 +6,43 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestZrangeByLexEmptyKey(t *testing.T) {
+func TestZrangebylexEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrangeByLex("", "-", "(g", qo)
+	_, err := k.MemoryStorage.Zrangebylex("foo", "", "(g", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrangeByLexEmptyMin(t *testing.T) {
+func TestZrangebylexEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrangeByLex("foo", "", "(g", qo)
+	_, err := k.MemoryStorage.Zrangebylex("foo", "-", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zrangebylex: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZrangeByLexEmptyMax(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZrangeByLex("foo", "-", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZrangeByLex: max required", fmt.Sprint(err))
-}
-
-func TestZrangeByLexError(t *testing.T) {
+func TestZrangebylexError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+	_, err := k.MemoryStorage.Zrangebylex("foo", "-", "(g", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZrangeByLex(t *testing.T) {
+func TestZrangebylex(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -75,15 +57,13 @@ func TestZrangeByLex(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+	res, _ := k.MemoryStorage.Zrangebylex("foo", "-", "(g", nil)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func TestZrangeByLexWithLimits(t *testing.T) {
+func TestZrangebylexWithLimits(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -99,22 +79,19 @@ func TestZrangeByLexWithLimits(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetLimit([]int{0, 1})
-	res, _ := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+	res, _ := k.MemoryStorage.Zrangebylex("foo", "-", "(g", qo)
 
 	assert.Equal(t, []string{"bar", "rab"}, res)
 }
 
-func ExampleMs_ZrangeByLex() {
+func ExampleMs_Zrangebylex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.ZrangeByLex("foo", "-", "(g", qo)
+	res, err := k.MemoryStorage.Zrangebylex("foo", "-", "(g", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

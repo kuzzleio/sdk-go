@@ -6,7 +6,6 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -19,11 +18,7 @@ func TestScanError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 0
-	_, err := memoryStorage.Scan(cursor, qo)
+	_, err := k.MemoryStorage.Scan(0, nil)
 
 	assert.NotNil(t, err)
 }
@@ -47,11 +42,7 @@ func TestScan(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	cursor := 0
-	res, _ := memoryStorage.Scan(cursor, qo)
+	res, _ := k.MemoryStorage.Scan(0, nil)
 
 	assert.Equal(t, &scanResponse, res)
 }
@@ -75,14 +66,12 @@ func TestScanWithOptions(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 	qo.SetMatch("*")
 
-	cursor := 0
-	res, _ := memoryStorage.Scan(cursor, qo)
+	res, _ := k.MemoryStorage.Scan(0, qo)
 
 	assert.Equal(t, &scanResponse, res)
 }
@@ -90,19 +79,17 @@ func TestScanWithOptions(t *testing.T) {
 func ExampleMs_Scan() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
 	qo := types.NewQueryOptions()
 
 	qo.SetCount(42)
 	qo.SetMatch("*")
 
-	cursor := 0
-	res, err := memoryStorage.Scan(cursor, qo)
+	res, err := k.MemoryStorage.Scan(0, qo)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res.Cursor, res.Values, cursor)
+	fmt.Println(res.Cursor, res.Values)
 }

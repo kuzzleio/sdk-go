@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestScardEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Scard("", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Scard: key required", fmt.Sprint(err))
-}
 
 func TestScardError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestScardError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Scard("foo", qo)
+	_, err := k.MemoryStorage.Scard("foo", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +38,8 @@ func TestScard(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Scard("foo", qo)
+	res, _ := k.MemoryStorage.Scard("foo", nil)
 
 	assert.Equal(t, 42, res)
 }
@@ -63,10 +47,8 @@ func TestScard(t *testing.T) {
 func ExampleMs_Scard() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Scard("foo", qo)
+	res, err := k.MemoryStorage.Scard("foo", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

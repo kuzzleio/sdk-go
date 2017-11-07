@@ -7,10 +7,6 @@ import (
 
 // Getrange returns a substring of a key's value (index starts at position 0).
 func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Getrange: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

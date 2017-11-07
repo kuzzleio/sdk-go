@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestZcountEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zcount("", 0, 10, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zcount: key required", fmt.Sprint(err))
-}
 
 func TestZcountError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestZcountError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zcount("foo", 0, 10, qo)
+	_, err := k.MemoryStorage.Zcount("foo", 0, 10, nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,10 +38,8 @@ func TestZcount(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Zcount("foo", 0, 10, qo)
+	res, _ := k.MemoryStorage.Zcount("foo", 0, 10, nil)
 
 	assert.Equal(t, 2, res)
 }
@@ -63,10 +47,8 @@ func TestZcount(t *testing.T) {
 func ExampleMs_Zcount() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Zcount("foo", 0, 10, qo)
+	res, err := k.MemoryStorage.Zcount("foo", 0, 10, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -6,50 +6,25 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestZincrByEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZincrBy("", "bar", 1.337, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZincrBy: key required", fmt.Sprint(err))
-}
-
-func TestZincrByEmptyMember(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZincrBy("foo", "", 1.337, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZincrBy: member required", fmt.Sprint(err))
-}
-
-func TestZincrByError(t *testing.T) {
+func TestZincrbyError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	_, err := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZincrBy(t *testing.T) {
+func TestZincrby(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -63,21 +38,17 @@ func TestZincrBy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	res, _ := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	assert.Equal(t, 11.337, res)
 }
 
-func ExampleMs_ZincrBy() {
+func ExampleMs_Zincrby() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.ZincrBy("foo", "bar", 1.337, qo)
+	res, err := k.MemoryStorage.Zincrby("foo", "bar", 1.337, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

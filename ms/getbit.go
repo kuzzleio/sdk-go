@@ -7,10 +7,6 @@ import (
 
 // Getbit returns the bit value at offset, in the string value stored in a key.
 func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return -1, types.NewError("Ms.Getbit: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

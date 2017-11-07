@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestPsetexEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Psetex("", "bar", 60000, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Psetex: key required", fmt.Sprint(err))
-}
-
-func TestPsetexEmptyValue(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Psetex("foo", "", 60000, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Psetex: value required", fmt.Sprint(err))
-}
 
 func TestPsetexError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestPsetexError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Psetex("foo", "bar", 60000, qo)
+	_, err := k.MemoryStorage.Psetex("foo", "bar", 60000, nil)
 
 	assert.NotNil(t, err)
 }
@@ -63,10 +38,8 @@ func TestPsetex(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Psetex("foo", "bar", 60000, qo)
+	res, _ := k.MemoryStorage.Psetex("foo", "bar", 60000, nil)
 
 	assert.Equal(t, "OK", res)
 }
@@ -74,10 +47,8 @@ func TestPsetex(t *testing.T) {
 func ExampleMs_Psetex() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Psetex("foo", "bar", 60000, qo)
+	res, err := k.MemoryStorage.Psetex("foo", "bar", 60000, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

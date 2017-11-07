@@ -6,11 +6,18 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestDelEmptyList(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	_, err := k.MemoryStorage.Del(nil, nil)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "[400] Ms.Del: at least one key is required", fmt.Sprint(err))
+}
 
 func TestDelError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -19,10 +26,8 @@ func TestDelError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Del([]string{}, qo)
+	_, err := k.MemoryStorage.Del([]string{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,10 +48,8 @@ func TestDel(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Del([]string{"some", "keys"}, qo)
+	res, _ := k.MemoryStorage.Del([]string{"some", "keys"}, nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -54,10 +57,8 @@ func TestDel(t *testing.T) {
 func ExampleMs_Del() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Del([]string{"some", "keys"}, qo)
+	res, err := k.MemoryStorage.Del([]string{"some", "keys"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

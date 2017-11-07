@@ -8,12 +8,9 @@ import (
 // SinterStore computes the intersection of the provided sets of unique values and stores
 // the result in the destination key.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) SinterStore(destination string, keys []string, options types.QueryOptions) (int, error) {
-	if destination == "" {
-		return 0, types.NewError("Ms.SinterStore: destination required", 400)
-	}
+func (ms Ms) Sinterstore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
-		return 0, types.NewError("Ms.SinterStore: please provide at least one key", 400)
+		return 0, types.NewError("Ms.Sinterstore: please provide at least one key to intersect", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

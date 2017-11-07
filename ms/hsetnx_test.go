@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestHsetnxEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hsetnx("", "bar", "barbar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hsetnx: key required", fmt.Sprint(err))
-}
-
-func TestHsetnxEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hsetnx("foo", "", "barbar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hsetnx: field required", fmt.Sprint(err))
-}
 
 func TestHsetnxError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestHsetnxError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hsetnx("foo", "bar", "barbar", qo)
+	_, err := k.MemoryStorage.Hsetnx("foo", "bar", "barbar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -66,10 +41,8 @@ func TestHsetnx(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hsetnx("foo", "bar", "barbar", qo)
+	res, _ := k.MemoryStorage.Hsetnx("foo", "bar", "barbar", nil)
 
 	assert.Equal(t, 1, res)
 }
@@ -77,10 +50,8 @@ func TestHsetnx(t *testing.T) {
 func ExampleMs_Hsetnx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hsetnx("foo", "bar", "barbar", qo)
+	res, err := k.MemoryStorage.Hsetnx("foo", "bar", "barbar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

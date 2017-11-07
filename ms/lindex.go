@@ -5,12 +5,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Lindex returns all keys matching the provided pattern.
-func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Lindex: key required", 400)
-	}
-
+// Returns the element at the provided index in a list.
+func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -25,9 +21,9 @@ func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (string, 
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
-	var returnedResult string
+	var returnedResult *string
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult, nil

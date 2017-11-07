@@ -7,10 +7,6 @@ import (
 
 // Append a value to a key
 func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Append: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

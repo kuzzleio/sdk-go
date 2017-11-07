@@ -6,61 +6,43 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestZlexCountEmptyDestination(t *testing.T) {
+func TestZlexcountEmptyMin(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZlexCount("", "[b", "[f", qo)
+	_, err := k.MemoryStorage.Zlexcount("foo", "", "[f", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZlexCount: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zlexcount: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZlexCountEmptyMin(t *testing.T) {
+func TestZlexcountEmptyMax(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZlexCount("foo", "", "[f", qo)
+	_, err := k.MemoryStorage.Zlexcount("foo", "[b", "", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZlexCount: min required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Zlexcount: an empty string is not a valid string range item", fmt.Sprint(err))
 }
 
-func TestZlexCountEmptyMax(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.ZlexCount("foo", "[b", "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.ZlexCount: max required", fmt.Sprint(err))
-}
-
-func TestZlexCountError(t *testing.T) {
+func TestZlexcountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.ZlexCount("foo", "[b", "[f", qo)
+	_, err := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestZlexCount(t *testing.T) {
+func TestZlexcount(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -74,21 +56,17 @@ func TestZlexCount(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.ZlexCount("foo", "[b", "[f", qo)
+	res, _ := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	assert.Equal(t, 2, res)
 }
 
-func ExampleMs_ZlexCount() {
+func ExampleMs_Zlexcount() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.ZlexCount("foo", "[b", "[f", qo)
+	res, err := k.MemoryStorage.Zlexcount("foo", "[b", "[f", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

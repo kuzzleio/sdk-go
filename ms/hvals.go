@@ -7,10 +7,6 @@ import (
 
 // Hval returns all values contained in a hash.
 func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Hvals: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

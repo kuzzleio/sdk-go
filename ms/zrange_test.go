@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestZrangeEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Zrange("", 0, -1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Zrange: key required", fmt.Sprint(err))
-}
 
 func TestZrangeError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestZrangeError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Zrange("foo", 0, -1, qo)
+	_, err := k.MemoryStorage.Zrange("foo", 0, -1, nil)
 
 	assert.NotNil(t, err)
 }
@@ -53,10 +39,8 @@ func TestZrange(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Zrange("foo", 0, -1, qo)
+	res, _ := k.MemoryStorage.Zrange("foo", 0, -1, nil)
 
 	expectedResult := []*types.MSSortedSet{
 		{Member: "bar", Score: 5},
@@ -69,10 +53,8 @@ func TestZrange(t *testing.T) {
 func ExampleMs_Zrange() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Zrange("foo", 0, -1, qo)
+	res, err := k.MemoryStorage.Zrange("foo", 0, -1, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

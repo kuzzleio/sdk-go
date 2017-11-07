@@ -6,22 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestLsetEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Lset("", 1, "bar", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Lset: key required", fmt.Sprint(err))
-}
 
 func TestLsetError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -30,10 +18,8 @@ func TestLsetError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Lset("foo", 1, "bar", qo)
+	_, err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -55,10 +41,8 @@ func TestLset(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Lset("foo", 1, "bar", qo)
+	res, _ := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
 	assert.Equal(t, "result", res)
 }
@@ -66,10 +50,8 @@ func TestLset(t *testing.T) {
 func ExampleMs_Lset() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Lset("foo", 1, "bar", qo)
+	res, err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

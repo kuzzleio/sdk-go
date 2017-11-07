@@ -7,6 +7,10 @@ import (
 
 // Del deletes keys
 func (ms Ms) Del(keys []string, options types.QueryOptions) (int, error) {
+	if len(keys) == 0 {
+		return 0, types.NewError("Ms.Del: at least one key is required", 400)
+	}
+
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

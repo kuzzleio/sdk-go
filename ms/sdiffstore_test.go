@@ -6,61 +6,34 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestSdiffStoreEmptyKey(t *testing.T) {
+func TestSdiffstoreEmptySets(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SdiffStore("", []string{"bar", "rab"}, "destination", qo)
+	_, err := k.MemoryStorage.Sdiffstore("foo", []string{}, "destination", nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: key required", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Sdiffstore: please provide at least one set to compare", fmt.Sprint(err))
 }
 
-func TestSdiffStoreEmptySets(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SdiffStore("foo", []string{}, "destination", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: please provide at least one set", fmt.Sprint(err))
-}
-
-func TestSdiffStoreEmptyDestination(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "", qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.SdiffStore: destination required", fmt.Sprint(err))
-}
-
-func TestSdiffStoreError(t *testing.T) {
+func TestSdiffstoreError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	_, err := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestSdiffStore(t *testing.T) {
+func TestSdiffstore(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -74,21 +47,17 @@ func TestSdiffStore(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	res, _ := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	assert.Equal(t, 42, res)
 }
 
-func ExampleMs_SdiffStore() {
+func ExampleMs_Sdiffstore() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.SdiffStore("foo", []string{"bar", "rab"}, "destination", qo)
+	res, err := k.MemoryStorage.Sdiffstore("foo", []string{"bar", "rab"}, "destination", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

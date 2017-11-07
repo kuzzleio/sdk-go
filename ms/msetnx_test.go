@@ -6,44 +6,39 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestMsetNxEmptyEntries(t *testing.T) {
+func TestMsetnxEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.MsetNx([]*types.MSKeyValue{}, qo)
+	_, err := k.MemoryStorage.Msetnx([]*types.MSKeyValue{}, nil)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.MsetNx: please provide at least one key/value entry", fmt.Sprint(err))
+	assert.Equal(t, "[400] Ms.Msetnx: please provide at least one key/value entry", fmt.Sprint(err))
 }
 
-func TestMsetNxError(t *testing.T) {
+func TestMsetnxError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
 	entries := []*types.MSKeyValue{
 		{Key: "foo", Value: "bar"},
 		{Key: "bar", Value: "foo"},
 	}
 
-	_, err := memoryStorage.MsetNx(entries, qo)
+	_, err := k.MemoryStorage.Msetnx(entries, nil)
 
 	assert.NotNil(t, err)
 }
 
-func TestMsetNx(t *testing.T) {
+func TestMsetnx(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -57,31 +52,27 @@ func TestMsetNx(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
 	entries := []*types.MSKeyValue{
 		{Key: "foo", Value: "bar"},
 		{Key: "bar", Value: "foo"},
 	}
 
-	res, _ := memoryStorage.MsetNx(entries, qo)
+	res, _ := k.MemoryStorage.Msetnx(entries, nil)
 
 	assert.Equal(t, 1, res)
 }
 
-func ExampleMs_MsetNx() {
+func ExampleMs_Msetnx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
 	entries := []*types.MSKeyValue{
 		{Key: "foo", Value: "bar"},
 		{Key: "bar", Value: "foo"},
 	}
 
-	res, err := memoryStorage.MsetNx(entries, qo)
+	res, err := k.MemoryStorage.Msetnx(entries, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

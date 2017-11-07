@@ -8,10 +8,6 @@ import (
 // Incr increments the number stored at key by 1.
 // If the key does not exist, it is set to 0 before performing the operation.
 func (ms Ms) Incr(key string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Incr: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -7,10 +7,6 @@ import (
 
 // Bitop performs a bitwise operation between multiple keys (containing string values) and stores the result in the destination key.
 func (ms Ms) Bitop(key string, operation string, keys []string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Bitop: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

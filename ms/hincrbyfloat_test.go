@@ -6,33 +6,10 @@ import (
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	MemoryStorage "github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
-func TestHincrbyfloatEmptyKey(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hincrbyfloat("", "bar", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hincrbyfloat: key required", fmt.Sprint(err))
-}
-
-func TestHincrbyfloatEmptyField(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
-
-	_, err := memoryStorage.Hincrbyfloat("foo", "", 1, qo)
-
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] Ms.Hincrbyfloat: field required", fmt.Sprint(err))
-}
 
 func TestHincrbyfloatError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -41,10 +18,8 @@ func TestHincrbyfloatError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	_, err := memoryStorage.Hincrbyfloat("foo", "bar", 1, qo)
+	_, err := k.MemoryStorage.Hincrbyfloat("foo", "bar", 1, nil)
 
 	assert.NotNil(t, err)
 }
@@ -66,10 +41,8 @@ func TestHincrbyfloat(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, _ := memoryStorage.Hincrbyfloat("foo", "bar", 42, qo)
+	res, _ := k.MemoryStorage.Hincrbyfloat("foo", "bar", 42, nil)
 
 	assert.Equal(t, float64(1), res)
 }
@@ -77,10 +50,8 @@ func TestHincrbyfloat(t *testing.T) {
 func ExampleMs_Hincrbyfloat() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	memoryStorage := MemoryStorage.NewMs(k)
-	qo := types.NewQueryOptions()
 
-	res, err := memoryStorage.Hincrbyfloat("foo", "bar", 42, qo)
+	res, err := k.MemoryStorage.Hincrbyfloat("foo", "bar", 42, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

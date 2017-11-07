@@ -7,10 +7,6 @@ import (
 
 // Bitpos returns the position of the first bit set to 1 or 0 in a string, or in a substring
 func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Bitpos: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

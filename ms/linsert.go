@@ -7,8 +7,8 @@ import (
 
 // Linsert inserts a value in a list, either before or after the reference pivot value.
 func (ms Ms) Linsert(key string, position string, pivot string, value string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.Linsert: key required", 400)
+	if position != "before" && position != "after" {
+		return -1, types.NewError("Ms.Linsert: invalid position argument (must be 'before' or 'after')", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -31,7 +31,7 @@ func (ms Ms) Linsert(key string, position string, pivot string, value string, op
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return -1, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)

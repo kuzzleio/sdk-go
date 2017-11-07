@@ -18,14 +18,14 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 		if options.GetSort() != "" {
 			opts = append(opts, options.GetSort())
 		}
-	}
 
-	if options.GetWithcoord() {
-		opts = append(opts, "withcoord")
-	}
+		if options.GetWithcoord() {
+			opts = append(opts, "withcoord")
+		}
 
-	if options.GetWithdist() {
-		opts = append(opts, "withdist")
+		if options.GetWithdist() {
+			opts = append(opts, "withdist")
+		}
 	}
 
 	query.Options = []interface{}(opts)
@@ -83,10 +83,6 @@ func responseToGeoradius(response *types.KuzzleResponse, options types.QueryOpti
 
 // Georadius returns the geospatial members of a key inside the provided radius
 func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.Georadius, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.Georadius: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

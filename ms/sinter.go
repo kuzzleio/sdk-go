@@ -8,7 +8,7 @@ import (
 // Sinter returns the intersection of the provided sets of unique values.
 func (ms Ms) Sinter(keys []string, options types.QueryOptions) ([]string, error) {
 	if len(keys) == 0 {
-		return nil, types.NewError("Ms.Sinter: please provide at least one key", 400)
+		return nil, types.NewError("Ms.Sinter: please provide at least one key to intersect", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

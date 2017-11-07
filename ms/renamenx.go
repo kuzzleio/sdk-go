@@ -6,14 +6,7 @@ import (
 )
 
 // RenameNx renames a key to newkey, only if newkey does not already exist.
-func (ms Ms) RenameNx(key string, newkey string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.RenameNx: key required", 400)
-	}
-	if newkey == "" {
-		return 0, types.NewError("Ms.RenameNx: newkey required", 400)
-	}
-
+func (ms Ms) Renamenx(key string, newkey string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

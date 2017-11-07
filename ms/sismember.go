@@ -5,15 +5,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// SisMember checks if member is a member of the set of unique values stored at key.
-func (ms Ms) SisMember(key string, member string, options types.QueryOptions) (int, error) {
-	if key == "" {
-		return 0, types.NewError("Ms.SisMember: key required", 400)
-	}
-	if member == "" {
-		return 0, types.NewError("Ms.SisMember: member required", 400)
-	}
-
+// Sismember checks if member is a member of the set of unique values stored at key.
+func (ms Ms) Sismember(key string, member string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

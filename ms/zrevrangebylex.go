@@ -5,16 +5,10 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ZrevRangeByLex is identical to zrangebylex except that the sorted set is traversed in descending order.
-func (ms Ms) ZrevRangeByLex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
-	if key == "" {
-		return nil, types.NewError("Ms.ZrevRangeByLex: key required", 400)
-	}
-	if min == "" {
-		return nil, types.NewError("Ms.ZrevRangeByLex: min required", 400)
-	}
-	if max == "" {
-		return nil, types.NewError("Ms.ZrevRangeByLex: max required", 400)
+// Zrevrangebylex is identical to zrangebylex except that the sorted set is traversed in descending order.
+func (ms Ms) Zrevrangebylex(key string, min string, max string, options types.QueryOptions) ([]string, error) {
+	if min == "" || max == "" {
+		return nil, types.NewError("Ms.Zrevrangebylex: an empty string is not a valid string range item", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)

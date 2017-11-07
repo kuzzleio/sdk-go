@@ -7,10 +7,6 @@ import (
 
 // Type returns the type of the value held by a key.
 func (ms Ms) Type(key string, options types.QueryOptions) (string, error) {
-	if key == "" {
-		return "", types.NewError("Ms.Type: key required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
