@@ -95,8 +95,8 @@ type queryOptions struct {
 	get             []string
 	alpha           bool
 	unit            string
-	withcoord				bool
-	withdist				bool
+	withcoord       bool
+	withdist        bool
 }
 
 func (qo queryOptions) GetQueuable() bool {

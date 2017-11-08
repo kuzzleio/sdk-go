@@ -1,9 +1,9 @@
 package kuzzle
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // CreateIndex create a new empty data index, with no associated mapping.

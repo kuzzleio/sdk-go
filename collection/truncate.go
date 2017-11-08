@@ -1,9 +1,9 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Truncate delete every Documents from the provided Collection.

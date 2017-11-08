@@ -233,7 +233,6 @@ type (
 		Value      string `json:"value"`
 	}
 
-
 	Georadius struct {
 		Name string
 		Lon  float64

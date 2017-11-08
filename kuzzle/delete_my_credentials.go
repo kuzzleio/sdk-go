@@ -1,9 +1,9 @@
 package kuzzle
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"encoding/json"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // DeleteMyCredentials delete credentials of the specified strategy for the current user.

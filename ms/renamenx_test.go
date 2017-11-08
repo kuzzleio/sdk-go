@@ -47,7 +47,7 @@ func TestRenamenx(t *testing.T) {
 func ExampleMs_Renamenx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	
+
 	res, err := k.MemoryStorage.Renamenx("foo", "bar", nil)
 
 	if err != nil {

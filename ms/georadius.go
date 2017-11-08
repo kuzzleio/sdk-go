@@ -58,7 +58,7 @@ func responseToGeoradius(response *types.KuzzleResponse, options types.QueryOpti
 		if options.GetWithcoord() {
 			coordstart := 1
 
-			if (options.GetWithdist()) {
+			if options.GetWithdist() {
 				coordstart++
 			}
 
@@ -105,5 +105,5 @@ func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, u
 		return nil, res.Error
 	}
 
-	return responseToGeoradius(res, options)	
+	return responseToGeoradius(res, options)
 }

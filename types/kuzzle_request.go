@@ -56,8 +56,8 @@ type SubscribeQuery struct {
 type VolatileData map[string]interface{}
 
 type UserData struct {
-	ProfileIds  []string               `json:"profileIds"`
-	Content     map[string]interface{} `json:"content"`
+	ProfileIds []string               `json:"profileIds"`
+	Content    map[string]interface{} `json:"content"`
 }
 
 type PolicyRestriction struct {

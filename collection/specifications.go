@@ -2,8 +2,8 @@ package collection
 
 import (
 	"encoding/json"
-	"github.com/kuzzleio/sdk-go/types"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetSpecifications retrieves the current specifications of the collection.

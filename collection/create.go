@@ -3,8 +3,8 @@ package collection
 import (
 	"encoding/json"
 
-	"github.com/kuzzleio/sdk-go/types"
 	"fmt"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Create creates a new empty data collection, with no associated mapping.

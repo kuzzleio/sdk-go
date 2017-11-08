@@ -25,7 +25,7 @@ func (ms Ms) Srandmember(key string, options types.QueryOptions) ([]string, erro
 		Controller: "ms",
 		Action:     "srandmember",
 		Id:         key,
-		Count:			count,
+		Count:      count,
 	}
 
 	go ms.Kuzzle.Query(query, options, result)
