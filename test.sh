@@ -22,6 +22,17 @@ show_cover_report() {
     go tool cover -${1}="$profile"
 }
 
+linter_check() {
+    invalid_files=$(gofmt -l .)
+
+    if [ -n "${invalid_files}" ]; then
+        echo "Lint errors on the following files:"
+        echo ${invalid_files}
+        exit 1
+    fi
+}
+
+linter_check
 generate_cover_data
 show_cover_report func
 case "$1" in
