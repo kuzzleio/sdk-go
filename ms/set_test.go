@@ -19,7 +19,7 @@ func TestSetError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.Set("foo", "bar", nil)
+	err := k.MemoryStorage.Set("foo", "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -39,9 +39,9 @@ func TestSet(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, nil)
+	err := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, nil)
 
-	assert.Equal(t, "OK", res)
+	assert.Nil(t, err)
 }
 
 func TestSetWithOptions(t *testing.T) {
@@ -65,21 +65,21 @@ func TestSetWithOptions(t *testing.T) {
 	qo.SetPx(42)
 	qo.SetXx(true)
 
-	res, _ := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, qo)
+	err := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, qo)
 
-	assert.Equal(t, "OK", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_Set() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, nil)
+	err := k.MemoryStorage.Set("foo", []string{"bar", "rab"}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }

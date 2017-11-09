@@ -19,7 +19,7 @@ func TestSetexError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.Setex("foo", "bar", 60, nil)
+	err := k.MemoryStorage.Setex("foo", "bar", 60, nil)
 
 	assert.NotNil(t, err)
 }
@@ -39,21 +39,21 @@ func TestSetEx(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.Setex("foo", "bar", 60, nil)
+	err := k.MemoryStorage.Setex("foo", "bar", 60, nil)
 
-	assert.Equal(t, "OK", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_SetEx() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.Setex("foo", "bar", 60, nil)
+	err := k.MemoryStorage.Setex("foo", "bar", 60, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }

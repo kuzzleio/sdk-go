@@ -13,7 +13,7 @@ import (
 
 func TestMsetEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.MemoryStorage.Mset([]*types.MSKeyValue{}, nil)
+	err := k.MemoryStorage.Mset([]*types.MSKeyValue{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Mset: please provide at least one key/value entry", fmt.Sprint(err))
@@ -32,7 +32,7 @@ func TestMsetError(t *testing.T) {
 		{Key: "bar", Value: "foo"},
 	}
 
-	_, err := k.MemoryStorage.Mset(entries, nil)
+	err := k.MemoryStorage.Mset(entries, nil)
 
 	assert.NotNil(t, err)
 }
@@ -57,9 +57,9 @@ func TestMset(t *testing.T) {
 		{Key: "bar", Value: "foo"},
 	}
 
-	res, _ := k.MemoryStorage.Mset(entries, nil)
+	err := k.MemoryStorage.Mset(entries, nil)
 
-	assert.Equal(t, "OK", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_Mset() {
@@ -71,12 +71,12 @@ func ExampleMs_Mset() {
 		{Key: "bar", Value: "foo"},
 	}
 
-	res, err := k.MemoryStorage.Mset(entries, nil)
+	err := k.MemoryStorage.Mset(entries, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }

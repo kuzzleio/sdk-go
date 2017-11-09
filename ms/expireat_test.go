@@ -43,7 +43,7 @@ func TestExpireat(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Expireat("foo", 2, nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Expireat() {

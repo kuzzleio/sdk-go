@@ -41,7 +41,7 @@ func TestPersists(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Persist("foo", nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Persist() {

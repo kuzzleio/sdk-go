@@ -6,7 +6,7 @@ import (
 )
 
 // Hexists check if a field exists in a hash
-func (ms Ms) Hexists(key string, field string, options types.QueryOptions) (int, error) {
+func (ms Ms) Hexists(key string, field string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -21,11 +21,11 @@ func (ms Ms) Hexists(key string, field string, options types.QueryOptions) (int,
 	res := <-result
 
 	if res.Error != nil {
-		return -1, res.Error
+		return false, res.Error
 	}
 
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

@@ -60,7 +60,7 @@ func TestMsetnx(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Msetnx(entries, nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Msetnx() {
