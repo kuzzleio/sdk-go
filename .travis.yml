@@ -2,7 +2,16 @@ language: go
 go:
   - 1.9
 install:
-  go get -t -v ./...
-script: ./test.sh
+  - git clone https://github.com/json-c/json-c.git
+  - cd json-c
+  - sudo apt-get install build-essential swig
+  - sh autogen.sh
+  - ./configure
+  - make
+  - sudo make install
+  - cd -
+  - go get -t -v ./...
+script: 
+  - bash ./test.sh
 after_success:
   - cd .cover && bash <(curl -s https://codecov.io/bash)
