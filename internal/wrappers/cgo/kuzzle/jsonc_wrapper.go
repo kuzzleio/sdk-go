@@ -3,6 +3,8 @@ package main
 /*
 	#cgo CFLAGS: -I../../headers
 	#cgo LDFLAGS: -ljson-c
+
+	#include <json-c/json.h>
 	#include "kuzzlesdk.h"
 */
 import "C"
@@ -141,4 +143,13 @@ func kuzzle_wrapper_json_get_json_object(jobj *C.json_object, key *C.char) *C.js
 
 	C.json_object_object_get_ex(jobj, key, &value)
 	return value
+}
+
+//export kuzzle_wrapper_free_json_object
+func kuzzle_wrapper_free_json_object(jobj *C.json_object) {
+	if jobj != nil {
+		// json_object_put returns 1 when the json object is freed
+		for C.json_object_put(jobj) != 1 {
+		}
+	}
 }

@@ -43,7 +43,7 @@ func kuzzle_wrapper_ms_bitcount(k *C.kuzzle, key *C.char, options *C.query_optio
 }
 
 //export kuzzle_wrapper_ms_bitop
-func kuzzle_wrapper_ms_bitop(k *C.kuzzle, key *C.char, operation *C.char, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_bitop(k *C.kuzzle, key *C.char, operation *C.char, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Bitop(
 		C.GoString(key),
 		C.GoString(operation),
@@ -90,7 +90,7 @@ func kuzzle_wrapper_ms_decrby(k *C.kuzzle, key *C.char, value C.int, options *C.
 }
 
 //export kuzzle_wrapper_ms_del
-func kuzzle_wrapper_ms_del(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_del(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Del(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -99,7 +99,7 @@ func kuzzle_wrapper_ms_del(k *C.kuzzle, keys **C.char, klen C.uint, options *C.q
 }
 
 //export kuzzle_wrapper_ms_exists
-func kuzzle_wrapper_ms_exists(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_exists(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Exists(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -108,34 +108,34 @@ func kuzzle_wrapper_ms_exists(k *C.kuzzle, keys **C.char, klen C.uint, options *
 }
 
 //export kuzzle_wrapper_ms_expire
-func kuzzle_wrapper_ms_expire(k *C.kuzzle, key *C.char, seconds C.ulong, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_expire(k *C.kuzzle, key *C.char, seconds C.ulong, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Expire(
 		C.GoString(key),
 		int(seconds),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_expireat
-func kuzzle_wrapper_ms_expireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_expireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Expireat(
 		C.GoString(key),
 		int(ts),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_flushdb
-func kuzzle_wrapper_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Flushdb(SetQueryOptions(options))
+func kuzzle_wrapper_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Flushdb(SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_geoadd
-func kuzzle_wrapper_ms_geoadd(k *C.kuzzle, key *C.char, points **C.json_object, plen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_geoadd(k *C.kuzzle, key *C.char, points **C.json_object, plen C.size_t, options *C.query_options) *C.int_result {
 	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(points))[:plen:plen]
 	gopoints := make([]*types.GeoPoint, int(plen))
 
@@ -165,7 +165,7 @@ func kuzzle_wrapper_ms_geodist(k *C.kuzzle, key *C.char, member1 *C.char, member
 }
 
 //export kuzzle_wrapper_ms_geohash
-func kuzzle_wrapper_ms_geohash(k *C.kuzzle, key *C.char, members **C.char, mlen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_geohash(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Geohash(
 		C.GoString(key),
 		cToGoStrings(members, mlen),
@@ -175,7 +175,7 @@ func kuzzle_wrapper_ms_geohash(k *C.kuzzle, key *C.char, members **C.char, mlen 
 }
 
 //export kuzzle_wrapper_ms_geopos
-func kuzzle_wrapper_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C.uint, options *C.query_options) *C.geopos_result {
+func kuzzle_wrapper_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, options *C.query_options) *C.geopos_result {
 	result := (*C.geopos_result)(C.calloc(1, C.sizeof_geopos_result))
 
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Geopos(
@@ -194,8 +194,8 @@ func kuzzle_wrapper_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C
 		return result
 	}
 
-	result.length = C.uint(len(res))
-	result.result = (*[2]C.double)(C.calloc(C.size_t(result.length), C.sizeof_geopos_arr))
+	result.result_length = C.size_t(len(res))
+	result.result = (*[2]C.double)(C.calloc(result.result_length, C.sizeof_geopos_arr))
 
 	for i, pos := range res {
 		C.assign_geopos(result.result, C.int(i), C.double(pos.Lon), C.double(pos.Lat))
@@ -286,7 +286,7 @@ func kuzzle_wrapper_ms_getset(k *C.kuzzle, key *C.char, value *C.char, options *
 }
 
 //export kuzzle_wrapper_ms_hdel
-func kuzzle_wrapper_ms_hdel(k *C.kuzzle, key *C.char, fields **C.char, flen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_hdel(k *C.kuzzle, key *C.char, fields **C.char, flen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hdel(
 		C.GoString(key),
 		cToGoStrings(fields, flen),
@@ -296,13 +296,13 @@ func kuzzle_wrapper_ms_hdel(k *C.kuzzle, key *C.char, fields **C.char, flen C.ui
 }
 
 //export kuzzle_wrapper_ms_hexists
-func kuzzle_wrapper_ms_hexists(k *C.kuzzle, key *C.char, field *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_hexists(k *C.kuzzle, key *C.char, field *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hexists(
 		C.GoString(key),
 		C.GoString(field),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_hget
@@ -365,7 +365,7 @@ func kuzzle_wrapper_ms_hlen(k *C.kuzzle, key *C.char, options *C.query_options) 
 }
 
 //export kuzzle_wrapper_ms_hmget
-func kuzzle_wrapper_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hmget(
 		C.GoString(key),
 		cToGoStrings(fields, flen),
@@ -387,7 +387,7 @@ func kuzzle_wrapper_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.u
 }
 
 //export kuzzle_wrapper_ms_hmset
-func kuzzle_wrapper_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, elen C.uint, options *C.query_options) *C.string_result {
+func kuzzle_wrapper_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
 	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MsHashField, int(elen))
 
@@ -397,12 +397,12 @@ func kuzzle_wrapper_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, 
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hmset(
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hmset(
 		C.GoString(key),
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_hscan
@@ -416,25 +416,25 @@ func kuzzle_wrapper_ms_hscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.
 }
 
 //export kuzzle_wrapper_ms_hset
-func kuzzle_wrapper_ms_hset(k *C.kuzzle, key *C.char, field *C.char, value *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_hset(k *C.kuzzle, key *C.char, field *C.char, value *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hset(
 		C.GoString(key),
 		C.GoString(field),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_hsetnx
-func kuzzle_wrapper_ms_hsetnx(k *C.kuzzle, key *C.char, field *C.char, value *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_hsetnx(k *C.kuzzle, key *C.char, field *C.char, value *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hsetnx(
 		C.GoString(key),
 		C.GoString(field),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_hstrlen
@@ -535,7 +535,7 @@ func kuzzle_wrapper_ms_lpop(k *C.kuzzle, key *C.char, options *C.query_options) 
 }
 
 //export kuzzle_wrapper_ms_lpush
-func kuzzle_wrapper_ms_lpush(k *C.kuzzle, key *C.char, values **C.char, vlen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_lpush(k *C.kuzzle, key *C.char, values **C.char, vlen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Lpush(
 		C.GoString(key),
 		cToGoStrings(values, vlen),
@@ -577,29 +577,29 @@ func kuzzle_wrapper_ms_lrem(k *C.kuzzle, key *C.char, count C.long, value *C.cha
 }
 
 //export kuzzle_wrapper_ms_lset
-func kuzzle_wrapper_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Lset(
+func kuzzle_wrapper_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Lset(
 		C.GoString(key),
 		int(index),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_ltrim
-func kuzzle_wrapper_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Ltrim(
+func kuzzle_wrapper_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Ltrim(
 		C.GoString(key),
 		int(start),
 		int(stop),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_mget
-func kuzzle_wrapper_ms_mget(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_mget(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Mget(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -618,7 +618,7 @@ func kuzzle_wrapper_ms_mget(k *C.kuzzle, keys **C.char, klen C.uint, options *C.
 }
 
 //export kuzzle_wrapper_ms_mset
-func kuzzle_wrapper_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.uint, options *C.query_options) *C.string_result {
+func kuzzle_wrapper_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
 	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
@@ -628,15 +628,15 @@ func kuzzle_wrapper_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.uint, o
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Mset(
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Mset(
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_msetnx
-func kuzzle_wrapper_ms_msetnx(k *C.kuzzle, entries **C.json_object, elen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_msetnx(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.bool_result {
 	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
@@ -650,7 +650,7 @@ func kuzzle_wrapper_ms_msetnx(k *C.kuzzle, entries **C.json_object, elen C.uint,
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_object
@@ -664,46 +664,46 @@ func kuzzle_wrapper_ms_object(k *C.kuzzle, key *C.char, subcommand *C.char, opti
 }
 
 //export kuzzle_wrapper_ms_persist
-func kuzzle_wrapper_ms_persist(k *C.kuzzle, key *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_persist(k *C.kuzzle, key *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Persist(
 		C.GoString(key),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_pexpire
-func kuzzle_wrapper_ms_pexpire(k *C.kuzzle, key *C.char, ttl C.ulong, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_pexpire(k *C.kuzzle, key *C.char, ttl C.ulong, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pexpire(
 		C.GoString(key),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_pexpireat
-func kuzzle_wrapper_ms_pexpireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_pexpireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pexpireat(
 		C.GoString(key),
 		int(ts),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_pfadd
-func kuzzle_wrapper_ms_pfadd(k *C.kuzzle, key *C.char, elements **C.char, elen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_pfadd(k *C.kuzzle, key *C.char, elements **C.char, elen C.size_t, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfadd(
 		C.GoString(key),
 		cToGoStrings(elements, elen),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_pfcount
-func kuzzle_wrapper_ms_pfcount(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_pfcount(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfcount(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -712,13 +712,13 @@ func kuzzle_wrapper_ms_pfcount(k *C.kuzzle, keys **C.char, klen C.uint, options 
 }
 
 //export kuzzle_wrapper_ms_pfmerge
-func kuzzle_wrapper_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.uint, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfmerge(
+func kuzzle_wrapper_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.size_t, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfmerge(
 		C.GoString(key),
 		cToGoStrings(sources, slen),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_ping
@@ -730,14 +730,14 @@ func kuzzle_wrapper_ms_ping(k *C.kuzzle, options *C.query_options) *C.string_res
 }
 
 //export kuzzle_wrapper_ms_psetex
-func kuzzle_wrapper_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Psetex(
+func kuzzle_wrapper_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Psetex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_pttl
@@ -758,23 +758,23 @@ func kuzzle_wrapper_ms_randomkey(k *C.kuzzle, options *C.query_options) *C.strin
 }
 
 //export kuzzle_wrapper_ms_rename
-func kuzzle_wrapper_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Rename(
+func kuzzle_wrapper_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Rename(
 		C.GoString(key),
 		C.GoString(newkey),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_renamenx
-func kuzzle_wrapper_ms_renamenx(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_renamenx(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Renamenx(
 		C.GoString(key),
 		C.GoString(newkey),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_rpop
@@ -797,7 +797,7 @@ func kuzzle_wrapper_ms_rpoplpush(k *C.kuzzle, key *C.char, dest *C.char, options
 }
 
 //export kuzzle_wrapper_ms_rpush
-func kuzzle_wrapper_ms_rpush(k *C.kuzzle, key *C.char, values **C.char, vlen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_rpush(k *C.kuzzle, key *C.char, values **C.char, vlen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Rpush(
 		C.GoString(key),
 		cToGoStrings(values, vlen),
@@ -817,7 +817,7 @@ func kuzzle_wrapper_ms_rpushx(k *C.kuzzle, key *C.char, value *C.char, options *
 }
 
 //export kuzzle_wrapper_ms_sadd
-func kuzzle_wrapper_ms_sadd(k *C.kuzzle, key *C.char, members **C.char, mlen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_sadd(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sadd(
 		C.GoString(key),
 		cToGoStrings(members, mlen),
@@ -845,7 +845,7 @@ func kuzzle_wrapper_ms_scard(k *C.kuzzle, key *C.char, options *C.query_options)
 }
 
 //export kuzzle_wrapper_ms_sdiff
-func kuzzle_wrapper_ms_sdiff(k *C.kuzzle, key *C.char, keys **C.char, klen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_sdiff(k *C.kuzzle, key *C.char, keys **C.char, klen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sdiff(
 		C.GoString(key),
 		cToGoStrings(keys, klen),
@@ -855,7 +855,7 @@ func kuzzle_wrapper_ms_sdiff(k *C.kuzzle, key *C.char, keys **C.char, klen C.uin
 }
 
 //export kuzzle_wrapper_ms_sdiffstore
-func kuzzle_wrapper_ms_sdiffstore(k *C.kuzzle, key *C.char, keys **C.char, klen C.uint, dest *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_sdiffstore(k *C.kuzzle, key *C.char, keys **C.char, klen C.size_t, dest *C.char, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sdiffstore(
 		C.GoString(key),
 		cToGoStrings(keys, klen),
@@ -866,38 +866,38 @@ func kuzzle_wrapper_ms_sdiffstore(k *C.kuzzle, key *C.char, keys **C.char, klen 
 }
 
 //export kuzzle_wrapper_ms_set
-func kuzzle_wrapper_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Set(
+func kuzzle_wrapper_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Set(
 		C.GoString(key),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_setex
-func kuzzle_wrapper_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.string_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Setex(
+func kuzzle_wrapper_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Setex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCStringResult(&res, err)
+	return goToCVoidResult(err)
 }
 
 //export kuzzle_wrapper_ms_setnx
-func kuzzle_wrapper_ms_setnx(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_setnx(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Setnx(
 		C.GoString(key),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_sinter
-func kuzzle_wrapper_ms_sinter(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_sinter(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sinter(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -906,7 +906,7 @@ func kuzzle_wrapper_ms_sinter(k *C.kuzzle, keys **C.char, klen C.uint, options *
 }
 
 //export kuzzle_wrapper_ms_sinterstore
-func kuzzle_wrapper_ms_sinterstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_sinterstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sinterstore(
 		C.GoString(dest),
 		cToGoStrings(keys, klen),
@@ -916,13 +916,13 @@ func kuzzle_wrapper_ms_sinterstore(k *C.kuzzle, dest *C.char, keys **C.char, kle
 }
 
 //export kuzzle_wrapper_ms_sismember
-func kuzzle_wrapper_ms_sismember(k *C.kuzzle, key *C.char, member *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_sismember(k *C.kuzzle, key *C.char, member *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sismember(
 		C.GoString(key),
 		C.GoString(member),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_smembers
@@ -935,14 +935,14 @@ func kuzzle_wrapper_ms_smembers(k *C.kuzzle, key *C.char, options *C.query_optio
 }
 
 //export kuzzle_wrapper_ms_smove
-func kuzzle_wrapper_ms_smove(k *C.kuzzle, key *C.char, dest *C.char, member *C.char, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_smove(k *C.kuzzle, key *C.char, dest *C.char, member *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Smove(
 		C.GoString(key),
 		C.GoString(dest),
 		C.GoString(member),
 		SetQueryOptions(options))
 
-	return goToCIntResult(res, err)
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_wrapper_ms_sort
@@ -973,7 +973,7 @@ func kuzzle_wrapper_ms_srandmember(k *C.kuzzle, key *C.char, options *C.query_op
 }
 
 //export kuzzle_wrapper_ms_srem
-func kuzzle_wrapper_ms_srem(k *C.kuzzle, key *C.char, members **C.char, mlen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_srem(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Srem(
 		C.GoString(key),
 		cToGoStrings(members, mlen),
@@ -1002,7 +1002,7 @@ func kuzzle_wrapper_ms_strlen(k *C.kuzzle, key *C.char, options *C.query_options
 }
 
 //export kuzzle_wrapper_ms_sunion
-func kuzzle_wrapper_ms_sunion(k *C.kuzzle, keys **C.char, klen C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_ms_sunion(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sunion(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -1011,7 +1011,7 @@ func kuzzle_wrapper_ms_sunion(k *C.kuzzle, keys **C.char, klen C.uint, options *
 }
 
 //export kuzzle_wrapper_ms_sunionstore
-func kuzzle_wrapper_ms_sunionstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_sunionstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sunionstore(
 		C.GoString(dest),
 		cToGoStrings(keys, klen),
@@ -1029,7 +1029,7 @@ func kuzzle_wrapper_ms_time(k *C.kuzzle, options *C.query_options) *C.int_array_
 }
 
 //export kuzzle_wrapper_ms_touch
-func kuzzle_wrapper_ms_touch(k *C.kuzzle, keys **C.char, klen C.unsigned, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_touch(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Touch(
 		cToGoStrings(keys, klen),
 		SetQueryOptions(options))
@@ -1056,7 +1056,7 @@ func kuzzle_wrapper_ms_type(k *C.kuzzle, key *C.char, options *C.query_options) 
 }
 
 //export kuzzle_wrapper_ms_zadd
-func kuzzle_wrapper_ms_zadd(k *C.kuzzle, key *C.char, elements **C.json_object, elen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_zadd(k *C.kuzzle, key *C.char, elements **C.json_object, elen C.size_t, options *C.query_options) *C.int_result {
 	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(elements))[:elen:elen]
 	goelements := make([]*types.MSSortedSet, int(elen))
 
@@ -1106,7 +1106,7 @@ func kuzzle_wrapper_ms_zincrby(k *C.kuzzle, key *C.char, member *C.char, incr C.
 }
 
 //export kuzzle_wrapper_ms_zinterstore
-func kuzzle_wrapper_ms_zinterstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_zinterstore(k *C.kuzzle, dest *C.char, keys **C.char, klen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zinterstore(
 		C.GoString(dest),
 		cToGoStrings(keys, klen),
@@ -1190,7 +1190,7 @@ func kuzzle_wrapper_ms_zrank(k *C.kuzzle, key *C.char, member *C.char, options *
 }
 
 //export kuzzle_wrapper_ms_zrem
-func kuzzle_wrapper_ms_zrem(k *C.kuzzle, key *C.char, members **C.char, mlen C.uint, options *C.query_options) *C.int_result {
+func kuzzle_wrapper_ms_zrem(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, options *C.query_options) *C.int_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrem(
 		C.GoString(key),
 		cToGoStrings(members, mlen),

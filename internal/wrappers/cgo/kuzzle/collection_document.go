@@ -73,13 +73,13 @@ func kuzzle_wrapper_collection_m_create_or_replace_document(c *C.collection, doc
 }
 
 //export kuzzle_wrapper_collection_m_delete_document
-func kuzzle_wrapper_collection_m_delete_document(c *C.collection, ids **C.char, idsCount C.uint, options *C.query_options) *C.string_array_result {
+func kuzzle_wrapper_collection_m_delete_document(c *C.collection, ids **C.char, idsCount C.size_t, options *C.query_options) *C.string_array_result {
 	res, err := cToGoCollection(c).MDeleteDocument(cToGoStrings(ids, idsCount), SetQueryOptions(options))
 	return goToCStringArrayResult(res, err)
 }
 
 //export kuzzle_wrapper_collection_m_get_document
-func kuzzle_wrapper_collection_m_get_document(c *C.collection, ids **C.char, idsCount C.uint, options *C.query_options) *C.search_result {
+func kuzzle_wrapper_collection_m_get_document(c *C.collection, ids **C.char, idsCount C.size_t, options *C.query_options) *C.search_result {
 	res, err := cToGoCollection(c).MGetDocument(cToGoStrings(ids, idsCount), SetQueryOptions(options))
 	return goToCSearchResult(c, res, err)
 }

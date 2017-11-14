@@ -81,10 +81,10 @@ func kuzzle_wrapper_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result := (*C.offline_queue)(C.calloc(1, C.sizeof_offline_queue))
 
 	offlineQueue := *(*kuzzle.Kuzzle)(k.instance).GetOfflineQueue()
-	result.length = C.ulong(len(offlineQueue))
+	result.queries_length = C.size_t(len(offlineQueue))
 
-	result.queries = (**C.query_object)(C.calloc(C.size_t(len(offlineQueue)), C.sizeof_query_object_ptr))
-	queryObjects := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.length:result.length]
+	result.queries = (**C.query_object)(C.calloc(result.queries_length, C.sizeof_query_object_ptr))
+	queryObjects := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.queries_length:result.queries_length]
 
 	idx := 0
 	for _, queryObject := range offlineQueue {

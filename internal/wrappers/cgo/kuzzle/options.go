@@ -119,7 +119,7 @@ func SetRoomOptions(options *C.room_options) (opts types.RoomOptions) {
 	opts.SetState(C.GoString(options.state))
 	opts.SetUsers(C.GoString(options.user))
 
-	opts.SetSubscribeToSelf(options.subscribe_to_self == 1)
+	opts.SetSubscribeToSelf(bool(options.subscribe_to_self))
 
 	if options.volatiles != nil {
 		opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))

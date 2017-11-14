@@ -17,12 +17,12 @@ import (
 )
 
 //export kuzzle_wrapper_list_collections
-func kuzzle_wrapper_list_collections(k *C.kuzzle, index *C.char, options *C.query_options) *C.json_result {
+func kuzzle_wrapper_list_collections(k *C.kuzzle, index *C.char, options *C.query_options) *C.collection_entry_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).ListCollections(
 		C.GoString(index),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	return goToCCollectionListResult(res, err)
 }
 
 //export kuzzle_wrapper_list_indexes
@@ -95,12 +95,12 @@ func kuzzle_wrapper_get_all_statistics(k *C.kuzzle, options *C.query_options) *C
 		return result
 	}
 
-	result.res = (*C.statistics)(C.calloc(C.size_t(len(stats)), C.sizeof_statistics_ptr))
-	result.res_size = C.int(len(stats) - 1)
-	statistics := (*[1<<30 - 1]*C.statistics)(unsafe.Pointer(result.res))[:len(stats)]
+	result.result = (*C.statistics)(C.calloc(C.size_t(len(stats)), C.sizeof_statistics))
+	result.result_length = C.size_t(len(stats))
+	statistics := (*[1<<30 - 1]C.statistics)(unsafe.Pointer(result.result))[:len(stats):len(stats)]
 
 	for i, stat := range stats {
-		statistics[i] = goToCStatistics(stat, err)
+		fillStatistics(stat, &statistics[i])
 	}
 
 	return result
@@ -116,7 +116,12 @@ func kuzzle_wrapper_get_statistics(k *C.kuzzle, timestamp C.time_t, options *C.q
 
 	res, err := (*kuzzle.Kuzzle)(k.instance).GetStatistics(&tm, opts)
 
-	result.result = goToCStatistics(res, err)
+	if err != nil {
+		Set_statistics_error(result, err)
+		return result
+	}
+
+	fillStatistics(res, result.result)
 
 	return result
 }

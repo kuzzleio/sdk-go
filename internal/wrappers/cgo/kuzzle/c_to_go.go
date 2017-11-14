@@ -84,7 +84,7 @@ func cToGoSearchFilters(searchFilters *C.search_filters) *types.SearchFilters {
 }
 
 // convert a C char** to a go array of string
-func cToGoStrings(arr **C.char, len C.uint) []string {
+func cToGoStrings(arr **C.char, len C.size_t) []string {
 	if len == 0 {
 		return nil
 	}

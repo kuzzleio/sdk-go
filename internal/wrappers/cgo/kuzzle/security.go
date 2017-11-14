@@ -19,7 +19,7 @@ import (
 // --- profile
 
 //export kuzzle_wrapper_security_new_profile
-func kuzzle_wrapper_security_new_profile(k *C.kuzzle, id *C.char, policies *C.policy, policies_length C.int) *C.profile {
+func kuzzle_wrapper_security_new_profile(k *C.kuzzle, id *C.char, policies *C.policy, policies_length C.size_t) *C.profile {
 	cprofile := (*C.profile)(C.calloc(1, C.sizeof_profile))
 	cprofile.id = id
 	cprofile.policies = policies

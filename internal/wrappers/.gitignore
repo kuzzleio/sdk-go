@@ -1,8 +1,9 @@
 # IDE
 .idea
 
-# Libgokcore
-libgokcore.*
+# Auto-generated library
+kuzzle.h
+libkuzzlesdk.so
 
 # .out files
 *.out

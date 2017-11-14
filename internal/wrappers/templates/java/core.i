@@ -2,6 +2,7 @@
 %rename(AckResponse) ack_response;
 %rename(queueTTL) queue_ttl;
 %rename(Options) options;
+%rename(QueryOptions) query_options;
 %rename(Kuzzle) kuzzle;
 %rename(JsonObject) json_object;
 %rename(JsonResult) json_result;
@@ -10,15 +11,13 @@
 %rename(Statistics) statistics;
 %rename(AllStatisticsResult) all_statistics_result;
 %rename(StatisticsResult) statistics_result;
+%rename(CollectionsList) collection_entry;
+%rename(CollectionsListResult) collection_entry_result;
+%rename(StringArrayResult) string_array_result;
 
 %include "typemap.i"
+%include "javadoc.i"
 %include "../../kcore.i"
-//
-//if (strcmp(JSON_C_VERSION, "0.12.99")) {
-//    printf("You version of json-c is not equal to 0.12.99, please ensure to have the right version\n");
-//    exit(1);
-//}
-
 
 %pragma(java) jniclasscode=%{
   static {
@@ -187,6 +186,9 @@ struct json_object { };
     string_result* login(char* strategy, json_object* credentials) {
         return kuzzle_wrapper_login($self, strategy, credentials, NULL);
     }
+    string_result* login(char* strategy) {
+        return kuzzle_wrapper_login($self, strategy, NULL, NULL);
+    }
 
     // getAllStatistics
     all_statistics_result* getAllStatistics(query_options* options) {
@@ -231,5 +233,34 @@ struct json_object { };
     }
     json_result* getServerInfo() {
         return kuzzle_wrapper_get_server_info($self, NULL);
+    }
+
+    // listCollections
+    collection_entry_result* listCollections(char *index, query_options* options) {
+        return kuzzle_wrapper_list_collections($self, index, options);
+    }
+    collection_entry_result* listCollections(char *index) {
+        return kuzzle_wrapper_list_collections($self, index, NULL);
+    }
+    collection_entry_result* listCollections() {
+        return kuzzle_wrapper_list_collections($self, NULL, NULL);
+    }
+
+    // listIndexes
+    string_array_result* listIndexes(query_options* options) {
+        return kuzzle_wrapper_list_indexes($self, options);
+    }
+    string_array_result* listIndexes() {
+        return kuzzle_wrapper_list_indexes($self, NULL);
+    }
+
+    // disconnect
+    void disconnect() {
+        kuzzle_wrapper_disconnect($self);
+    }
+
+    // logout
+    void logout() {
+        kuzzle_wrapper_logout($self);
     }
 }

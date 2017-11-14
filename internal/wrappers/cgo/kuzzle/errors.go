@@ -139,6 +139,14 @@ func Set_notification_result_error(s *C.notification_result, err error) {
 	setErr(&s.status, s.error, s.stack, err)
 }
 
+func Set_collection_entry_error(s *C.collection_entry_result, err error) {
+	setErr(&s.status, s.error, s.stack, err)
+}
+
+func Set_void_result_error(s *C.void_result, err error) {
+	setErr(&s.status, s.error, s.stack, err)
+}
+
 func setErr(status *C.int, error *C.char, stack *C.char, err error) {
 	kuzzleError := err.(*types.KuzzleError)
 	*status = C.int(kuzzleError.Status)
