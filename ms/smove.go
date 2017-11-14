@@ -6,7 +6,7 @@ import (
 )
 
 // Smove moves a member from a set of unique values to another.
-func (ms Ms) Smove(key string, destination string, member string, options types.QueryOptions) (int, error) {
+func (ms Ms) Smove(key string, destination string, member string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -26,11 +26,11 @@ func (ms Ms) Smove(key string, destination string, member string, options types.
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

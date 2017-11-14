@@ -1,12 +1,11 @@
 package ms
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Set creates a key holding the provided value, or overwrites it if it already exists.
-func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (string, error) {
+func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -43,12 +42,5 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) (str
 
 	res := <-result
 
-	if res.Error != nil {
-		return "", res.Error
-	}
-
-	var returnedResult string
-	json.Unmarshal(res.Result, &returnedResult)
-
-	return returnedResult, nil
+	return res.Error
 }

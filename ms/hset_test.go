@@ -44,7 +44,7 @@ func TestHset(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Hset("foo", "bar", "barbar", nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Hset() {

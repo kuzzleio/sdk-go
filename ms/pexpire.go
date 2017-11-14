@@ -7,7 +7,7 @@ import (
 
 // Pexpire sets a timeout (in milliseconds) on a key.
 // After the timeout has expired, the key will automatically be deleted.
-func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, error) {
+func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -25,10 +25,10 @@ func (ms Ms) Pexpire(key string, ttl int, options types.QueryOptions) (int, erro
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

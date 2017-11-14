@@ -1,13 +1,12 @@
 package ms
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Ltrim trims an existing list so that it will
 // contain only the specified range of elements specified.
-func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) (string, error) {
+func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -26,11 +25,5 @@ func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error != nil {
-		return "", res.Error
-	}
-	var returnedResult string
-	json.Unmarshal(res.Result, &returnedResult)
-
-	return returnedResult, nil
+	return res.Error
 }

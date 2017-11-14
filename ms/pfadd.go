@@ -6,9 +6,9 @@ import (
 )
 
 // Pfadd Adds elements to an HyperLogLog data structure.
-func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (int, error) {
+func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (bool, error) {
 	if len(elements) == 0 {
-		return 0, types.NewError("Ms.Pfadd: please provide at least one element to add", 400)
+		return false, types.NewError("Ms.Pfadd: please provide at least one element to add", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -28,10 +28,10 @@ func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

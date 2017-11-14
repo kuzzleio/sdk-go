@@ -6,7 +6,7 @@ import (
 )
 
 // RenameNx renames a key to newkey, only if newkey does not already exist.
-func (ms Ms) Renamenx(key string, newkey string, options types.QueryOptions) (int, error) {
+func (ms Ms) Renamenx(key string, newkey string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -24,10 +24,10 @@ func (ms Ms) Renamenx(key string, newkey string, options types.QueryOptions) (in
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

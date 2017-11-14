@@ -14,7 +14,7 @@ import (
 func TestHmsetEmptyEntries(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 
-	_, err := k.MemoryStorage.Hmset("", []*types.MsHashField{}, nil)
+	err := k.MemoryStorage.Hmset("", []*types.MsHashField{}, nil)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "[400] Ms.Hmset: at least one entry field to set is required", fmt.Sprint(err))
@@ -28,7 +28,7 @@ func TestHmsetError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{}, nil)
+	err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{}, nil)
 
 	assert.NotNil(t, err)
 }
@@ -51,21 +51,21 @@ func TestHmset(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
+	err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
 
-	assert.Equal(t, "result", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_Hmset() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
+	err := k.MemoryStorage.Hmset("foo", []*types.MsHashField{{Field: "foo", Value: "bar"}}, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }

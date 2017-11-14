@@ -8,7 +8,7 @@ import (
 // PexipreAt sets an expiration timestamp on a key.
 // After the timestamp has been reached, the key will automatically be deleted.
 // The timestamp parameter accepts an Epoch time value, in milliseconds.
-func (ms Ms) Pexpireat(key string, timestamp int, options types.QueryOptions) (int, error) {
+func (ms Ms) Pexpireat(key string, timestamp int, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -26,10 +26,10 @@ func (ms Ms) Pexpireat(key string, timestamp int, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

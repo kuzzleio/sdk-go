@@ -50,7 +50,7 @@ func TestPfadd(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Pfadd("foo", []string{"bar", "rab"}, nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Pfadd() {
