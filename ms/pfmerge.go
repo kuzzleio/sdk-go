@@ -1,15 +1,14 @@
 package ms
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Pfmerge merges multiple HyperLogLog data structures into an unique HyperLogLog
 // structure stored at key, approximating the cardinality of the union of the source structures.
-func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (string, error) {
+func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) error {
 	if len(sources) == 0 {
-		return "", types.NewError("Ms.Pfmerge: please provide at least one source to merge", 400)
+		return types.NewError("Ms.Pfmerge: please provide at least one source to merge", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -28,11 +27,5 @@ func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error != nil {
-		return "", res.Error
-	}
-	var returnedResult string
-	json.Unmarshal(res.Result, &returnedResult)
-
-	return returnedResult, nil
+	return res.Error
 }

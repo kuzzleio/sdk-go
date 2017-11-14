@@ -41,7 +41,7 @@ func TestRenamenx(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Renamenx("foo", "bar", nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Renamenx() {

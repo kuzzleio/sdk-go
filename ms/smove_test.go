@@ -41,7 +41,7 @@ func TestSmove(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Smove("wowKey", "suchDestination", "muchMember", nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Smove() {

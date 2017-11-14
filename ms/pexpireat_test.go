@@ -41,7 +41,7 @@ func TestPexpireat(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Pexpireat("foo", 1488540242465, nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Pexpireat() {

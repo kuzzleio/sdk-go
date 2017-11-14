@@ -43,7 +43,7 @@ func TestHexists(t *testing.T) {
 
 	res, _ := k.MemoryStorage.Hexists("foo", "bar", nil)
 
-	assert.Equal(t, 1, res)
+	assert.True(t, res)
 }
 
 func ExampleMs_Hexists() {

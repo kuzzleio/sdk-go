@@ -6,7 +6,7 @@ import (
 )
 
 // Sismember checks if member is a member of the set of unique values stored at key.
-func (ms Ms) Sismember(key string, member string, options types.QueryOptions) (int, error) {
+func (ms Ms) Sismember(key string, member string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -21,10 +21,10 @@ func (ms Ms) Sismember(key string, member string, options types.QueryOptions) (i
 	res := <-result
 
 	if res.Error != nil {
-		return 0, res.Error
+		return false, res.Error
 	}
 	var returnedResult int
 	json.Unmarshal(res.Result, &returnedResult)
 
-	return returnedResult, nil
+	return returnedResult == 1, nil
 }

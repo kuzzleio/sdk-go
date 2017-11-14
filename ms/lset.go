@@ -1,12 +1,11 @@
 package ms
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Lset sets the list element at index with the provided value.
-func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) (string, error) {
+func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -25,11 +24,5 @@ func (ms Ms) Lset(key string, index int, value string, options types.QueryOption
 
 	res := <-result
 
-	if res.Error != nil {
-		return "", res.Error
-	}
-	var returnedResult string
-	json.Unmarshal(res.Result, &returnedResult)
-
-	return returnedResult, nil
+	return res.Error
 }

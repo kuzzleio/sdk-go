@@ -19,7 +19,7 @@ func TestLsetError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
+	err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
 	assert.NotNil(t, err)
 }
@@ -42,21 +42,21 @@ func TestLset(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.Lset("foo", 1, "bar", nil)
+	err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
-	assert.Equal(t, "result", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_Lset() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
+	err := k.MemoryStorage.Lset("foo", 1, "bar", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }

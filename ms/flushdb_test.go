@@ -19,7 +19,7 @@ func TestFlushdbError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.MemoryStorage.Flushdb(nil)
+	err := k.MemoryStorage.Flushdb(nil)
 
 	assert.NotNil(t, err)
 }
@@ -39,21 +39,21 @@ func TestFlushdb(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.MemoryStorage.Flushdb(nil)
+	err := k.MemoryStorage.Flushdb(nil)
 
-	assert.Equal(t, "OK", res)
+	assert.Nil(t, err)
 }
 
 func ExampleMs_Flushdb() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.MemoryStorage.Flushdb(nil)
+	err := k.MemoryStorage.Flushdb(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res)
+	fmt.Println("success")
 }
