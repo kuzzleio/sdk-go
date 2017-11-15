@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-workdir=$(pwd)/.cover
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
 dirs=(kuzzle connection collection security ms)
@@ -23,7 +24,7 @@ show_cover_report() {
 }
 
 linter_check() {
-    invalid_files=$(gofmt -l .)
+    invalid_files=$(gofmt -l "$1")
 
     if [ -n "${invalid_files}" ]; then
         echo "Lint errors on the following files:"
@@ -32,9 +33,18 @@ linter_check() {
     fi
 }
 
-linter_check
+make_wrappers() {
+		cd "${dir}/internal/wrappers"
+		make all	
+}
+
+cd "$dir"
+
+linter_check .
+linter_check ./internal/wrappers
 generate_cover_data
 show_cover_report func
+make_wrappers
 case "$1" in
 "")
     ;;
