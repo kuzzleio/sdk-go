@@ -313,3 +313,18 @@
    * Logout method
    */
   public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * Returns the current Kuzzle UTC timestamp
+   *
+   * @param options - Request options
+   * @return a DateResult
+   */
+  public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * {@link #now(QueryOptions)}
+   */
+  public";

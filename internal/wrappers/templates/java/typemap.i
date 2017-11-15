@@ -40,7 +40,7 @@
 %ignore string_array_result::result;
 %typemap(javacode) struct string_array_result %{
   public String[] getResult() {
-    String[] result = new String[(int)getLength()];
+    String[] result = new String[(int)getResult_length()];
     for (int i = 0; i < result.length; ++i) {
       result[i] = getResult(i);
     }
@@ -52,5 +52,21 @@
 %extend string_array_result {
     char *getResult(size_t pos) {
         return *$self->result + pos;
+    }
+}
+
+// Date
+%ignore date_result::result;
+%typemap(javacode) struct date_result %{
+  public java.util.Date getResult() {
+    System.out.println(getDateResult());
+    return new java.util.Date(getDateResult());
+  }
+%}
+
+%javamethodmodifiers date_result::getDateResult() "private";
+%extend date_result {
+    long long getDateResult() {
+        return $self->result;
     }
 }

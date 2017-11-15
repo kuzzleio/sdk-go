@@ -14,6 +14,7 @@
 %rename(CollectionsList) collection_entry;
 %rename(CollectionsListResult) collection_entry_result;
 %rename(StringArrayResult) string_array_result;
+%rename(DateResult) date_result;
 
 %include "typemap.i"
 %include "javadoc.i"
@@ -262,5 +263,13 @@ struct json_object { };
     // logout
     void logout() {
         kuzzle_wrapper_logout($self);
+    }
+
+    // now
+    date_result* now(query_options* options) {
+        return kuzzle_wrapper_now($self, options);
+    }
+    date_result* now() {
+        return kuzzle_wrapper_now($self, NULL);
     }
 }
