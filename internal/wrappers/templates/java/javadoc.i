@@ -313,3 +313,20 @@
    * Logout method
    */
   public";
+
+%javamethodmodifiers kuzzle::query(kuzzle_request*, query_options*) "
+  /**
+   * This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
+   * Base method used to send queries to Kuzzle
+   *
+   * @param query - Query content
+   * @param options - Request options
+   * @return a KuzzleResponse
+   */
+  public";
+
+%javamethodmodifiers kuzzle::query(kuzzle_request*) "
+  /**
+   * {@link #query(KuzzleResponse, QueryOptions)}
+   */
+  public";
