@@ -37,7 +37,7 @@ object:
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
-	rm -f $(OUTDIR)/kcore_wrap.o
+	rm -f $(OUTDIR)/kcore_wrap.*
 
 swig:
 	mkdir -p $(OUTDIR)
@@ -50,7 +50,7 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	$(JAVAHOME)/bin/javac $(OUTDIR)/*.java
 	$(JAVAHOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
-	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class $(OUTDIR)/kcore_wrap.c
+	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp
@@ -58,7 +58,7 @@ csharp: SWIGOPTS = -dllimport kuzzlesdk
 csharp: core swig wrapper object posttask
 	mkdir -p $(OUTDIR)
 	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
-	rm -f $(OUTDIR)/*.cs $(OUTDIR)/kcore_wrap.c
+	rm -f $(OUTDIR)/*.cs
 
 clean:
 	rm -rf build
