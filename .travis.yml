@@ -4,7 +4,7 @@ go:
 install:
   - git clone https://github.com/json-c/json-c.git
   - cd json-c
-  - sudo apt-get install build-essential swig
+  - sudo apt-get install build-essential swig oracle-java8-installer
   - sh autogen.sh
   - ./configure
   - make
@@ -13,14 +13,5 @@ install:
   - go get -t -v ./...
 script: 
   - bash ./test.sh
-matrix:
-  include:
-    - language: java
-      addons:
-        apt:
-          packages:
-            - oracle-java8-installer
-      script:
-        - cd internal/wrappers && make java
 after_success:
   - cd .cover && bash <(curl -s https://codecov.io/bash)
