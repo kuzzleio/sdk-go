@@ -61,7 +61,7 @@ csharp: core swig wrapper object posttask
 	rm -f $(OUTDIR)/*.cs $(OUTDIR)/kcore_wrap.c
 
 clean:
-	rm -rf build *.class *.o *.h *.so $(WOUTDIR) *.c *~ *.go
+	rm -rf build
 
 .PHONY: all java csharp wrapper swigjava swigcsharp clean object core
 
