@@ -10,7 +10,7 @@ typedef struct {
     void *instance;
 } kuzzle;
 
-enum {
+enum Event {
     CONNECTED,
     DISCARDED,
     DISCONNECTED,
@@ -22,7 +22,7 @@ enum {
     RECONNECTED,
     JWT_EXPIRED,
     ERROR
-} event;
+};
 
 //define a request
 typedef struct {
