@@ -1,6 +1,6 @@
 ROOTOUTDIR = ./build
 GOROOT ?= /usr/local
-JAVAHOME ?= /usr/local
+JAVA_HOME ?= /usr/local
 GOCC = $(GOROOT)/bin/go
 GOFLAGS = -buildmode=c-shared
 GOSRC = ./cgo/kuzzle/
@@ -45,12 +45,12 @@ swig:
 	$(SWIG) -Wall -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o kcore_wrap.c $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
-java: LANGINCLUDE = -I$(JAVAHOME)/include -I$(JAVAHOME)/include/linux
+java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
-	$(JAVAHOME)/bin/javac $(OUTDIR)/*.java
-	$(JAVAHOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
+	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
 	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
