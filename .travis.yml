@@ -1,6 +1,4 @@
-language: go
-go:
-  - 1.9
+
 install:
   - git clone https://github.com/json-c/json-c.git
   - cd json-c
@@ -11,7 +9,18 @@ install:
   - sudo make install
   - cd -
   - go get -t -v ./...
-script: 
-  - bash ./test.sh
+matrix:
+  include:
+    - language: go
+      go:
+        - 1.9
+      script: 
+        - bash ./test.sh
+    - language: java
+      jdk:
+        - oraclejdk8
+      script:
+        - jdk_switcher use oraclejdk8
+        - cd internal/wrappers && make java
 after_success:
   - cd .cover && bash <(curl -s https://codecov.io/bash)
