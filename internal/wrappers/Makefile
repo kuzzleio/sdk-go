@@ -17,7 +17,7 @@ OBJS = $(SRCS:.c=.o)
 
 SWIG = swig
 
-all: java csharp
+all: java
 
 kcore_wrap.o: kcore_wrap.c
 	$(CC) -ggdb -c $< -o $(OUTDIR)/$@ $(CFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE) 
@@ -37,11 +37,12 @@ object:
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
-	rm -f $(OUTDIR)/kcore_wrap.*
+	rm -f $(OUTDIR)/kcore_wrap.o
+	rm -f kcore_wrap.c
 
 swig:
 	mkdir -p $(OUTDIR)
-	$(SWIG) -Wall -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(OUTDIR)/kcore_wrap.c $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
+	$(SWIG) -Wall -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o kcore_wrap.c $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: LANGINCLUDE = -I$(JAVAHOME)/include -I$(JAVAHOME)/include/linux

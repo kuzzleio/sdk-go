@@ -1,5 +1,8 @@
 # IDE
 .idea
 
+# swig generated wrapper code
+kcore_wrap.c
+
 # build
 build/
