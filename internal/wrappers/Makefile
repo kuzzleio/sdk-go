@@ -63,6 +63,6 @@ csharp: core swig wrapper object posttask
 clean:
 	rm -rf build
 
-.PHONY: all java csharp wrapper swigjava swigcsharp clean object core
+.PHONY: all java csharp wrapper swig clean object core
 
 .DEFAULT_GOAL := all
