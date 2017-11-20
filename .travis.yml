@@ -1,4 +1,3 @@
-
 install:
   - git clone https://github.com/json-c/json-c.git
   - cd json-c
@@ -20,7 +19,6 @@ matrix:
       jdk:
         - oraclejdk8
       script:
-        - jdk_switcher use oraclejdk8
         - cd internal/wrappers && make java
 after_success:
   - cd .cover && bash <(curl -s https://codecov.io/bash)
