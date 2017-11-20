@@ -23,8 +23,8 @@ import (
 	"unsafe"
 )
 
-//export destroy_kuzzle_request
-func destroy_kuzzle_request(st *C.kuzzle_request) {
+//export kuzzle_wrapper_free_kuzzle_request
+func kuzzle_wrapper_free_kuzzle_request(st *C.kuzzle_request) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.request_id))
 		C.free(unsafe.Pointer(st.controller))
@@ -63,8 +63,8 @@ func destroy_kuzzle_request(st *C.kuzzle_request) {
 
 }
 
-//export destroy_query_object
-func destroy_query_object(st *C.query_object) {
+//export kuzzle_wrapper_free_query_object
+func kuzzle_wrapper_free_query_object(st *C.query_object) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.query)
 		C.free(unsafe.Pointer(st.request_id))
@@ -73,13 +73,13 @@ func destroy_query_object(st *C.query_object) {
 	}
 }
 
-//export destroy_offline_queue
-func destroy_offline_queue(st *C.offline_queue) {
+//export kuzzle_wrapper_free_offline_queue
+func kuzzle_wrapper_free_offline_queue(st *C.offline_queue) {
 	if st != nil && st.queries != nil {
 		queries := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(st.queries))[:int(st.queries_length):int(st.queries_length)]
 
 		for _, query := range queries {
-			destroy_query_object(query)
+			kuzzle_wrapper_free_query_object(query)
 		}
 
 		C.free(unsafe.Pointer(st.queries))
@@ -88,8 +88,8 @@ func destroy_offline_queue(st *C.offline_queue) {
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_query_options
-func destroy_query_options(st *C.query_options) {
+//export kuzzle_wrapper_free_query_options
+func kuzzle_wrapper_free_query_options(st *C.query_options) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.scroll))
 		C.free(unsafe.Pointer(st.scroll_id))
@@ -101,8 +101,8 @@ func destroy_query_options(st *C.query_options) {
 	}
 }
 
-//export destroy_room_options
-func destroy_room_options(st *C.room_options) {
+//export kuzzle_wrapper_free_room_options
+func kuzzle_wrapper_free_room_options(st *C.room_options) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.scope))
 		C.free(unsafe.Pointer(st.state))
@@ -112,8 +112,8 @@ func destroy_room_options(st *C.room_options) {
 	}
 }
 
-//export destroy_options
-func destroy_options(st *C.options) {
+//export kuzzle_wrapper_free_options
+func kuzzle_wrapper_free_options(st *C.options) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.refresh))
 		C.free(unsafe.Pointer(st.default_index))
@@ -122,8 +122,8 @@ func destroy_options(st *C.options) {
 	}
 }
 
-//export destroy_meta
-func destroy_meta(st *C.meta) {
+//export kuzzle_wrapper_free_meta
+func kuzzle_wrapper_free_meta(st *C.meta) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.author))
 		C.free(unsafe.Pointer(st.updater))
@@ -140,8 +140,8 @@ func _free_policy_restriction(st *C.policy_restriction) {
 	}
 }
 
-//export destroy_policy_restriction
-func destroy_policy_restriction(st *C.policy_restriction) {
+//export kuzzle_wrapper_free_policy_restriction
+func kuzzle_wrapper_free_policy_restriction(st *C.policy_restriction) {
 	_free_policy_restriction(st)
 	C.free(unsafe.Pointer(st))
 }
@@ -164,8 +164,8 @@ func _free_policy(st *C.policy) {
 	}
 }
 
-//export destroy_policy
-func destroy_policy(st *C.policy) {
+//export kuzzle_wrapper_free_policy
+func kuzzle_wrapper_free_policy(st *C.policy) {
 	_free_policy(st)
 	C.free(unsafe.Pointer(st))
 }
@@ -188,8 +188,8 @@ func _free_profile(st *C.profile) {
 	}
 }
 
-//export destroy_profile
-func destroy_profile(st *C.profile) {
+//export kuzzle_wrapper_free_profile
+func kuzzle_wrapper_free_profile(st *C.profile) {
 	_free_profile(st)
 	C.free(unsafe.Pointer(st))
 }
@@ -202,8 +202,8 @@ func _free_role(st *C.role) {
 	}
 }
 
-//export destroy_role
-func destroy_role(st *C.role) {
+//export kuzzle_wrapper_free_role
+func kuzzle_wrapper_free_role(st *C.role) {
 	_free_role(st)
 	C.free(unsafe.Pointer(st))
 }
@@ -217,14 +217,14 @@ func _free_user(st *C.user) {
 	}
 }
 
-//export destroy_user
-func destroy_user(st *C.user) {
+//export kuzzle_wrapper_free_user
+func kuzzle_wrapper_free_user(st *C.user) {
 	_free_user(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_user_data
-func destroy_user_data(st *C.user_data) {
+//export kuzzle_wrapper_free_user_data
+func kuzzle_wrapper_free_user_data(st *C.user_data) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.content)
 		C.free_char_array(st.profile_ids, st.profile_ids_length)
@@ -232,8 +232,8 @@ func destroy_user_data(st *C.user_data) {
 	}
 }
 
-//export destroy_collection
-func destroy_collection(st *C.collection) {
+//export kuzzle_wrapper_free_collection
+func kuzzle_wrapper_free_collection(st *C.collection) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.index))
 		C.free(unsafe.Pointer(st.collection))
@@ -252,39 +252,39 @@ func _free_document(st *C.document) {
 
 		kuzzle_wrapper_free_json_object(st.content)
 
-		destroy_meta(st.meta)
-		destroy_collection(st._collection)
+		kuzzle_wrapper_free_meta(st.meta)
+		kuzzle_wrapper_free_collection(st._collection)
 	}
 }
 
-//export destroy_document
-func destroy_document(st *C.document) {
+//export kuzzle_wrapper_free_document
+func kuzzle_wrapper_free_document(st *C.document) {
 	_free_document(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_document_result
-func destroy_document_result(st *C.document_result) {
+//export kuzzle_wrapper_free_document_result
+func kuzzle_wrapper_free_document_result(st *C.document_result) {
 	if st != nil {
-		destroy_document(st.result)
+		kuzzle_wrapper_free_document(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_notification_content
-func destroy_notification_content(st *C.notification_content) {
+//export kuzzle_wrapper_free_notification_content
+func kuzzle_wrapper_free_notification_content(st *C.notification_content) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
-		destroy_meta(st.meta)
+		kuzzle_wrapper_free_meta(st.meta)
 		kuzzle_wrapper_free_json_object(st.content)
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_notification_result
-func destroy_notification_result(st *C.notification_result) {
+//export kuzzle_wrapper_free_notification_result
+func kuzzle_wrapper_free_notification_result(st *C.notification_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.request_id))
 		C.free(unsafe.Pointer(st.index))
@@ -302,24 +302,24 @@ func destroy_notification_result(st *C.notification_result) {
 
 		kuzzle_wrapper_free_json_object(st.volatiles)
 
-		destroy_notification_content(st.result)
+		kuzzle_wrapper_free_notification_content(st.result)
 
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_profile_result
-func destroy_profile_result(st *C.profile_result) {
+//export kuzzle_wrapper_free_profile_result
+func kuzzle_wrapper_free_profile_result(st *C.profile_result) {
 	if st != nil {
-		destroy_profile(st.profile)
+		kuzzle_wrapper_free_profile(st.profile)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_profiles_result
-func destroy_profiles_result(st *C.profiles_result) {
+//export kuzzle_wrapper_free_profiles_result
+func kuzzle_wrapper_free_profiles_result(st *C.profiles_result) {
 	if st != nil {
 		if st.profiles != nil {
 			profiles := (*[1<<30 - 1]C.profile)(unsafe.Pointer(st.profiles))[:int(st.profiles_length):int(st.profiles_length)]
@@ -337,10 +337,10 @@ func destroy_profiles_result(st *C.profiles_result) {
 	}
 }
 
-//export destroy_role_result
-func destroy_role_result(st *C.role_result) {
+//export kuzzle_wrapper_free_role_result
+func kuzzle_wrapper_free_role_result(st *C.role_result) {
 	if st != nil {
-		destroy_role(st.role)
+		kuzzle_wrapper_free_role(st.role)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
@@ -359,14 +359,14 @@ func _free_user_right(st *C.user_right) {
 	}
 }
 
-//export destroy_user_right
-func destroy_user_right(st *C.user_right) {
+//export kuzzle_wrapper_free_user_right
+func kuzzle_wrapper_free_user_right(st *C.user_right) {
 	_free_user_right(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_user_rights_result
-func destroy_user_rights_result(st *C.user_rights_result) {
+//export kuzzle_wrapper_free_user_rights_result
+func kuzzle_wrapper_free_user_rights_result(st *C.user_rights_result) {
 	if st != nil {
 		if st.user_rights != nil {
 			rights := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(st.user_rights))[:int(st.user_rights_length):int(st.user_rights_length)]
@@ -384,10 +384,10 @@ func destroy_user_rights_result(st *C.user_rights_result) {
 	}
 }
 
-//export destroy_user_result
-func destroy_user_result(st *C.user_result) {
+//export kuzzle_wrapper_free_user_result
+func kuzzle_wrapper_free_user_result(st *C.user_result) {
 	if st != nil {
-		destroy_user(st.user)
+		kuzzle_wrapper_free_user(st.user)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
@@ -405,24 +405,24 @@ func _free_statistics(st *C.statistics) {
 	}
 }
 
-//export destroy_statistics
-func destroy_statistics(st *C.statistics) {
+//export kuzzle_wrapper_free_statistics
+func kuzzle_wrapper_free_statistics(st *C.statistics) {
 	_free_statistics(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_statistics_result
-func destroy_statistics_result(st *C.statistics_result) {
+//export kuzzle_wrapper_free_statistics_result
+func kuzzle_wrapper_free_statistics_result(st *C.statistics_result) {
 	if st != nil {
-		destroy_statistics(st.result)
+		kuzzle_wrapper_free_statistics(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_all_statistics_result
-func destroy_all_statistics_result(st *C.all_statistics_result) {
+//export kuzzle_wrapper_free_all_statistics_result
+func kuzzle_wrapper_free_all_statistics_result(st *C.all_statistics_result) {
 	if st != nil {
 		if st.result != nil {
 			stats := (*[1<<30 - 1]C.statistics)(unsafe.Pointer(st.result))
@@ -440,8 +440,8 @@ func destroy_all_statistics_result(st *C.all_statistics_result) {
 	}
 }
 
-//export destroy_geopos_result
-func destroy_geopos_result(st *C.geopos_result) {
+//export kuzzle_wrapper_free_geopos_result
+func kuzzle_wrapper_free_geopos_result(st *C.geopos_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.result))
 		C.free(unsafe.Pointer(st.error))
@@ -450,8 +450,8 @@ func destroy_geopos_result(st *C.geopos_result) {
 	}
 }
 
-//export destroy_token_validity
-func destroy_token_validity(st *C.token_validity) {
+//export kuzzle_wrapper_free_token_validity
+func kuzzle_wrapper_free_token_validity(st *C.token_validity) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.state))
 		C.free(unsafe.Pointer(st.error))
@@ -460,8 +460,8 @@ func destroy_token_validity(st *C.token_validity) {
 	}
 }
 
-//export destroy_kuzzle_response
-func destroy_kuzzle_response(st *C.kuzzle_response) {
+//export kuzzle_wrapper_free_kuzzle_response
+func kuzzle_wrapper_free_kuzzle_response(st *C.kuzzle_response) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.request_id))
 		C.free(unsafe.Pointer(st.index))
@@ -480,8 +480,8 @@ func destroy_kuzzle_response(st *C.kuzzle_response) {
 	}
 }
 
-//export destroy_json_result
-func destroy_json_result(st *C.json_result) {
+//export kuzzle_wrapper_free_json_result
+func kuzzle_wrapper_free_json_result(st *C.json_result) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.result)
 		C.free(unsafe.Pointer(st.error))
@@ -490,8 +490,8 @@ func destroy_json_result(st *C.json_result) {
 	}
 }
 
-//export destroy_json_array_result
-func destroy_json_array_result(st *C.json_array_result) {
+//export kuzzle_wrapper_free_json_array_result
+func kuzzle_wrapper_free_json_array_result(st *C.json_array_result) {
 	if st != nil {
 		if st.result != nil {
 			jobjects := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
@@ -509,8 +509,8 @@ func destroy_json_array_result(st *C.json_array_result) {
 	}
 }
 
-//export destroy_bool_result
-func destroy_bool_result(st *C.bool_result) {
+//export kuzzle_wrapper_free_bool_result
+func kuzzle_wrapper_free_bool_result(st *C.bool_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
@@ -518,8 +518,8 @@ func destroy_bool_result(st *C.bool_result) {
 	}
 }
 
-//export destroy_int_result
-func destroy_int_result(st *C.int_result) {
+//export kuzzle_wrapper_free_int_result
+func kuzzle_wrapper_free_int_result(st *C.int_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
@@ -527,8 +527,8 @@ func destroy_int_result(st *C.int_result) {
 	}
 }
 
-//export destroy_double_result
-func destroy_double_result(st *C.double_result) {
+//export kuzzle_wrapper_free_double_result
+func kuzzle_wrapper_free_double_result(st *C.double_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
@@ -536,18 +536,8 @@ func destroy_double_result(st *C.double_result) {
 	}
 }
 
-//export destroy_int_array_result
-func destroy_int_array_result(st *C.int_array_result) {
-	if st != nil {
-		C.free(unsafe.Pointer(st.result))
-		C.free(unsafe.Pointer(st.error))
-		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st))
-	}
-}
-
-//export destroy_string_result
-func destroy_string_result(st *C.string_result) {
+//export kuzzle_wrapper_free_int_array_result
+func kuzzle_wrapper_free_int_array_result(st *C.int_array_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.result))
 		C.free(unsafe.Pointer(st.error))
@@ -556,8 +546,18 @@ func destroy_string_result(st *C.string_result) {
 	}
 }
 
-//export destroy_string_array_result
-func destroy_string_array_result(st *C.string_array_result) {
+//export kuzzle_wrapper_free_string_result
+func kuzzle_wrapper_free_string_result(st *C.string_result) {
+	if st != nil {
+		C.free(unsafe.Pointer(st.result))
+		C.free(unsafe.Pointer(st.error))
+		C.free(unsafe.Pointer(st.stack))
+		C.free(unsafe.Pointer(st))
+	}
+}
+
+//export kuzzle_wrapper_free_string_array_result
+func kuzzle_wrapper_free_string_array_result(st *C.string_array_result) {
 	if st != nil {
 		C.free_char_array(st.result, st.result_length)
 		C.free(unsafe.Pointer(st.error))
@@ -566,8 +566,8 @@ func destroy_string_array_result(st *C.string_array_result) {
 	}
 }
 
-//export destroy_search_filters
-func destroy_search_filters(st *C.search_filters) {
+//export kuzzle_wrapper_free_search_filters
+func kuzzle_wrapper_free_search_filters(st *C.search_filters) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.query)
 		kuzzle_wrapper_free_json_object(st.sort)
@@ -577,8 +577,8 @@ func destroy_search_filters(st *C.search_filters) {
 	}
 }
 
-//export destroy_document_search
-func destroy_document_search(st *C.document_search) {
+//export kuzzle_wrapper_free_document_search
+func kuzzle_wrapper_free_document_search(st *C.document_search) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.scroll_id))
 
@@ -596,8 +596,8 @@ func destroy_document_search(st *C.document_search) {
 	}
 }
 
-//export destroy_profile_search
-func destroy_profile_search(st *C.profile_search) {
+//export kuzzle_wrapper_free_profile_search
+func kuzzle_wrapper_free_profile_search(st *C.profile_search) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.scroll_id))
 
@@ -615,8 +615,8 @@ func destroy_profile_search(st *C.profile_search) {
 	}
 }
 
-//export destroy_role_search
-func destroy_role_search(st *C.role_search) {
+//export kuzzle_wrapper_free_role_search
+func kuzzle_wrapper_free_role_search(st *C.role_search) {
 	if st != nil {
 		if st.hits != nil {
 			hits := (*[1<<30 - 1]C.role)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
@@ -632,8 +632,8 @@ func destroy_role_search(st *C.role_search) {
 	}
 }
 
-//export destroy_ack_result
-func destroy_ack_result(st *C.ack_result) {
+//export kuzzle_wrapper_free_ack_result
+func kuzzle_wrapper_free_ack_result(st *C.ack_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
@@ -641,8 +641,8 @@ func destroy_ack_result(st *C.ack_result) {
 	}
 }
 
-//export destroy_shards_result
-func destroy_shards_result(st *C.shards_result) {
+//export kuzzle_wrapper_free_shards_result
+func kuzzle_wrapper_free_shards_result(st *C.shards_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.result))
 		C.free(unsafe.Pointer(st.error))
@@ -651,8 +651,8 @@ func destroy_shards_result(st *C.shards_result) {
 	}
 }
 
-//export destroy_specification
-func destroy_specification(st *C.specification) {
+//export kuzzle_wrapper_free_specification
+func kuzzle_wrapper_free_specification(st *C.specification) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.fields)
 		kuzzle_wrapper_free_json_object(st.validators)
@@ -663,60 +663,60 @@ func destroy_specification(st *C.specification) {
 //do not export
 func _free_specification_entry(st *C.specification_entry) {
 	if st != nil {
-		destroy_specification(st.validation)
+		kuzzle_wrapper_free_specification(st.validation)
 		C.free(unsafe.Pointer(st.index))
 		C.free(unsafe.Pointer(st.collection))
 	}
 }
 
-//export destroy_specification_entry
-func destroy_specification_entry(st *C.specification_entry) {
+//export kuzzle_wrapper_free_specification_entry
+func kuzzle_wrapper_free_specification_entry(st *C.specification_entry) {
 	_free_specification_entry(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_specification_result
-func destroy_specification_result(st *C.specification_result) {
+//export kuzzle_wrapper_free_specification_result
+func kuzzle_wrapper_free_specification_result(st *C.specification_result) {
 	if st != nil {
-		destroy_specification(st.result)
+		kuzzle_wrapper_free_specification(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_search_result
-func destroy_search_result(st *C.search_result) {
+//export kuzzle_wrapper_free_search_result
+func kuzzle_wrapper_free_search_result(st *C.search_result) {
 	if st != nil {
-		destroy_document_search(st.result)
+		kuzzle_wrapper_free_document_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_search_profiles_result
-func destroy_search_profiles_result(st *C.search_profiles_result) {
+//export kuzzle_wrapper_free_search_profiles_result
+func kuzzle_wrapper_free_search_profiles_result(st *C.search_profiles_result) {
 	if st != nil {
-		destroy_profile_search(st.result)
+		kuzzle_wrapper_free_profile_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_search_roles_result
-func destroy_search_roles_result(st *C.search_roles_result) {
+//export kuzzle_wrapper_free_search_roles_result
+func kuzzle_wrapper_free_search_roles_result(st *C.search_roles_result) {
 	if st != nil {
-		destroy_role_search(st.result)
+		kuzzle_wrapper_free_role_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_specification_search
-func destroy_specification_search(st *C.specification_search) {
+//export kuzzle_wrapper_free_specification_search
+func kuzzle_wrapper_free_specification_search(st *C.specification_search) {
 	if st != nil {
 		if st.hits != nil {
 			hits := (*[1<<30 - 1]C.specification_entry)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
@@ -732,37 +732,37 @@ func destroy_specification_search(st *C.specification_search) {
 	}
 }
 
-//export destroy_specification_search_result
-func destroy_specification_search_result(st *C.specification_search_result) {
+//export kuzzle_wrapper_free_specification_search_result
+func kuzzle_wrapper_free_specification_search_result(st *C.specification_search_result) {
 	if st != nil {
-		destroy_specification_search(st.result)
+		kuzzle_wrapper_free_specification_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_mapping
-func destroy_mapping(st *C.mapping) {
+//export kuzzle_wrapper_free_mapping
+func kuzzle_wrapper_free_mapping(st *C.mapping) {
 	if st != nil {
 		kuzzle_wrapper_free_json_object(st.mapping)
-		destroy_collection(st.collection)
+		kuzzle_wrapper_free_collection(st.collection)
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_mapping_result
-func destroy_mapping_result(st *C.mapping_result) {
+//export kuzzle_wrapper_free_mapping_result
+func kuzzle_wrapper_free_mapping_result(st *C.mapping_result) {
 	if st != nil {
-		destroy_mapping(st.result)
+		kuzzle_wrapper_free_mapping(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
 	}
 }
 
-//export destroy_void_result
-func destroy_void_result(st *C.void_result) {
+//export kuzzle_wrapper_free_void_result
+func kuzzle_wrapper_free_void_result(st *C.void_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
@@ -777,14 +777,14 @@ func _free_collection_entry(st *C.collection_entry) {
 	}
 }
 
-//export destroy_collection_entry
-func destroy_collection_entry(st *C.collection_entry) {
+//export kuzzle_wrapper_free_collection_entry
+func kuzzle_wrapper_free_collection_entry(st *C.collection_entry) {
 	_free_collection_entry(st)
 	C.free(unsafe.Pointer(st))
 }
 
-//export destroy_collection_entry_result
-func destroy_collection_entry_result(st *C.collection_entry_result) {
+//export kuzzle_wrapper_free_collection_entry_result
+func kuzzle_wrapper_free_collection_entry_result(st *C.collection_entry_result) {
 	if st != nil {
 		if st.result != nil {
 			entries := (*[1<<30 - 1]C.collection_entry)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
@@ -802,8 +802,8 @@ func destroy_collection_entry_result(st *C.collection_entry_result) {
 	}
 }
 
-//export destroy_user_search
-func destroy_user_search(st *C.user_search) {
+//export kuzzle_wrapper_free_user_search
+func kuzzle_wrapper_free_user_search(st *C.user_search) {
 	if st != nil {
 		if st.hits != nil {
 			hits := (*[1<<30 - 1]C.user)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
@@ -820,10 +820,10 @@ func destroy_user_search(st *C.user_search) {
 	}
 }
 
-//export destroy_search_users_result
-func destroy_search_users_result(st *C.search_users_result) {
+//export kuzzle_wrapper_free_search_users_result
+func kuzzle_wrapper_free_search_users_result(st *C.search_users_result) {
 	if st != nil {
-		destroy_user_search(st.result)
+		kuzzle_wrapper_free_user_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
