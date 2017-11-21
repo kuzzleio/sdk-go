@@ -16,6 +16,7 @@
 %rename(StringArrayResult) string_array_result;
 %rename(KuzzleResponse) kuzzle_response;
 %rename(KuzzleRequest) kuzzle_request;
+%rename(ShardsResult) shards_result;
 
 %include "typemap.i"
 %include "javadoc.i"
@@ -272,5 +273,13 @@ struct json_object { };
     }
     kuzzle_response* query(kuzzle_request* request) {
         return kuzzle_wrapper_query($self, request, NULL);
+    }
+
+    // refreshIndex
+    shards_result* refreshIndex(char* index, query_options* options) {
+        return kuzzle_wrapper_refresh_index($self, index, options);
+    }
+    shards_result* refreshIndex(char* index) {
+        return kuzzle_wrapper_refresh_index($self, index, NULL);
     }
 }

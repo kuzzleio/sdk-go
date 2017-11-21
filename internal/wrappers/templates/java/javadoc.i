@@ -330,3 +330,19 @@
    * {@link #query(KuzzleResponse, QueryOptions)}
    */
   public";
+
+%javamethodmodifiers kuzzle::refreshIndex(char* index, query_options* options) "
+  /**
+   * Forces the default data index to refresh on each modification
+   *
+   * @param options - Request options
+   * @param listener - Response callback listener
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzle::refreshIndex(char* index) "
+  /**
+   * {@link #refreshIndex(String, QueryOptions)}
+   */
+  public";
