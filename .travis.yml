@@ -4,7 +4,7 @@ go:
 install:
   - git clone https://github.com/json-c/json-c.git
   - cd json-c
-  - sudo apt-get install build-essential swig
+  - sudo apt-get install build-essential swig oracle-java8-installer
   - sh autogen.sh
   - ./configure
   - make
