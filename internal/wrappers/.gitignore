@@ -1,17 +1,8 @@
 # IDE
 .idea
 
-# Auto-generated library
-kuzzle.h
-libkuzzlesdk.so
-
-# .out files
-*.out
+# swig generated wrapper code
+kcore_wrap.c
 
 # build
-/kcore_wrap.c
-/kcore_wrap.o
-/kuzzle.h
-/libkuzzle.so
-/libkuzzlesdk.so
-
+build/

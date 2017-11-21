@@ -40,7 +40,7 @@
 %ignore string_array_result::result;
 %typemap(javacode) struct string_array_result %{
   public String[] getResult() {
-    String[] result = new String[(int)getLength()];
+    String[] result = new String[(int)getResult_length()];
     for (int i = 0; i < result.length; ++i) {
       result[i] = getResult(i);
     }
