@@ -1,6 +1,7 @@
 ROOTOUTDIR = ./build
 GOROOT ?= /usr/local
 JAVA_HOME ?= /usr/local
+PYTHONINCLUDEDIR ?= /usr/include/python3.5
 GOCC = $(GOROOT)/bin/go
 GOFLAGS = -buildmode=c-shared
 GOSRC = ./cgo/kuzzle/
@@ -61,9 +62,22 @@ csharp: core swig wrapper object posttask
 	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
 	rm -f $(OUTDIR)/*.cs
 
+python: OUTDIR = $(ROOTOUTDIR)/python
+python: LANGINCLUDE = -I$(PYTHONINCLUDEDIR)
+python: LANGUAGE = python
+python: core swig wrapper
+	rm -rf $(OUTDIR)/templates $(OUTDIR)/headers $(OUTDIR)/*.h
+	mkdir -p $(OUTDIR)/templates
+	cp -r templates/$(LANGUAGE)/*.py $(SRCS) headers $(OUTDIR)
+	ln -s headers/* $(OUTDIR)
+	cp templates/swig.h $(OUTDIR)/templates
+	python $(OUTDIR)/setup.py build_ext -I $(OUTDIR):$(GOTARGETDIR) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
+
+
 clean:
 	rm -rf build
 
-.PHONY: all java csharp wrapper swig clean object core
+.PHONY: all java csharp python wrapper swig clean object core
+
 
 .DEFAULT_GOAL := all
