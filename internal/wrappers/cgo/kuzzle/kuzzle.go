@@ -19,6 +19,9 @@ import (
 // map which stores instances to keep references in case the gc passes
 var instances map[interface{}]interface{}
 
+// map which stores channel and function's pointers adresses for listeners
+var listeners_list map[uintptr]chan<- interface{}
+
 // register new instance to the instances map
 func registerKuzzle(instance interface{}) {
 	instances[instance] = nil
@@ -147,6 +150,7 @@ func kuzzle_wrapper_set_headers(k *C.kuzzle, content *C.json_object, replace C.u
 func kuzzle_wrapper_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 	c := make(chan interface{})
 
+	listeners_list[uintptr(unsafe.Pointer(cb))] = c
 	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
 	go func() {
 		res := <-c
@@ -163,8 +167,13 @@ func kuzzle_wrapper_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 }
 
 //export kuzzle_wrapper_remove_listener
-func kuzzle_wrapper_remove_listener(k *C.kuzzle, event C.int) {
-	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event))
+func kuzzle_wrapper_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
+	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event), listeners_list[uintptr(cb)])
+}
+
+//export kuzzle_wrapper_remove_all_listeners
+func kuzzle_wrapper_remove_all_listeners() {
+
 }
 
 func main() {

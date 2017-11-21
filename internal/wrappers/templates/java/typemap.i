@@ -49,6 +49,8 @@
 %}
 
 %javamethodmodifiers string_array_result::getResult(size_t pos) "private";
+
+
 %extend string_array_result {
     char *getResult(size_t pos) {
         return *$self->result + pos;

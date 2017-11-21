@@ -100,6 +100,7 @@ struct json_object { };
     }
 }
 
+
 %typemap(javaimports) kuzzle "
 /* The type Kuzzle. */"
 
@@ -267,7 +268,19 @@ struct json_object { };
 
     // removeListener
     kuzzle* removeListener(enum Event ev) {
-        kuzzle_wrapper_remove_listener($self, (int)ev);
+        kuzzle_wrapper_remove_listener($self, (int)ev, NULL);
         return $self;
     }
+
+    // removeAllListener
+    kuzzle* removeAllListener() {
+    }
 }
+
+%feature("director") Callback;
+%inline %{
+    struct Callback {
+      virtual void call(Log l, const char *s) = 0;
+      virtual ~Callback() {}
+    };
+%}

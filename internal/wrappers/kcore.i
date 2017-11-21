@@ -1,6 +1,6 @@
 /* File : kcore.i */
 
-%module kcore
+%module(directors="1") kcore
 %{
 #define _Complex
 #include "kuzzle.h"
