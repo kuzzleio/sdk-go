@@ -14,6 +14,8 @@
 %rename(CollectionsList) collection_entry;
 %rename(CollectionsListResult) collection_entry_result;
 %rename(StringArrayResult) string_array_result;
+%rename(KuzzleResponse) kuzzle_response;
+%rename(KuzzleRequest) kuzzle_request;
 
 %include "typemap.i"
 %include "javadoc.i"
@@ -262,5 +264,13 @@ struct json_object { };
     // logout
     void logout() {
         kuzzle_wrapper_logout($self);
+    }
+
+    // query
+    kuzzle_response* query(kuzzle_request* request, query_options* options) {
+        return kuzzle_wrapper_query($self, request, options);
+    }
+    kuzzle_response* query(kuzzle_request* request) {
+        return kuzzle_wrapper_query($self, request, NULL);
     }
 }
