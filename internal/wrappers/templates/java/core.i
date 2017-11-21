@@ -35,7 +35,7 @@
 
 %extend options {
     options() {
-        options *o = kuzzle_wrapper_new_options();
+        options *o = kuzzle_new_options();
         return o;
     }
 
@@ -58,48 +58,48 @@ struct json_object { };
     }
 
     json_object* put(char* key, char* content) {
-        kuzzle_wrapper_json_put($self, key, content, 0);
+        kuzzle_json_put($self, key, content, 0);
         return $self;
     }
 
     json_object* put(char* key, int content) {
-        kuzzle_wrapper_json_put($self, key, &content, 1);
+        kuzzle_json_put($self, key, &content, 1);
         return $self;
     }
 
     json_object* put(char* key, double content) {
-        kuzzle_wrapper_json_put($self, key, &content, 2);
+        kuzzle_json_put($self, key, &content, 2);
         return $self;
     }
 
     json_object* put(char* key, bool content) {
-        kuzzle_wrapper_json_put($self, key, &content, 3);
+        kuzzle_json_put($self, key, &content, 3);
         return $self;
     }
 
     json_object* put(char* key, json_object* content) {
-        kuzzle_wrapper_json_put($self, key, content, 4);
+        kuzzle_json_put($self, key, content, 4);
         return $self;
     }
 
     char* getString(char* key) {
-        return kuzzle_wrapper_json_get_string($self, key);
+        return kuzzle_json_get_string($self, key);
     }
 
     int getInt(char* key) {
-        return kuzzle_wrapper_json_get_int($self, key);
+        return kuzzle_json_get_int($self, key);
     }
 
     double getDouble(char* key) {
-        return kuzzle_wrapper_json_get_double($self, key);
+        return kuzzle_json_get_double($self, key);
     }
 
     bool getBoolean(char* key) {
-        return kuzzle_wrapper_json_get_bool($self, key);
+        return kuzzle_json_get_bool($self, key);
     }
 
     json_object* getJsonObject(char* key) {
-        return kuzzle_wrapper_json_get_json_object($self, key);
+        return kuzzle_json_get_json_object($self, key);
     }
 }
 
@@ -110,13 +110,13 @@ struct json_object { };
     // ctors && dtor
     kuzzle(char* host, options *opts) {
         kuzzle *k = malloc(sizeof(kuzzle));
-        kuzzle_wrapper_new_kuzzle(k, host, "websocket", opts);
+        kuzzle_new_kuzzle(k, host, "websocket", opts);
         return k;
     }
     kuzzle(char* host) {
         kuzzle *k;
         k = malloc(sizeof(kuzzle));
-        kuzzle_wrapper_new_kuzzle(k, host, "websocket", NULL);
+        kuzzle_new_kuzzle(k, host, "websocket", NULL);
         return k;
     }
     ~kuzzle() {
@@ -126,160 +126,154 @@ struct json_object { };
 
     // checkToken
     token_validity* checkToken(char* token) {
-        return kuzzle_wrapper_check_token($self, token);
+        return kuzzle_check_token($self, token);
     }
 
     // connect
-    char* connect() {
-        return kuzzle_wrapper_connect($self);
-    }
+    char* connect();
 
     // createIndex
     bool_result* createIndex(char* index, query_options* options) {
-        return kuzzle_wrapper_create_index($self, index, options);
+        return kuzzle_create_index($self, index, options);
     }
     bool_result* createIndex(char* index) {
-        return kuzzle_wrapper_create_index($self, index, NULL);
+        return kuzzle_create_index($self, index, NULL);
     }
 
     // createMyCredentials
     json_result* createMyCredentials(char* strategy, json_object* credentials, query_options* options) {
-        return kuzzle_wrapper_create_my_credentials($self, strategy, credentials, options);
+        return kuzzle_create_my_credentials($self, strategy, credentials, options);
     }
     json_result* createMyCredentials(char* strategy, json_object* credentials) {
-        return kuzzle_wrapper_create_my_credentials($self, strategy, credentials, NULL);
+        return kuzzle_create_my_credentials($self, strategy, credentials, NULL);
     }
 
     // deleteMyCredentials
     bool_result* deleteMyCredentials(char* strategy, query_options *options) {
-        return kuzzle_wrapper_delete_my_credentials($self, strategy, options);
+        return kuzzle_delete_my_credentials($self, strategy, options);
     }
     bool_result* deleteMyCredentials(char* strategy) {
-        return kuzzle_wrapper_delete_my_credentials($self, strategy, NULL);
+        return kuzzle_delete_my_credentials($self, strategy, NULL);
     }
 
     // getMyCredentials
     json_result* getMyCredentials(char *strategy, query_options *options) {
-        return kuzzle_wrapper_get_my_credentials($self, strategy, options);
+        return kuzzle_get_my_credentials($self, strategy, options);
     }
     json_result* getMyCredentials(char *strategy) {
-        return kuzzle_wrapper_get_my_credentials($self, strategy, NULL);
+        return kuzzle_get_my_credentials($self, strategy, NULL);
     }
 
     // updateMyCredentials
     json_result* updateMyCredentials(char *strategy, json_object* credentials, query_options *options) {
-        return kuzzle_wrapper_update_my_credentials($self, strategy, credentials, options);
+        return kuzzle_update_my_credentials($self, strategy, credentials, options);
     }
     json_result* updateMyCredentials(char *strategy, json_object* credentials) {
-        return kuzzle_wrapper_update_my_credentials($self, strategy, credentials, NULL);
+        return kuzzle_update_my_credentials($self, strategy, credentials, NULL);
     }
 
     // validateMyCredentials
     bool_result* validateMyCredentials(char *strategy, json_object* credentials, query_options* options) {
-        return kuzzle_wrapper_validate_my_credentials($self, strategy, credentials, options);
+        return kuzzle_validate_my_credentials($self, strategy, credentials, options);
     }
     bool_result* validateMyCredentials(char *strategy, json_object* credentials) {
-        return kuzzle_wrapper_validate_my_credentials($self, strategy, credentials, NULL);
+        return kuzzle_validate_my_credentials($self, strategy, credentials, NULL);
     }
 
     // login
     string_result* login(char* strategy, json_object* credentials, int expires_in) {
-        return kuzzle_wrapper_login($self, strategy, credentials, &expires_in);
+        return kuzzle_login($self, strategy, credentials, &expires_in);
     }
     string_result* login(char* strategy, json_object* credentials) {
-        return kuzzle_wrapper_login($self, strategy, credentials, NULL);
+        return kuzzle_login($self, strategy, credentials, NULL);
     }
     string_result* login(char* strategy) {
-        return kuzzle_wrapper_login($self, strategy, NULL, NULL);
+        return kuzzle_login($self, strategy, NULL, NULL);
     }
 
     // getAllStatistics
     all_statistics_result* getAllStatistics(query_options* options) {
-        return kuzzle_wrapper_get_all_statistics($self, options);
+        return kuzzle_get_all_statistics($self, options);
     }
     all_statistics_result* getAllStatistics() {
-        return kuzzle_wrapper_get_all_statistics($self, NULL);
+        return kuzzle_get_all_statistics($self, NULL);
     }
 
     // getStatistics
     statistics_result* getStatistics(unsigned long time, query_options* options) {
-        return kuzzle_wrapper_get_statistics($self, time, options);
+        return kuzzle_get_statistics($self, time, options);
     }
     statistics_result* getStatistics(unsigned long time) {
-        return kuzzle_wrapper_get_statistics($self, time, NULL);
+        return kuzzle_get_statistics($self, time, NULL);
     }
 
     // getAutoRefresh
     bool_result* getAutoRefresh(char* index, query_options* options) {
-        return kuzzle_wrapper_get_auto_refresh($self, index, options);
+        return kuzzle_get_auto_refresh($self, index, options);
     }
     bool_result* getAutoRefresh(char* index) {
-        return kuzzle_wrapper_get_auto_refresh($self, index, NULL);
+        return kuzzle_get_auto_refresh($self, index, NULL);
     }
 
     // getJwt
     char* getJwt() {
-        return kuzzle_wrapper_get_jwt($self);
+        return kuzzle_get_jwt($self);
     }
 
     // getMyRights
     json_result* getMyRights(query_options* options) {
-        return kuzzle_wrapper_get_my_rights($self, options);
+        return kuzzle_get_my_rights($self, options);
     }
     json_result* getMyRights() {
-        return kuzzle_wrapper_get_my_rights($self, NULL);
+        return kuzzle_get_my_rights($self, NULL);
     }
 
     // getServerInfo
     json_result* getServerInfo(query_options* options) {
-        return kuzzle_wrapper_get_server_info($self, options);
+        return kuzzle_get_server_info($self, options);
     }
     json_result* getServerInfo() {
-        return kuzzle_wrapper_get_server_info($self, NULL);
+        return kuzzle_get_server_info($self, NULL);
     }
 
     // listCollections
     collection_entry_result* listCollections(char *index, query_options* options) {
-        return kuzzle_wrapper_list_collections($self, index, options);
+        return kuzzle_list_collections($self, index, options);
     }
     collection_entry_result* listCollections(char *index) {
-        return kuzzle_wrapper_list_collections($self, index, NULL);
+        return kuzzle_list_collections($self, index, NULL);
     }
     collection_entry_result* listCollections() {
-        return kuzzle_wrapper_list_collections($self, NULL, NULL);
+        return kuzzle_list_collections($self, NULL, NULL);
     }
 
     // listIndexes
     string_array_result* listIndexes(query_options* options) {
-        return kuzzle_wrapper_list_indexes($self, options);
+        return kuzzle_list_indexes($self, options);
     }
     string_array_result* listIndexes() {
-        return kuzzle_wrapper_list_indexes($self, NULL);
+        return kuzzle_list_indexes($self, NULL);
     }
 
     // disconnect
-    void disconnect() {
-        kuzzle_wrapper_disconnect($self);
-    }
+    void disconnect();
 
     // logout
-    void logout() {
-        kuzzle_wrapper_logout($self);
-    }
+    void logout();
 
     // query
     kuzzle_response* query(kuzzle_request* request, query_options* options) {
-        return kuzzle_wrapper_query($self, request, options);
+        return kuzzle_query($self, request, options);
     }
     kuzzle_response* query(kuzzle_request* request) {
-        return kuzzle_wrapper_query($self, request, NULL);
+        return kuzzle_query($self, request, NULL);
     }
 
     // refreshIndex
     shards_result* refreshIndex(char* index, query_options* options) {
-        return kuzzle_wrapper_refresh_index($self, index, options);
+        return kuzzle_refresh_index($self, index, options);
     }
     shards_result* refreshIndex(char* index) {
-        return kuzzle_wrapper_refresh_index($self, index, NULL);
+        return kuzzle_refresh_index($self, index, NULL);
     }
 }

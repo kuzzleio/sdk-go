@@ -14,24 +14,24 @@ import (
 	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
-//export kuzzle_wrapper_set_jwt
-func kuzzle_wrapper_set_jwt(k *C.kuzzle, token *C.char) {
+//export kuzzle_set_jwt
+func kuzzle_set_jwt(k *C.kuzzle, token *C.char) {
 	(*kuzzle.Kuzzle)(k.instance).SetJwt(C.GoString(token))
 }
 
-//export kuzzle_wrapper_unset_jwt
-func kuzzle_wrapper_unset_jwt(k *C.kuzzle) {
+//export kuzzle_unset_jwt
+func kuzzle_unset_jwt(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).UnsetJwt()
 }
 
 // Allocates memory
-//export kuzzle_wrapper_get_jwt
-func kuzzle_wrapper_get_jwt(k *C.kuzzle) *C.char {
+//export kuzzle_get_jwt
+func kuzzle_get_jwt(k *C.kuzzle) *C.char {
 	return C.CString((*kuzzle.Kuzzle)(k.instance).GetJwt())
 }
 
-//export kuzzle_wrapper_login
-func kuzzle_wrapper_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
+//export kuzzle_login
+func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int
 	if expires_in != nil {
 		expire = int(*expires_in)
@@ -42,8 +42,8 @@ func kuzzle_wrapper_login(k *C.kuzzle, strategy *C.char, credentials *C.json_obj
 	return goToCStringResult(&res, err)
 }
 
-//export kuzzle_wrapper_logout
-func kuzzle_wrapper_logout(k *C.kuzzle) *C.char {
+//export kuzzle_logout
+func kuzzle_logout(k *C.kuzzle) *C.char {
 	err := (*kuzzle.Kuzzle)(k.instance).Logout()
 	if err != nil {
 		return C.CString(err.Error())
@@ -52,8 +52,8 @@ func kuzzle_wrapper_logout(k *C.kuzzle) *C.char {
 	return nil
 }
 
-//export kuzzle_wrapper_check_token
-func kuzzle_wrapper_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
+//export kuzzle_check_token
+func kuzzle_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
 	result := (*C.token_validity)(C.calloc(1, C.sizeof_token_validity))
 
 	res, err := (*kuzzle.Kuzzle)(k.instance).CheckToken(C.GoString(token))
@@ -69,8 +69,8 @@ func kuzzle_wrapper_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
 	return result
 }
 
-//export kuzzle_wrapper_create_my_credentials
-func kuzzle_wrapper_create_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
+//export kuzzle_create_my_credentials
+func kuzzle_create_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).CreateMyCredentials(
 		C.GoString(strategy),
 		JsonCConvert(credentials).(map[string]interface{}),
@@ -79,8 +79,8 @@ func kuzzle_wrapper_create_my_credentials(k *C.kuzzle, strategy *C.char, credent
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_wrapper_delete_my_credentials
-func kuzzle_wrapper_delete_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.bool_result {
+//export kuzzle_delete_my_credentials
+func kuzzle_delete_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).DeleteMyCredentials(
 		C.GoString(strategy),
 		SetQueryOptions(options))
@@ -88,8 +88,8 @@ func kuzzle_wrapper_delete_my_credentials(k *C.kuzzle, strategy *C.char, options
 	return goToCBoolResult(res, err)
 }
 
-//export kuzzle_wrapper_get_my_credentials
-func kuzzle_wrapper_get_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.json_result {
+//export kuzzle_get_my_credentials
+func kuzzle_get_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.json_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyCredentials(
 		C.GoString(strategy),
 		SetQueryOptions(options))
@@ -97,8 +97,8 @@ func kuzzle_wrapper_get_my_credentials(k *C.kuzzle, strategy *C.char, options *C
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_wrapper_update_my_credentials
-func kuzzle_wrapper_update_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
+//export kuzzle_update_my_credentials
+func kuzzle_update_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateMyCredentials(
 		C.GoString(strategy),
 		JsonCConvert(credentials).(map[string]interface{}),
@@ -107,8 +107,8 @@ func kuzzle_wrapper_update_my_credentials(k *C.kuzzle, strategy *C.char, credent
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_wrapper_validate_my_credentials
-func kuzzle_wrapper_validate_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
+//export kuzzle_validate_my_credentials
+func kuzzle_validate_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).ValidateMyCredentials(
 		C.GoString(strategy),
 		JsonCConvert(credentials).(map[string]interface{}),
@@ -117,15 +117,15 @@ func kuzzle_wrapper_validate_my_credentials(k *C.kuzzle, strategy *C.char, crede
 	return goToCBoolResult(res, err)
 }
 
-//export kuzzle_wrapper_get_my_rights
-func kuzzle_wrapper_get_my_rights(k *C.kuzzle, options *C.query_options) *C.json_result {
+//export kuzzle_get_my_rights
+func kuzzle_get_my_rights(k *C.kuzzle, options *C.query_options) *C.json_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyRights(SetQueryOptions(options))
 
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_wrapper_update_self
-func kuzzle_wrapper_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
+//export kuzzle_update_self
+func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
 	userData, err := cToGoUserData(data)
 	if err != nil {
 		return goToCJsonResult(nil, err)
@@ -138,8 +138,8 @@ func kuzzle_wrapper_update_self(k *C.kuzzle, data *C.user_data, options *C.query
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_wrapper_who_am_i
-func kuzzle_wrapper_who_am_i(k *C.kuzzle) *C.user_result {
+//export kuzzle_who_am_i
+func kuzzle_who_am_i(k *C.kuzzle) *C.user_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).WhoAmI()
 
 	return goToCUserResult(k, res, err)

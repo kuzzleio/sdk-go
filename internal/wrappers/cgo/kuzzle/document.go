@@ -11,14 +11,14 @@ import (
 	"unsafe"
 )
 
-//export kuzzle_wrapper_new_document
-func kuzzle_wrapper_new_document(c *C.collection) *C.document {
+//export kuzzle_new_document
+func kuzzle_new_document(c *C.collection) *C.document {
 	return goToCDocument(c, cToGoCollection(c).Document(), nil)
 }
 
-//export kuzzle_wrapper_document_subscribe
+//export kuzzle_document_subscribe
 // TODO loop and close on Unsubscribe
-func kuzzle_wrapper_document_subscribe(d *C.document, options *C.room_options, cb unsafe.Pointer) {
+func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb unsafe.Pointer) {
 	c := make(chan *types.KuzzleNotification)
 	cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
 
@@ -29,20 +29,20 @@ func kuzzle_wrapper_document_subscribe(d *C.document, options *C.room_options, c
 }
 
 // Does not re-allocate the document
-// export kuzzle_wrapper_document_save
-func kuzzle_wrapper_document_save(d *C.document, options *C.query_options) *C.document_result {
+// export kuzzle_document_save
+func kuzzle_document_save(d *C.document, options *C.query_options) *C.document_result {
 	_, err := cToGoDocument(d._collection, d).Save(SetQueryOptions(options))
 	return currentDocumentResult(d, err)
 }
 
-// export kuzzle_wrapper_document_refresh
-func kuzzle_wrapper_document_refresh(d *C.document, options *C.query_options) *C.document_result {
+// export kuzzle_document_refresh
+func kuzzle_document_refresh(d *C.document, options *C.query_options) *C.document_result {
 	res, err := cToGoDocument(d._collection, d).Refresh(SetQueryOptions(options))
 	return goToCDocumentResult(d._collection, res, err)
 }
 
-//export kuzzle_wrapper_document_set_headers
-func kuzzle_wrapper_document_set_headers(d *C.document, content *C.json_object, replace C.uint) {
+//export kuzzle_document_set_headers
+func kuzzle_document_set_headers(d *C.document, content *C.json_object, replace C.uint) {
 	if JsonCType(content) == C.json_type_object {
 		r := replace != 0
 		cToGoDocument(d._collection, d).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
@@ -51,20 +51,20 @@ func kuzzle_wrapper_document_set_headers(d *C.document, content *C.json_object, 
 	return
 }
 
-// export kuzzle_wrapper_document_publish
-func kuzzle_wrapper_document_publish(d *C.document, options *C.query_options) *C.bool_result {
+// export kuzzle_document_publish
+func kuzzle_document_publish(d *C.document, options *C.query_options) *C.bool_result {
 	res, err := cToGoDocument(d._collection, d).Publish(SetQueryOptions(options))
 	return goToCBoolResult(res, err)
 }
 
-// export kuzzle_wrapper_document_exists
-func kuzzle_wrapper_document_exists(d *C.document, options *C.query_options) *C.bool_result {
+// export kuzzle_document_exists
+func kuzzle_document_exists(d *C.document, options *C.query_options) *C.bool_result {
 	res, err := cToGoDocument(d._collection, d).Exists(SetQueryOptions(options))
 	return goToCBoolResult(res, err)
 }
 
-// export kuzzle_wrapper_document_delete
-func kuzzle_wrapper_document_delete(d *C.document, options *C.query_options) *C.string_result {
+// export kuzzle_document_delete
+func kuzzle_document_delete(d *C.document, options *C.query_options) *C.string_result {
 	res, err := cToGoDocument(d._collection, d).Delete(SetQueryOptions(options))
 	return goToCStringResult(&res, err)
 }
