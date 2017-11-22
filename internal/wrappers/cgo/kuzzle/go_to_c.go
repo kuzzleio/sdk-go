@@ -864,7 +864,7 @@ func goToCDateResult(goRes int, err error) *C.date_result {
 		return result
 	}
 
-	result.result = C.time_t(goRes)
+	result.result = C.longlong(goRes)
 
 	return result
 }

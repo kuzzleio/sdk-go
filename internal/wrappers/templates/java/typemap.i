@@ -59,14 +59,13 @@
 %ignore date_result::result;
 %typemap(javacode) struct date_result %{
   public java.util.Date getResult() {
-    System.out.println(getDateResult());
     return new java.util.Date(getDateResult());
   }
 %}
 
 %javamethodmodifiers date_result::getDateResult() "private";
 %extend date_result {
-    time_t getDateResult() {
+    long long getDateResult() {
         return $self->result;
     }
 }

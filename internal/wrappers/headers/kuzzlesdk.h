@@ -397,7 +397,7 @@ typedef struct {
 } int_result;
 
 typedef struct date_result {
-    time_t result;
+    long long result;
     int status;
     char *error;
     char *stack;

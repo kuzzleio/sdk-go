@@ -203,10 +203,10 @@ struct json_object { };
     }
 
     // getStatistics
-    statistics_result* getStatistics(unsigned long time, query_options* options) {
+    statistics_result* getStatistics(time_t time, query_options* options) {
         return kuzzle_wrapper_get_statistics($self, time, options);
     }
-    statistics_result* getStatistics(unsigned long time) {
+    statistics_result* getStatistics(time_t time) {
         return kuzzle_wrapper_get_statistics($self, time, NULL);
     }
 
