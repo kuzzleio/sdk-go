@@ -14,6 +14,9 @@
 %rename(CollectionsList) collection_entry;
 %rename(CollectionsListResult) collection_entry_result;
 %rename(StringArrayResult) string_array_result;
+%rename(KuzzleResponse) kuzzle_response;
+%rename(KuzzleRequest) kuzzle_request;
+%rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 
 %include "typemap.i"
@@ -263,6 +266,22 @@ struct json_object { };
     // logout
     void logout() {
         kuzzle_wrapper_logout($self);
+    }
+
+    // query
+    kuzzle_response* query(kuzzle_request* request, query_options* options) {
+        return kuzzle_wrapper_query($self, request, options);
+    }
+    kuzzle_response* query(kuzzle_request* request) {
+        return kuzzle_wrapper_query($self, request, NULL);
+    }
+
+    // refreshIndex
+    shards_result* refreshIndex(char* index, query_options* options) {
+        return kuzzle_wrapper_refresh_index($self, index, options);
+    }
+    shards_result* refreshIndex(char* index) {
+        return kuzzle_wrapper_refresh_index($self, index, NULL);
     }
 
     // now
