@@ -7,7 +7,7 @@ import (
 )
 
 // Zremrangebyscore removes members from a sorted set with a score between min and max (inclusive by default).
-func (ms Ms) Zremrangebyscore(key string, min float64, max float64, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zremrangebyscore(key string, min float64, max float64, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

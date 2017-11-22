@@ -6,7 +6,7 @@ import (
 )
 
 // Object inspects the low-level properties of a key.
-func (ms Ms) Object(key string, subcommand string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Object(key string, subcommand string, options types.QueryOptions) (*string, error) {
 	if subcommand != "refcount" && subcommand != "encoding" && subcommand != "idletime" {
 		return nil, types.NewError("Ms.Object: subcommand required, possible values: refcount|encoding|idletime", 400)
 	}

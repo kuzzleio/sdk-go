@@ -6,7 +6,7 @@ import (
 )
 
 // ListCollections retrieves the list of known data collections contained in a specified index.
-func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*types.CollectionsList, error) {
+func (k *Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*types.CollectionsList, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
 			return nil, types.NewError("Kuzzle.ListCollections: index required", 400)
@@ -23,12 +23,12 @@ func (k Kuzzle) ListCollections(index string, options types.QueryOptions) ([]*ty
 	}
 
 	if options != nil {
-		if options.GetType() != "" {
+		if options.Type() != "" {
 			type body struct {
 				Type string `json:"type"`
 			}
 
-			query.Body = &body{Type: options.GetType()}
+			query.Body = &body{Type: options.Type()}
 		}
 	}
 

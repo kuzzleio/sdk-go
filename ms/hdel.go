@@ -6,7 +6,7 @@ import (
 )
 
 // Hdel removes fields from a hash
-func (ms Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Hdel(key string, fields []string, options types.QueryOptions) (int, error) {
 	if len(fields) == 0 {
 		return -1, types.NewError("Ms.Hdel: at least one hash field to remove is required", 400)
 	}

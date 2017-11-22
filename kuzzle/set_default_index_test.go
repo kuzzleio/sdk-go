@@ -12,7 +12,7 @@ import (
 )
 
 func TestSetDefaultIndexNullIndex(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(internal.MockedConnection{}, nil)
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	assert.NotNil(t, k.SetDefaultIndex(""))
 }
 

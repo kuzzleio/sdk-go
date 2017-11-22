@@ -9,12 +9,12 @@ import (
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	rooms := k.socket.GetRooms()
+	rooms := k.socket.Rooms()
 	if rooms != nil {
-		k.socket.GetRooms().Range(func(key, value interface{}) bool {
+		k.socket.Rooms().Range(func(key, value interface{}) bool {
 			value.(*sync.Map).Range(func(key, value interface{}) bool {
 				room := value.(types.IRoom)
-				room.Renew(room.GetFilters(), room.GetRealtimeChannel(), room.GetResponseChannel())
+				room.Renew(room.Filters(), room.RealtimeChannel(), room.ResponseChannel())
 
 				return true
 			})

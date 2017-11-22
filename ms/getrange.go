@@ -6,7 +6,7 @@ import (
 )
 
 // Getrange returns a substring of a key's value (index starts at position 0).
-func (ms Ms) Getrange(key string, start int, end int, options types.QueryOptions) (string, error) {
+func (ms *Ms) Getrange(key string, start int, end int, options types.QueryOptions) (string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

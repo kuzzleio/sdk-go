@@ -6,7 +6,7 @@ import (
 )
 
 // Get returns the value of a key
-func (ms Ms) Get(key string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Get(key string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

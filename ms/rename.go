@@ -5,7 +5,7 @@ import (
 )
 
 // Rename renames a key to newkey. If newkey already exists, it is overwritten.
-func (ms Ms) Rename(key string, newkey string, options types.QueryOptions) error {
+func (ms *Ms) Rename(key string, newkey string, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

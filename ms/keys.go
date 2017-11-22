@@ -6,7 +6,7 @@ import (
 )
 
 // Keys returns all keys matching the provided pattern.
-func (ms Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Keys(pattern string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

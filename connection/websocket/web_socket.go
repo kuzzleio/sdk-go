@@ -45,7 +45,7 @@ type webSocket struct {
 	replayInterval        time.Duration
 	retrying              bool
 	stopRetryingToConnect bool
-	RequestHistory        map[string]time.Time
+	requestHistory        map[string]time.Time
 }
 
 type QueueFilter interface {
@@ -54,7 +54,7 @@ type QueueFilter interface {
 
 type defaultQueueFilter struct{}
 
-func (qf defaultQueueFilter) Filter(interface{}) bool {
+func (qf *defaultQueueFilter) Filter(interface{}) bool {
 	return true
 }
 
@@ -77,19 +77,19 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 
 	ws := &webSocket{
 		mu:                    &sync.Mutex{},
-		queueTTL:              opts.GetQueueTTL(),
+		queueTTL:              opts.QueueTTL(),
 		offlineQueue:          make([]*types.QueryObject, 0),
-		queueMaxSize:          opts.GetQueueMaxSize(),
+		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
 		eventListeners:        make(map[int]chan<- interface{}),
-		RequestHistory:        make(map[string]time.Time),
-		autoQueue:             opts.GetAutoQueue(),
-		autoReconnect:         opts.GetAutoReconnect(),
-		autoReplay:            opts.GetAutoReplay(),
-		autoResubscribe:       opts.GetAutoResubscribe(),
-		reconnectionDelay:     opts.GetReconnectionDelay(),
-		replayInterval:        opts.GetReplayInterval(),
+		requestHistory:        make(map[string]time.Time),
+		autoQueue:             opts.AutoQueue(),
+		autoReconnect:         opts.AutoReconnect(),
+		autoReplay:            opts.AutoReplay(),
+		autoResubscribe:       opts.AutoResubscribe(),
+		reconnectionDelay:     opts.ReconnectionDelay(),
+		replayInterval:        opts.ReplayInterval(),
 		state:                 state.Ready,
 		retrying:              false,
 		stopRetryingToConnect: false,
@@ -97,7 +97,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 	}
 	ws.host = host
 
-	if opts.GetOfflineMode() == types.Auto {
+	if opts.OfflineMode() == types.Auto {
 		ws.autoReconnect = true
 		ws.autoQueue = true
 		ws.autoReplay = true
@@ -182,13 +182,13 @@ func (ws *webSocket) Connect() (bool, error) {
 }
 
 func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
-	if ws.state == state.Connected || (options != nil && !options.GetQueuable()) {
+	if ws.state == state.Connected || (options != nil && !options.Queuable()) {
 		ws.emitRequest(&types.QueryObject{
 			Query:     query,
 			ResChan:   responseChannel,
 			RequestId: requestId,
 		})
-	} else if ws.queuing || (options != nil && options.GetQueuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
+	} else if ws.queuing || (options != nil && options.Queuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
 		ws.cleanQueue()
 
 		if ws.queueFilter.Filter(query) {
@@ -277,9 +277,9 @@ func (ws *webSocket) listen() {
 			json.Unmarshal(msg, &notification)
 
 			s.(*sync.Map).Range(func(key, value interface{}) bool {
-				channel := value.(types.IRoom).GetRealtimeChannel()
+				channel := value.(types.IRoom).RealtimeChannel()
 				if channel != nil {
-					value.(types.IRoom).GetRealtimeChannel() <- &notification
+					value.(types.IRoom).RealtimeChannel() <- &notification
 				}
 				return true
 			})
@@ -417,10 +417,10 @@ func (ws *webSocket) emitRequest(query *types.QueryObject) error {
 	}
 
 	// Track requests made to allow Room.subscribeToSelf to work
-	ws.RequestHistory[query.RequestId] = time.Now()
-	for i, request := range ws.RequestHistory {
+	ws.requestHistory[query.RequestId] = time.Now()
+	for i, request := range ws.requestHistory {
 		if request.Before(now) {
-			delete(ws.RequestHistory, i)
+			delete(ws.requestHistory, i)
 		}
 	}
 
@@ -435,11 +435,11 @@ func (ws *webSocket) Close() error {
 	return ws.ws.Close()
 }
 
-func (ws webSocket) GetOfflineQueue() *[]*types.QueryObject {
+func (ws *webSocket) OfflineQueue() *[]*types.QueryObject {
 	return &ws.offlineQueue
 }
 
-func (ws webSocket) isValidState() bool {
+func (ws *webSocket) isValidState() bool {
 	switch ws.state {
 	case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
 		return true
@@ -447,18 +447,18 @@ func (ws webSocket) isValidState() bool {
 	return false
 }
 
-func (ws *webSocket) GetState() *int {
-	return &ws.state
+func (ws *webSocket) State() int {
+	return ws.state
 }
 
-func (ws webSocket) GetRequestHistory() map[string]time.Time {
-	return ws.RequestHistory
+func (ws *webSocket) RequestHistory() map[string]time.Time {
+	return ws.requestHistory
 }
 
-func (ws webSocket) RenewSubscriptions() {
+func (ws *webSocket) RenewSubscriptions() {
 	ws.subscriptions.Range(func(key, value interface{}) bool {
 		value.(*sync.Map).Range(func(key, value interface{}) bool {
-			value.(types.IRoom).Renew(value.(types.IRoom).GetFilters(), value.(types.IRoom).GetRealtimeChannel(), value.(types.IRoom).GetResponseChannel())
+			value.(types.IRoom).Renew(value.(types.IRoom).Filters(), value.(types.IRoom).RealtimeChannel(), value.(types.IRoom).ResponseChannel())
 			return true
 		})
 
@@ -466,6 +466,6 @@ func (ws webSocket) RenewSubscriptions() {
 	})
 }
 
-func (ws webSocket) GetRooms() *types.RoomList {
+func (ws *webSocket) Rooms() *types.RoomList {
 	return ws.subscriptions
 }

@@ -6,13 +6,13 @@ import (
 )
 
 // Count returns the number of other subscriptions on that room.
-func (room Room) Count() (int, error) {
+func (room *Room) Count() (int, error) {
 	query := &types.KuzzleRequest{
 		Controller: "realtime",
 		Action:     "count",
 		Body: struct {
 			RoomId string `json:"roomId"`
-		}{room.RoomId},
+		}{room.roomId},
 	}
 
 	result := make(chan *types.KuzzleResponse)

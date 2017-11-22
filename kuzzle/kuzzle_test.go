@@ -24,14 +24,14 @@ func ExampleKuzzle_Connect() {
 	fmt.Println(k.State)
 }
 
-func ExampleKuzzle_GetJwt() {
+func ExampleKuzzle_Jwt() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
-	jwt := k.GetJwt()
+	jwt := k.Jwt()
 	fmt.Println(jwt)
 }
 
-func ExampleKuzzle_GetOfflineQueue() {
+func ExampleKuzzle_OfflineQueue() {
 	//todo
 }

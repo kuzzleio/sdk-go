@@ -5,7 +5,7 @@ import (
 )
 
 // Lset sets the list element at index with the provided value.
-func (ms Ms) Lset(key string, index int, value string, options types.QueryOptions) error {
+func (ms *Ms) Lset(key string, index int, value string, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

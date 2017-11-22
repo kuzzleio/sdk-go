@@ -10,14 +10,14 @@ import (
 )
 
 func TestFlushQueue(t *testing.T) {
-	c := internal.MockedConnection{}
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	*k.GetOfflineQueue() = append(*k.GetOfflineQueue(), &types.QueryObject{RequestId: "test"})
-	assert.NotEmpty(t, *k.GetOfflineQueue())
+	*k.OfflineQueue() = append(*k.OfflineQueue(), &types.QueryObject{RequestId: "test"})
+	assert.NotEmpty(t, *k.OfflineQueue())
 
 	k.FlushQueue()
-	assert.Empty(t, *k.GetOfflineQueue())
+	assert.Empty(t, *k.OfflineQueue())
 }
 
 func ExampleKuzzle_FlushQueue() {

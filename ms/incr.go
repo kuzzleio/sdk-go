@@ -7,7 +7,7 @@ import (
 
 // Incr increments the number stored at key by 1.
 // If the key does not exist, it is set to 0 before performing the operation.
-func (ms Ms) Incr(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Incr(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

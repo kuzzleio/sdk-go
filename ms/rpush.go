@@ -7,7 +7,7 @@ import (
 
 // Rpush appends the specified value at the end of a list,
 // only if the key already exists and if it holds a list.
-func (ms Ms) Rpush(source string, values []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Rpush(source string, values []string, options types.QueryOptions) (int, error) {
 	if len(values) == 0 {
 		return 0, types.NewError("Ms.Rpush: please provide at least one value", 400)
 	}

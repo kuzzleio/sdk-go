@@ -14,7 +14,7 @@ type SearchResult struct {
 }
 
 // FetchNext returns a new SearchResult that corresponds to the next result page
-func (ksr SearchResult) FetchNext() (*SearchResult, error) {
+func (ksr *SearchResult) FetchNext() (*SearchResult, error) {
 	if ksr.ScrollId != "" {
 		options := ksr.Options
 		options.SetFrom(0)
@@ -24,7 +24,7 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 	}
 
 	if ksr.Options != nil && ksr.Filters != nil {
-		if ksr.Options.GetSize() != 0 && len(ksr.Filters.Sort) > 0 {
+		if ksr.Options.Size() != 0 && len(ksr.Filters.Sort) > 0 {
 			var filters = ksr.Filters
 			var source = ksr.Hits[len(ksr.Hits)-1].SourceToMap()
 
@@ -45,11 +45,11 @@ func (ksr SearchResult) FetchNext() (*SearchResult, error) {
 			return ksr.Collection.Search(filters, options)
 		}
 
-		if ksr.Options.GetSize() != 0 {
+		if ksr.Options.Size() != 0 {
 			options := ksr.Options
-			options.SetFrom(ksr.Options.GetFrom() + ksr.Options.GetSize())
+			options.SetFrom(ksr.Options.From() + ksr.Options.Size())
 
-			if options.GetFrom() >= ksr.Total {
+			if options.From() >= ksr.Total {
 				return &SearchResult{}, nil
 			}
 

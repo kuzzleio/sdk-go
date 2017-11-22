@@ -6,7 +6,7 @@ import (
 
 // Mset sets the provided keys to their respective values.
 // If a key does not exist, it is created. Otherwise, the key’s value is overwritten.
-func (ms Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) error {
+func (ms *Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) error {
 	if len(entries) == 0 {
 		return types.NewError("Ms.Mset: please provide at least one key/value entry", 400)
 	}

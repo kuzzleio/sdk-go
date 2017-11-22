@@ -10,7 +10,7 @@ import (
 // Scores are expressed as floating point numbers.
 // If a member to insert is already in the sorted set,
 // its score is updated and the member is reinserted at the right position in the set.
-func (ms Ms) Zadd(key string, elements []*types.MSSortedSet, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zadd(key string, elements []*types.MSSortedSet, options types.QueryOptions) (int, error) {
 	if len(elements) == 0 {
 		return 0, types.NewError("Ms.Zadd: please provide at least one element", 400)
 	}
@@ -28,10 +28,10 @@ func (ms Ms) Zadd(key string, elements []*types.MSSortedSet, options types.Query
 	bodyContent := body{Elements: elements}
 
 	if options != nil {
-		bodyContent.Nx = options.GetNx()
-		bodyContent.Xx = options.GetXx()
-		bodyContent.Ch = options.GetCh()
-		bodyContent.Incr = options.GetIncr()
+		bodyContent.Nx = options.Nx()
+		bodyContent.Xx = options.Xx()
+		bodyContent.Ch = options.Ch()
+		bodyContent.Incr = options.Incr()
 	}
 
 	query := &types.KuzzleRequest{

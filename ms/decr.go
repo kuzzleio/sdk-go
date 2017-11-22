@@ -6,7 +6,7 @@ import (
 )
 
 // Decr decrements the value of a key by 1
-func (ms Ms) Decr(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Decr(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -6,7 +6,7 @@ import (
 )
 
 // Zcard returns the number of elements held by a sorted set.
-func (ms Ms) Zcard(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zcard(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

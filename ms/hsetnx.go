@@ -6,7 +6,7 @@ import (
 )
 
 // Hsetnx sets a field and its value in a hash, only if the field does not already exist.
-func (ms Ms) Hsetnx(key string, field string, value string, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Hsetnx(key string, field string, value string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

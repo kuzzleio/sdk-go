@@ -6,7 +6,7 @@ import (
 )
 
 // Time returns the current server time.
-func (ms Ms) Time(options types.QueryOptions) ([]int, error) {
+func (ms *Ms) Time(options types.QueryOptions) ([]int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

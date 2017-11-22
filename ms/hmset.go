@@ -5,7 +5,7 @@ import (
 )
 
 // Hmset sets multiple fields at once in a hash.
-func (ms Ms) Hmset(key string, entries []*types.MsHashField, options types.QueryOptions) error {
+func (ms *Ms) Hmset(key string, entries []*types.MsHashField, options types.QueryOptions) error {
 	if len(entries) == 0 {
 		return types.NewError("Ms.Hmset: at least one entry field to set is required", 400)
 	}

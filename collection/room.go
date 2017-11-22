@@ -9,25 +9,25 @@ import (
 )
 
 type Room struct {
-	RequestId       string          `json:"RequestId"`
-	RoomId          string          `json:"roomId"`
-	Channel         string          `json:"channel"`
-	result          json.RawMessage `json:"-"`
-	scope           string          `json:"-"`
-	state           string          `json:"-"`
-	users           string          `json:"-"`
-	subscribeToSelf bool            `json:"-"`
+	requestId       string
+	roomId          string
+	channel         string
+	result          json.RawMessage
+	scope           string
+	state           string
+	users           string
+	subscribeToSelf bool
 
-	collection                  *Collection                      `json:"-"`
-	RealtimeNotificationChannel chan<- *types.KuzzleNotification `json:"-"`
+	collection                  *Collection
+	realtimeNotificationChannel chan<- *types.KuzzleNotification
 	subscribeResponseChan       chan<- *types.SubscribeResponse
 
-	pendingSubscriptions map[string]chan<- *types.KuzzleNotification `json:"-"`
-	subscribing          bool                                        `json:"-"`
-	queue                *list.List                                  `json:"-"`
-	id                   string                                      `json:"-"`
-	Volatile             types.VolatileData                          `json:"-"`
-	filters              interface{}                                 `json:"-"`
+	pendingSubscriptions map[string]chan<- *types.KuzzleNotification
+	subscribing          bool
+	queue                *list.List
+	id                   string
+	Volatile             types.VolatileData
+	filters              interface{}
 }
 
 // NewRoom instanciates a new Room; this type is the result of a subscription request,
@@ -41,14 +41,14 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 		opts = types.NewRoomOptions()
 	}
 	r := &Room{
-		scope:                opts.GetScope(),
-		state:                opts.GetState(),
-		users:                opts.GetUsers(),
+		scope:                opts.Scope(),
+		state:                opts.State(),
+		users:                opts.Users(),
 		id:                   uuid.NewV4().String(),
 		collection:           c,
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),
-		subscribeToSelf:      opts.GetSubscribeToSelf(),
-		Volatile:             opts.GetVolatile(),
+		subscribeToSelf:      opts.SubscribeToSelf(),
+		Volatile:             opts.Volatile(),
 		queue:                &list.List{},
 	}
 	r.queue.Init()
@@ -56,27 +56,32 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 	return r
 }
 
-// GetRealtimeChannel return the room's ReatimeNotificationChannel
-func (room Room) GetRealtimeChannel() chan<- *types.KuzzleNotification {
-	return room.RealtimeNotificationChannel
+// RealtimeChannel return the room's ReatimeNotificationChannel
+func (room *Room) RealtimeChannel() chan<- *types.KuzzleNotification {
+	return room.realtimeNotificationChannel
 }
 
 // isReady returns true if the room is ready
-func (room Room) isReady() bool {
-	return *room.collection.Kuzzle.State == state.Connected && !room.subscribing
+func (room *Room) isReady() bool {
+	return room.collection.Kuzzle.State() == state.Connected && !room.subscribing
 }
 
-// GetRoomId returns the room's id
-func (room Room) GetRoomId() string {
-	return room.RoomId
+// RoomId returns the room's id
+func (room *Room) RoomId() string {
+	return room.roomId
 }
 
-// GetFilters returns the room's filters
-func (room Room) GetFilters() interface{} {
+// Filters returns the room's filters
+func (room *Room) Filters() interface{} {
 	return room.filters
 }
 
-// GetResponseChannel returns the room's response channel
-func (room Room) GetResponseChannel() chan<- *types.SubscribeResponse {
+// ResponseChannel returns the room's response channel
+func (room *Room) ResponseChannel() chan<- *types.SubscribeResponse {
 	return room.subscribeResponseChan
+}
+
+// Channel is the getter for the channel unique identifier value
+func (room *Room) Channel() string {
+	return room.channel
 }

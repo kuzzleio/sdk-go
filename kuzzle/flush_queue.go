@@ -1,6 +1,6 @@
 package kuzzle
 
 // FlushQueue empties the offline queue without replaying it.
-func (k Kuzzle) FlushQueue() {
-	*k.GetOfflineQueue() = (*k.GetOfflineQueue())[:0]
+func (k *Kuzzle) FlushQueue() {
+	*k.OfflineQueue() = (*k.OfflineQueue())[:0]
 }

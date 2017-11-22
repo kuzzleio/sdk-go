@@ -32,10 +32,10 @@ func (r *Role) Save(options types.QueryOptions) (*Role, error) {
 	}
 
 	if options != nil {
-		if options.GetIfExist() == "error" {
+		if options.IfExist() == "error" {
 			action = "createRole"
-		} else if options.GetIfExist() != "replace" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.GetIfExist()), 400)
+		} else if options.IfExist() != "replace" {
+			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.IfExist()), 400)
 		}
 	}
 

@@ -6,7 +6,7 @@ import (
 )
 
 // Smembers returns the members of a set of unique values.
-func (ms Ms) Smembers(key string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Smembers(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

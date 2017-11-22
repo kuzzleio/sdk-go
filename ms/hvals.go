@@ -6,7 +6,7 @@ import (
 )
 
 // Hval returns all values contained in a hash.
-func (ms Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Hvals(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

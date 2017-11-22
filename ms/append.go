@@ -6,7 +6,7 @@ import (
 )
 
 // Append a value to a key
-func (ms Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Append(key string, value string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

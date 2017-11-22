@@ -6,7 +6,7 @@ import (
 )
 
 // Hmget returns the values of the specified hash’s fields.
-func (ms Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]*string, error) {
+func (ms *Ms) Hmget(key string, fields []string, options types.QueryOptions) ([]*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

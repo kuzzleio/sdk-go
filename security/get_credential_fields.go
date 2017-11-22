@@ -6,7 +6,7 @@ import (
 )
 
 // GetCredentialFields gets an array of strategy's fieldnames
-func (s Security) GetCredentialFields(strategy string, options types.QueryOptions) (types.CredentialStrategyFields, error) {
+func (s *Security) GetCredentialFields(strategy string, options types.QueryOptions) (types.CredentialStrategyFields, error) {
 	if strategy == "" {
 		return nil, types.NewError("Security.GetCredentialFields: strategy is required", 400)
 	}

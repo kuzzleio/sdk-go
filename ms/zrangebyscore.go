@@ -7,7 +7,7 @@ import (
 )
 
 // Zrangebyscore returns all the elements in the sorted set at key with a score between min and max (inclusive). The elements are considered to be ordered from low to high scores.
-func (ms Ms) Zrangebyscore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
+func (ms *Ms) Zrangebyscore(key string, min float64, max float64, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

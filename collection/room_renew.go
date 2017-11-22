@@ -11,13 +11,13 @@ import (
 // Renew the subscription. Force a resubscription using the same filters
 // if no new ones are provided.
 // Unsubscribes first if this Room was already listening to events.
-func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *types.KuzzleNotification, subscribeResponseChan chan<- *types.SubscribeResponse) {
+func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *types.KuzzleNotification, subscribeResponseChan chan<- *types.SubscribeResponse) {
 	if filters != nil {
 		room.filters = filters
 	}
 
-	if *room.collection.Kuzzle.State != state.Connected {
-		room.RealtimeNotificationChannel = realtimeNotificationChannel
+	if room.collection.Kuzzle.State() != state.Connected {
+		room.realtimeNotificationChannel = realtimeNotificationChannel
 		room.pendingSubscriptions[room.id] = realtimeNotificationChannel
 		return
 	}
@@ -32,10 +32,10 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 	}
 
 	room.Unsubscribe()
-	room.RoomId = ""
+	room.roomId = ""
 	room.subscribing = true
 	room.pendingSubscriptions[room.id] = realtimeNotificationChannel
-	room.RealtimeNotificationChannel = realtimeNotificationChannel
+	room.realtimeNotificationChannel = realtimeNotificationChannel
 
 	go func() {
 		result := make(chan *types.KuzzleResponse)
@@ -55,7 +55,6 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 		}, opts, result)
 
 		res := <-result
-
 		room.subscribing = false
 
 		if res.Error != nil {
@@ -68,23 +67,29 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 
 		delete(room.pendingSubscriptions, room.id)
 
-		resRoom := NewRoom(room.collection, nil)
-		json.Unmarshal(res.Result, resRoom)
+		type RoomResult struct {
+			RequestId string `json:"requestId"`
+			RoomId    string `json:"roomId"`
+			Channel   string `json:"channel"`
+		}
 
-		room.RequestId = res.RequestId
-		room.Channel = resRoom.Channel
-		room.RoomId = resRoom.RoomId
+		var resRoom RoomResult
+		json.Unmarshal(res.Result, &resRoom)
 
-		room.collection.Kuzzle.RegisterRoom(room.Channel, room.id, room)
+		room.requestId = resRoom.RequestId
+		room.channel = resRoom.Channel
+		room.roomId = resRoom.RoomId
+
+		room.collection.Kuzzle.RegisterRoom(room.channel, room.id, room)
 		room.dequeue()
 
-		if room.RequestId != "" && !room.collection.Kuzzle.RequestHistory[room.RequestId].IsZero() {
+		if room.requestId != "" && !room.collection.Kuzzle.RequestHistory[room.requestId].IsZero() {
 			if room.subscribeToSelf {
 				if subscribeResponseChan != nil {
 					subscribeResponseChan <- &types.SubscribeResponse{Room: room}
 				}
 			}
-			delete(room.collection.Kuzzle.RequestHistory, room.RequestId)
+			delete(room.collection.Kuzzle.RequestHistory, room.requestId)
 		} else {
 			if subscribeResponseChan != nil {
 				subscribeResponseChan <- &types.SubscribeResponse{Room: room}
@@ -95,7 +100,7 @@ func (room Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *
 	return
 }
 
-func (room Room) dequeue() {
+func (room *Room) dequeue() {
 	if room.queue.Len() > 0 {
 		for sub := room.queue.Front(); sub != nil; sub = sub.Next() {
 			go sub.Value.(func(e *list.Element))(sub)

@@ -6,7 +6,7 @@ import (
 
 // Pfmerge merges multiple HyperLogLog data structures into an unique HyperLogLog
 // structure stored at key, approximating the cardinality of the union of the source structures.
-func (ms Ms) Pfmerge(key string, sources []string, options types.QueryOptions) error {
+func (ms *Ms) Pfmerge(key string, sources []string, options types.QueryOptions) error {
 	if len(sources) == 0 {
 		return types.NewError("Ms.Pfmerge: please provide at least one source to merge", 400)
 	}

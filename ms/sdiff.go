@@ -6,7 +6,7 @@ import (
 )
 
 // Sdiff returns the difference between the set of unique values stored at key and the other provided sets.
-func (ms Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]string, error) {
 	if len(sets) == 0 {
 		return nil, types.NewError("Ms.Sdiff: please provide at least one set to compare", 400)
 	}

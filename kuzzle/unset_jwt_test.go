@@ -41,9 +41,9 @@ func TestUnsetJwt(t *testing.T) {
 
 	res, _ := k.Login("local", nil, nil)
 	assert.Equal(t, "token", res)
-	assert.Equal(t, "token", k.GetJwt())
+	assert.Equal(t, "token", k.Jwt())
 	k.UnsetJwt()
-	assert.Equal(t, "", k.GetJwt())
+	assert.Equal(t, "", k.Jwt())
 }
 
 func ExampleKuzzle_UnsetJwt() {
@@ -64,5 +64,5 @@ func ExampleKuzzle_UnsetJwt() {
 	}
 
 	k.UnsetJwt()
-	fmt.Println(k.GetJwt())
+	fmt.Println(k.Jwt())
 }

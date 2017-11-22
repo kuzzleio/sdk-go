@@ -6,7 +6,7 @@ import (
 )
 
 // Hincrby increments the number stored in a hash field by the provided integer value.
-func (ms Ms) Hincrby(key string, field string, value int, options types.QueryOptions) (int, error) {
+func (ms *Ms) Hincrby(key string, field string, value int, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

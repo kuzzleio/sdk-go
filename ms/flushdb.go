@@ -5,7 +5,7 @@ import (
 )
 
 // Flushdb delete all keys from the database
-func (ms Ms) Flushdb(options types.QueryOptions) error {
+func (ms *Ms) Flushdb(options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

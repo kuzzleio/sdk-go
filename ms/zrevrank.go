@@ -6,7 +6,7 @@ import (
 )
 
 // Zrevrank returns the position of an element in a sorted set, with scores in descending order. The index returned is 0-based (the lowest score member has an index of 0).
-func (ms Ms) Zrevrank(key string, member string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zrevrank(key string, member string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

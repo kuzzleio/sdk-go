@@ -6,7 +6,7 @@ import (
 )
 
 // Hlen returns the number of members of a hash
-func (ms Ms) Hlen(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

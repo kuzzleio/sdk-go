@@ -6,7 +6,7 @@ import (
 )
 
 // Scard returns the number of members stored in a set of unique values.
-func (ms Ms) Scard(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Scard(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

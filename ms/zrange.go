@@ -10,7 +10,7 @@ import (
 
 // Zrange returns elements from a sorted set depending on their position in the set, from a start position index to a stop position index (inclusive).
 // First position starts at 0.
-func (ms Ms) Zrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
+func (ms *Ms) Zrange(key string, start int, stop int, options types.QueryOptions) ([]*types.MSSortedSet, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -43,8 +43,8 @@ func assignZrangeOptions(query *types.KuzzleRequest, options types.QueryOptions)
 	opts = append(opts, "withscores")
 
 	if options != nil {
-		if len(options.GetLimit()) != 0 {
-			query.Limit = strings.Trim(strings.Join(strings.Fields(fmt.Sprint(options.GetLimit())), ","), "[]")
+		if len(options.Limit()) != 0 {
+			query.Limit = strings.Trim(strings.Join(strings.Fields(fmt.Sprint(options.Limit())), ","), "[]")
 		}
 	}
 

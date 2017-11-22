@@ -17,9 +17,9 @@ type IKuzzle interface {
 }
 
 type Kuzzle struct {
-	Host   string
+	host   string
+	port   int
 	socket connection.Connection
-	State  *int
 
 	wasConnected   bool
 	lastUrl        string
@@ -46,27 +46,19 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k := &Kuzzle{
 		socket:  c,
-		headers: options.GetHeaders(),
 		version: version,
 	}
 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
 
-	k.RequestHistory = k.socket.GetRequestHistory()
+	k.RequestHistory = k.socket.RequestHistory()
 
-	headers := options.GetHeaders()
-	if headers != nil {
-		k.headers = headers
-	}
-
-	k.State = k.socket.GetState()
-
-	k.defaultIndex = options.GetDefaultIndex()
+	k.defaultIndex = options.DefaultIndex()
 
 	var err error
 
-	if options.GetConnect() == types.Auto {
+	if options.Connect() == types.Auto {
 		err = k.Connect()
 	}
 
@@ -74,12 +66,12 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 }
 
 // Connect connects to a Kuzzle instance using the provided host and port.
-func (k Kuzzle) Connect() error {
+func (k *Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
-		if k.lastUrl != k.Host {
+		if k.lastUrl != k.host {
 			k.wasConnected = false
-			k.lastUrl = k.Host
+			k.lastUrl = k.host
 		}
 
 		if wasConnected {
@@ -105,19 +97,23 @@ func (k Kuzzle) Connect() error {
 	return types.NewError(err.Error())
 }
 
-func (k Kuzzle) GetOfflineQueue() *[]*types.QueryObject {
-	return k.socket.GetOfflineQueue()
+func (k *Kuzzle) OfflineQueue() *[]*types.QueryObject {
+	return k.socket.OfflineQueue()
 }
 
-// GetJwt get internal jwtToken used to request kuzzle.
-func (k Kuzzle) GetJwt() string {
+// Jwt get internal jwtToken used to request kuzzle.
+func (k *Kuzzle) Jwt() string {
 	return k.jwt
 }
 
-func (k Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
+func (k *Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
 	k.socket.RegisterRoom(roomId, id, room)
 }
 
-func (k Kuzzle) UnregisterRoom(roomId string) {
+func (k *Kuzzle) UnregisterRoom(roomId string) {
 	k.socket.UnregisterRoom(roomId)
+}
+
+func (k *Kuzzle) State() int {
+	return k.socket.State()
 }

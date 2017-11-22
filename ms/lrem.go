@@ -6,7 +6,7 @@ import (
 )
 
 // Lrem removes the first count occurences of elements equal to value from a list.
-func (ms Ms) Lrem(key string, count int, value string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Lrem(key string, count int, value string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

@@ -6,7 +6,7 @@ import (
 )
 
 // ValidateCredentials validates credentials of the specified strategy for the given user.
-func (s Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (bool, error) {
+func (s *Security) ValidateCredentials(strategy string, kuid string, credentials interface{}, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
 		return false, types.NewError("Security.ValidateCredentials: strategy is required", 400)
 	}
