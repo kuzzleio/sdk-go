@@ -41,6 +41,10 @@ func kuzzle_wrapper_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.o
 		instances = make(map[interface{}]interface{})
 	}
 
+	if listeners_list == nil {
+		listeners_list = make(map[uintptr]chan<- interface{})
+	}
+
 	opts := SetOptions(options)
 
 	if C.GoString(protocol) == "websocket" {

@@ -303,6 +303,9 @@ func (ws *webSocket) listen() {
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
 func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
+	if ws.eventListeners[event] == nil {
+		ws.eventListeners[event] = make(map[chan<- interface{}]struct{})
+	}
 	ws.eventListeners[event][channel] = struct{}{}
 }
 

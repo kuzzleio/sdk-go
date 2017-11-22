@@ -568,27 +568,6 @@ typedef struct collection_entry_result {
 
 
 // test callback
-typedef enum {
-  blah = 1,
-  blahblah = 2,
-} Log;
-
-typedef void (*Callback_t)(const Log SomeLog, const char *Text);
-
-#include <assert.h>
-
-static Callback_t cb=0;
-static Log log=0;
-
-static void SetCallback(const Callback_t SomeCallback, const Log SomeLog)  {
-  cb = SomeCallback;
-  log = SomeLog;
-}
-
-static void TestIt(const char *str) {
-  assert(cb);
-  cb(log, str);
-}
-
+typedef void (*callback_t)(int arg, void *userdata);
 
 #endif

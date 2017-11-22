@@ -12,8 +12,8 @@ CFLAGS = -std=c99 -fPIC
 INCS = -I$(PWD)/headers -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
 LIBS = -lkuzzlesdk -ljson-c
-SRCS = kcore_wrap.c
-OBJS = $(SRCS:.c=.o)
+SRCS = kcore_wrap.cxx
+OBJS = $(SRCS:.cxx=.o)
 
 SWIG = swig
 
@@ -51,7 +51,7 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
-	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+#	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp

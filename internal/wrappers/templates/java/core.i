@@ -22,7 +22,7 @@
 %pragma(java) jniclasscode=%{
   static {
     try {
-        System.loadLibrary("kuzzle");
+        System.loadLibrary("kuzzle-wrapper-java");
     } catch (UnsatisfiedLinkError e) {
       System.err.println("Native code library failed to load. \n" + e);
       System.exit(1);
@@ -266,8 +266,14 @@ struct json_object { };
         kuzzle_wrapper_logout($self);
     }
 
+    // addListener
+    kuzzle* addListener(enum Event ev, callback_t cb) {
+        cb(42, "hello");
+        kuzzle_wrapper_add_listener($self, (int)ev, cb);
+    }
+
     // removeListener
-    kuzzle* removeListener(enum Event ev) {
+    kuzzle* removeListener(enum Event ev, callback_t cb) {
         kuzzle_wrapper_remove_listener($self, (int)ev, NULL);
         return $self;
     }
@@ -276,11 +282,3 @@ struct json_object { };
     kuzzle* removeAllListener() {
     }
 }
-
-%feature("director") Callback;
-%inline %{
-    struct Callback {
-      virtual void call(Log l, const char *s) = 0;
-      virtual ~Callback() {}
-    };
-%}
