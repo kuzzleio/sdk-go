@@ -109,14 +109,14 @@ struct json_object { };
 %extend kuzzle {
     // ctors && dtor
     kuzzle(char* host, options *opts) {
-        kuzzle *k = malloc(sizeof(kuzzle));
-        kuzzle_new_kuzzle(k, host, "websocket", opts);
+        kuzzle *k = (kuzzle *)calloc(1, sizeof(kuzzle));
+        kuzzle_new_kuzzle(k, host, (char *)"websocket", opts);
         return k;
     }
     kuzzle(char* host) {
         kuzzle *k;
-        k = malloc(sizeof(kuzzle));
-        kuzzle_new_kuzzle(k, host, "websocket", NULL);
+        k = (kuzzle *)calloc(1, sizeof(kuzzle));
+        kuzzle_new_kuzzle(k, host, (char *)"websocket", NULL);
         return k;
     }
     ~kuzzle() {

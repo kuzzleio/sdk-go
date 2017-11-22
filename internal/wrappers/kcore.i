@@ -1,17 +1,13 @@
 /* File : kcore.i */
 
-%module kcore
+%module(directors="1") kcore
 %{
-#define _Complex
-#include "kuzzle.h"
-#include "headers/kuzzlesdk.h"
-#include "templates/swig.h"
-
-#include <stdio.h>
+#include "kuzzle.hpp"
 %}
-%define _Complex
 
+%define _Complex
 %enddef
 
-%include "headers/kuzzlesdk.h"
+%include "kuzzlesdk.h"
 %include "kuzzle.h"
+%include "kuzzle.hpp"
