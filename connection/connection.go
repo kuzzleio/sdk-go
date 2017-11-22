@@ -12,7 +12,6 @@ type Connection interface {
 	Connect() (bool, error)
 	Send([]byte, types.QueryOptions, chan<- *types.KuzzleResponse, string) error
 	Close() error
-	OfflineQueue() *[]*types.QueryObject
 	State() int
 	EmitEvent(int, interface{})
 	RegisterRoom(string, string, types.IRoom)
@@ -23,4 +22,39 @@ type Connection interface {
 	StartQueuing()
 	StopQueuing()
 	ReplayQueue()
+	ClearQueue()
+
+	// property getters
+	AutoQueue() bool
+	AutoReconnect() bool
+	AutoResubscribe() bool
+	AutoReplay() bool
+	Host() string
+	OfflineQueue() []*types.QueryObject
+	OfflineQueueLoader() OfflineQueueLoader
+	Port() int
+	QueueFilter() QueueFilter
+	QueueMaxSize() int
+	QueueTTL() time.Duration
+	ReplayInterval() time.Duration
+	ReconnectionDelay() time.Duration
+	SslConnection() bool
+
+	// property setters
+	SetAutoQueue(bool)
+	SetAutoReplay(bool)
+	SetOfflineQueue([]*types.QueryObject)
+	SetOfflineQueueLoader(OfflineQueueLoader)
+	SetQueueFilter(QueueFilter)
+	SetQueueMaxSize(int)
+	SetQueueTTL(time.Duration)
+	SetReplayInterval(time.Duration)
+}
+
+type OfflineQueueLoader interface {
+	Load() []*types.QueryObject
+}
+
+type QueueFilter interface {
+	Filter(interface{}) bool
 }

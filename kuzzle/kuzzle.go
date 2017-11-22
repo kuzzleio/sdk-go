@@ -7,6 +7,7 @@ import (
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
+	"sync"
 	"time"
 )
 
@@ -97,13 +98,45 @@ func (k *Kuzzle) Connect() error {
 	return types.NewError(err.Error())
 }
 
-func (k *Kuzzle) OfflineQueue() *[]*types.QueryObject {
+func (k *Kuzzle) OfflineQueue() []*types.QueryObject {
 	return k.socket.OfflineQueue()
+}
+
+func (k *Kuzzle) SetOfflineQueue(v []*types.QueryObject) {
+	k.socket.SetOfflineQueue(v)
 }
 
 // Jwt get internal jwtToken used to request kuzzle.
 func (k *Kuzzle) Jwt() string {
 	return k.jwt
+}
+
+func (k *Kuzzle) SetJwt(token string) {
+	k.jwt = token
+
+	if token != "" {
+		k.socket.RenewSubscriptions()
+		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
+	}
+}
+
+// UnsetJwt unset the authentication token and cancel all subscriptions
+func (k *Kuzzle) UnsetJwt() {
+	k.jwt = ""
+
+	rooms := k.socket.Rooms()
+	if rooms != nil {
+		k.socket.Rooms().Range(func(key, value interface{}) bool {
+			value.(*sync.Map).Range(func(key, value interface{}) bool {
+				room := value.(types.IRoom)
+				room.Renew(room.Filters(), room.RealtimeChannel(), room.ResponseChannel())
+
+				return true
+			})
+
+			return true
+		})
+	}
 }
 
 func (k *Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {

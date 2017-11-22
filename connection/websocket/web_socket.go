@@ -2,7 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
-	"flag"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
@@ -28,42 +28,33 @@ type webSocket struct {
 	channelsResult sync.Map
 	subscriptions  *types.RoomList
 	lastUrl        string
-	host           string
 	wasConnected   bool
 	eventListeners map[int]chan<- interface{}
 
-	autoQueue             bool
-	autoReconnect         bool
-	autoReplay            bool
-	autoResubscribe       bool
-	queueTTL              time.Duration
-	offlineQueue          []*types.QueryObject
-	offlineQueueLoader    OfflineQueueLoader
-	queueFilter           QueueFilter
-	queueMaxSize          int
-	reconnectionDelay     time.Duration
-	replayInterval        time.Duration
 	retrying              bool
 	stopRetryingToConnect bool
 	requestHistory        map[string]time.Time
-}
 
-type QueueFilter interface {
-	Filter(interface{}) bool
+	autoQueue          bool
+	autoReconnect      bool
+	autoReplay         bool
+	autoResubscribe    bool
+	host               string
+	offlineQueue       []*types.QueryObject
+	offlineQueueLoader connection.OfflineQueueLoader
+	port               int
+	queueFilter        connection.QueueFilter
+	queueMaxSize       int
+	queueTTL           time.Duration
+	reconnectionDelay  time.Duration
+	replayInterval     time.Duration
+	ssl                bool
 }
 
 type defaultQueueFilter struct{}
 
 func (qf *defaultQueueFilter) Filter(interface{}) bool {
 	return true
-}
-
-type OfflineQueueLoader interface {
-	load() []*types.QueryObject
-}
-
-func (ws *webSocket) SetQueueFilter(queueFilter QueueFilter) {
-	ws.queueFilter = queueFilter
 }
 
 func NewWebSocket(host string, options types.Options) connection.Connection {
@@ -78,7 +69,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 	ws := &webSocket{
 		mu:                    &sync.Mutex{},
 		queueTTL:              opts.QueueTTL(),
-		offlineQueue:          make([]*types.QueryObject, 0),
+		offlineQueue:          []*types.QueryObject{},
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
@@ -94,6 +85,8 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		retrying:              false,
 		stopRetryingToConnect: false,
 		queueFilter:           &defaultQueueFilter{},
+		port:                  opts.Port(),
+		ssl:                   opts.SslConnection(),
 	}
 	ws.host = host
 
@@ -114,8 +107,17 @@ func (ws *webSocket) Connect() (bool, error) {
 		return false, nil
 	}
 
-	addr := flag.String("addr", ws.host, "http service address")
-	u := url.URL{Scheme: "ws", Host: *addr}
+	addr := fmt.Sprintf("%s:%d", ws.host, ws.port)
+
+	var scheme string
+
+	if ws.ssl {
+		scheme = "wss"
+	} else {
+		scheme = "ws"
+	}
+
+	u := url.URL{Scheme: scheme, Host: addr}
 	resChan := make(chan []byte)
 
 	socket, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -340,8 +342,8 @@ func (ws *webSocket) StopQueuing() {
 	}
 }
 
-func (ws *webSocket) FlushQueue() {
-	ws.offlineQueue = ws.offlineQueue[:cap(ws.offlineQueue)]
+func (ws *webSocket) ClearQueue() {
+	ws.offlineQueue = nil
 }
 
 // ReplayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
@@ -359,7 +361,7 @@ func (ws *webSocket) mergeOfflineQueueWithLoader() error {
 		action     string `json:"action"""`
 	}
 
-	additionalOfflineQueue := ws.offlineQueueLoader.load()
+	additionalOfflineQueue := ws.offlineQueueLoader.Load()
 
 	for _, additionalQuery := range additionalOfflineQueue {
 		for _, offlineQuery := range ws.offlineQueue {
@@ -435,10 +437,6 @@ func (ws *webSocket) Close() error {
 	return ws.ws.Close()
 }
 
-func (ws *webSocket) OfflineQueue() *[]*types.QueryObject {
-	return &ws.offlineQueue
-}
-
 func (ws *webSocket) isValidState() bool {
 	switch ws.state {
 	case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
@@ -468,4 +466,92 @@ func (ws *webSocket) RenewSubscriptions() {
 
 func (ws *webSocket) Rooms() *types.RoomList {
 	return ws.subscriptions
+}
+
+func (ws *webSocket) AutoQueue() bool {
+	return ws.autoQueue
+}
+
+func (ws *webSocket) AutoReconnect() bool {
+	return ws.autoReconnect
+}
+
+func (ws *webSocket) AutoResubscribe() bool {
+	return ws.autoResubscribe
+}
+
+func (ws *webSocket) AutoReplay() bool {
+	return ws.autoReplay
+}
+
+func (ws *webSocket) Host() string {
+	return ws.host
+}
+
+func (ws *webSocket) OfflineQueue() []*types.QueryObject {
+	return ws.offlineQueue
+}
+
+func (ws *webSocket) OfflineQueueLoader() connection.OfflineQueueLoader {
+	return ws.offlineQueueLoader
+}
+
+func (ws *webSocket) Port() int {
+	return ws.port
+}
+
+func (ws *webSocket) QueueFilter() connection.QueueFilter {
+	return ws.queueFilter
+}
+
+func (ws *webSocket) QueueMaxSize() int {
+	return ws.queueMaxSize
+}
+
+func (ws *webSocket) QueueTTL() time.Duration {
+	return ws.queueTTL
+}
+
+func (ws *webSocket) ReplayInterval() time.Duration {
+	return ws.replayInterval
+}
+
+func (ws *webSocket) ReconnectionDelay() time.Duration {
+	return ws.reconnectionDelay
+}
+
+func (ws *webSocket) SslConnection() bool {
+	return ws.ssl
+}
+
+func (ws *webSocket) SetAutoQueue(v bool) {
+	ws.autoQueue = v
+}
+
+func (ws *webSocket) SetAutoReplay(v bool) {
+	ws.autoReplay = v
+}
+
+func (ws *webSocket) SetOfflineQueue(v []*types.QueryObject) {
+	ws.offlineQueue = v
+}
+
+func (ws *webSocket) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
+	ws.offlineQueueLoader = v
+}
+
+func (ws *webSocket) SetQueueFilter(v connection.QueueFilter) {
+	ws.queueFilter = v
+}
+
+func (ws *webSocket) SetQueueMaxSize(v int) {
+	ws.queueMaxSize = v
+}
+
+func (ws *webSocket) SetQueueTTL(v time.Duration) {
+	ws.queueTTL = v
+}
+
+func (ws *webSocket) SetReplayInterval(v time.Duration) {
+	ws.replayInterval = v
 }

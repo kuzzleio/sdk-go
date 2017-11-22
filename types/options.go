@@ -34,6 +34,10 @@ type Options interface {
 	SetRefresh(string) *options
 	DefaultIndex() string
 	SetDefaultIndex(string) *options
+	Port() int
+	SetPort(int) *options
+	SslConnection() bool
+	SetSslConnection(bool) *options
 }
 
 type options struct {
@@ -49,6 +53,8 @@ type options struct {
 	connect           int
 	refresh           string
 	defaultIndex      string
+	port              int
+	sslConnection     bool
 }
 
 func (o options) QueueTTL() time.Duration {
@@ -159,6 +165,24 @@ func (o *options) SetDefaultIndex(defaultIndex string) *options {
 	return o
 }
 
+func (o *options) Port() int {
+	return o.port
+}
+
+func (o *options) SetPort(v int) *options {
+	o.port = v
+	return o
+}
+
+func (o *options) SslConnection() bool {
+	return o.sslConnection
+}
+
+func (o *options) SetSslConnection(v bool) *options {
+	o.sslConnection = v
+	return o
+}
+
 func NewOptions() *options {
 	return &options{
 		queueTTL:          120000,
@@ -171,5 +195,7 @@ func NewOptions() *options {
 		reconnectionDelay: 1000,
 		replayInterval:    10,
 		connect:           Auto,
+		port:              7512,
+		sslConnection:     false,
 	}
 }
