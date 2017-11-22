@@ -9,7 +9,8 @@ from distutils.core import setup, Extension
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 kuzzle_module = Extension('_kcore',
-                           sources=[ cwd + '/kcore_wrap.c'],
+                           sources=[ cwd + '/core_wrap.cxx'],
+                           swig_opts=['-c++', '-py3']
                            )
 
 setup (name = 'kcore',

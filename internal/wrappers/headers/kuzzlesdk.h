@@ -206,8 +206,8 @@ typedef struct {
     int version;
     char *result;
     bool created;
-    char *collection;
     collection *_collection;
+    char *collection;
 } document;
 
 typedef struct {
