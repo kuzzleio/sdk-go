@@ -66,7 +66,7 @@
 
 %javamethodmodifiers date_result::getDateResult() "private";
 %extend date_result {
-    long long getDateResult() {
+    time_t getDateResult() {
         return $self->result;
     }
 }
