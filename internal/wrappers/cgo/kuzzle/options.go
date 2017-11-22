@@ -13,8 +13,8 @@ import (
 	"unsafe"
 )
 
-//export kuzzle_wrapper_new_options
-func kuzzle_wrapper_new_options() *C.options {
+//export kuzzle_new_options
+func kuzzle_new_options() *C.options {
 	copts := (*C.options)(C.calloc(1, C.sizeof_options))
 	opts := types.NewOptions()
 
