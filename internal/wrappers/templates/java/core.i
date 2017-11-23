@@ -54,7 +54,7 @@ struct json_object { };
     }
 
     ~json_object() {
-        kuzzle_wrapper_free_json_object($self);
+        kuzzle_free_json_object($self);
     }
 
     json_object* put(char* key, char* content) {
@@ -280,14 +280,13 @@ struct json_object { };
     }
 
     // addListener
-    kuzzle* addListener(enum Event ev, callback_t cb) {
-        cb(42, "hello");
-        kuzzle_wrapper_add_listener($self, (int)ev, cb);
+    kuzzle* addListener(enum Event ev) {
+        kuzzle_add_listener($self, (int)ev, NULL);
     }
 
     // removeListener
-    kuzzle* removeListener(enum Event ev, callback_t cb) {
-        kuzzle_wrapper_remove_listener($self, (int)ev, NULL);
+    kuzzle* removeListener(enum Event ev) {
+        kuzzle_remove_listener($self, (int)ev, NULL);
         return $self;
     }
 

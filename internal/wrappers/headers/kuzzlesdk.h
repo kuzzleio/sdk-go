@@ -396,6 +396,13 @@ typedef struct {
     char *stack;
 } int_result;
 
+typedef struct date_result {
+    long long result;
+    int status;
+    char *error;
+    char *stack;
+} date_result;
+
 //any double result
 typedef struct {
     double result;

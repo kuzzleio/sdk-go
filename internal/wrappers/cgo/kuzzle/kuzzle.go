@@ -170,13 +170,13 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 	}()
 }
 
-//export kuzzle_wrapper_remove_listener
-func kuzzle_wrapper_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
+//export kuzzle_remove_listener
+func kuzzle_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
 	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event), listeners_list[uintptr(cb)])
 }
 
-//export kuzzle_wrapper_remove_all_listeners
-func kuzzle_wrapper_remove_all_listeners() {
+//export kuzzle_remove_all_listeners
+func kuzzle_remove_all_listeners() {
 
 }
 
