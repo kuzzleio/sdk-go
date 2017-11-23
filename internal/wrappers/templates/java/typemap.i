@@ -54,3 +54,18 @@
         return *$self->result + pos;
     }
 }
+
+// Date
+%ignore date_result::result;
+%typemap(javacode) struct date_result %{
+  public java.util.Date getResult() {
+    return new java.util.Date(getDateResult());
+  }
+%}
+
+%javamethodmodifiers date_result::getDateResult() "private";
+%extend date_result {
+    long long getDateResult() {
+        return $self->result;
+    }
+}

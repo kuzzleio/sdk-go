@@ -17,6 +17,7 @@
 %rename(KuzzleResponse) kuzzle_response;
 %rename(KuzzleRequest) kuzzle_request;
 %rename(ShardsResult) shards_result;
+%rename(DateResult) date_result;
 
 %include "typemap.i"
 %include "javadoc.i"
@@ -200,10 +201,10 @@ struct json_object { };
     }
 
     // getStatistics
-    statistics_result* getStatistics(unsigned long time, query_options* options) {
+    statistics_result* getStatistics(time_t time, query_options* options) {
         return kuzzle_get_statistics($self, time, options);
     }
-    statistics_result* getStatistics(unsigned long time) {
+    statistics_result* getStatistics(time_t time) {
         return kuzzle_get_statistics($self, time, NULL);
     }
 
@@ -275,5 +276,13 @@ struct json_object { };
     }
     shards_result* refreshIndex(char* index) {
         return kuzzle_refresh_index($self, index, NULL);
+    }
+
+    // now
+    date_result* now(query_options* options) {
+        return kuzzle_wrapper_now($self, options);
+    }
+    date_result* now() {
+        return kuzzle_wrapper_now($self, NULL);
     }
 }
