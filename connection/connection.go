@@ -43,7 +43,6 @@ type Connection interface {
 	// property setters
 	SetAutoQueue(bool)
 	SetAutoReplay(bool)
-	SetOfflineQueue([]*types.QueryObject)
 	SetOfflineQueueLoader(OfflineQueueLoader)
 	SetQueueFilter(QueueFilter)
 	SetQueueMaxSize(int)
@@ -55,6 +54,4 @@ type OfflineQueueLoader interface {
 	Load() []*types.QueryObject
 }
 
-type QueueFilter interface {
-	Filter(interface{}) bool
-}
+type QueueFilter func([]byte) bool

@@ -51,13 +51,13 @@ type webSocket struct {
 	ssl                bool
 }
 
-type defaultQueueFilter struct{}
-
-func (qf *defaultQueueFilter) Filter(interface{}) bool {
-	return true
-}
+var defaultQueueFilter connection.QueueFilter
 
 func NewWebSocket(host string, options types.Options) connection.Connection {
+	defaultQueueFilter = func([]byte) bool {
+		return true
+	}
+
 	var opts types.Options
 
 	if options == nil {
@@ -84,7 +84,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		state:                 state.Ready,
 		retrying:              false,
 		stopRetryingToConnect: false,
-		queueFilter:           &defaultQueueFilter{},
+		queueFilter:           defaultQueueFilter,
 		port:                  opts.Port(),
 		ssl:                   opts.SslConnection(),
 	}
@@ -193,7 +193,7 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 	} else if ws.queuing || (options != nil && options.Queuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
 		ws.cleanQueue()
 
-		if ws.queueFilter.Filter(query) {
+		if ws.queueFilter(query) {
 			qo := &types.QueryObject{
 				Timestamp: time.Now(),
 				ResChan:   responseChannel,
@@ -532,16 +532,16 @@ func (ws *webSocket) SetAutoReplay(v bool) {
 	ws.autoReplay = v
 }
 
-func (ws *webSocket) SetOfflineQueue(v []*types.QueryObject) {
-	ws.offlineQueue = v
-}
-
 func (ws *webSocket) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
 	ws.offlineQueueLoader = v
 }
 
 func (ws *webSocket) SetQueueFilter(v connection.QueueFilter) {
-	ws.queueFilter = v
+	if v == nil {
+		ws.queueFilter = defaultQueueFilter
+	} else {
+		ws.queueFilter = v
+	}
 }
 
 func (ws *webSocket) SetQueueMaxSize(v int) {

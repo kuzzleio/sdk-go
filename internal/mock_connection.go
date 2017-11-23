@@ -40,10 +40,6 @@ func (c *MockedConnection) State() int {
 	return c.state
 }
 
-func (c *MockedConnection) SetState(value int) {
-	c.state = value
-}
-
 func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 	if c.MockEmitEvent != nil {
 		c.MockEmitEvent(event, arg)
@@ -142,9 +138,6 @@ func (c *MockedConnection) SetAutoQueue(v bool) {
 func (c *MockedConnection) SetAutoReplay(v bool) {
 }
 
-func (c *MockedConnection) SetOfflineQueue(v []*types.QueryObject) {
-}
-
 func (c *MockedConnection) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
 }
 
@@ -158,4 +151,13 @@ func (c *MockedConnection) SetQueueTTL(v time.Duration) {
 }
 
 func (c *MockedConnection) SetReplayInterval(v time.Duration) {
+}
+
+// mock specific functions
+func (c *MockedConnection) SetState(value int) {
+	c.state = value
+}
+
+func (c *MockedConnection) AddToOfflineQueue(q *types.QueryObject) {
+	offlineQueue = append(offlineQueue, q)
 }

@@ -84,7 +84,7 @@ func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- 
 		room.dequeue()
 
 		if room.requestId != "" && !room.collection.Kuzzle.RequestHistory[room.requestId].IsZero() {
-			if room.subscribeToSelf {
+			if room.SubscribeToSelf {
 				if subscribeResponseChan != nil {
 					subscribeResponseChan <- &types.SubscribeResponse{Room: room}
 				}

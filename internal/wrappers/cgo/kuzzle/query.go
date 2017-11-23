@@ -11,8 +11,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-//export kuzzle_wrapper_query
-func kuzzle_wrapper_query(k *C.kuzzle, request *C.kuzzle_request, options *C.query_options) *C.kuzzle_response {
+//export kuzzle_query
+func kuzzle_query(k *C.kuzzle, request *C.kuzzle_request, options *C.query_options) *C.kuzzle_response {
 	opts := SetQueryOptions(options)
 
 	req := types.KuzzleRequest{

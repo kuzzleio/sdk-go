@@ -16,7 +16,7 @@ type Room struct {
 	scope           string
 	state           string
 	users           string
-	subscribeToSelf bool
+	SubscribeToSelf bool
 
 	collection                  *Collection
 	realtimeNotificationChannel chan<- *types.KuzzleNotification
@@ -47,7 +47,7 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 		id:                   uuid.NewV4().String(),
 		collection:           c,
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),
-		subscribeToSelf:      opts.SubscribeToSelf(),
+		SubscribeToSelf:      opts.SubscribeToSelf(),
 		Volatile:             opts.Volatile(),
 		queue:                &list.List{},
 	}
@@ -84,4 +84,16 @@ func (room *Room) ResponseChannel() chan<- *types.SubscribeResponse {
 // Channel is the getter for the channel unique identifier value
 func (room *Room) Channel() string {
 	return room.channel
+}
+
+func (room *Room) Scope() string {
+	return room.scope
+}
+
+func (room *Room) State() string {
+	return room.state
+}
+
+func (room *Room) Users() string {
+	return room.users
 }

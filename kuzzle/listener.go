@@ -7,10 +7,10 @@ func AddListener(k *Kuzzle, event int, channel chan<- interface{}) {
 
 // Remove all listener by event type or all listener if event == -1
 func (k *Kuzzle) RemoveAllListeners(event int) {
-  k.socket.RemoveAllListeners(event)
+	k.socket.RemoveAllListeners(event)
 }
 
 // RemoveListener removes a listener
 func (k *Kuzzle) RemoveListener(event int) {
-  k.socket.RemoveListener(event)
+	k.socket.RemoveListener(event)
 }
