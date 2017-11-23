@@ -127,8 +127,8 @@ func kuzzle_get_statistics(k *C.kuzzle, timestamp C.time_t, options *C.query_opt
 }
 
 //export kuzzle_now
-func kuzzle_now(k *C.kuzzle, options *C.query_options) *C.int_result {
+func kuzzle_now(k *C.kuzzle, options *C.query_options) *C.date_result {
 	time, err := (*kuzzle.Kuzzle)(k.instance).Now(SetQueryOptions(options))
 
-	return goToCIntResult(time, err)
+	return goToCDateResult(time, err)
 }

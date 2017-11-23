@@ -330,3 +330,34 @@
    * {@link #query(KuzzleResponse, QueryOptions)}
    */
   public";
+
+%javamethodmodifiers kuzzle::refreshIndex(char* index, query_options* options) "
+  /**
+   * Forces the default data index to refresh on each modification
+   *
+   * @param options - Request options
+   * @param listener - Response callback listener
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzle::refreshIndex(char* index) "
+  /**
+   * {@link #refreshIndex(String, QueryOptions)}
+   */
+  public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * Returns the current Kuzzle UTC timestamp
+   *
+   * @param options - Request options
+   * @return a DateResult
+   */
+  public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * {@link #now(QueryOptions)}
+   */
+  public";
