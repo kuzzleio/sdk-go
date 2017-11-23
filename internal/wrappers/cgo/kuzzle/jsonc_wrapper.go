@@ -80,13 +80,13 @@ func JsonCConvert(jobj *C.json_object) interface{} {
 	return nil
 }
 
-//export kuzzle_wrapper_json_new
-func kuzzle_wrapper_json_new(jobj *C.json_object) {
+//export kuzzle_json_new
+func kuzzle_json_new(jobj *C.json_object) {
 	jobj = C.json_object_new_object()
 }
 
-//export kuzzle_wrapper_json_put
-func kuzzle_wrapper_json_put(jobj *C.json_object, key *C.char, content unsafe.Pointer, kind C.int) {
+//export kuzzle_json_put
+func kuzzle_json_put(jobj *C.json_object, key *C.char, content unsafe.Pointer, kind C.int) {
 	if kind == 0 {
 		//string
 		C.json_object_object_add(jobj, key, C.json_object_new_string((*C.char)(content)))
@@ -105,48 +105,48 @@ func kuzzle_wrapper_json_put(jobj *C.json_object, key *C.char, content unsafe.Po
 	}
 }
 
-//export kuzzle_wrapper_json_get_string
-func kuzzle_wrapper_json_get_string(jobj *C.json_object, key *C.char) *C.char {
+//export kuzzle_json_get_string
+func kuzzle_json_get_string(jobj *C.json_object, key *C.char) *C.char {
 	var value *C.json_object
 	C.json_object_object_get_ex(jobj, key, &value)
 
 	return C.json_object_get_string(value)
 }
 
-//export kuzzle_wrapper_json_get_int
-func kuzzle_wrapper_json_get_int(jobj *C.json_object, key *C.char) C.int {
+//export kuzzle_json_get_int
+func kuzzle_json_get_int(jobj *C.json_object, key *C.char) C.int {
 	var value *C.json_object
 	C.json_object_object_get_ex(jobj, key, &value)
 
 	return C.int(C.json_object_get_int64(value))
 }
 
-//export kuzzle_wrapper_json_get_double
-func kuzzle_wrapper_json_get_double(jobj *C.json_object, key *C.char) C.double {
+//export kuzzle_json_get_double
+func kuzzle_json_get_double(jobj *C.json_object, key *C.char) C.double {
 	var value *C.json_object
 	C.json_object_object_get_ex(jobj, key, &value)
 
 	return C.json_object_get_double(value)
 }
 
-//export kuzzle_wrapper_json_get_bool
-func kuzzle_wrapper_json_get_bool(jobj *C.json_object, key *C.char) C.json_bool {
+//export kuzzle_json_get_bool
+func kuzzle_json_get_bool(jobj *C.json_object, key *C.char) C.json_bool {
 	var value *C.json_object
 	C.json_object_object_get_ex(jobj, key, &value)
 
 	return C.json_object_get_boolean(value)
 }
 
-//export kuzzle_wrapper_json_get_json_object
-func kuzzle_wrapper_json_get_json_object(jobj *C.json_object, key *C.char) *C.json_object {
+//export kuzzle_json_get_json_object
+func kuzzle_json_get_json_object(jobj *C.json_object, key *C.char) *C.json_object {
 	var value *C.json_object
 
 	C.json_object_object_get_ex(jobj, key, &value)
 	return value
 }
 
-//export kuzzle_wrapper_free_json_object
-func kuzzle_wrapper_free_json_object(jobj *C.json_object) {
+//export kuzzle_free_json_object
+func kuzzle_free_json_object(jobj *C.json_object) {
 	if jobj != nil {
 		// json_object_put returns 1 when the json object is freed
 		for C.json_object_put(jobj) != 1 {
