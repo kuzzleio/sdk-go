@@ -30,8 +30,8 @@ func unregisterKuzzle(k *C.kuzzle) {
 	delete(instances, (*kuzzle.Kuzzle)(k.instance))
 }
 
-//export kuzzle_wrapper_new_kuzzle
-func kuzzle_wrapper_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) {
+//export kuzzle_new_kuzzle
+func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) {
 	var c connection.Connection
 
 	if instances == nil {
@@ -51,8 +51,8 @@ func kuzzle_wrapper_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.o
 }
 
 // Allocates memory
-//export kuzzle_wrapper_connect
-func kuzzle_wrapper_connect(k *C.kuzzle) *C.char {
+//export kuzzle_connect
+func kuzzle_connect(k *C.kuzzle) *C.char {
 	err := (*kuzzle.Kuzzle)(k.instance).Connect()
 	if err != nil {
 		return C.CString(err.Error())
@@ -61,13 +61,13 @@ func kuzzle_wrapper_connect(k *C.kuzzle) *C.char {
 	return nil
 }
 
-//export kuzzle_wrapper_disconnect
-func kuzzle_wrapper_disconnect(k *C.kuzzle) {
+//export kuzzle_disconnect
+func kuzzle_disconnect(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).Disconnect()
 }
 
-//export kuzzle_wrapper_set_default_index
-func kuzzle_wrapper_set_default_index(k *C.kuzzle, index *C.char) C.int {
+//export kuzzle_set_default_index
+func kuzzle_set_default_index(k *C.kuzzle, index *C.char) C.int {
 	err := (*kuzzle.Kuzzle)(k.instance).SetDefaultIndex(C.GoString(index))
 	if err != nil {
 		return C.int(C.EINVAL)
@@ -76,8 +76,8 @@ func kuzzle_wrapper_set_default_index(k *C.kuzzle, index *C.char) C.int {
 	return 0
 }
 
-//export kuzzle_wrapper_get_offline_queue
-func kuzzle_wrapper_get_offline_queue(k *C.kuzzle) *C.offline_queue {
+//export kuzzle_get_offline_queue
+func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result := (*C.offline_queue)(C.calloc(1, C.sizeof_offline_queue))
 
 	offlineQueue := *(*kuzzle.Kuzzle)(k.instance).GetOfflineQueue()
@@ -103,28 +103,28 @@ func kuzzle_wrapper_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	return result
 }
 
-//export kuzzle_wrapper_flush_queue
-func kuzzle_wrapper_flush_queue(k *C.kuzzle) {
+//export kuzzle_flush_queue
+func kuzzle_flush_queue(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).FlushQueue()
 }
 
-//export kuzzle_wrapper_replay_queue
-func kuzzle_wrapper_replay_queue(k *C.kuzzle) {
+//export kuzzle_replay_queue
+func kuzzle_replay_queue(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).ReplayQueue()
 }
 
-//export kuzzle_wrapper_start_queuing
-func kuzzle_wrapper_start_queuing(k *C.kuzzle) {
+//export kuzzle_start_queuing
+func kuzzle_start_queuing(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).StartQueuing()
 }
 
-//export kuzzle_wrapper_stop_queuing
-func kuzzle_wrapper_stop_queuing(k *C.kuzzle) {
+//export kuzzle_stop_queuing
+func kuzzle_stop_queuing(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).StopQueuing()
 }
 
-//export kuzzle_wrapper_get_headers
-func kuzzle_wrapper_get_headers(k *C.kuzzle) *C.json_object {
+//export kuzzle_get_headers
+func kuzzle_get_headers(k *C.kuzzle) *C.json_object {
 	res := (*kuzzle.Kuzzle)(k.instance).GetHeaders()
 	r, _ := json.Marshal(res)
 
@@ -134,17 +134,17 @@ func kuzzle_wrapper_get_headers(k *C.kuzzle) *C.json_object {
 	return C.json_tokener_parse(buffer)
 }
 
-//export kuzzle_wrapper_set_headers
-func kuzzle_wrapper_set_headers(k *C.kuzzle, content *C.json_object, replace C.uint) {
+//export kuzzle_set_headers
+func kuzzle_set_headers(k *C.kuzzle, content *C.json_object, replace C.uint) {
 	if JsonCType(content) == C.json_type_object {
 		r := replace != 0
 		(*kuzzle.Kuzzle)(k.instance).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
 	}
 }
 
-//export kuzzle_wrapper_add_listener
+//export kuzzle_add_listener
 // TODO loop and close on Unsubscribe
-func kuzzle_wrapper_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
+func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 	c := make(chan interface{})
 
 	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
@@ -162,8 +162,8 @@ func kuzzle_wrapper_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 	}()
 }
 
-//export kuzzle_wrapper_remove_listener
-func kuzzle_wrapper_remove_listener(k *C.kuzzle, event C.int) {
+//export kuzzle_remove_listener
+func kuzzle_remove_listener(k *C.kuzzle, event C.int) {
 	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event))
 }
 
