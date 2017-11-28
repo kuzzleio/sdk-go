@@ -20,6 +20,7 @@
 
 %include "typemap.i"
 %include "javadoc.i"
+
 %include "../../kcore.i"
 
 %pragma(java) jniclasscode=%{
@@ -102,7 +103,6 @@ struct json_object { };
         return kuzzle_json_get_json_object($self, key);
     }
 }
-
 
 %typemap(javaimports) kuzzle "
 /* The type Kuzzle. */"
@@ -280,7 +280,9 @@ struct json_object { };
     }
 
     // addListener
-    kuzzle* addListener(enum Event ev) {
+    kuzzle* addListener(enum Event ev, Callback *c) {
+        CallbackWrapper::setCallback(c);
+
         kuzzle_add_listener($self, (int)ev, NULL);
     }
 

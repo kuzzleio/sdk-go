@@ -151,7 +151,7 @@ func kuzzle_set_headers(k *C.kuzzle, content *C.json_object, replace C.uint) {
 
 //export kuzzle_add_listener
 // TODO loop and close on Unsubscribe
-func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
+func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 	c := make(chan interface{})
 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
@@ -166,7 +166,7 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 		jsonRes = C.json_tokener_parse(buffer)
 		C.free(unsafe.Pointer(buffer))
 
-		C.call(cb, jsonRes)
+		C.kuzzle_trigger_event(cb, jsonRes)
 	}()
 }
 

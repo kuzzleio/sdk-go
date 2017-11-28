@@ -19,8 +19,8 @@ static void call_notification_result(void* f, notification_result* res) {
     ((void(*)(notification_result*))f)(res);
 }
 
-static void call(void* f, json_object* res) {
-    ((void(*)(json_object*))f)(res);
+static void kuzzle_trigger_event(kuzzle_event_listener f, json_object* res) {
+    f(res);
 }
 
 #endif

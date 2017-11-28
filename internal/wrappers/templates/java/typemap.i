@@ -1,6 +1,6 @@
 // Statistics[]
 %ignore all_statistics_result::result;
-%typemap(javacode) struct all_statistics_result %{
+%typemap(javacode) all_statistics_result %{
   public Statistics[] getResult() {
     Statistics[] result = new Statistics[(int)getResult_length()];
     for (int i = 0; i < result.length; ++i) {
@@ -19,7 +19,7 @@
 
 // CollectionsList[]
 %ignore collection_entry_result::result;
-%typemap(javacode) struct collection_entry_result %{
+%typemap(javacode) collection_entry_result %{
   public CollectionsList[] getResult() {
     CollectionsList[] result = new CollectionsList[(int)getResult_length()];
     for (int i = 0; i < result.length; ++i) {
@@ -38,7 +38,7 @@
 
 // String[]
 %ignore string_array_result::result;
-%typemap(javacode) struct string_array_result %{
+%typemap(javacode) string_array_result %{
   public String[] getResult() {
     String[] result = new String[(int)getResult_length()];
     for (int i = 0; i < result.length; ++i) {
@@ -49,8 +49,6 @@
 %}
 
 %javamethodmodifiers string_array_result::getResult(size_t pos) "private";
-
-
 %extend string_array_result {
     char *getResult(size_t pos) {
         return *$self->result + pos;

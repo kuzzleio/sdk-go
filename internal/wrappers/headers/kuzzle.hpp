@@ -1,5 +1,9 @@
+#ifndef _KUZZLE_HPP_
+#define _KUZZLE_HPP_
+
 #include <exception>
 #include <stdexcept>
+#include <iostream>
 
 extern "C" {
   #define _Complex
@@ -7,5 +11,8 @@ extern "C" {
   #include "kuzzlesdk.h"
   #include "swig.h"
 
-  #include <stdio.h>
 }
+
+#include <cstdio>
+
+#endif

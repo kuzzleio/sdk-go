@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <stdbool.h>
 
+typedef void (*kuzzle_event_listener)(json_object*);
+
 typedef struct {
     void *instance;
 } kuzzle;
