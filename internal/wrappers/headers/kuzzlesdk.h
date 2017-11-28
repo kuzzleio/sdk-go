@@ -6,12 +6,6 @@
 #include <errno.h>
 #include <stdbool.h>
 
-typedef void (*kuzzle_event_listener)(json_object*);
-
-typedef struct {
-    void *instance;
-} kuzzle;
-
 enum Event {
     CONNECTED,
     DISCARDED,
@@ -25,6 +19,12 @@ enum Event {
     JWT_EXPIRED,
     ERROR
 };
+
+typedef void (*kuzzle_event_listener)(int, json_object*);
+
+typedef struct {
+    void *instance;
+} kuzzle;
 
 //define a request
 typedef struct {

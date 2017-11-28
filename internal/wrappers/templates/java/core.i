@@ -281,9 +281,14 @@ struct json_object { };
 
     // addListener
     kuzzle* addListener(enum Event ev, Callback *c) {
-        CallbackWrapper::setCallback(c);
-
-        kuzzle_add_listener($self, (int)ev, NULL);
+        event_callback_list[ev].push_back(c);
+        auto pf = [](int e, json_object* o) {
+            /*for (auto& cb : event_callback_list[e]) {
+                printf("-- %p\n", cb);
+                cb->run(static_cast<Event>(e), o);
+            }*/
+        };
+        kuzzle_add_listener($self, static_cast<int>(ev), pf);
     }
 
     // removeListener

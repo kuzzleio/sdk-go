@@ -35,8 +35,8 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -ggdb -c core.cxx -o $(OUTDIR)/core.o $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
-	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o $(OUTDIR)/core.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	#$(CPP) -ggdb -c core.cxx -o $(OUTDIR)/core.o $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
