@@ -1,9 +1,9 @@
 %rename(TokenValidity) token_validity;
 %rename(AckResponse) ack_response;
 %rename(queueTTL) queue_ttl;
-%rename(Options) options;
+%rename(Options, match="class") options;
 %rename(QueryOptions) query_options;
-%rename(Kuzzle) kuzzle;
+%rename(Kuzzle, match="class") kuzzle;
 %rename(JsonObject) json_object;
 %rename(JsonResult) json_result;
 %rename(LoginResult) login_result;
@@ -55,7 +55,7 @@ struct json_object { };
     }
 
     ~json_object() {
-        free($self);
+        kuzzle_wrapper_free_json_object($self);
     }
 
     json_object* put(char* key, char* content) {
@@ -284,5 +284,11 @@ struct json_object { };
     }
     date_result* now() {
         return kuzzle_wrapper_now($self, NULL);
+    }
+
+    // removeListener
+    kuzzle* removeListener(enum Event ev) {
+        kuzzle_wrapper_remove_listener($self, (int)ev);
+        return $self;
     }
 }
