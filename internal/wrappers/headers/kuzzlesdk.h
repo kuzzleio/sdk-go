@@ -72,7 +72,13 @@ typedef offline_queue* (*kuzzle_offline_queue_loader)(void);
 typedef void (*kuzzle_event_listener)(json_object*);
 typedef bool (*kuzzle_queue_filter)(const char*);
 
-enum {
+typedef struct {
+    void *instance;
+    kuzzle_queue_filter filter;
+    kuzzle_offline_queue_loader loader;
+} kuzzle;
+
+enum Event {
     CONNECTED,
     DISCARDED,
     DISCONNECTED,
@@ -84,7 +90,7 @@ enum {
     RECONNECTED,
     JWT_EXPIRED,
     ERROR
-} event;
+};
 
 //options passed to query()
 typedef struct {
