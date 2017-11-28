@@ -72,12 +72,6 @@ typedef offline_queue* (*kuzzle_offline_queue_loader)(void);
 typedef void (*kuzzle_event_listener)(json_object*);
 typedef bool (*kuzzle_queue_filter)(const char*);
 
-typedef struct {
-    void *instance;
-    kuzzle_offline_queue_loader loader;
-    kuzzle_queue_filter filter;
-} kuzzle;
-
 enum {
     CONNECTED,
     DISCARDED,

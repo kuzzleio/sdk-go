@@ -347,6 +347,15 @@
    */
   public";
 
+%javamethodmodifiers kuzzle::removeListener(enum Event) "
+  /**
+   * Removes a listener from an event.
+   *
+   * @param event - Event name
+   * @return this
+   */
+  public";
+
 %javamethodmodifiers kuzzle::now(query_options* options) "
   /**
    * Returns the current Kuzzle UTC timestamp
@@ -361,3 +370,4 @@
    * {@link #now(QueryOptions)}
    */
   public";
+
