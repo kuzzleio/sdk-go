@@ -854,3 +854,17 @@ func goToCVoidResult(err error) *C.void_result {
 
 	return result
 }
+
+// Allocates memory
+func goToCDateResult(goRes int, err error) *C.date_result {
+	result := (*C.date_result)(C.calloc(1, C.sizeof_date_result))
+
+	if err != nil {
+		Set_date_result_error(result, err)
+		return result
+	}
+
+	result.result = C.longlong(goRes)
+
+	return result
+}

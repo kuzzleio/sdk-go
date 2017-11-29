@@ -355,3 +355,27 @@
    * {@link #refreshIndex(String, QueryOptions)}
    */
   public";
+
+%javamethodmodifiers kuzzle::removeListener(enum Event) "
+  /**
+   * Removes a listener from an event.
+   *
+   * @param event - Event name
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * Returns the current Kuzzle UTC timestamp
+   *
+   * @param options - Request options
+   * @return a DateResult
+   */
+  public";
+
+%javamethodmodifiers kuzzle::now(query_options* options) "
+  /**
+   * {@link #now(QueryOptions)}
+   */
+  public";
