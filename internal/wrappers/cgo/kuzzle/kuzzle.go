@@ -166,7 +166,7 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 		jsonRes = C.json_tokener_parse(buffer)
 		C.free(unsafe.Pointer(buffer))
 
-		C.kuzzle_trigger_event(cb, e, jsonRes)
+		C.kuzzle_trigger_event(cb, jsonRes)
 	}()
 }
 

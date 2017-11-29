@@ -280,15 +280,17 @@ struct json_object { };
     }
 
     // addListener
-    kuzzle* addListener(enum Event ev, Callback *c) {
-        event_callback_list[ev].push_back(c);
-        auto pf = [](int e, json_object* o) {
+    kuzzle* addListener(enum Event ev, kuzzle_event_listener *c) {
+//        event_callback_list[ev].push_back(c);
+
+//        auto pf = [](int e, json_object* o) {
             /*for (auto& cb : event_callback_list[e]) {
                 printf("-- %p\n", cb);
                 cb->run(static_cast<Event>(e), o);
             }*/
-        };
-        kuzzle_add_listener($self, static_cast<int>(ev), pf);
+//        };
+
+//        kuzzle_add_listener($self, static_cast<int>(ev), pf);
     }
 
     // removeListener
