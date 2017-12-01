@@ -6,7 +6,7 @@ import (
 )
 
 // Bitpos returns the position of the first bit set to 1 or 0 in a string, or in a substring
-func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error) {
+func (ms *Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -17,12 +17,12 @@ func (ms Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, error
 	}
 
 	if options != nil {
-		if options.GetStart() != 0 {
-			query.Start = options.GetStart()
+		if options.Start() != 0 {
+			query.Start = options.Start()
 		}
 
-		if options.GetEnd() != 0 {
-			query.End = options.GetEnd()
+		if options.End() != 0 {
+			query.End = options.End()
 		}
 	}
 

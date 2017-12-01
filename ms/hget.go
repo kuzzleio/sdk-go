@@ -6,7 +6,7 @@ import (
 )
 
 // Hget returns the field's value of a hash
-func (ms Ms) Hget(key string, field string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Hget(key string, field string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

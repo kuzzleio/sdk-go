@@ -7,10 +7,8 @@ package main
 */
 import "C"
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 	"time"
-	"unsafe"
 )
 
 //export kuzzle_new_options
@@ -18,49 +16,31 @@ func kuzzle_new_options() *C.options {
 	copts := (*C.options)(C.calloc(1, C.sizeof_options))
 	opts := types.NewOptions()
 
-	copts.queue_ttl = C.uint(opts.GetQueueTTL())
-	copts.queue_max_size = C.ulong(opts.GetQueueMaxSize())
-	copts.offline_mode = C.uchar(opts.GetOfflineMode())
+	copts.queue_ttl = C.uint(opts.QueueTTL())
+	copts.queue_max_size = C.ulong(opts.QueueMaxSize())
+	copts.offline_mode = C.uchar(opts.OfflineMode())
+	copts.auto_queue = C.bool(opts.AutoQueue())
+	copts.auto_reconnect = C.bool(opts.AutoReconnect())
+	copts.auto_replay = C.bool(opts.AutoReplay())
+	copts.auto_resubscribe = C.bool(opts.AutoResubscribe())
+	copts.reconnection_delay = C.ulong(opts.ReconnectionDelay())
+	copts.replay_interval = C.ulong(opts.ReplayInterval())
 
-	if opts.GetAutoQueue() {
-		copts.auto_queue = 1
-	}
-
-	if opts.GetAutoReconnect() {
-		copts.auto_reconnect = 1
-	}
-
-	if opts.GetAutoReplay() {
-		copts.auto_replay = 1
-	}
-
-	if opts.GetAutoResubscribe() {
-		copts.auto_resubscribe = 1
-	}
-
-	copts.reconnection_delay = C.ulong(opts.GetReconnectionDelay())
-	copts.replay_interval = C.ulong(opts.GetReplayInterval())
-
-	if opts.GetConnect() == 1 {
+	if opts.Connect() == 1 {
 		copts.connect = C.MANUAL
 	} else {
 		copts.connect = C.AUTO
 	}
 
-	refresh := opts.GetRefresh()
+	refresh := opts.Refresh()
 	if len(refresh) > 0 {
 		copts.refresh = C.CString(refresh)
 	}
 
-	defaultIndex := opts.GetDefaultIndex()
+	defaultIndex := opts.DefaultIndex()
 	if len(defaultIndex) > 0 {
 		copts.default_index = C.CString(defaultIndex)
 	}
-
-	r, _ := json.Marshal(opts.GetHeaders())
-	buffer := C.CString(string(r))
-	copts.headers = C.json_tokener_parse(buffer)
-	C.free(unsafe.Pointer(buffer))
 
 	return copts
 }
@@ -98,16 +78,15 @@ func SetOptions(options *C.options) (opts types.Options) {
 	opts.SetQueueMaxSize(int(options.queue_max_size))
 	opts.SetOfflineMode(int(options.offline_mode))
 
-	opts.SetAutoQueue(options.auto_queue != 0)
-	opts.SetAutoReconnect(options.auto_reconnect != 0)
-	opts.SetAutoReplay(options.auto_replay != 0)
-	opts.SetAutoResubscribe(options.auto_resubscribe != 0)
+	opts.SetAutoQueue(bool(options.auto_queue))
+	opts.SetAutoReconnect(bool(options.auto_reconnect))
+	opts.SetAutoReplay(bool(options.auto_replay))
+	opts.SetAutoResubscribe(bool(options.auto_resubscribe))
 	opts.SetReconnectionDelay(time.Duration(int(options.reconnection_delay)))
 	opts.SetReplayInterval(time.Duration(int(options.replay_interval)))
 	opts.SetConnect(int(options.connect))
 	opts.SetRefresh(C.GoString(options.refresh))
 	opts.SetDefaultIndex(C.GoString(options.default_index))
-	opts.SetHeaders(JsonCConvert(options.headers).(map[string]interface{}))
 
 	return
 }

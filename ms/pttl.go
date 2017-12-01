@@ -6,7 +6,7 @@ import (
 )
 
 // Pttl returns the remaining time to live of a key, in milliseconds.
-func (ms Ms) Pttl(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Pttl(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

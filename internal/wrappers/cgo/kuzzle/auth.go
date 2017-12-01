@@ -27,7 +27,7 @@ func kuzzle_unset_jwt(k *C.kuzzle) {
 // Allocates memory
 //export kuzzle_get_jwt
 func kuzzle_get_jwt(k *C.kuzzle) *C.char {
-	return C.CString((*kuzzle.Kuzzle)(k.instance).GetJwt())
+	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
 }
 
 //export kuzzle_login

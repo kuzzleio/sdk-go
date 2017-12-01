@@ -6,7 +6,7 @@ import (
 )
 
 // Returns the element at the provided index in a list.
-func (ms Ms) Lindex(key string, index int, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Lindex(key string, index int, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

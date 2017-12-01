@@ -6,7 +6,7 @@ import (
 )
 
 // Geodist gets the distance between two geospatial members of a key (see geoadd)
-func (ms Ms) Geodist(key string, member1 string, member2 string, options types.QueryOptions) (float64, error) {
+func (ms *Ms) Geodist(key string, member1 string, member2 string, options types.QueryOptions) (float64, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -17,8 +17,8 @@ func (ms Ms) Geodist(key string, member1 string, member2 string, options types.Q
 		Member2:    member2,
 	}
 
-	if options != nil && options.GetUnit() != "" {
-		query.Unit = options.GetUnit()
+	if options != nil && options.Unit() != "" {
+		query.Unit = options.Unit()
 	}
 
 	go ms.Kuzzle.Query(query, options, result)

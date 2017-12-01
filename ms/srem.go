@@ -6,7 +6,7 @@ import (
 )
 
 // Srem removes members from a set of unique values.
-func (ms Ms) Srem(key string, valuesToRemove []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Srem(key string, valuesToRemove []string, options types.QueryOptions) (int, error) {
 	if len(valuesToRemove) == 0 {
 		return 0, types.NewError("Ms.Srem: please provide at least one value to remove", 400)
 	}

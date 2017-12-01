@@ -6,7 +6,7 @@ import (
 )
 
 // Strlen returns the length of a value stored at key.
-func (ms Ms) Strlen(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Strlen(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

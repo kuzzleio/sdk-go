@@ -20,10 +20,10 @@ func (dc *Collection) CreateDocument(id string, document *Document, options type
 	action := "create"
 
 	if options != nil {
-		if options.GetIfExist() == "replace" {
+		if options.IfExist() == "replace" {
 			action = "createOrReplace"
-		} else if options.GetIfExist() != "error" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.GetIfExist()), 400)
+		} else if options.IfExist() != "error" {
+			return nil, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist()), 400)
 		}
 	}
 

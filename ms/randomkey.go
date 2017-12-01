@@ -6,7 +6,7 @@ import (
 )
 
 // RandomKey returns a random key from the memory storage.
-func (ms Ms) Randomkey(options types.QueryOptions) (*string, error) {
+func (ms *Ms) Randomkey(options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

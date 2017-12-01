@@ -6,7 +6,7 @@ import (
 )
 
 // Llen counts the number of items in a list.
-func (ms Ms) Llen(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Llen(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

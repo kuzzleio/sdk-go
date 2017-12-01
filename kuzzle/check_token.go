@@ -12,7 +12,7 @@ type TokenValidity struct {
 }
 
 // CheckToken checks the validity of a JSON Web Token.
-func (k Kuzzle) CheckToken(token string) (*TokenValidity, error) {
+func (k *Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 	if token == "" {
 		return nil, types.NewError("Kuzzle.CheckToken: token required", 400)
 	}

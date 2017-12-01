@@ -12,7 +12,7 @@ type HscanResponse struct {
 }
 
 // Hscan is identical to scan, except that hscan iterates the fields contained in a hash.
-func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanResponse, error) {
+func (ms *Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanResponse, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -23,12 +23,12 @@ func (ms Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanRe
 	}
 
 	if options != nil {
-		if options.GetCount() != 0 {
-			query.Count = options.GetCount()
+		if options.Count() != 0 {
+			query.Count = options.Count()
 		}
 
-		if options.GetMatch() != "" {
-			query.Match = options.GetMatch()
+		if options.Match() != "" {
+			query.Match = options.Match()
 		}
 	}
 

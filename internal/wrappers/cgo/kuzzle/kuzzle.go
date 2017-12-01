@@ -13,6 +13,7 @@ import (
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"time"
 	"unsafe"
 )
 
@@ -44,10 +45,16 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 		c = websocket.NewWebSocket(C.GoString(host), opts)
 	}
 
-	inst, _ := kuzzle.NewKuzzle(c, opts)
+	inst, err := kuzzle.NewKuzzle(c, opts)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
 	registerKuzzle(inst)
 
 	k.instance = unsafe.Pointer(inst)
+	k.loader = nil
 }
 
 // Allocates memory
@@ -66,6 +73,11 @@ func kuzzle_disconnect(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).Disconnect()
 }
 
+//export kuzzle_get_default_index
+func kuzzle_get_default_index(k *C.kuzzle) *C.char {
+	return C.CString((*kuzzle.Kuzzle)(k.instance).DefaultIndex())
+}
+
 //export kuzzle_set_default_index
 func kuzzle_set_default_index(k *C.kuzzle, index *C.char) C.int {
 	err := (*kuzzle.Kuzzle)(k.instance).SetDefaultIndex(C.GoString(index))
@@ -80,7 +92,7 @@ func kuzzle_set_default_index(k *C.kuzzle, index *C.char) C.int {
 func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result := (*C.offline_queue)(C.calloc(1, C.sizeof_offline_queue))
 
-	offlineQueue := *(*kuzzle.Kuzzle)(k.instance).GetOfflineQueue()
+	offlineQueue := (*kuzzle.Kuzzle)(k.instance).OfflineQueue()
 	result.queries_length = C.size_t(len(offlineQueue))
 
 	result.queries = (**C.query_object)(C.calloc(result.queries_length, C.sizeof_query_object_ptr))
@@ -123,28 +135,9 @@ func kuzzle_stop_queuing(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).StopQueuing()
 }
 
-//export kuzzle_get_headers
-func kuzzle_get_headers(k *C.kuzzle) *C.json_object {
-	res := (*kuzzle.Kuzzle)(k.instance).GetHeaders()
-	r, _ := json.Marshal(res)
-
-	buffer := C.CString(string(r))
-	defer C.free(unsafe.Pointer(buffer))
-
-	return C.json_tokener_parse(buffer)
-}
-
-//export kuzzle_set_headers
-func kuzzle_set_headers(k *C.kuzzle, content *C.json_object, replace C.uint) {
-	if JsonCType(content) == C.json_type_object {
-		r := replace != 0
-		(*kuzzle.Kuzzle)(k.instance).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
-	}
-}
-
 //export kuzzle_add_listener
 // TODO loop and close on Unsubscribe
-func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
+func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 	c := make(chan interface{})
 
 	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
@@ -158,13 +151,123 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb unsafe.Pointer) {
 		jsonRes = C.json_tokener_parse(buffer)
 		C.free(unsafe.Pointer(buffer))
 
-		C.call(cb, jsonRes)
+		C.kuzzle_trigger_event(cb, jsonRes)
 	}()
 }
 
 //export kuzzle_remove_listener
 func kuzzle_remove_listener(k *C.kuzzle, event C.int) {
 	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event))
+}
+
+//export kuzzle_get_auto_queue
+func kuzzle_get_auto_queue(k *C.kuzzle) C.bool {
+	return C.bool((*kuzzle.Kuzzle)(k.instance).AutoQueue())
+}
+
+//export kuzzle_set_auto_queue
+func kuzzle_set_auto_queue(k *C.kuzzle, value C.bool) {
+	(*kuzzle.Kuzzle)(k.instance).SetAutoQueue(bool(value))
+}
+
+//export kuzzle_get_auto_reconnect
+func kuzzle_get_auto_reconnect(k *C.kuzzle) C.bool {
+	return C.bool((*kuzzle.Kuzzle)(k.instance).AutoReconnect())
+}
+
+//export kuzzle_get_auto_resubscribe
+func kuzzle_get_auto_resubscribe(k *C.kuzzle) C.bool {
+	return C.bool((*kuzzle.Kuzzle)(k.instance).AutoResubscribe())
+}
+
+//export kuzzle_get_auto_replay
+func kuzzle_get_auto_replay(k *C.kuzzle) C.bool {
+	return C.bool((*kuzzle.Kuzzle)(k.instance).AutoReplay())
+}
+
+//export kuzzle_set_auto_replay
+func kuzzle_set_auto_replay(k *C.kuzzle, value C.bool) {
+	(*kuzzle.Kuzzle)(k.instance).SetAutoReplay(bool(value))
+}
+
+//export kuzzle_get_host
+func kuzzle_get_host(k *C.kuzzle) *C.char {
+	return C.CString((*kuzzle.Kuzzle)(k.instance).Host())
+}
+
+//export kuzzle_get_offline_queue_loader
+func kuzzle_get_offline_queue_loader(k *C.kuzzle) C.kuzzle_offline_queue_loader {
+	return k.loader
+}
+
+//export kuzzle_set_offline_queue_loader
+func kuzzle_set_offline_queue_loader(k *C.kuzzle, loader C.kuzzle_offline_queue_loader) {
+	k.loader = loader
+}
+
+//export kuzzle_get_port
+func kuzzle_get_port(k *C.kuzzle) C.int {
+	return C.int((*kuzzle.Kuzzle)(k.instance).Port())
+}
+
+//export kuzzle_get_queue_filter
+func kuzzle_get_queue_filter(k *C.kuzzle) C.kuzzle_queue_filter {
+	return k.filter
+}
+
+//export kuzzle_set_queue_filter
+func kuzzle_set_queue_filter(k *C.kuzzle, f C.kuzzle_queue_filter) {
+	k.filter = f
+
+	if f != nil {
+		filter := func(q []byte) bool {
+			return bool(C.kuzzle_filter_query(f, (*C.char)(unsafe.Pointer(&q[0]))))
+		}
+
+		(*kuzzle.Kuzzle)(k.instance).SetQueueFilter(filter)
+	} else {
+		(*kuzzle.Kuzzle)(k.instance).SetQueueFilter(nil)
+	}
+}
+
+//export kuzzle_get_queue_max_size
+func kuzzle_get_queue_max_size(k *C.kuzzle) C.int {
+	return C.int((*kuzzle.Kuzzle)(k.instance).QueueMaxSize())
+}
+
+//export kuzzle_set_queue_max_size
+func kuzzle_set_queue_max_size(k *C.kuzzle, size C.int) {
+	(*kuzzle.Kuzzle)(k.instance).SetQueueMaxSize(int(size))
+}
+
+//export kuzzle_get_queue_ttl
+func kuzzle_get_queue_ttl(k *C.kuzzle) C.int {
+	return C.int((*kuzzle.Kuzzle)(k.instance).QueueTTL())
+}
+
+//export kuzzle_set_queue_ttl
+func kuzzle_set_queue_ttl(k *C.kuzzle, ttl C.int) {
+	(*kuzzle.Kuzzle)(k.instance).SetQueueTTL(time.Duration(ttl))
+}
+
+//export kuzzle_get_replay_interval
+func kuzzle_get_replay_interval(k *C.kuzzle) C.int {
+	return C.int((*kuzzle.Kuzzle)(k.instance).ReplayInterval())
+}
+
+//export kuzzle_set_replay_interval
+func kuzzle_set_replay_interval(k *C.kuzzle, interval C.int) {
+	(*kuzzle.Kuzzle)(k.instance).SetReplayInterval(time.Duration(interval))
+}
+
+//export kuzzle_get_reconnection_delay
+func kuzzle_get_reconnection_delay(k *C.kuzzle) C.int {
+	return C.int((*kuzzle.Kuzzle)(k.instance).ReconnectionDelay())
+}
+
+//export kuzzle_get_ssl_connection
+func kuzzle_get_ssl_connection(k *C.kuzzle) C.bool {
+	return C.bool((*kuzzle.Kuzzle)(k.instance).SslConnection())
 }
 
 func main() {

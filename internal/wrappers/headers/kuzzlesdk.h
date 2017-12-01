@@ -6,23 +6,17 @@
 #include <errno.h>
 #include <stdbool.h>
 
+//query object used by query()
 typedef struct {
-    void *instance;
-} kuzzle;
+    json_object *query;
+    unsigned long long timestamp;
+    char   *request_id;
+} query_object;
 
-enum Event {
-    CONNECTED,
-    DISCARDED,
-    DISCONNECTED,
-    LOGIN_ATTEMPT,
-    NETWORK_ERROR,
-    OFFLINE_QUEUE_POP,
-    OFFLINE_QUEUE_PUSH,
-    QUERY_ERROR,
-    RECONNECTED,
-    JWT_EXPIRED,
-    ERROR
-};
+typedef struct {
+    query_object **queries;
+    size_t queries_length;
+} offline_queue;
 
 //define a request
 typedef struct {
@@ -74,17 +68,29 @@ typedef struct {
     char *match;
 } kuzzle_request;
 
-//query object used by query()
-typedef struct {
-    json_object *query;
-    unsigned long long timestamp;
-    char   *request_id;
-} query_object;
+typedef offline_queue* (*kuzzle_offline_queue_loader)(void);
+typedef void (*kuzzle_event_listener)(json_object*);
+typedef bool (*kuzzle_queue_filter)(const char*);
 
 typedef struct {
-    query_object **queries;
-    size_t queries_length;
-} offline_queue;
+    void *instance;
+    kuzzle_queue_filter filter;
+    kuzzle_offline_queue_loader loader;
+} kuzzle;
+
+enum Event {
+    CONNECTED,
+    DISCARDED,
+    DISCONNECTED,
+    LOGIN_ATTEMPT,
+    NETWORK_ERROR,
+    OFFLINE_QUEUE_POP,
+    OFFLINE_QUEUE_PUSH,
+    QUERY_ERROR,
+    RECONNECTED,
+    JWT_EXPIRED,
+    ERROR
+};
 
 //options passed to query()
 typedef struct {
@@ -116,16 +122,15 @@ typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
     unsigned char offline_mode;
-    unsigned char auto_queue;
-    unsigned char auto_reconnect;
-    unsigned char auto_replay;
-    unsigned char auto_resubscribe;
+    bool auto_queue;
+    bool auto_reconnect;
+    bool auto_replay;
+    bool auto_resubscribe;
     unsigned long reconnection_delay;
     unsigned long replay_interval;
     enum Mode connect;
     char *refresh;
     char *default_index;
-    json_object *headers;
 } options;
 
 //meta of a document
@@ -572,5 +577,7 @@ typedef struct collection_entry_result {
     char* error;
     char* stack;
 } collection_entry_result;
+
+typedef void (*kuzzle_notification_listener)(notification_result*);
 
 #endif

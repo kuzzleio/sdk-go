@@ -10,20 +10,20 @@ func assignGeoradiusOptions(query *types.KuzzleRequest, options types.QueryOptio
 	opts := make([]interface{}, 0, 5)
 
 	if options != nil {
-		if options.GetCount() != 0 {
+		if options.Count() != 0 {
 			opts = append(opts, "count")
-			opts = append(opts, options.GetCount())
+			opts = append(opts, options.Count())
 		}
 
-		if options.GetSort() != "" {
-			opts = append(opts, options.GetSort())
+		if options.Sort() != "" {
+			opts = append(opts, options.Sort())
 		}
 
-		if options.GetWithcoord() {
+		if options.Withcoord() {
 			opts = append(opts, "withcoord")
 		}
 
-		if options.GetWithdist() {
+		if options.Withdist() {
 			opts = append(opts, "withdist")
 		}
 	}
@@ -42,23 +42,23 @@ func responseToGeoradius(response *types.KuzzleResponse, options types.QueryOpti
 
 		// if none of the 2 options below are provided, then we have
 		// a simple array of strings and not an array of arrays
-		if !options.GetWithdist() && !options.GetWithcoord() {
+		if !options.Withdist() && !options.Withcoord() {
 			returnedResults[i] = &types.Georadius{Name: value.(string)}
 		} else {
 			returnedResults[i] = &types.Georadius{Name: value.([]interface{})[0].(string)}
 		}
 
-		if options.GetWithdist() {
+		if options.Withdist() {
 			returnedResults[i].Dist, err = strconv.ParseFloat(value.([]interface{})[1].(string), 64)
 			if err != nil {
 				return nil, types.NewError(err.Error())
 			}
 		}
 
-		if options.GetWithcoord() {
+		if options.Withcoord() {
 			coordstart := 1
 
-			if options.GetWithdist() {
+			if options.Withdist() {
 				coordstart++
 			}
 
@@ -82,7 +82,7 @@ func responseToGeoradius(response *types.KuzzleResponse, options types.QueryOpti
 }
 
 // Georadius returns the geospatial members of a key inside the provided radius
-func (ms Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.Georadius, error) {
+func (ms *Ms) Georadius(key string, lon float64, lat float64, distance float64, unit string, options types.QueryOptions) ([]*types.Georadius, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

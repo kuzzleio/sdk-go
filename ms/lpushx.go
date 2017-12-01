@@ -7,7 +7,7 @@ import (
 
 // Lpushx prepends the specified value to a list,
 // only if the key already exists and if it holds a list.
-func (ms Ms) Lpushx(key string, value string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Lpushx(key string, value string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

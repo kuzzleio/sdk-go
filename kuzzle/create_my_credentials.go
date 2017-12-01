@@ -7,7 +7,7 @@ import (
 )
 
 // CreateMyCredentials create credentials of the specified strategy for the current user.
-func (k Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (types.Credentials, error) {
+func (k *Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (types.Credentials, error) {
 	if strategy == "" {
 		return nil, types.NewError("Kuzzle.CreateMyCredentials: strategy is required", 400)
 	}

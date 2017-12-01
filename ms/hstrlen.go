@@ -6,7 +6,7 @@ import (
 )
 
 // Hstrlen returns the string length of a field’s value in a hash.
-func (ms Ms) Hstrlen(key string, field string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Hstrlen(key string, field string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

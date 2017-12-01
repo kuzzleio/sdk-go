@@ -71,7 +71,7 @@ func TestZrevrangebylexWithLimits(t *testing.T) {
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "zrevrangebylex", parsedQuery.Action)
-			assert.Equal(t, []int{0, 1}, options.GetLimit())
+			assert.Equal(t, []int{0, 1}, options.Limit())
 			assert.Equal(t, []interface{}([]interface{}{"withscores"}), parsedQuery.Options)
 
 			r, _ := json.Marshal([]string{"bar", "rab"})

@@ -9,7 +9,7 @@ import (
 // If there is no listener left on that Room, sends an unsubscribe request to Kuzzle, once
 // pending subscriptions reaches 0, and only if there is still no listener on that Room.
 // We wait for pending subscriptions to finish to avoid unsubscribing while another subscription on that Room is
-func (room Room) Unsubscribe() {
+func (room *Room) Unsubscribe() {
 	if !room.isReady() {
 		room.queue.PushFront(func() {
 			room.Unsubscribe()
@@ -17,7 +17,7 @@ func (room Room) Unsubscribe() {
 		return
 	}
 
-	if room.RoomId == "" {
+	if room.roomId == "" {
 		return
 	}
 
@@ -30,7 +30,7 @@ func (room Room) Unsubscribe() {
 	query := &types.KuzzleRequest{
 		Controller: "realtime",
 		Action:     "unsubscribe",
-		Body:       &body{room.RoomId},
+		Body:       &body{room.roomId},
 	}
 
 	if len(room.pendingSubscriptions) > 0 {

@@ -6,7 +6,7 @@ import (
 )
 
 // ZlexCount counts elements in a sorted set where all members have equal score, using lexicographical ordering. The min and max values are inclusive by default. To change this behavior, please check the syntax detailed in the Redis documentation.
-func (ms Ms) Zlexcount(key string, min string, max string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zlexcount(key string, min string, max string, options types.QueryOptions) (int, error) {
 	if min == "" || max == "" {
 		return 0, types.NewError("Ms.Zlexcount: an empty string is not a valid string range item", 400)
 	}

@@ -7,7 +7,7 @@ import (
 
 // Zunionstore computes the union of the provided sorted sets and stores the result in the destination key.
 // If the destination key already exists, it is overwritten.
-func (ms Ms) Zunionstore(destination string, keys []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zunionstore(destination string, keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
 		return 0, types.NewError("Ms.Zunionstore: please provide at least one key", 400)
 	}
@@ -23,12 +23,12 @@ func (ms Ms) Zunionstore(destination string, keys []string, options types.QueryO
 	bodyContent := body{Keys: keys}
 
 	if options != nil {
-		if len(options.GetWeights()) > 0 {
-			bodyContent.Weights = options.GetWeights()
+		if len(options.Weights()) > 0 {
+			bodyContent.Weights = options.Weights()
 		}
 
-		if options.GetAggregate() != "" {
-			bodyContent.Aggregate = options.GetAggregate()
+		if options.Aggregate() != "" {
+			bodyContent.Aggregate = options.Aggregate()
 		}
 	}
 

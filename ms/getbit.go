@@ -6,7 +6,7 @@ import (
 )
 
 // Getbit returns the bit value at offset, in the string value stored in a key.
-func (ms Ms) Getbit(key string, offset int, options types.QueryOptions) (int, error) {
+func (ms *Ms) Getbit(key string, offset int, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

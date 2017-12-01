@@ -6,7 +6,7 @@ import (
 
 // SetEx sets a key with the provided value, and an expiration delay expressed in seconds.
 // If the key does not exist, it is created beforehand.
-func (ms Ms) Setex(key string, value interface{}, ttl int, options types.QueryOptions) error {
+func (ms *Ms) Setex(key string, value interface{}, ttl int, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

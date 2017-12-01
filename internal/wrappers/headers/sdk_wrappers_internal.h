@@ -15,12 +15,16 @@ static void set_errno(int err) {
   errno = err;
 }
 
-static void call_notification_result(void* f, notification_result* res) {
-    ((void(*)(notification_result*))f)(res);
+static void kuzzle_notify(kuzzle_notification_listener f, notification_result* res) {
+    f(res);
 }
 
-static void call(void* f, json_object* res) {
-    ((void(*)(json_object*))f)(res);
+static void kuzzle_trigger_event(kuzzle_event_listener f, json_object* res) {
+    f(res);
+}
+
+static bool kuzzle_filter_query(kuzzle_queue_filter f, const char *rq) {
+  return f(rq);
 }
 
 #endif

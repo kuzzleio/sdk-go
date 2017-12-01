@@ -6,7 +6,7 @@ import (
 )
 
 // Expire sets an expiration timeout on a key
-func (ms Ms) Expire(key string, seconds int, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Expire(key string, seconds int, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

@@ -18,10 +18,10 @@ func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOp
 	}
 
 	if options != nil {
-		query.From = options.GetFrom()
-		query.Size = options.GetSize()
+		query.From = options.From()
+		query.Size = options.Size()
 
-		scroll := options.GetScroll()
+		scroll := options.Scroll()
 		if scroll != "" {
 			query.Scroll = scroll
 		}

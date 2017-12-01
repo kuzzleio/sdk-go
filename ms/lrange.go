@@ -6,7 +6,7 @@ import (
 )
 
 // Lrange returns the list elements between the start and stop positions (inclusive).
-func (ms Ms) Lrange(key string, start int, stop int, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Lrange(key string, start int, stop int, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -7,7 +7,7 @@ import (
 
 // Hset sets a field and its value in a hash.
 // if the key does not exist, a new key holding a hash is created.
-func (ms Ms) Hset(key string, field string, value string, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Hset(key string, field string, value string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

@@ -5,7 +5,7 @@ import (
 )
 
 // Set creates a key holding the provided value, or overwrites it if it already exists.
-func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) error {
+func (ms *Ms) Set(key string, value interface{}, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
@@ -19,16 +19,16 @@ func (ms Ms) Set(key string, value interface{}, options types.QueryOptions) erro
 	bodyContent := body{Value: value}
 
 	if options != nil {
-		if options.GetEx() != 0 {
-			bodyContent.Ex = options.GetEx()
+		if options.Ex() != 0 {
+			bodyContent.Ex = options.Ex()
 		}
 
-		if options.GetPx() != 0 {
-			bodyContent.Px = options.GetPx()
+		if options.Px() != 0 {
+			bodyContent.Px = options.Px()
 		}
 
-		bodyContent.Nx = options.GetNx()
-		bodyContent.Xx = options.GetXx()
+		bodyContent.Nx = options.Nx()
+		bodyContent.Xx = options.Xx()
 	}
 
 	query := &types.KuzzleRequest{

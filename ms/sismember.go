@@ -6,7 +6,7 @@ import (
 )
 
 // Sismember checks if member is a member of the set of unique values stored at key.
-func (ms Ms) Sismember(key string, member string, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Sismember(key string, member string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

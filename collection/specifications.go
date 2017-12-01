@@ -43,9 +43,9 @@ func (dc *Collection) SearchSpecifications(filters interface{}, options types.Qu
 	}
 
 	if options != nil {
-		query.From = options.GetFrom()
-		query.Size = options.GetSize()
-		scroll := options.GetScroll()
+		query.From = options.From()
+		query.Size = options.Size()
+		scroll := options.Scroll()
 		if scroll != "" {
 			query.Scroll = scroll
 		}
@@ -80,7 +80,7 @@ func (dc *Collection) ScrollSpecifications(scrollId string, options types.QueryO
 	}
 
 	if options != nil {
-		scroll := options.GetScroll()
+		scroll := options.Scroll()
 		if scroll != "" {
 			query.Scroll = scroll
 		}

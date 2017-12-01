@@ -6,7 +6,7 @@ import (
 )
 
 // Getset sets a new value for a key and returns its previous value.
-func (ms Ms) Getset(key string, value string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Getset(key string, value string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

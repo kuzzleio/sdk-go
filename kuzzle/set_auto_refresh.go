@@ -6,7 +6,7 @@ import (
 )
 
 // SetAutoRefresh autorefresh status setter for the provided data index name
-func (k Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
+func (k *Kuzzle) SetAutoRefresh(index string, autoRefresh bool, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
 			return false, types.NewError("Kuzzle.SetAutoRefresh: index required", 400)

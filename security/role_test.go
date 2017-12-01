@@ -71,7 +71,7 @@ func TestRoleSaveWithErrorOption(t *testing.T) {
 }
 
 func TestRoleSaveInvalidIfExistOption(t *testing.T) {
-	c := internal.MockedConnection{}
+	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	role := k.Security.NewRole("roleid", nil)
 

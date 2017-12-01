@@ -6,7 +6,7 @@ import (
 )
 
 // Touch alters the last access time of one or multiple keys. A key is ignored if it does not exist.
-func (ms Ms) Touch(keys []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Touch(keys []string, options types.QueryOptions) (int, error) {
 	if len(keys) == 0 {
 		return 0, types.NewError("Ms.Touch: please provide at least one key", 400)
 	}

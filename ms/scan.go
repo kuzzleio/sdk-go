@@ -10,7 +10,7 @@ import (
 // To get the next page of results, simply re-send the identical request
 // with the updated cursor position provided in the result set.
 // The scan terminates when the next position cursor returned by the server is 0.
-func (ms Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
+func (ms *Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -20,12 +20,12 @@ func (ms Ms) Scan(cursor int, options types.QueryOptions) (*types.MSScanResponse
 	}
 
 	if options != nil {
-		if options.GetCount() != 0 {
-			query.Count = options.GetCount()
+		if options.Count() != 0 {
+			query.Count = options.Count()
 		}
 
-		if options.GetMatch() != "" {
-			query.Match = options.GetMatch()
+		if options.Match() != "" {
+			query.Match = options.Match()
 		}
 	}
 

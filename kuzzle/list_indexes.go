@@ -6,7 +6,7 @@ import (
 )
 
 // ListIndexes retrieves the list of indexes stored in Kuzzle.
-func (k Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
+func (k *Kuzzle) ListIndexes(options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

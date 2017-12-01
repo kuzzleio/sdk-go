@@ -8,7 +8,6 @@ package main
 import "C"
 import (
 	"github.com/kuzzleio/sdk-go/types"
-	"unsafe"
 )
 
 //export kuzzle_new_document
@@ -18,13 +17,13 @@ func kuzzle_new_document(c *C.collection) *C.document {
 
 //export kuzzle_document_subscribe
 // TODO loop and close on Unsubscribe
-func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb unsafe.Pointer) {
+func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener) {
 	c := make(chan *types.KuzzleNotification)
 	cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c
-		C.call_notification_result(cb, goToCNotificationResult(res))
+		C.kuzzle_notify(cb, goToCNotificationResult(res))
 	}()
 }
 
@@ -39,16 +38,6 @@ func kuzzle_document_save(d *C.document, options *C.query_options) *C.document_r
 func kuzzle_document_refresh(d *C.document, options *C.query_options) *C.document_result {
 	res, err := cToGoDocument(d._collection, d).Refresh(SetQueryOptions(options))
 	return goToCDocumentResult(d._collection, res, err)
-}
-
-//export kuzzle_document_set_headers
-func kuzzle_document_set_headers(d *C.document, content *C.json_object, replace C.uint) {
-	if JsonCType(content) == C.json_type_object {
-		r := replace != 0
-		cToGoDocument(d._collection, d).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
-	}
-
-	return
 }
 
 // export kuzzle_document_publish

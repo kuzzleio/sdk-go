@@ -117,7 +117,6 @@ func kuzzle_free_options(st *C.options) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.refresh))
 		C.free(unsafe.Pointer(st.default_index))
-		kuzzle_free_json_object(st.headers)
 		C.free(unsafe.Pointer(st))
 	}
 }

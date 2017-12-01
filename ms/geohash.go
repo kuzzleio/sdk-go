@@ -6,7 +6,7 @@ import (
 )
 
 // Geohash returns the geohash values for the provided key's members
-func (ms Ms) Geohash(key string, members []string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Geohash(key string, members []string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
