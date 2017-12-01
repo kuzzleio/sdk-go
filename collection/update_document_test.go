@@ -51,7 +51,7 @@ func TestUpdateDocument(t *testing.T) {
 			assert.Equal(t, "update", parsedQuery.Action)
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
-			assert.Equal(t, 10, options.GetRetryOnConflict())
+			assert.Equal(t, 10, options.RetryOnConflict())
 			assert.Equal(t, id, parsedQuery.Id)
 
 			assert.Equal(t, "jonathan", parsedQuery.Body.(map[string]interface{})["title"])

@@ -6,7 +6,7 @@ import (
 )
 
 // Decrby decrements the value of a key by a given value
-func (ms Ms) Decrby(key string, value int, options types.QueryOptions) (int, error) {
+func (ms *Ms) Decrby(key string, value int, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

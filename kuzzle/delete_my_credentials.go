@@ -7,7 +7,7 @@ import (
 )
 
 // DeleteMyCredentials delete credentials of the specified strategy for the current user.
-func (k Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (bool, error) {
+func (k *Kuzzle) DeleteMyCredentials(strategy string, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
 		return false, types.NewError("Kuzzle.DeleteMyCredentials: strategy is required", 400)
 	}

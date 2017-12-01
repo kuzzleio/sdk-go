@@ -6,7 +6,7 @@ import (
 )
 
 // Geoadd deletes all keys from the database
-func (ms Ms) Geoadd(key string, points []*types.GeoPoint, options types.QueryOptions) (int, error) {
+func (ms *Ms) Geoadd(key string, points []*types.GeoPoint, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

@@ -6,7 +6,7 @@ import (
 )
 
 // Pfadd Adds elements to an HyperLogLog data structure.
-func (ms Ms) Pfadd(key string, elements []string, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Pfadd(key string, elements []string, options types.QueryOptions) (bool, error) {
 	if len(elements) == 0 {
 		return false, types.NewError("Ms.Pfadd: please provide at least one element to add", 400)
 	}

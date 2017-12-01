@@ -6,7 +6,7 @@ import (
 )
 
 // Expireat sets an expiration timestamp to a key
-func (ms Ms) Expireat(key string, timestamp int, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Expireat(key string, timestamp int, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

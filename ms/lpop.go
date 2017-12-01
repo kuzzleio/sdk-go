@@ -6,7 +6,7 @@ import (
 )
 
 // Lpop removes and returns the first element of a list.
-func (ms Ms) Lpop(key string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Lpop(key string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -38,10 +38,10 @@ func (p Profile) Save(options types.QueryOptions) (*Profile, error) {
 	}
 
 	if options != nil {
-		if options.GetIfExist() == "error" {
+		if options.IfExist() == "error" {
 			action = "createProfile"
-		} else if options.GetIfExist() != "replace" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.GetIfExist()), 400)
+		} else if options.IfExist() != "replace" {
+			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.IfExist()), 400)
 		}
 	}
 

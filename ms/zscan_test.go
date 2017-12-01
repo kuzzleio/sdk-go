@@ -60,8 +60,8 @@ func TestZscanWithOptions(t *testing.T) {
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "zscan", parsedQuery.Action)
-			assert.Equal(t, 10, options.GetCount())
-			assert.Equal(t, "*", options.GetMatch())
+			assert.Equal(t, 10, options.Count())
+			assert.Equal(t, "*", options.Match())
 
 			r, _ := json.Marshal([]interface{}{"42", []string{"bar", "5", "foo", "10"}})
 			return &types.KuzzleResponse{Result: r}

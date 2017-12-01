@@ -7,7 +7,7 @@ import (
 )
 
 // GetStatistics get Kuzzle usage statistics
-func (k Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) (*types.Statistics, error) {
+func (k *Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) (*types.Statistics, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type data struct {

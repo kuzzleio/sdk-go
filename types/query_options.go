@@ -1,67 +1,67 @@
 package types
 
 type QueryOptions interface {
-	GetQueuable() bool
+	Queuable() bool
 	SetQueuable(bool) *queryOptions
-	GetFrom() int
+	From() int
 	SetFrom(int) *queryOptions
-	GetSize() int
+	Size() int
 	SetSize(int) *queryOptions
-	GetScroll() string
+	Scroll() string
 	SetScroll(string) *queryOptions
-	GetScrollId() string
+	ScrollId() string
 	SetScrollId(string) *queryOptions
-	GetVolatile() VolatileData
+	Volatile() VolatileData
 	SetVolatile(VolatileData) *queryOptions
-	GetRefresh() string
+	Refresh() string
 	SetRefresh(string) *queryOptions
-	GetIfExist() string
+	IfExist() string
 	SetIfExist(string) *queryOptions
-	GetRetryOnConflict() int
+	RetryOnConflict() int
 	SetRetryOnConflict(int) *queryOptions
-	GetStart() int
+	Start() int
 	SetStart(int) *queryOptions
-	GetEnd() int
+	End() int
 	SetEnd(int) *queryOptions
-	GetCount() int
+	Count() int
 	SetCount(int) *queryOptions
-	GetSort() string
+	Sort() string
 	SetSort(string) *queryOptions
-	GetMatch() string
+	Match() string
 	SetMatch(string) *queryOptions
-	GetCh() bool
+	Ch() bool
 	SetCh(bool) *queryOptions
-	GetIncr() bool
+	Incr() bool
 	SetIncr(bool) *queryOptions
-	GetNx() bool
+	Nx() bool
 	SetNx(bool) *queryOptions
-	GetXx() bool
+	Xx() bool
 	SetXx(bool) *queryOptions
-	GetEx() int
+	Ex() int
 	SetEx(int) *queryOptions
-	GetPx() int
+	Px() int
 	SetPx(int) *queryOptions
-	GetLimit() []int
+	Limit() []int
 	SetLimit([]int) *queryOptions
-	GetAggregate() string
+	Aggregate() string
 	SetAggregate(string) *queryOptions
-	GetWeights() []int
+	Weights() []int
 	SetWeights([]int) *queryOptions
-	GetType() string
+	Type() string
 	SetType(string) *queryOptions
-	GetBy() string
+	By() string
 	SetBy(string) *queryOptions
-	GetDirection() string
+	Direction() string
 	SetDirection(string) *queryOptions
-	GetGet() []string
+	Get() []string
 	SetGet([]string) *queryOptions
-	GetAlpha() bool
+	Alpha() bool
 	SetAlpha(bool) *queryOptions
-	GetUnit() string
+	Unit() string
 	SetUnit(string) *queryOptions
-	GetWithdist() bool
+	Withdist() bool
 	SetWithdist(bool) *queryOptions
-	GetWithcoord() bool
+	Withcoord() bool
 	SetWithcoord(bool) *queryOptions
 }
 
@@ -99,7 +99,7 @@ type queryOptions struct {
 	withdist        bool
 }
 
-func (qo queryOptions) GetQueuable() bool {
+func (qo queryOptions) Queuable() bool {
 	return qo.queuable
 }
 
@@ -108,7 +108,7 @@ func (qo *queryOptions) SetQueuable(queuable bool) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetFrom() int {
+func (qo queryOptions) From() int {
 	return qo.from
 }
 
@@ -117,7 +117,7 @@ func (qo *queryOptions) SetFrom(from int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetSize() int {
+func (qo queryOptions) Size() int {
 	return qo.size
 }
 
@@ -126,7 +126,7 @@ func (qo *queryOptions) SetSize(size int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetScroll() string {
+func (qo queryOptions) Scroll() string {
 	return qo.scroll
 }
 
@@ -135,7 +135,7 @@ func (qo *queryOptions) SetScroll(scroll string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetScrollId() string {
+func (qo queryOptions) ScrollId() string {
 	return qo.scrollId
 }
 
@@ -144,7 +144,7 @@ func (qo *queryOptions) SetScrollId(scrollId string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetVolatile() VolatileData {
+func (qo queryOptions) Volatile() VolatileData {
 	return qo.volatile
 }
 
@@ -153,7 +153,7 @@ func (qo *queryOptions) SetVolatile(volatile VolatileData) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetRefresh() string {
+func (qo queryOptions) Refresh() string {
 	return qo.refresh
 }
 
@@ -162,7 +162,7 @@ func (qo *queryOptions) SetRefresh(refresh string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetIfExist() string {
+func (qo queryOptions) IfExist() string {
 	return qo.ifExist
 }
 
@@ -171,7 +171,7 @@ func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetRetryOnConflict() int {
+func (qo queryOptions) RetryOnConflict() int {
 	return qo.retryOnConflict
 }
 
@@ -180,7 +180,7 @@ func (qo *queryOptions) SetRetryOnConflict(retryOnConflict int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetStart() int {
+func (qo queryOptions) Start() int {
 	return qo.start
 }
 
@@ -189,7 +189,7 @@ func (qo *queryOptions) SetStart(start int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetEnd() int {
+func (qo queryOptions) End() int {
 	return qo.end
 }
 
@@ -198,7 +198,7 @@ func (qo *queryOptions) SetEnd(end int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetCount() int {
+func (qo queryOptions) Count() int {
 	return qo.count
 }
 
@@ -207,7 +207,7 @@ func (qo *queryOptions) SetCount(count int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetSort() string {
+func (qo queryOptions) Sort() string {
 	return qo.sort
 }
 
@@ -216,7 +216,7 @@ func (qo *queryOptions) SetSort(sort string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetMatch() string {
+func (qo queryOptions) Match() string {
 	return qo.match
 }
 
@@ -225,7 +225,7 @@ func (qo *queryOptions) SetMatch(match string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetCh() bool {
+func (qo queryOptions) Ch() bool {
 	return qo.ch
 }
 
@@ -234,7 +234,7 @@ func (qo *queryOptions) SetCh(ch bool) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetIncr() bool {
+func (qo queryOptions) Incr() bool {
 	return qo.incr
 }
 
@@ -243,7 +243,7 @@ func (qo *queryOptions) SetIncr(incr bool) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetNx() bool {
+func (qo queryOptions) Nx() bool {
 	return qo.nx
 }
 
@@ -252,7 +252,7 @@ func (qo *queryOptions) SetNx(nx bool) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetEx() int {
+func (qo queryOptions) Ex() int {
 	return qo.ex
 }
 
@@ -261,7 +261,7 @@ func (qo *queryOptions) SetEx(ex int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetPx() int {
+func (qo queryOptions) Px() int {
 	return qo.px
 }
 
@@ -270,7 +270,7 @@ func (qo *queryOptions) SetPx(px int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetXx() bool {
+func (qo queryOptions) Xx() bool {
 	return qo.xx
 }
 
@@ -279,7 +279,7 @@ func (qo *queryOptions) SetXx(xx bool) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetLimit() []int {
+func (qo queryOptions) Limit() []int {
 	return qo.limit
 }
 
@@ -288,7 +288,7 @@ func (qo *queryOptions) SetLimit(limit []int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetAggregate() string {
+func (qo queryOptions) Aggregate() string {
 	return qo.aggregate
 }
 
@@ -297,7 +297,7 @@ func (qo *queryOptions) SetAggregate(aggregate string) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetWeights() []int {
+func (qo queryOptions) Weights() []int {
 	return qo.weights
 }
 
@@ -306,7 +306,7 @@ func (qo *queryOptions) SetWeights(weights []int) *queryOptions {
 	return qo
 }
 
-func (qo queryOptions) GetType() string {
+func (qo queryOptions) Type() string {
 	return qo.colType
 }
 
@@ -315,7 +315,7 @@ func (qo *queryOptions) SetType(colType string) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetBy() string {
+func (qo *queryOptions) By() string {
 	return qo.by
 }
 
@@ -324,7 +324,7 @@ func (qo *queryOptions) SetBy(by string) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetDirection() string {
+func (qo *queryOptions) Direction() string {
 	return qo.direction
 }
 
@@ -333,7 +333,7 @@ func (qo *queryOptions) SetDirection(direction string) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetGet() []string {
+func (qo *queryOptions) Get() []string {
 	return qo.get
 }
 
@@ -342,7 +342,7 @@ func (qo *queryOptions) SetGet(get []string) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetAlpha() bool {
+func (qo *queryOptions) Alpha() bool {
 	return qo.alpha
 }
 
@@ -351,7 +351,7 @@ func (qo *queryOptions) SetAlpha(alpha bool) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetUnit() string {
+func (qo *queryOptions) Unit() string {
 	return qo.unit
 }
 
@@ -360,7 +360,7 @@ func (qo *queryOptions) SetUnit(unit string) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetWithcoord() bool {
+func (qo *queryOptions) Withcoord() bool {
 	return qo.withcoord
 }
 
@@ -369,7 +369,7 @@ func (qo *queryOptions) SetWithcoord(withcoord bool) *queryOptions {
 	return qo
 }
 
-func (qo *queryOptions) GetWithdist() bool {
+func (qo *queryOptions) Withdist() bool {
 	return qo.withdist
 }
 

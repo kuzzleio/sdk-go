@@ -1,10 +1,8 @@
 package collection_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
-
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
@@ -27,16 +25,13 @@ func TestInitRoomWithoutOptions(t *testing.T) {
 	assert.NotNil(t, r)
 }
 
-func TestRoomGetFilters(t *testing.T) {
+func TestRoomFilters(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-
-			marshed, _ := json.Marshal(room)
-			return &types.KuzzleResponse{Result: marshed}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{Result: roomRaw}
 		},
 	}
 
@@ -55,14 +50,14 @@ func TestRoomGetFilters(t *testing.T) {
 		},
 	}
 
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
-	assert.Equal(t, filters, res.Room.GetFilters())
+	assert.Equal(t, filters, res.Room.Filters())
 }
 
-func ExampleRoom_GetFilters() {
+func ExampleRoom_Filters() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
@@ -79,23 +74,20 @@ func ExampleRoom_GetFilters() {
 		},
 	}
 
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	rtc := make(chan *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	fmt.Println(res)
 }
 
-func TestRoomGetRealtimeChannel(t *testing.T) {
+func TestRoomRealtimeChannel(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-
-			marshalled, _ := json.Marshal(room)
-			return &types.KuzzleResponse{Result: marshalled}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{Result: roomRaw}
 		},
 	}
 
@@ -114,14 +106,14 @@ func TestRoomGetRealtimeChannel(t *testing.T) {
 		},
 	}
 
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
-	assert.Equal(t, rtc, res.Room.GetRealtimeChannel())
+	assert.Equal(t, rtc, res.Room.RealtimeChannel())
 }
 
-func ExampleRoom_GetRealtimeChannel() {
+func ExampleRoom_RealtimeChannel() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	cl := collection.NewCollection(k, "collection", "index")
@@ -138,10 +130,10 @@ func ExampleRoom_GetRealtimeChannel() {
 		},
 	}
 
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	rtc := make(chan<- *types.KuzzleNotification)
 	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
-	rtChannel := res.Room.GetRealtimeChannel()
+	rtChannel := res.Room.RealtimeChannel()
 
 	fmt.Println(rtChannel)
 }

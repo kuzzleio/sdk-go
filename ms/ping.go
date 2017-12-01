@@ -6,7 +6,7 @@ import (
 )
 
 // Ping pings the memory storage database.
-func (ms Ms) Ping(options types.QueryOptions) (string, error) {
+func (ms *Ms) Ping(options types.QueryOptions) (string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

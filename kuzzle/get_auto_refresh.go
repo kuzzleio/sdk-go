@@ -6,7 +6,7 @@ import (
 )
 
 // GetAutoRefresh the getAutoRefresh function returns the current autoRefresh status for the given index.
-func (k Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, error) {
+func (k *Kuzzle) GetAutoRefresh(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		if k.defaultIndex == "" {
 			return false, types.NewError("Kuzzle.GetAutoRefresh: index required", 400)

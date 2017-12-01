@@ -61,8 +61,8 @@ func TestZinterstoreWithOptions(t *testing.T) {
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "zinterstore", parsedQuery.Action)
-			assert.Equal(t, "sum", options.GetAggregate())
-			assert.Equal(t, []int{1, 2}, options.GetWeights())
+			assert.Equal(t, "sum", options.Aggregate())
+			assert.Equal(t, []int{1, 2}, options.Weights())
 
 			r, _ := json.Marshal(2)
 			return &types.KuzzleResponse{Result: r}

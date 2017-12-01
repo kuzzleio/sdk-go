@@ -71,10 +71,10 @@ func TestZaddWithOptions(t *testing.T) {
 
 			assert.Equal(t, "ms", parsedQuery.Controller)
 			assert.Equal(t, "zadd", parsedQuery.Action)
-			assert.Equal(t, true, options.GetCh())
-			assert.Equal(t, true, options.GetIncr())
-			assert.Equal(t, true, options.GetNx())
-			assert.Equal(t, true, options.GetXx())
+			assert.Equal(t, true, options.Ch())
+			assert.Equal(t, true, options.Incr())
+			assert.Equal(t, true, options.Nx())
+			assert.Equal(t, true, options.Xx())
 
 			r, _ := json.Marshal(2)
 			return &types.KuzzleResponse{Result: r}

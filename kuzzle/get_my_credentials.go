@@ -6,7 +6,7 @@ import (
 )
 
 // GetMyCredentials get credential information of the specified strategy for the current user.
-func (k Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
+func (k *Kuzzle) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, types.NewError("Kuzzle.GetMyCredentials: strategy is required", 400)
 	}

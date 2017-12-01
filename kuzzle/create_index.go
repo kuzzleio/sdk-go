@@ -7,7 +7,7 @@ import (
 )
 
 // CreateIndex create a new empty data index, with no associated mapping.
-func (k Kuzzle) CreateIndex(index string, options types.QueryOptions) (bool, error) {
+func (k *Kuzzle) CreateIndex(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Kuzzle.createIndex: index required", 400)
 	}

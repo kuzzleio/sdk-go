@@ -8,7 +8,7 @@ import (
 // Sort sorts and returns elements contained in a list, a set of unique values or a sorted set.
 // By default, sorting is numeric and elements are compared by their value interpreted
 // as double precision floating point number.
-func (ms Ms) Sort(key string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Sort(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -28,23 +28,23 @@ func (ms Ms) Sort(key string, options types.QueryOptions) ([]string, error) {
 
 		bodyContent := &body{}
 
-		if options.GetBy() != "" {
-			bodyContent.By = options.GetBy()
+		if options.By() != "" {
+			bodyContent.By = options.By()
 		}
 
-		if options.GetDirection() != "" {
-			bodyContent.Direction = options.GetDirection()
+		if options.Direction() != "" {
+			bodyContent.Direction = options.Direction()
 		}
 
-		if options.GetGet() != nil {
-			bodyContent.Get = options.GetGet()
+		if options.Get() != nil {
+			bodyContent.Get = options.Get()
 		}
 
-		if options.GetLimit() != nil {
-			bodyContent.Limit = options.GetLimit()
+		if options.Limit() != nil {
+			bodyContent.Limit = options.Limit()
 		}
 
-		bodyContent.Alpha = options.GetAlpha()
+		bodyContent.Alpha = options.Alpha()
 
 		query.Body = bodyContent
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
+	"sync"
 	"time"
 )
 
@@ -17,9 +18,7 @@ type IKuzzle interface {
 }
 
 type Kuzzle struct {
-	Host   string
 	socket connection.Connection
-	State  *int
 
 	wasConnected   bool
 	lastUrl        string
@@ -29,6 +28,7 @@ type Kuzzle struct {
 	headers        map[string]interface{}
 	version        string
 	RequestHistory map[string]time.Time
+	volatile       types.VolatileData
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
@@ -46,27 +46,19 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k := &Kuzzle{
 		socket:  c,
-		headers: options.GetHeaders(),
 		version: version,
 	}
 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
 
-	k.RequestHistory = k.socket.GetRequestHistory()
+	k.RequestHistory = k.socket.RequestHistory()
 
-	headers := options.GetHeaders()
-	if headers != nil {
-		k.headers = headers
-	}
-
-	k.State = k.socket.GetState()
-
-	k.defaultIndex = options.GetDefaultIndex()
+	k.defaultIndex = options.DefaultIndex()
 
 	var err error
 
-	if options.GetConnect() == types.Auto {
+	if options.Connect() == types.Auto {
 		err = k.Connect()
 	}
 
@@ -74,12 +66,12 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 }
 
 // Connect connects to a Kuzzle instance using the provided host and port.
-func (k Kuzzle) Connect() error {
+func (k *Kuzzle) Connect() error {
 	wasConnected, err := k.socket.Connect()
 	if err == nil {
-		if k.lastUrl != k.Host {
+		if k.lastUrl != k.socket.Host() {
 			k.wasConnected = false
-			k.lastUrl = k.Host
+			k.lastUrl = k.socket.Host()
 		}
 
 		if wasConnected {
@@ -105,19 +97,153 @@ func (k Kuzzle) Connect() error {
 	return types.NewError(err.Error())
 }
 
-func (k Kuzzle) GetOfflineQueue() *[]*types.QueryObject {
-	return k.socket.GetOfflineQueue()
-}
-
-// GetJwt get internal jwtToken used to request kuzzle.
-func (k Kuzzle) GetJwt() string {
+// Jwt get internal jwtToken used to request kuzzle.
+func (k *Kuzzle) Jwt() string {
 	return k.jwt
 }
 
-func (k Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
+func (k *Kuzzle) SetJwt(token string) {
+	k.jwt = token
+
+	if token != "" {
+		k.socket.RenewSubscriptions()
+		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
+	}
+}
+
+// UnsetJwt unset the authentication token and cancel all subscriptions
+func (k *Kuzzle) UnsetJwt() {
+	k.jwt = ""
+
+	rooms := k.socket.Rooms()
+	if rooms != nil {
+		k.socket.Rooms().Range(func(key, value interface{}) bool {
+			value.(*sync.Map).Range(func(key, value interface{}) bool {
+				room := value.(types.IRoom)
+				room.Renew(room.Filters(), room.RealtimeChannel(), room.ResponseChannel())
+
+				return true
+			})
+
+			return true
+		})
+	}
+}
+
+func (k *Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
 	k.socket.RegisterRoom(roomId, id, room)
 }
 
-func (k Kuzzle) UnregisterRoom(roomId string) {
+func (k *Kuzzle) UnregisterRoom(roomId string) {
 	k.socket.UnregisterRoom(roomId)
+}
+
+func (k *Kuzzle) State() int {
+	return k.socket.State()
+}
+
+func (k *Kuzzle) AutoQueue() bool {
+	return k.socket.AutoQueue()
+}
+
+func (k *Kuzzle) AutoReconnect() bool {
+	return k.socket.AutoReconnect()
+}
+
+func (k *Kuzzle) AutoResubscribe() bool {
+	return k.socket.AutoResubscribe()
+}
+
+func (k *Kuzzle) AutoReplay() bool {
+	return k.socket.AutoReplay()
+}
+
+func (k *Kuzzle) Host() string {
+	return k.socket.Host()
+}
+
+func (k *Kuzzle) OfflineQueue() []*types.QueryObject {
+	return k.socket.OfflineQueue()
+}
+
+func (k *Kuzzle) OfflineQueueLoader() connection.OfflineQueueLoader {
+	return k.socket.OfflineQueueLoader()
+}
+
+func (k *Kuzzle) Port() int {
+	return k.socket.Port()
+}
+
+func (k *Kuzzle) QueueFilter() connection.QueueFilter {
+	return k.socket.QueueFilter()
+}
+
+func (k *Kuzzle) QueueMaxSize() int {
+	return k.socket.QueueMaxSize()
+}
+
+func (k *Kuzzle) QueueTTL() time.Duration {
+	return k.socket.QueueTTL()
+}
+
+func (k *Kuzzle) ReplayInterval() time.Duration {
+	return k.socket.ReplayInterval()
+}
+
+func (k *Kuzzle) ReconnectionDelay() time.Duration {
+	return k.socket.ReconnectionDelay()
+}
+
+func (k *Kuzzle) SslConnection() bool {
+	return k.socket.SslConnection()
+}
+
+func (k *Kuzzle) SetAutoQueue(v bool) {
+	k.socket.SetAutoQueue(v)
+}
+
+func (k *Kuzzle) SetAutoReplay(v bool) {
+	k.socket.SetAutoReplay(v)
+}
+
+func (k *Kuzzle) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
+	k.socket.SetOfflineQueueLoader(v)
+}
+
+func (k *Kuzzle) SetQueueFilter(v connection.QueueFilter) {
+	k.socket.SetQueueFilter(v)
+}
+
+func (k *Kuzzle) SetQueueMaxSize(v int) {
+	k.socket.SetQueueMaxSize(v)
+}
+
+func (k *Kuzzle) SetQueueTTL(v time.Duration) {
+	k.socket.SetQueueTTL(v)
+}
+
+func (k *Kuzzle) SetReplayInterval(v time.Duration) {
+	k.socket.SetReplayInterval(v)
+}
+
+func (k *Kuzzle) DefaultIndex() string {
+	return k.defaultIndex
+}
+
+// SetDefaultIndex set the default data index. Has the same effect than the defaultIndex constructor option.
+func (k *Kuzzle) SetDefaultIndex(index string) error {
+	if index == "" {
+		return types.NewError("Kuzzle.SetDefaultIndex: index required", 400)
+	}
+
+	k.defaultIndex = index
+	return nil
+}
+
+func (k *Kuzzle) Volatile() types.VolatileData {
+	return k.volatile
+}
+
+func (k *Kuzzle) SetVolatile(v types.VolatileData) {
+	k.volatile = v
 }

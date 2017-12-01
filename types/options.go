@@ -10,32 +10,34 @@ const (
 )
 
 type Options interface {
-	GetQueueTTL() time.Duration
+	QueueTTL() time.Duration
 	SetQueueTTL(time.Duration) *options
-	GetQueueMaxSize() int
+	QueueMaxSize() int
 	SetQueueMaxSize(int) *options
-	GetOfflineMode() int
+	OfflineMode() int
 	SetOfflineMode(int) *options
-	GetAutoQueue() bool
+	AutoQueue() bool
 	SetAutoQueue(bool) *options
-	GetAutoReconnect() bool
+	AutoReconnect() bool
 	SetAutoReconnect(bool) *options
-	GetAutoReplay() bool
+	AutoReplay() bool
 	SetAutoReplay(bool) *options
-	GetAutoResubscribe() bool
+	AutoResubscribe() bool
 	SetAutoResubscribe(bool) *options
-	GetReconnectionDelay() time.Duration
+	ReconnectionDelay() time.Duration
 	SetReconnectionDelay(time.Duration) *options
-	GetReplayInterval() time.Duration
+	ReplayInterval() time.Duration
 	SetReplayInterval(time.Duration) *options
-	GetConnect() int
+	Connect() int
 	SetConnect(int) *options
-	GetRefresh() string
+	Refresh() string
 	SetRefresh(string) *options
-	GetDefaultIndex() string
+	DefaultIndex() string
 	SetDefaultIndex(string) *options
-	GetHeaders() HeadersData
-	SetHeaders(HeadersData) *options
+	Port() int
+	SetPort(int) *options
+	SslConnection() bool
+	SetSslConnection(bool) *options
 }
 
 type options struct {
@@ -51,10 +53,11 @@ type options struct {
 	connect           int
 	refresh           string
 	defaultIndex      string
-	headers           HeadersData
+	port              int
+	sslConnection     bool
 }
 
-func (o options) GetQueueTTL() time.Duration {
+func (o options) QueueTTL() time.Duration {
 	return o.queueTTL
 }
 
@@ -63,7 +66,7 @@ func (o *options) SetQueueTTL(queueTTL time.Duration) *options {
 	return o
 }
 
-func (o options) GetQueueMaxSize() int {
+func (o options) QueueMaxSize() int {
 	return o.queueMaxSize
 }
 
@@ -72,7 +75,7 @@ func (o *options) SetQueueMaxSize(queueMaxSize int) *options {
 	return o
 }
 
-func (o options) GetOfflineMode() int {
+func (o options) OfflineMode() int {
 	return o.offlineMode
 }
 
@@ -81,7 +84,7 @@ func (o *options) SetOfflineMode(offlineMode int) *options {
 	return o
 }
 
-func (o options) GetAutoQueue() bool {
+func (o options) AutoQueue() bool {
 	return o.autoQueue
 }
 
@@ -90,7 +93,7 @@ func (o *options) SetAutoQueue(autoQueue bool) *options {
 	return o
 }
 
-func (o options) GetAutoReconnect() bool {
+func (o options) AutoReconnect() bool {
 	return o.autoReconnect
 }
 
@@ -99,7 +102,7 @@ func (o *options) SetAutoReconnect(autoReconnect bool) *options {
 	return o
 }
 
-func (o options) GetAutoReplay() bool {
+func (o options) AutoReplay() bool {
 	return o.autoReplay
 }
 
@@ -108,7 +111,7 @@ func (o *options) SetAutoReplay(autoReplay bool) *options {
 	return o
 }
 
-func (o options) GetAutoResubscribe() bool {
+func (o options) AutoResubscribe() bool {
 	return o.autoResubscribe
 }
 
@@ -117,7 +120,7 @@ func (o *options) SetAutoResubscribe(autoResubscribe bool) *options {
 	return o
 }
 
-func (o options) GetReconnectionDelay() time.Duration {
+func (o options) ReconnectionDelay() time.Duration {
 	return o.reconnectionDelay
 }
 
@@ -126,7 +129,7 @@ func (o *options) SetReconnectionDelay(reconnectionDelay time.Duration) *options
 	return o
 }
 
-func (o options) GetReplayInterval() time.Duration {
+func (o options) ReplayInterval() time.Duration {
 	return o.replayInterval
 }
 
@@ -135,7 +138,7 @@ func (o *options) SetReplayInterval(replayInterval time.Duration) *options {
 	return o
 }
 
-func (o options) GetConnect() int {
+func (o options) Connect() int {
 	return o.connect
 }
 
@@ -144,7 +147,7 @@ func (o *options) SetConnect(connect int) *options {
 	return o
 }
 
-func (o options) GetRefresh() string {
+func (o options) Refresh() string {
 	return o.refresh
 }
 
@@ -153,7 +156,7 @@ func (o *options) SetRefresh(refresh string) *options {
 	return o
 }
 
-func (o options) GetDefaultIndex() string {
+func (o options) DefaultIndex() string {
 	return o.defaultIndex
 }
 
@@ -162,12 +165,21 @@ func (o *options) SetDefaultIndex(defaultIndex string) *options {
 	return o
 }
 
-func (o options) GetHeaders() HeadersData {
-	return o.headers
+func (o *options) Port() int {
+	return o.port
 }
 
-func (o *options) SetHeaders(headers HeadersData) *options {
-	o.headers = headers
+func (o *options) SetPort(v int) *options {
+	o.port = v
+	return o
+}
+
+func (o *options) SslConnection() bool {
+	return o.sslConnection
+}
+
+func (o *options) SetSslConnection(v bool) *options {
+	o.sslConnection = v
 	return o
 }
 
@@ -183,8 +195,7 @@ func NewOptions() *options {
 		reconnectionDelay: 1000,
 		replayInterval:    10,
 		connect:           Auto,
-		headers:           make(HeadersData),
+		port:              7512,
+		sslConnection:     false,
 	}
 }
-
-type HeadersData map[string]interface{}

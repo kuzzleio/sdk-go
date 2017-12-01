@@ -8,7 +8,6 @@ package main
 import "C"
 import (
 	"github.com/kuzzleio/sdk-go/types"
-	"unsafe"
 )
 
 // Allocates memory
@@ -34,16 +33,6 @@ func kuzzle_collection_publish_message(c *C.collection, message *C.json_object, 
 	return goToCBoolResult(res, err)
 }
 
-//export kuzzle_collection_set_headers
-func kuzzle_collection_set_headers(c *C.collection, content *C.json_object, replace C.uint) {
-	if JsonCType(content) == C.json_type_object {
-		r := replace != 0
-		cToGoCollection(c).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
-	}
-
-	return
-}
-
 //export kuzzle_collection_truncate
 func kuzzle_collection_truncate(c *C.collection, options *C.query_options) *C.bool_result {
 	res, err := cToGoCollection(c).Truncate(SetQueryOptions(options))
@@ -52,12 +41,12 @@ func kuzzle_collection_truncate(c *C.collection, options *C.query_options) *C.bo
 
 //export kuzzle_collection_subscribe
 // TODO loop and close on Unsubscribe
-func kuzzle_collection_subscribe(col *C.collection, filters *C.search_filters, options *C.room_options, cb unsafe.Pointer) {
+func kuzzle_collection_subscribe(col *C.collection, filters *C.search_filters, options *C.room_options, cb C.kuzzle_notification_listener) {
 	c := make(chan *types.KuzzleNotification)
 	cToGoCollection(col).Subscribe(cToGoSearchFilters(filters), SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c
-		C.call_notification_result(cb, goToCNotificationResult(res))
+		C.kuzzle_notify(cb, goToCNotificationResult(res))
 	}()
 }

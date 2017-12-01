@@ -6,7 +6,7 @@ import (
 
 // Psetex sets a key with the provided value, and an expiration delay expressed in milliseconds.
 // If the key does not exist, it is created beforehand.
-func (ms Ms) Psetex(key string, value string, ttl int, options types.QueryOptions) error {
+func (ms *Ms) Psetex(key string, value string, ttl int, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

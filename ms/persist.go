@@ -6,7 +6,7 @@ import (
 )
 
 // Persist removes the expiration delay or timestamp from a key, making it persistent.
-func (ms Ms) Persist(key string, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Persist(key string, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

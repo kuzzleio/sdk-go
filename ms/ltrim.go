@@ -6,7 +6,7 @@ import (
 
 // Ltrim trims an existing list so that it will
 // contain only the specified range of elements specified.
-func (ms Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) error {
+func (ms *Ms) Ltrim(key string, start int, stop int, options types.QueryOptions) error {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

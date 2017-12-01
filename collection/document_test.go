@@ -67,79 +67,6 @@ func TestDocumentSetContentReplace(t *testing.T) {
 	assert.Equal(t, string(json.RawMessage([]byte(`{"subfield":{"john":"cena","subsubfield":{"hi":"there"}}}`))), string(d.Content))
 }
 
-func TestDocumentSetHeaders(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := collection.NewCollection(k, "collection", "index").Document()
-
-	headers := make(map[string]interface{})
-
-	assert.Equal(t, headers, k.GetHeaders())
-
-	headers["foo"] = "bar"
-	headers["bar"] = "foo"
-
-	d.SetHeaders(headers, false)
-
-	newHeaders := make(map[string]interface{})
-	newHeaders["foo"] = "rab"
-
-	d.SetHeaders(newHeaders, false)
-
-	headers["foo"] = "rab"
-
-	assert.Equal(t, headers, k.GetHeaders())
-	assert.NotEqual(t, newHeaders, k.GetHeaders())
-}
-
-func ExampleDocument_SetHeaders() {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	d := collection.NewCollection(k, "collection", "index").Document()
-
-	headers := make(map[string]interface{})
-
-	headers["foo"] = "bar"
-	headers["bar"] = "foo"
-
-	d.SetHeaders(headers, true)
-
-	fmt.Println(k.GetHeaders())
-}
-
-func ExampleDocument_SetDocumentId() {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	d := collection.NewCollection(k, "collection", "index").Document()
-
-	d.SetDocumentId("newId")
-
-	fmt.Println(d.Id)
-}
-
-func TestDocumentSetHeadersReplace(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := collection.NewCollection(k, "collection", "index").Document()
-
-	headers := make(map[string]interface{})
-
-	assert.Equal(t, headers, k.GetHeaders())
-
-	headers["foo"] = "bar"
-	headers["bar"] = "foo"
-
-	d.SetHeaders(headers, false)
-
-	newHeaders := make(map[string]interface{})
-	newHeaders["foo"] = "rab"
-
-	d.SetHeaders(newHeaders, true)
-
-	headers["foo"] = "rab"
-
-	assert.Equal(t, newHeaders, k.GetHeaders())
-	assert.NotEqual(t, headers, k.GetHeaders())
-}
-
 func TestDocumentSubscribeEmptyId(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	dc := collection.NewCollection(k, "collection", "index")
@@ -180,16 +107,12 @@ func TestDocumentSubscribe(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, map[string]interface{}(map[string]interface{}{"ids": map[string]interface{}{"values": []interface{}{"docId"}}}), parsedQuery.Body)
-			room := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-
-			marshed, _ := json.Marshal(room)
-
-			return &types.KuzzleResponse{Result: marshed}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{Result: roomRaw}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	dc := collection.NewCollection(k, "collection", "index")
 	d := dc.Document()
 	d.Id = id
@@ -200,7 +123,7 @@ func TestDocumentSubscribe(t *testing.T) {
 
 	assert.Nil(t, r.Error)
 	assert.NotNil(t, r.Room)
-	assert.Equal(t, "42", r.Room.GetRoomId())
+	assert.Equal(t, "42", r.Room.RoomId())
 }
 
 func ExampleDocument_Subscribe() {
@@ -209,7 +132,7 @@ func ExampleDocument_Subscribe() {
 
 	c := &internal.MockedConnection{}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 	dc := collection.NewCollection(k, "collection", "index")
 	d := dc.Document()
 	d.Id = id
@@ -219,7 +142,7 @@ func ExampleDocument_Subscribe() {
 
 	notification := <-subRes
 
-	fmt.Println(notification.Room.GetRoomId(), notification.Error)
+	fmt.Println(notification.Room.RoomId(), notification.Error)
 }
 
 func TestDocumentSaveEmptyId(t *testing.T) {

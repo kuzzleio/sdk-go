@@ -8,11 +8,11 @@ import (
 // Srandmember returns one or more members of a set of unique values, at random.
 // If count is provided and is positive, the returned values are unique.
 // If count is negative, a set member can be returned multiple times.
-func (ms Ms) Srandmember(key string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Srandmember(key string, options types.QueryOptions) ([]string, error) {
 	count := 1
 
 	if options != nil {
-		count = options.GetCount()
+		count = options.Count()
 
 		if count < 1 {
 			count = 1

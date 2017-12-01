@@ -6,7 +6,7 @@ import (
 )
 
 // Hkeys returns all the field names contained in a hash
-func (ms Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
+func (ms *Ms) Hkeys(key string, options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

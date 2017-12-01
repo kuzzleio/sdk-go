@@ -12,7 +12,7 @@ type ZScanResponse struct {
 }
 
 // Zscan is identical to scan, except that zscan iterates the members held by a sorted set.
-func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
+func (ms *Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.MSScanResponse, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -23,12 +23,12 @@ func (ms Ms) Zscan(key string, cursor int, options types.QueryOptions) (*types.M
 	}
 
 	if options != nil {
-		if options.GetCount() != 0 {
-			query.Count = options.GetCount()
+		if options.Count() != 0 {
+			query.Count = options.Count()
 		}
 
-		if options.GetMatch() != "" {
-			query.Match = options.GetMatch()
+		if options.Match() != "" {
+			query.Match = options.Match()
 		}
 	}
 

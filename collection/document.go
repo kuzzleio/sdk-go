@@ -12,7 +12,6 @@ type IDocument interface {
 	SetContent()
 	Publish()
 	Exists()
-	SetHeaders()
 	Delete()
 }
 
@@ -31,13 +30,13 @@ type Document struct {
 
 type DocumentContent map[string]interface{}
 
-func (documentContent DocumentContent) ToString() string {
+func (documentContent *DocumentContent) ToString() string {
 	s, _ := json.Marshal(documentContent)
 
 	return string(s)
 }
 
-func (d Document) SourceToMap() DocumentContent {
+func (d *Document) SourceToMap() DocumentContent {
 	sourceMap := DocumentContent{}
 
 	json.Unmarshal(d.Content, &sourceMap)
@@ -47,7 +46,7 @@ func (d Document) SourceToMap() DocumentContent {
 
 // Subscribe listens to events concerning this document. Has no effect if the document does not have an ID
 // (i.e. if the document has not yet been created as a persisted document).
-func (d Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) chan *types.SubscribeResponse {
+func (d *Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) chan *types.SubscribeResponse {
 	if d.Id == "" {
 		errorResponse := make(chan *types.SubscribeResponse, 1)
 		errorResponse <- &types.SubscribeResponse{Error: types.NewError("Document.Subscribe: cannot subscribe to a document if no ID has been provided", 400)}
@@ -161,19 +160,9 @@ func (d *Document) SetContent(content DocumentContent, replace bool) *Document {
 }
 
 /*
-  Helper function allowing to set headers while chaining calls.
-
-  If the replace argument is set to true, replaces the current headers with the provided ones.
-  Otherwise, appends the content to the current headers, only replacing already existing values.
-*/
-func (d Document) SetHeaders(content map[string]interface{}, replace bool) {
-	d.collection.Kuzzle.SetHeaders(content, replace)
-}
-
-/*
   Sends the content of the document as a realtime message.
 */
-func (d Document) Publish(options types.QueryOptions) (bool, error) {
+func (d *Document) Publish(options types.QueryOptions) (bool, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	type message struct {
@@ -214,7 +203,7 @@ func (d Document) Publish(options types.QueryOptions) (bool, error) {
 /*
   Checks if the document exists in Kuzzle.
 */
-func (d Document) Exists(options types.QueryOptions) (bool, error) {
+func (d *Document) Exists(options types.QueryOptions) (bool, error) {
 	if d.Id == "" {
 		return false, types.NewError("Document.Exists: missing document id", 400)
 	}
@@ -245,7 +234,7 @@ func (d Document) Exists(options types.QueryOptions) (bool, error) {
 /*
   Deletes the document in Kuzzle.
 */
-func (d Document) Delete(options types.QueryOptions) (string, error) {
+func (d *Document) Delete(options types.QueryOptions) (string, error) {
 	if d.Id == "" {
 		return "", types.NewError("Document.Delete: missing document id", 400)
 	}

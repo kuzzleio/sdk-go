@@ -1,14 +1,12 @@
 package collection
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
 )
 
 func TestRenewNotConnected(t *testing.T) {
@@ -21,8 +19,9 @@ func TestRenewNotConnected(t *testing.T) {
 }
 
 func TestRenewSubscribing(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	*k.State = state.Connected
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	c.SetState(state.Connected)
 
 	room := NewRoom(NewCollection(k, "collection", "index"), nil)
 	room.subscribing = true
@@ -40,7 +39,7 @@ func TestRenewQueryError(t *testing.T) {
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	subResChan := make(chan *types.SubscribeResponse)
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
@@ -54,22 +53,18 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			room := NewRoom(NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-			room.collection.Kuzzle.RequestHistory["ah!"] = time.Now()
-			marshed, _ := json.Marshal(room)
-
-			return &types.KuzzleResponse{RequestId: "ah!", Result: marshed}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{RequestId: "ah!", Result: roomRaw}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	subResChan := make(chan *types.SubscribeResponse)
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
 
 	res := <-subResChan
-	assert.Equal(t, "42", res.Room.GetRoomId())
+	assert.Equal(t, "42", res.Room.RoomId())
 }
 
 func TestRenew(t *testing.T) {
@@ -77,15 +72,12 @@ func TestRenew(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			room := NewRoom(NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-
-			marshed, _ := json.Marshal(room)
-			return &types.KuzzleResponse{Result: marshed}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{Result: roomRaw}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
 }
@@ -93,7 +85,7 @@ func TestRenew(t *testing.T) {
 func ExampleRoom_Renew() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
 }

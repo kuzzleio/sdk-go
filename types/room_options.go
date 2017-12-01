@@ -9,19 +9,19 @@ type roomOptions struct {
 }
 
 type RoomOptions interface {
-	GetScope() string
+	Scope() string
 	SetScope(string) *roomOptions
-	GetState() string
+	State() string
 	SetState(string) *roomOptions
-	GetUsers() string
+	Users() string
 	SetUsers(string) *roomOptions
-	GetSubscribeToSelf() bool
+	SubscribeToSelf() bool
 	SetSubscribeToSelf(bool) *roomOptions
-	GetVolatile() VolatileData
+	Volatile() VolatileData
 	SetVolatile(VolatileData) *roomOptions
 }
 
-func (ro roomOptions) GetScope() string {
+func (ro roomOptions) Scope() string {
 	return ro.scope
 }
 
@@ -30,7 +30,7 @@ func (ro *roomOptions) SetScope(scope string) *roomOptions {
 	return ro
 }
 
-func (ro roomOptions) GetState() string {
+func (ro roomOptions) State() string {
 	return ro.state
 }
 
@@ -39,7 +39,7 @@ func (ro *roomOptions) SetState(state string) *roomOptions {
 	return ro
 }
 
-func (ro roomOptions) GetUsers() string {
+func (ro roomOptions) Users() string {
 	return ro.users
 }
 
@@ -48,7 +48,7 @@ func (ro *roomOptions) SetUsers(users string) *roomOptions {
 	return ro
 }
 
-func (ro roomOptions) GetSubscribeToSelf() bool {
+func (ro roomOptions) SubscribeToSelf() bool {
 	return ro.subscribeToSelf
 }
 
@@ -57,7 +57,7 @@ func (ro *roomOptions) SetSubscribeToSelf(subscribeToSelf bool) *roomOptions {
 	return ro
 }
 
-func (ro roomOptions) GetVolatile() VolatileData {
+func (ro roomOptions) Volatile() VolatileData {
 	return ro.volatile
 }
 

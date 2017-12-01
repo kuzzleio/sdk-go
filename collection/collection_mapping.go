@@ -9,7 +9,6 @@ type IMapping interface {
 	Apply()
 	Refresh()
 	Set()
-	SetHeaders()
 }
 
 type Mapping struct {
@@ -108,15 +107,6 @@ func (cm *Mapping) Set(mappings *types.MappingFields) *Mapping {
 	for field, mapping := range *mappings {
 		(cm.Mapping)[field] = mapping
 	}
-
-	return cm
-}
-
-// SetHeaders is is a helper function returning itself, allowing to easily chain calls.
-// If the replace argument is set to true, replace the current headers with the provided content.
-// Otherwise, it appends the content to the current headers, only replacing already existing values
-func (cm *Mapping) SetHeaders(content map[string]interface{}, replace bool) *Mapping {
-	cm.Collection.SetHeaders(content, replace)
 
 	return cm
 }

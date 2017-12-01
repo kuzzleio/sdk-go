@@ -9,7 +9,7 @@ import (
 // Zremrangebyrank Removes members from a sorted set with
 // their position in the set between start and stop (inclusive).
 // Positions are 0-based, meaning the first member of the set has a position of 0.
-func (ms Ms) Zremrangebyrank(key string, min int, max int, options types.QueryOptions) (int, error) {
+func (ms *Ms) Zremrangebyrank(key string, min int, max int, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

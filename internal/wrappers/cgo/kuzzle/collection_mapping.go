@@ -50,13 +50,3 @@ func kuzzle_mapping_set(cm *C.mapping, jMap *C.json_object) {
 
 	return
 }
-
-//export kuzzle_mapping_set_headers
-func kuzzle_mapping_set_headers(cm *C.mapping, content *C.json_object, replace C.uint) {
-	if JsonCType(content) == C.json_type_object {
-		r := replace != 0
-		cToGoMapping(cm).SetHeaders(JsonCConvert(content).(map[string]interface{}), r)
-	}
-
-	return
-}

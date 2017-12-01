@@ -7,7 +7,7 @@ import (
 
 // Ttl returns the remaining time to live of a key, in seconds,
 // or a negative value if the key does not exist or if it is persistent.
-func (ms Ms) Ttl(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

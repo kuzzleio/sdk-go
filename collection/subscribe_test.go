@@ -1,7 +1,6 @@
 package collection
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -18,7 +17,7 @@ func TestSubscribeError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
@@ -31,30 +30,27 @@ func TestSubscribe(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			room := NewRoom(NewCollection(k, "collection", "index"), nil)
-			room.RoomId = "42"
-
-			marshed, _ := json.Marshal(room)
-			return &types.KuzzleResponse{Result: marshed}
+			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
+			return &types.KuzzleResponse{Result: roomRaw}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
 	r := <-subRes
-	assert.Equal(t, "42", r.Room.GetRoomId())
+	assert.Equal(t, "42", r.Room.RoomId())
 }
 
 func ExampleCollection_Subscribe() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	*k.State = state.Connected
+	c.SetState(state.Connected)
 
 	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
 	r := <-subRes
 
-	fmt.Println(r.Room.GetRoomId())
+	fmt.Println(r.Room.RoomId())
 }

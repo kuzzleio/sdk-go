@@ -8,7 +8,7 @@ import (
 // Lpush prepends the specified values to a list.
 // If the key does not exist, it is created holding
 // an empty list before performing the operation.
-func (ms Ms) Lpush(key string, values []string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Lpush(key string, values []string, options types.QueryOptions) (int, error) {
 	if len(values) == 0 {
 		return -1, types.NewError("Ms.Lpush: at least one value to push is required", 400)
 	}

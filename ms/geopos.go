@@ -7,7 +7,7 @@ import (
 )
 
 // Geopos returns the longitude/latitude values for the provided key's members
-func (ms Ms) Geopos(key string, members []string, options types.QueryOptions) ([]*types.GeoPoint, error) {
+func (ms *Ms) Geopos(key string, members []string, options types.QueryOptions) ([]*types.GeoPoint, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

@@ -6,7 +6,7 @@ import (
 )
 
 // GetServerInfo retrieves information about Kuzzle, its plugins and active services.
-func (k Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, error) {
+func (k *Kuzzle) GetServerInfo(options types.QueryOptions) (json.RawMessage, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

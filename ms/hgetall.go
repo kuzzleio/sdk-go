@@ -6,7 +6,7 @@ import (
 )
 
 // Hgetall returns all fields and values of a hash
-func (ms Ms) Hgetall(key string, options types.QueryOptions) (map[string]string, error) {
+func (ms *Ms) Hgetall(key string, options types.QueryOptions) (map[string]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

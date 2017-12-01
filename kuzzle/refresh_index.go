@@ -6,7 +6,7 @@ import (
 )
 
 // RefreshIndex forces the provided data index to refresh on each modification
-func (k Kuzzle) RefreshIndex(index string, options types.QueryOptions) (*types.Shards, error) {
+func (k *Kuzzle) RefreshIndex(index string, options types.QueryOptions) (*types.Shards, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{

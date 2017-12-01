@@ -6,7 +6,7 @@ import (
 )
 
 // Rpop removes and returns the last element of a list.
-func (ms Ms) Rpop(key string, options types.QueryOptions) (*string, error) {
+func (ms *Ms) Rpop(key string, options types.QueryOptions) (*string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

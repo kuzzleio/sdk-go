@@ -6,7 +6,7 @@ import (
 )
 
 // Linsert inserts a value in a list, either before or after the reference pivot value.
-func (ms Ms) Linsert(key string, position string, pivot string, value string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Linsert(key string, position string, pivot string, value string, options types.QueryOptions) (int, error) {
 	if position != "before" && position != "after" {
 		return -1, types.NewError("Ms.Linsert: invalid position argument (must be 'before' or 'after')", 400)
 	}

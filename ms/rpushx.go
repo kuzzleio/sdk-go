@@ -7,7 +7,7 @@ import (
 
 // Rpushx appends the specified value at the end of a list,
 // only if the key already exists and if it holds a list.
-func (ms Ms) Rpushx(key string, value string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Rpushx(key string, value string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {

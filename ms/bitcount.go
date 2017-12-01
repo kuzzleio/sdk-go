@@ -6,7 +6,7 @@ import (
 )
 
 // Bitcount counts the number of set bits (population counting)
-func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
+func (ms *Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -16,12 +16,12 @@ func (ms Ms) Bitcount(key string, options types.QueryOptions) (int, error) {
 	}
 
 	if options != nil {
-		if options.GetStart() != 0 {
-			query.Start = options.GetStart()
+		if options.Start() != 0 {
+			query.Start = options.Start()
 		}
 
-		if options.GetEnd() != 0 {
-			query.End = options.GetEnd()
+		if options.End() != 0 {
+			query.End = options.End()
 		}
 	}
 
