@@ -34,10 +34,6 @@ enum Event {
 
 typedef void (*kuzzle_event_listener)(json_object*);
 
-typedef struct {
-    void *instance;
-} kuzzle;
-
 //define a request
 typedef struct {
     char *request_id;
@@ -96,11 +92,6 @@ typedef struct {
     kuzzle_queue_filter filter;
     kuzzle_offline_queue_loader loader;
 } kuzzle;
-
-typedef struct {
-    query_object **queries;
-    size_t queries_length;
-} offline_queue;
 
 //options passed to query()
 typedef struct {
@@ -221,8 +212,8 @@ typedef struct {
     int version;
     char *result;
     bool created;
-    char *collection;
     collection *_collection;
+    char *collection;
 } document;
 
 typedef struct {

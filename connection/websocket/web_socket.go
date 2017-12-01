@@ -73,7 +73,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
-		eventListeners:        make(map[int]chan<- interface{}),
+		eventListeners:        make( map[int]map[chan<- interface{}]struct{}),
 		requestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
