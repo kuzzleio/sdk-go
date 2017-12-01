@@ -104,6 +104,7 @@ struct json_object { };
     }
 }
 
+
 %typemap(javaimports) kuzzle "
 /* The type Kuzzle. */"
 
@@ -280,7 +281,9 @@ struct json_object { };
     }
 
     // addListener
-    kuzzle* addListener(enum Event ev, kuzzle_event_listener *c) {
+    kuzzle* addListener(enum Event ev, kuzzle_event_listener c) {
+        c(NULL);
+        kuzzle_add_listener($self, ev, c);
 //        event_callback_list[ev].push_back(c);
 
 //        auto pf = [](int e, json_object* o) {
@@ -295,10 +298,10 @@ struct json_object { };
 
     // now
     date_result* now(query_options* options) {
-        return kuzzle_wrapper_now($self, options);
+        return kuzzle_now($self, options);
     }
     date_result* now() {
-        return kuzzle_wrapper_now($self, NULL);
+        return kuzzle_now($self, NULL);
     }
 
     // removeListener
