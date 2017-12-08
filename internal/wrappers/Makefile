@@ -8,10 +8,12 @@ GOFLAGS = -buildmode=c-shared
 GOSRC = ./cgo/kuzzle/
 GOTARGETDIR = $(ROOTOUTDIR)/c
 GOTARGET = $(GOTARGETDIR)/libkuzzlesdk.so
+CPPDIR = $(ROOT_DIR)cpp
+HEADERSDIR = $(ROOT_DIR)headers
 
 CPP = g++
 CPPFLAGS = -g -fPIC
-INCS = -I$(ROOT_DIR)headers -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
+INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
 LIBS = -lkuzzlesdk -ljson-c -lffi
 SRCS = kcore_wrap.cxx
@@ -65,14 +67,17 @@ csharp: core swig wrapper object posttask
 	rm -f $(OUTDIR)/*.cs
 
 python: OUTDIR = $(ROOTOUTDIR)/python
-python: LANGINCLUDE = -I$(PYTHON_INCLUDE_DIR)
+python: LANGINCLUDE = -I$(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/$(LANGUAGE)
 python: LANGUAGE = python
+python: SWIGOPTS = -py3
 python: CC = g++
 python: CFLAGS = -fPIC
 python: core swig wrapper
 	mkdir -p $(OUTDIR)
 	cp $(ROOT_DIR)templates/$(LANGUAGE)/*.py $(OUTDIR)
-	python $(OUTDIR)/setup.py build_ext -I $(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
+	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
+	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
+	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
 
 
 clean:
