@@ -281,9 +281,12 @@ struct json_object { };
     }
 
     // addListener
-    kuzzle* addListener(enum Event ev, kuzzle_event_listener c) {
-        c(NULL);
-        kuzzle_add_listener($self, ev, c);
+    kuzzle* addListener(enum Event ev, Callback_t cb) {
+      printf("%p\n", (void*)&cb);
+      cb(42);
+      //active(42);
+
+        //kuzzle_add_listener($self, ev, c);
 //        event_callback_list[ev].push_back(c);
 
 //        auto pf = [](int e, json_object* o) {
@@ -293,7 +296,8 @@ struct json_object { };
             }*/
 //        };
 
-//        kuzzle_add_listener($self, static_cast<int>(ev), pf);
+        //kuzzle_add_listener($self, static_cast<int>(ev), NULL);
+        return $self;
     }
 
     // now

@@ -330,6 +330,7 @@ func (ws *webSocket) RemoveListener(event int, c chan<- interface{}) {
 	for e := range ws.eventListeners[event] {
 		if e == c {
 			delete(ws.eventListeners[event], e)
+			break
 		}
 	}
 }

@@ -13,7 +13,7 @@ CPP = g++
 CPPFLAGS = -g -fPIC
 INCS = -I$(ROOT_DIR)headers -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
-LIBS = -lkuzzlesdk -ljson-c
+LIBS = -lkuzzlesdk -ljson-c -lffi
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
@@ -35,7 +35,7 @@ endif
 wrapper: $(OBJS)
 
 object:
-	#$(CPP) -ggdb -c core.cxx -o $(OUTDIR)/core.o $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -ggdb -c core.cxx -o $(OUTDIR)/core.o $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 posttask:

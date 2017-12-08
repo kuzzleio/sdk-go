@@ -32,6 +32,8 @@ enum Event {
     ERROR
 };
 
+typedef void (*Callback_t)(const int);
+
 typedef void (*kuzzle_event_listener)(json_object*);
 
 //define a request
