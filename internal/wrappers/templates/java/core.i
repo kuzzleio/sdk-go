@@ -3,7 +3,8 @@
 %rename(queueTTL) queue_ttl;
 %rename(Options, match="class") options;
 %rename(QueryOptions) query_options;
-%rename(Kuzzle, match="class") kuzzle;
+//%rename(Kuzzle, match="class") kuzzle;
+
 %rename(JsonObject) json_object;
 %rename(JsonResult) json_result;
 %rename(LoginResult) login_result;
@@ -19,8 +20,12 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 
-%rename(CheckToken) KKuzzle::check_token;
+%{
+#include "core.cpp"
+%}
 
+%include "exceptions.i"
+%include "std_string.i"
 %include "typemap.i"
 %include "javadoc.i"
 %include "../../kcore.i"
@@ -106,9 +111,9 @@ struct json_object { };
     }
 }
 
+
 %typemap(javaimports) kuzzle "
 /* The type Kuzzle. */"
-
 
 //%extend kuzzle {
 //    // ctors && dtor
@@ -320,3 +325,5 @@ struct json_object { };
 //    kuzzle* removeAllListener() {
 //    }
 //}
+
+%include "core.cpp"

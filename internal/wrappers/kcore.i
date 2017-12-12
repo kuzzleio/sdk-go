@@ -60,12 +60,9 @@ private:
 };
 %}
 
-
-
 %define _Complex
 %enddef
 
 %include "kuzzlesdk.h"
 %include "kuzzle.h"
 %include "kuzzle.hpp"
-%include "callback.hpp"

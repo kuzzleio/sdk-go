@@ -10,6 +10,7 @@ import "C"
 
 import (
 	"github.com/kuzzleio/sdk-go/types"
+	"fmt"
 )
 
 // apply a types.KuzzleError on a json_result* C struct
@@ -156,6 +157,17 @@ func setErr(status *C.int, error *C.char, stack *C.char, err error) {
 	kuzzleError := err.(*types.KuzzleError)
 	*status = C.int(kuzzleError.Status)
 	error = C.CString(kuzzleError.Message)
+
+	if len(kuzzleError.Stack) > 0 {
+		stack = C.CString(kuzzleError.Stack)
+	}
+}
+
+func setErr2(status *C.int, error **C.char, stack *C.char, err error) {
+	kuzzleError := err.(*types.KuzzleError)
+	*status = C.int(kuzzleError.Status)
+	*error = C.CString(kuzzleError.Message)
+	fmt.Printf("2------- %s\n", *error)
 
 	if len(kuzzleError.Stack) > 0 {
 		stack = C.CString(kuzzleError.Stack)

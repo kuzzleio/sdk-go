@@ -59,5 +59,3 @@ namespace kuzzleio {
 
 //%ignore kuzzle;
 %rename(QueryOptions) query_options;
-
-
