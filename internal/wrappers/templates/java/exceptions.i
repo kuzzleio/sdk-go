@@ -1,5 +1,3 @@
-%ignore kuzzleio::KuzzleException::stack;
-
 %define TO_JAVA_EXCEPTION(CPPTYPE, JTYPE, JNITYPE)
 %typemap(throws,throws=JTYPE) CPPTYPE {
   (void)$1;

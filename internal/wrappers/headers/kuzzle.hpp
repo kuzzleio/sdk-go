@@ -23,7 +23,7 @@ extern "C" {
   PartialException, \
   PreconditionException, \
   ServiceUnavailableException, \
-  SizeLimiException, \
+  SizeLimitException, \
   UnauthorizedException, \
   KuzzleException \
 )
@@ -72,8 +72,8 @@ namespace kuzzleio {
     ServiceUnavailableException(const std::string& message="Service Unavailable Exception", const std::string& stack="")
       : KuzzleException(503, message, stack) {};
   };
-  struct SizeLimiException: KuzzleException {
-    SizeLimiException(const std::string& message="Size Limit Exception", const std::string& stack="")
+  struct SizeLimitException: KuzzleException {
+    SizeLimitException(const std::string& message="Size Limit Exception", const std::string& stack="")
       : KuzzleException(413, message, stack) {};
   };
   struct UnauthorizedException: KuzzleException {
@@ -83,12 +83,27 @@ namespace kuzzleio {
 
   template <class T>
   void throwExceptionFromStatus(T result) Kuz_Throw_KuzzleException {
-    if (result.status == 400)
-        throw BadRequestException(result.error);
-    else if (result.status == 500)
-        throw InternalException(result.error);
+    printf("-- %s\n", result.stack);
+    if (result.status == 206)
+        throw PartialException(result.error, result.stack);
+    else if (result.status == 400)
+        throw BadRequestException(result.error, result.stack);
     else if (result.status == 401)
-        throw UnauthorizedException(result.error);
+        throw UnauthorizedException(result.error, result.stack);
+    else if (result.status == 403)
+        throw ForbiddenException(result.error, result.stack);
+    else if (result.status == 404)
+        throw NotFoundException(result.error, result.stack);
+    else if (result.status == 412)
+        throw PreconditionException(result.error, result.stack);
+    else if (result.status == 413)
+        throw SizeLimitException(result.error, result.stack);
+    else if (result.status == 500)
+        throw InternalException(result.error, result.stack);
+    else if (result.status == 504)
+        throw GatewayTimeoutException(result.error, result.stack);
+    else if (result.status == 503)
+        throw ServiceUnavailableException(result.error, result.stack);
   }
 
   class Kuzzle {
