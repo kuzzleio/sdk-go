@@ -223,7 +223,7 @@ typedef struct {
 } document_result;
 
 typedef struct {
-    document **result;
+    document *result;
     size_t result_length;
     int status;
     char *error;
@@ -458,8 +458,8 @@ typedef struct {
 } search_filters;
 
 typedef struct {
-    document *hits;
-    size_t hits_length;
+    document *documents;
+    size_t documents_length;
     unsigned total;
     char *scroll_id;
 } document_search;

@@ -152,6 +152,10 @@ func Set_void_result_error(s *C.void_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
+func Set_document_array_result_error(s *C.document_array_result, err error) {
+	setErr(&s.status, &s.error, &s.stack, err)
+}
+
 func setErr(status *C.int, error **C.char, stack **C.char, err error) {
 	kuzzleError := err.(*types.KuzzleError)
 	*status = C.int(kuzzleError.Status)

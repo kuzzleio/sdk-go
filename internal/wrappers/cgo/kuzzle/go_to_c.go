@@ -174,18 +174,18 @@ func goToCdocumentArrayResult(col *C.collection, goRes []*collection.Document, e
 	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
 
 	if err != nil {
-		Set_string_array_result_error(result, err)
+		Set_document_array_result_error(result, err)
 		return result
 	}
 
 	if goRes != nil {
-		result.result = (**C.char)(C.calloc(C.size_t(len(goRes)), C.sizeof_char_ptr))
 		result.result_length = C.size_t(len(goRes))
+		result.result = (*C.document)(C.calloc(result.result_length, C.sizeof_document))
 
-		cArray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
 
-		for i, substring := range goRes {
-			cArray[i] = C.CString(substring)
+		for i, doc := range goRes {
+			goToCDocument(col, doc, &cArray[i])
 		}
 	}
 
@@ -424,17 +424,17 @@ func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err er
 	}
 
 	result.result = (*C.document_search)(C.calloc(1, C.sizeof_document_search))
-	result.result.hits_length = C.size_t(len(goRes.Hits))
+	result.result.documents_length = C.size_t(len(goRes.Documents))
 	result.result.total = C.uint(goRes.Total)
 	if goRes.ScrollId != "" {
 		result.result.scroll_id = C.CString(goRes.ScrollId)
 	}
 
-	if len(goRes.Hits) > 0 {
-		result.result.hits = (*C.document)(C.calloc(C.size_t(len(goRes.Hits)), C.sizeof_document))
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
+	if len(goRes.Documents) > 0 {
+		result.result.documents = (*C.document)(C.calloc(C.size_t(len(goRes.Documents)), C.sizeof_document))
+		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result.documents))[:len(goRes.Documents):len(goRes.Documents)]
 
-		for i, doc := range goRes.Hits {
+		for i, doc := range goRes.Documents {
 			goToCDocument(col, doc, &cArray[i])
 		}
 	}

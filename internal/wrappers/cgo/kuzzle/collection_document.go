@@ -61,15 +61,15 @@ func kuzzle_collection_search(c *C.collection, searchFilters *C.search_filters, 
 }
 
 //export kuzzle_collection_m_create_document
-func kuzzle_collection_m_create_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.search_result {
+func kuzzle_collection_m_create_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.document_array_result {
 	res, err := cToGoCollection(c).MCreateDocument(cToGoDocuments(c, documents, docCount), SetQueryOptions(options))
-	return goToCSearchResult(c, res, err)
+	return goToCdocumentArrayResult(c, res, err)
 }
 
 //export kuzzle_collection_m_create_or_replace_document
-func kuzzle_collection_m_create_or_replace_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.search_result {
+func kuzzle_collection_m_create_or_replace_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.document_array_result {
 	res, err := cToGoCollection(c).MCreateOrReplaceDocument(cToGoDocuments(c, documents, docCount), SetQueryOptions(options))
-	return goToCSearchResult(c, res, err)
+	return goToCdocumentArrayResult(c, res, err)
 }
 
 //export kuzzle_collection_m_delete_document
@@ -79,19 +79,19 @@ func kuzzle_collection_m_delete_document(c *C.collection, ids **C.char, idsCount
 }
 
 //export kuzzle_collection_m_get_document
-func kuzzle_collection_m_get_document(c *C.collection, ids **C.char, idsCount C.size_t, options *C.query_options) *C.search_result {
+func kuzzle_collection_m_get_document(c *C.collection, ids **C.char, idsCount C.size_t, options *C.query_options) *C.document_array_result {
 	res, err := cToGoCollection(c).MGetDocument(cToGoStrings(ids, idsCount), SetQueryOptions(options))
-	return goToCSearchResult(c, res, err)
+	return goToCdocumentArrayResult(c, res, err)
 }
 
 //export kuzzle_collection_m_replace_document
-func kuzzle_collection_m_replace_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.search_result {
+func kuzzle_collection_m_replace_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.document_array_result {
 	res, err := cToGoCollection(c).MReplaceDocument(cToGoDocuments(c, documents, docCount), SetQueryOptions(options))
-	return goToCSearchResult(c, res, err)
+	return goToCdocumentArrayResult(c, res, err)
 }
 
 //export kuzzle_collection_m_update_document
-func kuzzle_collection_m_update_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.search_result {
+func kuzzle_collection_m_update_document(c *C.collection, documents **C.document, docCount C.uint, options *C.query_options) *C.document_array_result {
 	res, err := cToGoCollection(c).MUpdateDocument(cToGoDocuments(c, documents, docCount), SetQueryOptions(options))
-	return goToCSearchResult(c, res, err)
+	return goToCdocumentArrayResult(c, res, err)
 }
