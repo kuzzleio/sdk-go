@@ -19,9 +19,11 @@ func TestPublishKuzzleError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	message := make(map[string]interface{})
-	message["title"] = interface{}("yolo")
-	_, err := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
+	type TestMessageStruct struct {
+		Title string `json:"title"`
+	}
+
+	_, err := collection.NewCollection(k, "collection", "index").PublishMessage(TestMessageStruct{"yolo"}, nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,10 +47,12 @@ func TestPublishMessage(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	message := make(map[string]interface{})
-	message["title"] = interface{}("yolo")
+	type TestMessageStruct struct {
+		Title string `json:"title"`
+	}
+
 	coll := collection.NewCollection(k, "collection", "index")
-	res, _ := coll.PublishMessage(message, nil)
+	res, _ := coll.PublishMessage(TestMessageStruct{"yolo"}, nil)
 
 	assert.Equal(t, true, res)
 }
@@ -61,12 +65,13 @@ func ExampleCollection_PublishMessage() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	message := make(map[string]interface{})
-	message["title"] = interface{}("yolo")
-	res, err := collection.NewCollection(k, "collection", "index").PublishMessage(message, nil)
+	type TestMessageStruct struct {
+		Title string `json:"title"`
+	}
+	res, err := collection.NewCollection(k, "collection", "index").PublishMessage(TestMessageStruct{"yolo"}, nil)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 		return
 	}
 
