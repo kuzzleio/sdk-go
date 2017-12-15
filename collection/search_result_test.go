@@ -18,30 +18,15 @@ type QueryFilters struct {
 	Exists ExistsFilter `json:"exists"`
 }
 
-func TestFetchNextError(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.SearchResult{Collection: cl}
-
-	_, err := ksr.FetchNext()
-
-	assert.NotNil(t, err)
-}
-
 func TestFetchNextNotPossible(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.SearchResult{Collection: cl}
+	ksr := collection.SearchResult{Collection: cl, Fetched: 0, Total: 42}
 
 	_, err := ksr.FetchNext()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "[400] SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", fmt.Sprint(err))
+	assert.Equal(t, "[400] SearchResult.FetchNext: Unable to retrieve results: missing scrollId or from/size parameters", fmt.Sprint(err))
 }
 
 func TestFetchNextWithScroll(t *testing.T) {
@@ -81,15 +66,14 @@ func TestFetchNextWithScroll(t *testing.T) {
 				}
 
 				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-				cl := collection.NewCollection(k, "collection", "index")
 
 				res := collection.SearchResult{
 					Total:      4,
-					Hits:       results,
+					Documents:  results,
 					ScrollId:   "f00b4r",
 					Filters:    filters,
 					Options:    options,
-					Collection: cl,
+					Collection: collection.NewCollection(k, "collection", "index"),
 				}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
@@ -107,8 +91,8 @@ func TestFetchNextWithScroll(t *testing.T) {
 				}
 
 				res := collection.SearchResult{
-					Total: 4,
-					Hits:  results,
+					Total:     4,
+					Documents: results,
 				}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
@@ -125,8 +109,8 @@ func TestFetchNextWithScroll(t *testing.T) {
 
 	assert.Equal(t, "f00b4r", ksr.ScrollId)
 	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Hits))
-	assert.Equal(t, "Foo4", fetchNextRes.Hits[1].SourceToMap()["label"])
+	assert.Equal(t, 2, len(fetchNextRes.Documents))
+	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
 }
 
 func TestFetchNextWithSearchAfter(t *testing.T) {
@@ -170,7 +154,7 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 
 				res := collection.SearchResult{
 					Total:      4,
-					Hits:       results,
+					Documents:  results,
 					Filters:    filters,
 					Options:    options,
 					Collection: cl,
@@ -192,8 +176,8 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 				}
 
 				res := collection.SearchResult{
-					Total: 4,
-					Hits:  results,
+					Total:     4,
+					Documents: results,
 				}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
@@ -209,8 +193,8 @@ func TestFetchNextWithSearchAfter(t *testing.T) {
 	fetchNextRes, _ := ksr.FetchNext()
 
 	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Hits))
-	assert.Equal(t, "Foo4", fetchNextRes.Hits[1].SourceToMap()["label"])
+	assert.Equal(t, 2, len(fetchNextRes.Documents))
+	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
 }
 
 func TestFetchNextWithSizeFrom(t *testing.T) {
@@ -245,7 +229,7 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 
 				res := collection.SearchResult{
 					Total:      4,
-					Hits:       results,
+					Documents:  results,
 					Filters:    filters,
 					Options:    options,
 					Collection: cl,
@@ -266,9 +250,9 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 				}
 
 				res := collection.SearchResult{
-					Total:   4,
-					Hits:    results,
-					Options: options,
+					Total:     4,
+					Documents: results,
+					Options:   options,
 				}
 				r, _ := json.Marshal(res)
 				return &types.KuzzleResponse{Result: r}
@@ -284,8 +268,8 @@ func TestFetchNextWithSizeFrom(t *testing.T) {
 	fetchNextRes, _ := ksr.FetchNext()
 
 	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Hits))
-	assert.Equal(t, "Foo4", fetchNextRes.Hits[1].SourceToMap()["label"])
+	assert.Equal(t, 2, len(fetchNextRes.Documents))
+	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
 
 	tooFarRes, _ := fetchNextRes.FetchNext()
 
@@ -315,5 +299,5 @@ func ExampleSearchResult_FetchNext() {
 		return
 	}
 
-	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
+	fmt.Println(res.Documents[0].Id, res.Documents[0].Content)
 }

@@ -37,15 +37,9 @@ func TestScrollError(t *testing.T) {
 }
 
 func TestScroll(t *testing.T) {
-	type response struct {
-		Total int                    `json:"total"`
-		Hits  []*collection.Document `json:"hits"`
-	}
-
 	hits := []*collection.Document{
 		{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
 	}
-	results := collection.SearchResult{Total: 42, Hits: hits}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
@@ -55,7 +49,7 @@ func TestScroll(t *testing.T) {
 			assert.Equal(t, "document", parsedQuery.Controller)
 			assert.Equal(t, "scroll", parsedQuery.Action)
 
-			res := response{Total: results.Total, Hits: results.Hits}
+			res := map[string]interface{}{"Total": 42, "Hits": hits}
 			r, _ := json.Marshal(res)
 			return &types.KuzzleResponse{Result: r}
 		},
@@ -63,10 +57,10 @@ func TestScroll(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").Scroll("f00b4r", nil)
-	assert.Equal(t, results.Total, res.Total)
-	assert.Equal(t, hits[0].Id, res.Hits[0].Id)
-	assert.Equal(t, hits[0].Content, res.Hits[0].Content)
-	assert.Equal(t, len(hits), len(res.Hits))
+	assert.Equal(t, 42, res.Total)
+	assert.Equal(t, hits[0].Id, res.Documents[0].Id)
+	assert.Equal(t, hits[0].Content, res.Documents[0].Content)
+	assert.Equal(t, len(hits), len(res.Documents))
 }
 
 func ExampleCollection_Scroll(t *testing.T) {
@@ -83,5 +77,5 @@ func ExampleCollection_Scroll(t *testing.T) {
 		return
 	}
 
-	fmt.Println(res.Hits[0].Id, res.Hits[0].Collection)
+	fmt.Println(res.Documents[0].Id, res.Documents[0].Content)
 }

@@ -40,11 +40,14 @@ func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOp
 		Options:    options,
 		Filters:    filters,
 	}
+
 	json.Unmarshal(res.Result, searchResult)
 
-	for _, d := range searchResult.Hits {
+	for _, d := range searchResult.Documents {
 		d.collection = dc
 	}
+
+	searchResult.Fetched = len(searchResult.Documents)
 
 	return searchResult, nil
 }

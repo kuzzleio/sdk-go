@@ -223,6 +223,14 @@ typedef struct {
 } document_result;
 
 typedef struct {
+    document **result;
+    size_t result_length;
+    int status;
+    char *error;
+    char *stack;
+} document_array_result;
+
+typedef struct {
     char *id;
     meta *meta;
     json_object *content;

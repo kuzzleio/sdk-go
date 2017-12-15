@@ -5,28 +5,36 @@ import (
 )
 
 type SearchResult struct {
-	Collection *Collection `json:"-"`
-	Hits       []*Document `json:"hits"`
-	Total      int         `json:"total"`
-	ScrollId   string      `json:"_scroll_id"`
-	Options    types.QueryOptions
-	Filters    *types.SearchFilters
+	Collection   *Collection `json:"-"`
+	Documents    []*Document `json:"hits"`
+	Total        int         `json:"total"`
+	Fetched      int
+	ScrollId     string                 `json:"_scroll_id"`
+	Aggregations map[string]interface{} `json:"aggregations"`
+	Options      types.QueryOptions
+	Filters      *types.SearchFilters
+	Previous     *SearchResult
 }
 
 // FetchNext returns a new SearchResult that corresponds to the next result page
 func (ksr *SearchResult) FetchNext() (*SearchResult, error) {
-	if ksr.ScrollId != "" {
-		options := ksr.Options
-		options.SetFrom(0)
-		options.SetSize(0)
+	if ksr.Fetched >= ksr.Total {
+		return nil, nil
+	}
 
-		return ksr.Collection.Scroll(ksr.ScrollId, options)
+	if ksr.ScrollId != "" {
+		if ksr.Options != nil {
+			ksr.Options.SetFrom(0)
+			ksr.Options.SetSize(0)
+		}
+
+		return ksr.Collection.scrollFrom(ksr, ksr.Options)
 	}
 
 	if ksr.Options != nil && ksr.Filters != nil {
-		if ksr.Options.Size() != 0 && len(ksr.Filters.Sort) > 0 {
+		if ksr.Options.Size() > 0 && len(ksr.Filters.Sort) > 0 {
 			var filters = ksr.Filters
-			var source = ksr.Hits[len(ksr.Hits)-1].SourceToMap()
+			var source = ksr.Documents[len(ksr.Documents)-1].SourceToMap()
 
 			for _, sortRules := range filters.Sort {
 				switch t := sortRules.(type) {
@@ -39,23 +47,21 @@ func (ksr *SearchResult) FetchNext() (*SearchResult, error) {
 				}
 			}
 
-			options := ksr.Options
-			options.SetFrom(0)
+			ksr.Options.SetFrom(0)
 
-			return ksr.Collection.Search(filters, options)
+			return ksr.Collection.Search(filters, ksr.Options)
 		}
 
-		if ksr.Options.Size() != 0 {
-			options := ksr.Options
-			options.SetFrom(ksr.Options.From() + ksr.Options.Size())
+		if ksr.Options.Size() > 0 {
+			ksr.Options.SetFrom(ksr.Options.From() + ksr.Options.Size())
 
-			if options.From() >= ksr.Total {
-				return &SearchResult{}, nil
+			if ksr.Options.From() >= ksr.Total {
+				return nil, nil
 			}
 
-			return ksr.Collection.Search(ksr.Filters, options)
+			return ksr.Collection.Search(ksr.Filters, ksr.Options)
 		}
 	}
 
-	return nil, types.NewError("SearchResult.FetchNext: Unable to retrieve next results from search: missing scrollId or from/size parameters", 400)
+	return nil, types.NewError("SearchResult.FetchNext: Unable to retrieve results: missing scrollId or from/size parameters", 400)
 }

@@ -170,6 +170,28 @@ func goToCDocumentResult(col *C.collection, goRes *collection.Document, err erro
 	return result
 }
 
+func goToCdocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
+	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
+
+	if err != nil {
+		Set_string_array_result_error(result, err)
+		return result
+	}
+
+	if goRes != nil {
+		result.result = (**C.char)(C.calloc(C.size_t(len(goRes)), C.sizeof_char_ptr))
+		result.result_length = C.size_t(len(goRes))
+
+		cArray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+
+		for i, substring := range goRes {
+			cArray[i] = C.CString(substring)
+		}
+	}
+
+	return result
+}
+
 func goToCPolicyRestriction(restriction *types.PolicyRestriction, dest *C.policy_restriction) *C.policy_restriction {
 	var crestriction *C.policy_restriction
 	if dest == nil {
