@@ -150,7 +150,7 @@ typedef struct {
 
 typedef json_object controllers;
 
-typedef struct {
+typedef struct  {
     char *index;
     char **collections;
     size_t collections_length;
@@ -218,7 +218,7 @@ typedef struct {
     char *collection;
 } document;
 
-typedef struct {
+typedef struct document_result {
     document *result;
     int status;
     char *error;
@@ -232,7 +232,7 @@ typedef struct {
     int count;
 } notification_content;
 
-typedef struct {
+typedef struct notification_result {
     char *request_id;
     notification_content *result;
     json_object *volatiles;
@@ -252,14 +252,14 @@ typedef struct {
     char *stack;
 } notification_result;
 
-typedef struct {
+typedef struct profile_result {
     profile *profile;
     int status;
     char *error;
     char *stack;
 } profile_result;
 
-typedef struct {
+typedef struct profiles_result {
     profile *profiles;
     size_t profiles_length;
     int status;
@@ -267,7 +267,7 @@ typedef struct {
     char *stack;
 } profiles_result;
 
-typedef struct {
+typedef struct role_result {
     role *role;
     int status;
     char *error;
@@ -282,7 +282,7 @@ typedef struct {
     char *value;
 } user_right;
 
-typedef struct {
+typedef struct user_rights_result {
     user_right *user_rights;
     size_t user_rights_length;
     int status;
@@ -290,7 +290,7 @@ typedef struct {
     char *stack;
 } user_rights_result;
 
-typedef struct {
+typedef struct user_result {
     user *user;
     int status;
     char *error;
@@ -312,7 +312,7 @@ typedef struct {
     unsigned long long timestamp;
 } statistics;
 
-typedef struct {
+typedef struct statistics_result {
     statistics* result;
     int status;
     char *error;
@@ -328,7 +328,7 @@ typedef struct all_statistics_result {
 } all_statistics_result;
 
 // ms.geopos
-typedef struct {
+typedef struct geopos_result {
     double (*result)[2];
     size_t result_length;
     int status;
@@ -337,7 +337,7 @@ typedef struct {
 } geopos_result;
 
 //check_token
-typedef struct {
+typedef struct token_validity {
     bool valid;
     char *state;
     unsigned long long expires_at;
@@ -349,7 +349,7 @@ typedef struct {
 /* === Generic response structures === */
 
 // raw Kuzzle response
-typedef struct {
+typedef struct kuzzle_response {
     char *request_id;
     json_object *result;
     json_object *volatiles;
@@ -365,14 +365,14 @@ typedef struct {
 } kuzzle_response;
 
 //any void result
-typedef struct {
+typedef struct void_result {
     int status;
     char *error;
     char *stack;
 } void_result;
 
 //any json result
-typedef struct {
+typedef struct json_result {
     json_object *result;
     int status;
     char *error;
@@ -380,7 +380,7 @@ typedef struct {
 } json_result;
 
 //any array of json_object result
-typedef struct {
+typedef struct json_array_result {
     json_object **result;
     size_t result_length;
     int status;
@@ -389,7 +389,7 @@ typedef struct {
 } json_array_result;
 
 //any boolean result
-typedef struct {
+typedef struct bool_result {
     bool result;
     int status;
     char *error;
@@ -397,7 +397,7 @@ typedef struct {
 } bool_result;
 
 //any integer result
-typedef struct {
+typedef struct int_result {
     long long result;
     int status;
     char *error;
@@ -412,7 +412,7 @@ typedef struct date_result {
 } date_result;
 
 //any double result
-typedef struct {
+typedef struct double_result {
     double result;
     int status;
     char *error;
@@ -420,7 +420,7 @@ typedef struct {
 } double_result;
 
 //any array of integers result
-typedef struct {
+typedef struct int_array_result {
     long long *result;
     size_t result_length;
     int status;
@@ -429,7 +429,7 @@ typedef struct {
 } int_array_result;
 
 // any string result
-typedef struct {
+typedef struct string_result {
     char *result;
     int status;
     char *error;
@@ -480,7 +480,7 @@ typedef struct {
 } user_search;
 
 //any delete* function
-typedef struct {
+typedef struct ack_result {
     bool acknowledged;
     bool shards_acknowledged;
     int status;
@@ -488,7 +488,7 @@ typedef struct {
     char *stack;
 } ack_result;
 
-typedef struct {
+typedef struct shards_result {
     shards *result;
     int status;
     char *error;
@@ -507,35 +507,35 @@ typedef struct {
     char *collection;
 } specification_entry;
 
-typedef struct {
+typedef struct specification_result {
     specification *result;
     int status;
     char *error;
     char *stack;
 } specification_result;
 
-typedef struct {
+typedef struct search_result {
     document_search *result;
     int status;
     char *error;
     char *stack;
 } search_result;
 
-typedef struct {
+typedef struct search_profiles_result {
     profile_search *result;
     int status;
     char *error;
     char *stack;
 } search_profiles_result;
 
-typedef struct {
+typedef struct search_roles_result {
     role_search *result;
     int status;
     char *error;
     char *stack;
 } search_roles_result;
 
-typedef struct {
+typedef struct search_users_result {
     user_search *result;
     int status;
     char *error;
@@ -549,7 +549,7 @@ typedef struct {
     char *scroll_id;
 } specification_search;
 
-typedef struct {
+typedef struct specification_search_result {
     specification_search *result;
     int status;
     char *error;
@@ -561,7 +561,7 @@ typedef struct {
     collection *collection;
 } mapping;
 
-typedef struct {
+typedef struct mapping_result {
     mapping *result;
     int status;
     char *error;

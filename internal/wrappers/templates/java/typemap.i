@@ -17,18 +17,6 @@
     }
 }
 
-// CollectionsList[]
-%ignore collection_entry_result::result;
-%typemap(javacode) collection_entry_result %{
-  public CollectionsList[] getResult() {
-    CollectionsList[] result = new CollectionsList[(int)getResult_length()];
-    for (int i = 0; i < result.length; ++i) {
-      result[i] = getResult(i);
-    }
-    return result;
-  }
-%}
-
 %javamethodmodifiers collection_entry_result::getResult(size_t pos) "private";
 %extend collection_entry_result {
     collection_entry *getResult(size_t pos) {

@@ -3,8 +3,6 @@
 %rename(queueTTL) queue_ttl;
 %rename(Options, match="class") options;
 %rename(QueryOptions) query_options;
-//%rename(Kuzzle, match="class") kuzzle;
-
 %rename(JsonObject) json_object;
 %rename(JsonResult) json_result;
 %rename(LoginResult) login_result;
@@ -20,6 +18,10 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 
+%ignore *::error;
+%ignore *::status;
+%ignore *::stack;
+
 %{
 #include "core.cpp"
 %}
@@ -29,6 +31,13 @@
 %include "typemap.i"
 %include "javadoc.i"
 %include "../../kcore.i"
+
+%include "std_vector.i"
+%template(StringVector) std::vector<std::string>;
+
+%typemap(out) const StringVector& %{
+    return $1;
+%}
 
 %pragma(java) jniclasscode=%{
   static {
@@ -111,28 +120,11 @@ struct json_object { };
     }
 }
 
-
 %typemap(javaimports) kuzzle "
 /* The type Kuzzle. */"
 
 //%extend kuzzle {
-//    // ctors && dtor
-//    kuzzle(char* host, options *opts) {
-//        kuzzle *k = (kuzzle *)calloc(1, sizeof(kuzzle));
-//        kuzzle_new_kuzzle(k, host, (char *)"websocket", opts);
-//        return k;
-//    }
-//    kuzzle(char* host) {
-//        kuzzle *k;
-//        k = (kuzzle *)calloc(1, sizeof(kuzzle));
-//        kuzzle_new_kuzzle(k, host, (char *)"websocket", NULL);
-//        return k;
-//    }
-//    ~kuzzle() {
-//        unregisterKuzzle($self);
-//        free($self);
-//    }
-//
+
 //    // checkToken
 //    token_validity* checkToken(char* token) {
 //        return kuzzle_check_token($self, token);
