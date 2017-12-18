@@ -201,11 +201,11 @@ struct json_object { };
     }
 
     // getStatistics
-    statistics_result* getStatistics(time_t time, query_options* options) {
-        return kuzzle_get_statistics($self, time, options);
+    statistics_result* getStatistics(time_t start, time_t stop, query_options* options) {
+        return kuzzle_get_statistics($self, start, stop, options);
     }
-    statistics_result* getStatistics(time_t time) {
-        return kuzzle_get_statistics($self, time, NULL);
+    statistics_result* getStatistics(time_t start, time_t stop) {
+        return kuzzle_get_statistics($self, start, stop, NULL);
     }
 
     // getAutoRefresh

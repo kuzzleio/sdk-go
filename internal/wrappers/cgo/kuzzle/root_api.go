@@ -107,14 +107,16 @@ func kuzzle_get_all_statistics(k *C.kuzzle, options *C.query_options) *C.all_sta
 }
 
 //export kuzzle_get_statistics
-func kuzzle_get_statistics(k *C.kuzzle, timestamp C.time_t, options *C.query_options) *C.statistics_result {
+func kuzzle_get_statistics(k *C.kuzzle, start_time C.time_t, stop_time C.time_t, options *C.query_options) *C.statistics_result {
 	result := (*C.statistics_result)(C.calloc(1, C.sizeof_statistics_result))
 	opts := SetQueryOptions(options)
 
-	t, _ := strconv.ParseInt(C.GoString(C.ctime(&timestamp)), 10, 64)
-	tm := time.Unix(t, 0)
+	t, _ := strconv.ParseInt(C.GoString(C.ctime(&start_time)), 10, 64)
+	start := time.Unix(t, 0)
+	t, _ = strconv.ParseInt(C.GoString(C.ctime(&stop_time)), 10, 64)
+	stop := time.Unix(t, 0)
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetStatistics(&tm, opts)
+	res, err := (*kuzzle.Kuzzle)(k.instance).GetStatistics(&start, &stop, opts)
 
 	if err != nil {
 		Set_statistics_error(result, err)
