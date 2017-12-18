@@ -7,17 +7,19 @@ import (
 )
 
 // GetStatistics get Kuzzle usage statistics
-func (k *Kuzzle) GetStatistics(timestamp *time.Time, options types.QueryOptions) (*types.Statistics, error) {
+func (k *Kuzzle) GetStatistics(startTime *time.Time, stopTime *time.Time, options types.QueryOptions) (*types.Statistics, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type data struct {
-		since string `json:"since"`
+		startTime string `json:"startTime"`
+		stopTime  string `json:"stopTime"`
 	}
 
 	var d data
-	if timestamp != nil {
+	if startTime != nil {
 		d = data{
-			timestamp.String(),
+			startTime.String(),
+			stopTime.String(),
 		}
 	}
 
