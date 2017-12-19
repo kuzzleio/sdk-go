@@ -576,25 +576,6 @@ func kuzzle_free_search_filters(st *C.search_filters) {
 	}
 }
 
-//export kuzzle_free_document_search
-func kuzzle_free_document_search(st *C.document_search) {
-	if st != nil {
-		C.free(unsafe.Pointer(st.scroll_id))
-
-		if st.documents != nil {
-			documents := (*[1<<30 - 1]C.document)(unsafe.Pointer(st.documents))[:int(st.documents_length):int(st.documents_length)]
-
-			for _, document := range documents {
-				_free_document(&document)
-			}
-
-			C.free(unsafe.Pointer(st.documents))
-		}
-
-		C.free(unsafe.Pointer(st))
-	}
-}
-
 //export kuzzle_free_profile_search
 func kuzzle_free_profile_search(st *C.profile_search) {
 	if st != nil {
@@ -687,7 +668,21 @@ func kuzzle_free_specification_result(st *C.specification_result) {
 //export kuzzle_free_search_result
 func kuzzle_free_search_result(st *C.search_result) {
 	if st != nil {
-		kuzzle_free_document_search(st.result)
+		kuzzle_free_query_options(st.options)
+		kuzzle_free_json_object(st.aggregations)
+		kuzzle_free_search_filters(st.filters)
+		kuzzle_free_collection(st.collection)
+
+		if st.documents != nil {
+			documents := (*[1<<30 - 1]C.document)(unsafe.Pointer(st.documents))[:int(st.documents_length):int(st.documents_length)]
+
+			for _, document := range documents {
+				_free_document(&document)
+			}
+
+			C.free(unsafe.Pointer(st.documents))
+		}
+
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))

@@ -1,7 +1,6 @@
 package collection
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -35,19 +34,5 @@ func (dc *Collection) Search(filters *types.SearchFilters, options types.QueryOp
 		return nil, res.Error
 	}
 
-	searchResult := &SearchResult{
-		Collection: dc,
-		Options:    options,
-		Filters:    filters,
-	}
-
-	json.Unmarshal(res.Result, searchResult)
-
-	for _, d := range searchResult.Documents {
-		d.collection = dc
-	}
-
-	searchResult.Fetched = len(searchResult.Documents)
-
-	return searchResult, nil
+	return NewSearchResult(dc, filters, options, res), nil
 }

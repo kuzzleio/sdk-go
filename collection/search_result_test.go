@@ -2,7 +2,6 @@ package collection_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -11,293 +10,240 @@ import (
 	"testing"
 )
 
-type ExistsFilter struct {
-	Field string `json:"field"`
+func searchResultSetup(c *internal.MockedConnection) *collection.SearchResult {
+	var _c *internal.MockedConnection
+
+	if c == nil {
+		_c = &internal.MockedConnection{}
+	} else {
+		_c = c
+	}
+
+	kuzzle, _ := kuzzle.NewKuzzle(_c, nil)
+	cl := collection.NewCollection(kuzzle, "collection", "index")
+
+	filters := &types.SearchFilters{}
+	options := types.NewQueryOptions()
+	options.SetSize(0)
+	options.SetFrom(0)
+	response := &types.KuzzleResponse{}
+
+	response.Result, _ = json.Marshal(map[string]interface{}{
+		"total": 4,
+		"hits": []map[string]interface{}{
+			{
+				"_id": "Bateman",
+				"_source": map[string]string{
+					"firstname": "Patrick",
+					"killcount": "20",
+				},
+			},
+			{
+				"_id": "Morgan",
+				"_source": map[string]string{
+					"firstname": "Dexter",
+					"killcount": "135?",
+				},
+			},
+		},
+		"aggregations": map[string]interface{}{"foo": "bar"},
+	})
+
+	return collection.NewSearchResult(cl, filters, options, response)
 }
-type QueryFilters struct {
-	Exists ExistsFilter `json:"exists"`
+
+func TestConstructor(t *testing.T) {
+	kuzzle, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	cl := collection.NewCollection(kuzzle, "collection", "index")
+
+	filters := &types.SearchFilters{}
+	options := types.NewQueryOptions()
+	options.SetSize(42)
+	options.SetFrom(13)
+	response := &types.KuzzleResponse{}
+
+	response.Result, _ = json.Marshal(map[string]interface{}{
+		"total":      4,
+		"_scroll_id": "fooscrollid",
+		"hits": []map[string]string{
+			{"_id": "foo", "_source": "bar"},
+			{"_id": "Bateman", "_source": "Patrick"},
+		},
+		"aggregations": map[string]interface{}{"foo": "bar"},
+	})
+
+	searchResult := collection.NewSearchResult(cl, filters, options, response)
+
+	assert.Equal(t, filters, searchResult.Filters)
+	assert.Equal(t, cl, searchResult.Collection)
+	assert.Equal(t, "fooscrollid", searchResult.Options.ScrollId())
+	assert.Equal(t, 13, searchResult.Options.From())
+	assert.Equal(t, 42, searchResult.Options.Size())
+	assert.Equal(t, 4, searchResult.Total)
+	assert.Equal(t, 2, searchResult.Fetched)
+	assert.Equal(t, "foo", searchResult.Documents[0].Id)
+	assert.Equal(t, "Bateman", searchResult.Documents[1].Id)
+	assert.Equal(t, "bar", searchResult.Aggregations["foo"])
 }
 
-func TestFetchNextNotPossible(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	cl := collection.NewCollection(k, "collection", "index")
-	ksr := collection.SearchResult{Collection: cl, Fetched: 0, Total: 42}
+func TestFetchNextNoResultLeft(t *testing.T) {
+	searchResult := searchResultSetup(nil)
 
-	_, err := ksr.FetchNext()
+	searchResult.Fetched = 4
 
-	assert.NotNil(t, err)
-	assert.Equal(t, "[400] SearchResult.FetchNext: Unable to retrieve results: missing scrollId or from/size parameters", fmt.Sprint(err))
+	res, err := searchResult.FetchNext()
+
+	assert.Nil(t, res)
+	assert.Nil(t, err)
+}
+
+func TestFetchNextBadOptions(t *testing.T) {
+	searchResult := searchResultSetup(nil)
+
+	searchResult.Options.SetSize(0)
+	searchResult.Options.SetScrollId("")
+
+	res, err := searchResult.FetchNext()
+
+	assert.Nil(t, res)
+	assert.Equal(t, &types.KuzzleError{Message: "SearchResult.FetchNext: Unable to retrieve results: missing scrollId or from/size parameters", Stack: "", Status: 400}, err)
 }
 
 func TestFetchNextWithScroll(t *testing.T) {
-	requestCount := 0
-	type field struct {
-		Price string `json:"price,omitempty"`
-		Label string `json:"label,omitempty"`
-	}
-
-	sort := make([]interface{}, 1)
-	sort = append(sort, field{Price: "asc"})
-
-	filters := &types.SearchFilters{
-		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-		Sort:  ([]interface{})(sort),
-	}
-
-	options := types.NewQueryOptions()
-	options.SetSize(2)
-	options.SetScroll("1m")
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
-			if requestCount == 0 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "search", parsedQuery.Action)
-				assert.Equal(t, "index", parsedQuery.Index)
-				assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "scroll", parsedQuery.Action)
+			assert.Equal(t, "foobar", parsedQuery.ScrollId)
 
-				results := []*collection.Document{
-					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
-					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
-				}
+			fakeResult, _ := json.Marshal(map[string]interface{}{
+				"total":      4,
+				"_scroll_id": "nextscrollid",
+				"hits": []map[string]string{
+					{"_id": "foo2", "_source": "bar"},
+					{"_id": "Bateman2", "_source": "Patrick"},
+				},
+			})
 
-				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-
-				res := collection.SearchResult{
-					Total:      4,
-					Documents:  results,
-					ScrollId:   "f00b4r",
-					Filters:    filters,
-					Options:    options,
-					Collection: collection.NewCollection(k, "collection", "index"),
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-			if requestCount == 1 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "scroll", parsedQuery.Action)
-				assert.Equal(t, "1m", parsedQuery.Scroll)
-				assert.Equal(t, "f00b4r", parsedQuery.ScrollId)
-
-				results := []*collection.Document{
-					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
-					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
-				}
-
-				res := collection.SearchResult{
-					Total:     4,
-					Documents: results,
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: fakeResult}
 		},
 	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	cl := collection.NewCollection(k, "collection", "index")
 
-	ksr, _ := cl.Search(filters, options)
-	fetchNextRes, _ := ksr.FetchNext()
+	searchResult := searchResultSetup(c)
 
-	assert.Equal(t, "f00b4r", ksr.ScrollId)
-	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Documents))
-	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
+	assert.Equal(t, 2, searchResult.Fetched)
+
+	searchResult.Options.SetSize(0)
+	searchResult.Options.SetScrollId("foobar")
+	next, err := searchResult.FetchNext()
+
+	assert.Nil(t, err)
+	assert.Equal(t, "nextscrollid", next.Options.ScrollId())
+	assert.Equal(t, 4, next.Fetched)
+	assert.Equal(t, 4, next.Total)
+	assert.Equal(t, "foo2", next.Documents[0].Id)
+	assert.Equal(t, "Bateman2", next.Documents[1].Id)
+	assert.Nil(t, next.Aggregations)
+}
+
+func TestFetchNextWithPage(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "search", parsedQuery.Action)
+			assert.Equal(t, 2, parsedQuery.From)
+			assert.Equal(t, 2, parsedQuery.Size)
+
+			fakeResult, _ := json.Marshal(map[string]interface{}{
+				"total": 4,
+				"hits": []map[string]string{
+					{"_id": "foo2", "_source": "bar"},
+					{"_id": "Bateman2", "_source": "Patrick"},
+				},
+			})
+
+			return &types.KuzzleResponse{Result: fakeResult}
+		},
+	}
+
+	searchResult := searchResultSetup(c)
+
+	assert.Equal(t, 2, searchResult.Fetched)
+
+	searchResult.Options.SetSize(2)
+	next, err := searchResult.FetchNext()
+
+	assert.Nil(t, err)
+	assert.Equal(t, 4, next.Fetched)
+	assert.Equal(t, 4, next.Total)
+	assert.Equal(t, "foo2", next.Documents[0].Id)
+	assert.Equal(t, "Bateman2", next.Documents[1].Id)
+	assert.Nil(t, next.Aggregations)
+}
+
+func TestFetchNextDoNotFetchAfterLastPage(t *testing.T) {
+	searchResult := searchResultSetup(nil)
+
+	assert.Equal(t, 2, searchResult.Fetched)
+
+	searchResult.Options.SetFrom(2)
+	searchResult.Options.SetSize(2)
+	next, err := searchResult.FetchNext()
+
+	assert.Nil(t, err)
+	assert.Nil(t, next)
 }
 
 func TestFetchNextWithSearchAfter(t *testing.T) {
-	requestCount := 0
-	type field struct {
-		Price string `json:"price,omitempty"`
-		Label string `json:"label,omitempty"`
-	}
-
-	sort := make([]interface{}, 2)
-	sort = append(sort, field{Price: "desc"})
-	sort = append(sort, field{Label: "asc"})
-
-	filters := &types.SearchFilters{
-		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-		Sort:  sort,
-	}
-
-	options := types.NewQueryOptions()
-	options.SetSize(2)
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
-			if requestCount == 0 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "search", parsedQuery.Action)
-				assert.Equal(t, "index", parsedQuery.Index)
-				assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "search", parsedQuery.Action)
 
-				results := []*collection.Document{
-					{Id: "product1", Content: []byte(`{"label":"Foo1","price":"1200"}`)},
-					{Id: "product2", Content: []byte(`{"label":"Foo2","price":"800"}`)},
-				}
+			filters := &types.SearchFilters{}
+			rawBody, _ := json.Marshal(parsedQuery.Body)
+			json.Unmarshal(rawBody, filters)
 
-				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-				cl := collection.NewCollection(k, "collection", "index")
+			assert.Equal(t, "Dexter", filters.SearchAfter[0])
+			assert.Equal(t, "135?", filters.SearchAfter[1])
 
-				res := collection.SearchResult{
-					Total:      4,
-					Documents:  results,
-					Filters:    filters,
-					Options:    options,
-					Collection: cl,
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-			if requestCount == 1 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "search", parsedQuery.Action)
-				assert.Equal(t, "index", parsedQuery.Index)
-				assert.Equal(t, "collection", parsedQuery.Collection)
-				assert.Equal(t, []interface{}([]interface{}{"800", "Foo2"}), parsedQuery.Body.(map[string]interface{})["search_after"])
+			fakeResult, _ := json.Marshal(map[string]interface{}{
+				"total": 4,
+				"hits": []map[string]string{
+					{"_id": "foo2", "_source": "bar"},
+					{"_id": "Bateman2", "_source": "Patrick"},
+				},
+			})
 
-				results := []*collection.Document{
-					{Id: "product3", Content: []byte(`{"label":"Foo3","price":"400"}`)},
-					{Id: "product4", Content: []byte(`{"label":"Foo4","price":"200"}`)},
-				}
-
-				res := collection.SearchResult{
-					Total:     4,
-					Documents: results,
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: fakeResult}
 		},
 	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	cl := collection.NewCollection(k, "collection", "index")
 
-	ksr, _ := cl.Search(filters, options)
-	fetchNextRes, _ := ksr.FetchNext()
+	searchResult := searchResultSetup(c)
 
-	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Documents))
-	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
-}
+	assert.Equal(t, 2, searchResult.Fetched)
 
-func TestFetchNextWithSizeFrom(t *testing.T) {
-	requestCount := 0
+	searchResult.Filters.Sort = append(searchResult.Filters.Sort, "firstname")
+	searchResult.Filters.Sort = append(searchResult.Filters.Sort, map[string]interface{}{
+		"killcount": map[string]string{"order": "asc"},
+	})
 
-	filters := &types.SearchFilters{
-		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-	}
+	searchResult.Options.SetSize(2)
+	next, err := searchResult.FetchNext()
 
-	options := types.NewQueryOptions()
-	options.SetSize(2)
-
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			if requestCount == 0 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "search", parsedQuery.Action)
-				assert.Equal(t, "index", parsedQuery.Index)
-				assert.Equal(t, "collection", parsedQuery.Collection)
-
-				results := []*collection.Document{
-					{Id: "product1", Content: []byte(`{"label":"Foo1","price":1200}`)},
-					{Id: "product2", Content: []byte(`{"label":"Foo2","price":800}`)},
-				}
-
-				k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-				cl := collection.NewCollection(k, "collection", "index")
-
-				res := collection.SearchResult{
-					Total:      4,
-					Documents:  results,
-					Filters:    filters,
-					Options:    options,
-					Collection: cl,
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-			if requestCount == 1 {
-				requestCount++
-				assert.Equal(t, "document", parsedQuery.Controller)
-				assert.Equal(t, "search", parsedQuery.Action)
-				assert.Equal(t, "index", parsedQuery.Index)
-				assert.Equal(t, "collection", parsedQuery.Collection)
-
-				results := []*collection.Document{
-					{Id: "product3", Content: []byte(`{"label":"Foo3","price":400}`)},
-					{Id: "product4", Content: []byte(`{"label":"Foo4","price":200}`)},
-				}
-
-				res := collection.SearchResult{
-					Total:     4,
-					Documents: results,
-					Options:   options,
-				}
-				r, _ := json.Marshal(res)
-				return &types.KuzzleResponse{Result: r}
-			}
-
-			return &types.KuzzleResponse{}
-		},
-	}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	cl := collection.NewCollection(k, "collection", "index")
-
-	ksr, _ := cl.Search(filters, options)
-	fetchNextRes, _ := ksr.FetchNext()
-
-	assert.Equal(t, 4, fetchNextRes.Total)
-	assert.Equal(t, 2, len(fetchNextRes.Documents))
-	assert.Equal(t, "Foo4", fetchNextRes.Documents[1].SourceToMap()["label"])
-
-	tooFarRes, _ := fetchNextRes.FetchNext()
-
-	var expected *collection.SearchResult
-	assert.Equal(t, expected, tooFarRes)
-}
-
-func ExampleSearchResult_FetchNext() {
-	filters := &types.SearchFilters{
-		Query: QueryFilters{Exists: ExistsFilter{Field: "price"}},
-	}
-
-	options := types.NewQueryOptions()
-	options.SetSize(2)
-
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	cl := collection.NewCollection(k, "collection", "index")
-
-	ksr, _ := cl.Search(filters, options)
-	fetchNextRes, _ := ksr.FetchNext()
-
-	res, err := fetchNextRes.FetchNext()
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res.Documents[0].Id, res.Documents[0].Content)
+	assert.Nil(t, err)
+	assert.Equal(t, 4, next.Fetched)
+	assert.Equal(t, 4, next.Total)
+	assert.Equal(t, "foo2", next.Documents[0].Id)
+	assert.Equal(t, "Bateman2", next.Documents[1].Id)
+	assert.Nil(t, next.Aggregations)
 }

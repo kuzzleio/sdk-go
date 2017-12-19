@@ -24,10 +24,6 @@ func TestSearchError(t *testing.T) {
 }
 
 func TestSearch(t *testing.T) {
-	hits := []*collection.Document{
-		{Id: "doc42", Content: json.RawMessage(`{"foo":"bar"}`)},
-	}
-
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
@@ -38,18 +34,25 @@ func TestSearch(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := collection.SearchResult{Total: 42, Documents: hits}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
+			rawresult, _ := json.Marshal(map[string]interface{}{
+				"total": 42,
+				"hits": []map[string]interface{}{
+					{
+						"_id":     "doc42",
+						"_source": map[string]string{"foo": "bar"},
+					},
+				},
+			})
+			return &types.KuzzleResponse{Result: rawresult}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := collection.NewCollection(k, "collection", "index").Search(&types.SearchFilters{}, nil)
 	assert.Equal(t, 42, res.Total)
-	assert.Equal(t, len(hits), len(res.Documents))
-	assert.Equal(t, res.Documents[0].Id, hits[0].Id)
-	assert.Equal(t, res.Documents[0].Content, hits[0].Content)
+	assert.Equal(t, 1, len(res.Documents))
+	assert.Equal(t, res.Documents[0].Id, "doc42")
+	assert.Equal(t, res.Documents[0].SourceToMap(), collection.DocumentContent{"foo": "bar"})
 }
 
 func ExampleCollection_Search() {
@@ -86,9 +89,17 @@ func TestSearchWithScroll(t *testing.T) {
 			assert.Equal(t, 4, parsedQuery.Size)
 			assert.Equal(t, "1m", parsedQuery.Scroll)
 
-			res := collection.SearchResult{Total: 42, Documents: hits, ScrollId: "f00b4r"}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
+			rawresult, _ := json.Marshal(map[string]interface{}{
+				"total": 42,
+				"hits": []map[string]interface{}{
+					{
+						"_id":     "doc42",
+						"_source": map[string]string{"foo": "bar"},
+					},
+				},
+				"_scroll_id": "f00b4r",
+			})
+			return &types.KuzzleResponse{Result: rawresult}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -100,7 +111,7 @@ func TestSearchWithScroll(t *testing.T) {
 	res, _ := collection.NewCollection(k, "collection", "index").Search(&types.SearchFilters{}, opts)
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, len(hits), len(res.Documents))
-	assert.Equal(t, "f00b4r", res.ScrollId)
+	assert.Equal(t, "f00b4r", res.Options.ScrollId())
 	assert.Equal(t, res.Documents[0].Id, hits[0].Id)
 	assert.Equal(t, res.Documents[0].Content, hits[0].Content)
 }
