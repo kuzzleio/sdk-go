@@ -1,3 +1,5 @@
+%include <typemap.i>
+
 // Statistics[]
 %ignore all_statistics_result::result;
 %typemap(javacode) all_statistics_result %{

@@ -145,4 +145,33 @@ namespace kuzzleio {
     return v;
   }
 
+  void Kuzzle::disconnect() {
+    kuzzle_disconnect(_kuzzle);
+  }
+
+  void Kuzzle::logout() {
+    kuzzle_logout(_kuzzle);
+  }
+
+  kuzzle_response* Kuzzle::query(kuzzle_request* request, query_options* options) Kuz_Throw_KuzzleException {
+    kuzzle_response *r = kuzzle_query(_kuzzle, request, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(*r);
+
+    return r;
+  }
+
+  shards* Kuzzle::refreshIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
+    shards_result *r = kuzzle_refresh_index(_kuzzle, const_cast<char*>(index.c_str()), options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(*r);
+    return r->result;
+  }
+
+  long long Kuzzle::now(query_options* options) Kuz_Throw_KuzzleException {
+    date_result *r = kuzzle_now(_kuzzle, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(*r);
+    //return &r->result;
+  }
 }

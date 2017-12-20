@@ -144,6 +144,11 @@ namespace kuzzleio {
       json_object* getServerInfo(query_options* options=NULL) Kuz_Throw_KuzzleException;
       collection_entry* listCollections(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
+      void disconnect();
+      void logout();
+      kuzzle_response* query(kuzzle_request* request, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      long long now(query_options* options=NULL) Kuz_Throw_KuzzleException;
   };
 }
 
