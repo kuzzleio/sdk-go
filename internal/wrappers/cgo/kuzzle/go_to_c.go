@@ -173,7 +173,7 @@ func goToCDocumentResult(col *C.collection, goRes *collection.Document, err erro
 	return result
 }
 
-func goToCdocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
+func goToCDocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
 	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
 
 	if err != nil {
