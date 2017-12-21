@@ -153,8 +153,8 @@ namespace kuzzleio {
     kuzzle_logout(_kuzzle);
   }
 
-  kuzzle_response* Kuzzle::query(kuzzle_request* request, query_options* options) Kuz_Throw_KuzzleException {
-    kuzzle_response *r = kuzzle_query(_kuzzle, request, options);
+  kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) Kuz_Throw_KuzzleException {
+    kuzzle_response *r = kuzzle_query(_kuzzle, query, options);
     if (r->error != NULL)
         throwExceptionFromStatus(*r);
 
@@ -168,10 +168,11 @@ namespace kuzzleio {
     return r->result;
   }
 
+  // java wrapper for this method is in typemap.i
   long long Kuzzle::now(query_options* options) Kuz_Throw_KuzzleException {
     date_result *r = kuzzle_now(_kuzzle, options);
     if (r->error != NULL)
         throwExceptionFromStatus(*r);
-    //return &r->result;
+    return r->result;
   }
 }

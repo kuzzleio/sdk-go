@@ -120,7 +120,4 @@ struct json_object { };
     }
 }
 
-%typemap(javaimports) kuzzle "
-/* The type Kuzzle. */"
-
 %include "core.cpp"

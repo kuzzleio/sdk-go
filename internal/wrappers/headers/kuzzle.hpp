@@ -125,16 +125,16 @@ namespace kuzzleio {
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
-      token_validity* checkToken(const std::string&);
+      token_validity* checkToken(const std::string& token);
       char* connect();
-      bool createIndex(const std::string&, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
       bool deleteMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       json_object* getMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       json_object* updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;
       bool validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException;
+      std::string login(const std::string& strategy, json_object* credentials, int expiresIn) Kuz_Throw_KuzzleException;
       std::string login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException;
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t time, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -146,7 +146,7 @@ namespace kuzzleio {
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
       void logout();
-      kuzzle_response* query(kuzzle_request* request, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       long long now(query_options* options=NULL) Kuz_Throw_KuzzleException;
   };

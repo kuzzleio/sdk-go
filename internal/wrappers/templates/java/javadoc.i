@@ -1,3 +1,6 @@
+%typemap(javaimports) kuzzleio::Kuzzle "
+/* The type Kuzzle. */"
+
 %javamethodmodifiers kuzzleio::Kuzzle::Kuzzle(const std::string&) "
   /**
    * Constructor
@@ -15,7 +18,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Kuzzle::checkToken(const std::string&) "
+%javamethodmodifiers kuzzleio::Kuzzle::checkToken(const std::string& token) "
   /**
    * Check an authentication token validity
    *
@@ -93,7 +96,7 @@
 
 %javamethodmodifiers kuzzleio::Kuzzle::getMyCredentials(const std::string& strategy) "
   /**
-   * {@link #getMyCredentials(String, QueryOptions, ResponseListener)}
+   * {@link #getMyCredentials(String, QueryOptions)}
    */
   public";
 
@@ -110,7 +113,7 @@
 
 %javamethodmodifiers kuzzleio::Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials) "
   /**
-   * {@link #updateMyCredentials(String, JSONObject, QueryOptions)}
+   * {@link #updateMyCredentials(String, JsonObject, QueryOptions)}
    */
   public";
 
@@ -127,7 +130,7 @@
 
 %javamethodmodifiers kuzzleio::Kuzzle::validateMyCredentials(const std::string& strategy, json_object* credentials) "
   /**
-   * {@link #validateMyCredentials(String, JSONObject, QueryOptions)}
+   * {@link #validateMyCredentials(String, JsonObject, QueryOptions)}
    */
   public";
 
@@ -336,7 +339,7 @@
 
 %javamethodmodifiers kuzzleio::Kuzzle::query(kuzzle_request*) "
   /**
-   * {@link #query(KuzzleResponse, QueryOptions)}
+   * {@link #query(KuzzleRequest, QueryOptions)}
    */
   public";
 
@@ -345,7 +348,6 @@
    * Forces the default data index to refresh on each modification
    *
    * @param options - Request options
-   * @param listener - Response callback listener
    * @return this
    */
   public";
@@ -365,17 +367,3 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Kuzzle::now(query_options* options) "
-  /**
-   * Returns the current Kuzzle UTC timestamp
-   *
-   * @param options - Request options
-   * @return a DateResult
-   */
-  public";
-
-%javamethodmodifiers kuzzleio::Kuzzle::now() "
-  /**
-   * {@link #now(QueryOptions)}
-   */
-  public";
