@@ -65,8 +65,8 @@ func (c *MockedConnection) Rooms() *types.RoomList {
 
 func (c *MockedConnection) StartQueuing() {}
 
-func (c *MockedConnection) StopQueuing()             {}
-func (c *MockedConnection) RemoveListener(event int) {}
+func (c *MockedConnection) StopQueuing()                                         {}
+func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{}) {}
 
 func (c *MockedConnection) ReplayQueue() {}
 func (c *MockedConnection) RemoveAllListeners(event int) {

@@ -73,7 +73,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
-		eventListeners:        make( map[int]map[chan<- interface{}]struct{}),
+		eventListeners:        make(map[int]map[chan<- interface{}]struct{}),
 		requestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
@@ -238,7 +238,7 @@ func (ws *webSocket) cleanQueue() {
 			eventListener := ws.eventListeners[event.OfflineQueuePop]
 			if eventListener != nil {
 				for c := range ws.eventListeners[event.OfflineQueuePop] {
-						c <- ws.offlineQueue[0]
+					c <- ws.offlineQueue[0]
 				}
 			}
 			ws.offlineQueue = ws.offlineQueue[1:]
