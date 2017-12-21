@@ -94,8 +94,8 @@ namespace kuzzleio {
     return r->result;
   }
 
-  statistics* Kuzzle::getStatistics(time_t time, query_options* options) Kuz_Throw_KuzzleException {
-    statistics_result* r = kuzzle_get_statistics(_kuzzle, time, options);
+  statistics* Kuzzle::getStatistics(time_t start, time_t end, query_options* options) Kuz_Throw_KuzzleException {
+    statistics_result* r = kuzzle_get_statistics(_kuzzle, start, end, options);
     if (r->error != NULL)
         throwExceptionFromStatus(*r);
     return r->result;
