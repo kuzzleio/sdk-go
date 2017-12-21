@@ -37,13 +37,12 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -ggdb -c core.cxx -o $(OUTDIR)/core.o $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
-	#rm -f $(OUTDIR)/kcore_wrap.o
-	#rm -f kcore_wrap.cxx
+	rm -f $(OUTDIR)/kcore_wrap.o
+	rm -f kcore_wrap.cxx
 
 swig:
 	mkdir -p $(OUTDIR)
@@ -56,7 +55,7 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
-#	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp
