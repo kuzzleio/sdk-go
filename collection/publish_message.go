@@ -9,7 +9,7 @@ import (
 // Takes an optional argument object with the following properties:
 //   - volatile (object, default: null):
 //     Additional information passed to notifications to other users
-func (dc *Collection) PublishMessage(message map[string]interface{}, options types.QueryOptions) (bool, error) {
+func (dc *Collection) PublishMessage(message interface{}, options types.QueryOptions) (bool, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
