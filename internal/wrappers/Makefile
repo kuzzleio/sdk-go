@@ -21,7 +21,7 @@ OBJS = $(SRCS:.cxx=.o)
 
 SWIG = swig
 
-all: java python
+all: java
 
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
