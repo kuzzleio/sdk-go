@@ -30,6 +30,17 @@ extern "C" {
   KuzzleException \
 )
 
+#define PARTIAL_EXCEPTION 206
+#define BAD_REQUEST_EXCEPTION 400
+#define UNAUTHORIZED_EXCEPTION 401
+#define FORBIDDEN_EXCEPTION 403
+#define NOT_FOUND_EXCEPTION 404
+#define PRECONDITION_EXCEPTION 412
+#define SIZE_LIMIT_EXCEPTION 413
+#define INTERNAL_EXCEPTION 500
+#define SERVICE_UNAVAILABLE_EXCEPTION 503
+#define GATEWAY_TIMEOUT_EXCEPTION 504
+
 namespace kuzzleio {
 
   // Exceptions
@@ -37,7 +48,7 @@ namespace kuzzleio {
     int status;
 
     KuzzleException(int status=500, const std::string& message="Internal Exception");
-    KuzzleException(KuzzleException& ke) : status(ke.status), std::runtime_error(ke.getMessage()) {};
+    KuzzleException(const KuzzleException& ke) : status(ke.status), std::runtime_error(ke.getMessage()) {};
 
     virtual ~KuzzleException() throw() {};
     std::string getMessage() const;
@@ -95,27 +106,54 @@ namespace kuzzleio {
   };
 
   template <class T>
-  void throwExceptionFromStatus(T result) {
-    if (result.status == 206)
-        throw PartialException(result.error);
-    else if (result.status == 400)
-        throw BadRequestException(result.error);
-    else if (result.status == 401) {
-        throw UnauthorizedException(result.error);
-    } else if (result.status == 403)
-        throw ForbiddenException(result.error);
-    else if (result.status == 404)
-        throw NotFoundException(result.error);
-    else if (result.status == 412)
-        throw PreconditionException(result.error);
-    else if (result.status == 413)
-        throw SizeLimitException(result.error);
-    else if (result.status == 500)
-        throw InternalException(result.error);
-    else if (result.status == 504)
-        throw GatewayTimeoutException(result.error);
-    else if (result.status == 503)
-        throw ServiceUnavailableException(result.error);
+  void throwExceptionFromStatus(T *result) {
+    const std::string error = std::string(result->error);
+
+    switch(result->status) {
+      case PARTIAL_EXCEPTION:
+        delete(result);
+        throw PartialException(error);
+      break;
+      case BAD_REQUEST_EXCEPTION:
+        delete(result);
+        throw BadRequestException(error);
+      break;
+      case UNAUTHORIZED_EXCEPTION:
+        delete(result);
+        throw UnauthorizedException(error);
+      break;
+      case FORBIDDEN_EXCEPTION:
+        delete(result);
+        throw ForbiddenException(error);      
+      break;
+      case NOT_FOUND_EXCEPTION:
+        delete(result);
+        throw NotFoundException(error);  
+      break;
+      case PRECONDITION_EXCEPTION:
+        delete(result);
+        throw PreconditionException(error);  
+      break;
+      case SIZE_LIMIT_EXCEPTION:
+        delete(result);
+        throw SizeLimitException(error);        
+      break;
+      case INTERNAL_EXCEPTION:
+        delete(result);
+        throw InternalException(error); 
+      break;
+      case SERVICE_UNAVAILABLE_EXCEPTION:
+        delete(result);
+        throw ServiceUnavailableException(error);         
+      break;
+      case GATEWAY_TIMEOUT_EXCEPTION:
+        delete(result);
+        throw GatewayTimeoutException(error);         
+      break;
+      default:
+        delete(result);
+        throw KuzzleException(500, error);
+    }
   }
 
   class Kuzzle {
