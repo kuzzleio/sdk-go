@@ -312,10 +312,8 @@ func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
 func (ws *webSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
 		if event == k || event == -1 {
-			if ws.eventListeners[k] != nil {
-				for c := range ws.eventListeners[k] {
-					close(c)
-				}
+			for c := range ws.eventListeners[k] {
+				close(c)
 			}
 			delete(ws.eventListeners, k)
 		}
