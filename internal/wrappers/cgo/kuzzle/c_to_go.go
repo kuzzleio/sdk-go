@@ -262,3 +262,32 @@ func cToGoUserRigh(r *C.user_right) *types.UserRights {
 
 	return right
 }
+
+func cToGoSearchResult(s *C.search_result) *collection.SearchResult {
+	var godocuments []*collection.Document
+
+	if s.documents_length > 0 {
+		tmpslice := (*[1 << 30]C.document)(unsafe.Pointer(s.documents))[:s.documents_length:s.documents_length]
+
+		godocuments = make([]*collection.Document, s.documents_length)
+
+		for i, doc := range tmpslice {
+			godocuments[i] = cToGoDocument(s.collection, &doc)
+		}
+	}
+
+	opts := types.NewQueryOptions()
+
+	opts.SetSize(int(s.options.size))
+	opts.SetFrom(int(s.options.from))
+	opts.SetScrollId(C.GoString(s.options.scroll_id))
+
+	return &collection.SearchResult{
+		Collection: cToGoCollection(s.collection),
+		Documents:  godocuments,
+		Total:      int(s.total),
+		Fetched:    int(s.fetched),
+		Options:    opts,
+		Filters:    cToGoSearchFilters(s.filters),
+	}
+}

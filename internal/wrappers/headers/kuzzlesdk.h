@@ -223,6 +223,14 @@ typedef struct {
 } document_result;
 
 typedef struct {
+    document *result;
+    size_t result_length;
+    int status;
+    char *error;
+    char *stack;
+} document_array_result;
+
+typedef struct {
     char *id;
     meta *meta;
     json_object *content;
@@ -450,13 +458,6 @@ typedef struct {
 } search_filters;
 
 typedef struct {
-    document *hits;
-    size_t hits_length;
-    unsigned total;
-    char *scroll_id;
-} document_search;
-
-typedef struct {
     profile *hits;
     size_t hits_length;
     unsigned total;
@@ -512,7 +513,14 @@ typedef struct {
 } specification_result;
 
 typedef struct {
-    document_search *result;
+    document *documents;
+    size_t documents_length;
+    unsigned fetched;
+    unsigned total;
+    json_object *aggregations;
+    search_filters *filters;
+    query_options *options;
+    collection *collection;
     int status;
     char *error;
     char *stack;
