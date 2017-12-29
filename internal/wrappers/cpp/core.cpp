@@ -33,7 +33,7 @@ namespace kuzzleio {
   }
 
   bool Kuzzle::createIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
+    bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
