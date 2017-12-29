@@ -16,6 +16,22 @@ import (
 	"unsafe"
 )
 
+func duplicateCollection(ptr *C.collection) *C.collection {
+	dest := (*C.collection)(C.calloc(1, C.sizeof_collection))
+
+	if ptr.index != nil {
+		dest.index = C.CString(C.GoString(ptr.index))
+	}
+
+	if ptr.collection != nil {
+		dest.collection = C.CString(C.GoString(ptr.collection))
+	}
+
+	dest.kuzzle = ptr.kuzzle
+
+	return dest
+}
+
 // Allocates memory
 func goToCMeta(gMeta *types.Meta) *C.meta {
 	if gMeta == nil {
@@ -62,7 +78,7 @@ func goToCDocument(col *C.collection, gDoc *collection.Document, dest *C.documen
 	result.collection = C.CString(gDoc.Collection)
 	result.meta = goToCMeta(gDoc.Meta)
 	result.shards = goToCShards(gDoc.Shards)
-	result._collection = col
+	result._collection = duplicateCollection(col)
 
 	if string(gDoc.Content) != "" {
 		buffer := C.CString(string(gDoc.Content))
@@ -84,11 +100,7 @@ func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notifi
 	result.id = C.CString(gNotifContent.Id)
 	result.meta = goToCMeta(gNotifContent.Meta)
 	result.count = C.int(gNotifContent.Count)
-
-	r, _ := json.Marshal(gNotifContent.Content)
-	buffer := C.CString(string(r))
-	result.content = C.json_tokener_parse(buffer)
-	C.free(unsafe.Pointer(buffer))
+	result.content, _ = goToCJson(gNotifContent)
 
 	return result
 }
@@ -102,14 +114,9 @@ func goToCNotificationResult(gNotif *types.KuzzleNotification) *C.notification_r
 		return result
 	}
 
+	result.volatiles, _ = goToCJson(gNotif.Volatile)
 	result.request_id = C.CString(gNotif.RequestId)
 	result.result = goToCNotificationContent(gNotif.Result)
-
-	r, _ := json.Marshal(gNotif.Volatile)
-	buffer := C.CString(string(r))
-	result.volatiles = C.json_tokener_parse(buffer)
-	C.free(unsafe.Pointer(buffer))
-
 	result.index = C.CString(gNotif.Index)
 	result.collection = C.CString(gNotif.Collection)
 	result.controller = C.CString(gNotif.Controller)
@@ -135,11 +142,7 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.result = C.json_tokener_parse(bufResult)
 	C.free(unsafe.Pointer(bufResult))
 
-	r, _ := json.Marshal(gRes.Volatile)
-	bufVolatile := C.CString(string(r))
-	result.volatiles = C.json_tokener_parse(bufVolatile)
-	C.free(unsafe.Pointer(bufVolatile))
-
+	result.volatiles, _ = goToCJson(gRes.Volatile)
 	result.index = C.CString(gRes.Index)
 	result.collection = C.CString(gRes.Collection)
 	result.controller = C.CString(gRes.Controller)
@@ -166,6 +169,28 @@ func goToCDocumentResult(col *C.collection, goRes *collection.Document, err erro
 	}
 
 	result.result = goToCDocument(col, goRes, nil)
+
+	return result
+}
+
+func goToCDocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
+	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
+
+	if err != nil {
+		Set_document_array_result_error(result, err)
+		return result
+	}
+
+	if goRes != nil {
+		result.result_length = C.size_t(len(goRes))
+		result.result = (*C.document)(C.calloc(result.result_length, C.sizeof_document))
+
+		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+
+		for i, doc := range goRes {
+			goToCDocument(col, doc, &cArray[i])
+		}
+	}
 
 	return result
 }
@@ -392,29 +417,54 @@ func goToCBoolResult(goRes bool, err error) *C.bool_result {
 	return result
 }
 
+func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
+	result := (*C.search_filters)(C.calloc(1, C.sizeof_search_filters))
+
+	result.query, _ = goToCJson(filters.Query)
+	result.sort, _ = goToCJson(filters.Sort)
+	result.aggregations, _ = goToCJson(filters.Aggregations)
+	result.search_after, _ = goToCJson(filters.SearchAfter)
+
+	return result
+}
+
 // Allocates memory
 func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err error) *C.search_result {
 	result := (*C.search_result)(C.calloc(1, C.sizeof_search_result))
+	result.collection = duplicateCollection(col)
 
 	if err != nil {
 		Set_search_result_error(result, err)
 		return result
 	}
 
-	result.result = (*C.document_search)(C.calloc(1, C.sizeof_document_search))
-	result.result.hits_length = C.size_t(len(goRes.Hits))
-	result.result.total = C.uint(goRes.Total)
-	if goRes.ScrollId != "" {
-		result.result.scroll_id = C.CString(goRes.ScrollId)
-	}
+	result.documents_length = C.size_t(len(goRes.Documents))
+	result.fetched = C.uint(goRes.Fetched)
+	result.total = C.uint(goRes.Total)
 
-	if len(goRes.Hits) > 0 {
-		result.result.hits = (*C.document)(C.calloc(C.size_t(len(goRes.Hits)), C.sizeof_document))
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
+	if len(goRes.Documents) > 0 {
+		result.documents = (*C.document)(C.calloc(result.documents_length, C.sizeof_document))
+		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.documents))[:len(goRes.Documents):len(goRes.Documents)]
 
-		for i, doc := range goRes.Hits {
+		for i, doc := range goRes.Documents {
 			goToCDocument(col, doc, &cArray[i])
 		}
+	}
+
+	if goRes.Filters != nil {
+		result.filters = goToCSearchFilters(goRes.Filters)
+	}
+
+	result.options = (*C.query_options)(C.calloc(1, C.sizeof_query_options))
+	result.options.from = C.long(goRes.Options.From())
+	result.options.size = C.long(goRes.Options.Size())
+
+	if goRes.Options.ScrollId() != "" {
+		result.options.scroll_id = C.CString(goRes.Options.ScrollId())
+	}
+
+	if len(goRes.Aggregations) > 0 {
+		result.aggregations, _ = goToCJson(goRes.Aggregations)
 	}
 
 	return result
@@ -424,11 +474,8 @@ func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err er
 func goToCMapping(c *C.collection, goMapping *collection.Mapping) *C.mapping {
 	result := (*C.mapping)(C.calloc(1, C.sizeof_mapping))
 
-	result.collection = c
-	r, _ := json.Marshal(goMapping.Mapping)
-	buffer := C.CString(string(r))
-	result.mapping = C.json_tokener_parse(buffer)
-	C.free(unsafe.Pointer(buffer))
+	result.collection = duplicateCollection(c)
+	result.mapping, _ = goToCJson(goMapping.Mapping)
 
 	return result
 }
@@ -459,10 +506,7 @@ func goToCRole(k *C.kuzzle, role *security.Role, dest *C.role) *C.role {
 	crole.kuzzle = k
 
 	if role.Controllers != nil {
-		j, _ := json.Marshal(role.Controllers)
-		buffer := C.CString(string(j))
-		crole.controllers = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
+		crole.controllers, _ = goToCJson(role.Controllers)
 	}
 
 	return crole
@@ -473,18 +517,8 @@ func goToCSpecification(goSpec *types.Specification) *C.specification {
 	result := (*C.specification)(C.calloc(1, C.sizeof_specification))
 
 	result.strict = C.bool(goSpec.Strict)
-
-	f, _ := json.Marshal(goSpec.Fields)
-	v, _ := json.Marshal(goSpec.Validators)
-	bufferFields := C.CString(string(f))
-	bufferValidators := C.CString(string(v))
-
-	result.fields = C.json_tokener_parse(bufferFields)
-	result.validators = C.json_tokener_parse(bufferValidators)
-
-	C.free(unsafe.Pointer(bufferFields))
-	C.free(unsafe.Pointer(bufferValidators))
-
+	result.fields, _ = goToCJson(goSpec.Fields)
+	result.validators, _ = goToCJson(goSpec.Validators)
 	return result
 }
 
@@ -557,6 +591,8 @@ func goToCJson(data interface{}) (*C.json_object, error) {
 	defer C.free(unsafe.Pointer(buffer))
 
 	tok := C.json_tokener_new()
+	defer C.json_tokener_free(tok)
+
 	j := C.json_tokener_parse_ex(tok, buffer, C.int(C.strlen(buffer)))
 	jerr := C.json_tokener_get_error(tok)
 	if jerr != C.json_tokener_success {
@@ -820,27 +856,12 @@ func goToCCollectionListResult(collections []*types.CollectionsList, err error) 
 }
 
 // Allocates memory
-func fillStatistics(res *types.Statistics, statistics *C.statistics) {
-	ongoing, _ := json.Marshal(res.OngoingRequests)
-	completedRequests, _ := json.Marshal(res.CompletedRequests)
-	connections, _ := json.Marshal(res.Connections)
-	failedRequests, _ := json.Marshal(res.FailedRequests)
-
-	cOnGoing := C.CString(string(ongoing))
-	cCompleteRequest := C.CString(string(completedRequests))
-	cConnections := C.CString(string(connections))
-	cFailedRequests := C.CString(string(failedRequests))
-
-	statistics.ongoing_requests = C.json_tokener_parse(cOnGoing)
-	statistics.completed_requests = C.json_tokener_parse(cCompleteRequest)
-	statistics.connections = C.json_tokener_parse(cConnections)
-	statistics.failed_requests = C.json_tokener_parse(cFailedRequests)
-	statistics.timestamp = C.ulonglong(res.Timestamp)
-
-	C.free(unsafe.Pointer(cOnGoing))
-	C.free(unsafe.Pointer(cCompleteRequest))
-	C.free(unsafe.Pointer(cConnections))
-	C.free(unsafe.Pointer(cFailedRequests))
+func fillStatistics(src *types.Statistics, dest *C.statistics) {
+	dest.ongoing_requests, _ = goToCJson(src.OngoingRequests)
+	dest.completed_requests, _ = goToCJson(src.CompletedRequests)
+	dest.connections, _ = goToCJson(src.Connections)
+	dest.failed_requests, _ = goToCJson(src.FailedRequests)
+	dest.timestamp = C.ulonglong(src.Timestamp)
 }
 
 // Allocates memory

@@ -1,7 +1,6 @@
 package collection
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -26,15 +25,5 @@ func (dc *Collection) Scroll(scrollId string, options types.QueryOptions) (*Sear
 		return nil, res.Error
 	}
 
-	searchResult := &SearchResult{
-		Collection: dc,
-		Options:    options,
-	}
-	json.Unmarshal(res.Result, searchResult)
-
-	for _, d := range searchResult.Hits {
-		d.collection = dc
-	}
-
-	return searchResult, nil
+	return NewSearchResult(dc, nil, options, res), nil
 }
