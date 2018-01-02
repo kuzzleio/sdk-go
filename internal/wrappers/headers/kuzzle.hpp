@@ -108,6 +108,7 @@ namespace kuzzleio {
   template <class T>
   void throwExceptionFromStatus(T *result) {
     const std::string error = std::string(result->error);
+    delete(result->error);
 
     switch(result->status) {
       case PARTIAL_EXCEPTION:
