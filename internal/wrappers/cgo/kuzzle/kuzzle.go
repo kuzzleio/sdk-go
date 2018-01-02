@@ -10,11 +10,12 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"time"
+	"unsafe"
+
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"time"
-	"unsafe"
 )
 
 // map which stores instances to keep references in case the gc passes
@@ -169,8 +170,8 @@ func kuzzle_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
 }
 
 //export kuzzle_remove_all_listeners
-func kuzzle_remove_all_listeners() {
-
+func kuzzle_remove_all_listeners(k *C.kuzzle, event C.int) {
+	(*kuzzle.Kuzzle)(k.instance).RemoveAllListeners(int(event))
 }
 
 //export kuzzle_get_auto_queue

@@ -202,4 +202,45 @@ namespace kuzzleio {
         throwExceptionFromStatus(r);
     return r->result;
   }
+
+  Kuzzle* Kuzzle::replayQueue() {
+    kuzzle_replay_queue(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setAutoReplay(bool autoReplay) {
+    kuzzle_set_auto_replay(_kuzzle, autoReplay);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setDefaultIndex(const std::string& index) {
+    kuzzle_set_default_index(_kuzzle, const_cast<char*>(index.c_str()));
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setJwt(const std::string& jwt) {
+    kuzzle_set_jwt(_kuzzle, const_cast<char*>(jwt.c_str()));
+    return this;
+  }
+
+  Kuzzle* Kuzzle::startQueuing() {
+    kuzzle_start_queuing(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::stopQueuing() {
+    kuzzle_stop_queuing(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::unsetJwt() {
+    kuzzle_unset_jwt(_kuzzle);
+    return this;
+  }
+
+  json_object* Kuzzle::updateSelf(json_object* content, query_options* options) {
+    json_result *r = kuzzle_update_self();
+    
+  }
+
 }

@@ -367,3 +367,62 @@
    */
   public";
 
+%javamethodmodifiers kuzzleio::Kuzzle::setDefaultIndex(const std::string& index) "
+  /**
+   * Default index setter
+   *
+   * @param index - New default index name
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::replayQueue() "
+  /**
+   * Replays the requests queued during offline mode.
+   * Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+   *
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::setAutoReplay(bool autoReplay) "
+  /**
+   * autoReplay option setter
+   *
+   * @param autoReplay - New autoReplay option value
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::setJwt(const std::string& jwt) "
+  /**
+   * Set a new JWT and trigger the 'loginAttempt' event.
+   *
+   * @param jwt - New authentication JSON Web Token
+   * @return this 
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::startQueuing() "
+  /**
+   * Starts the requests queuing. Works only during offline mode, and if the autoQueue option is set to false.
+   *
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::stopQueuing() "
+  /**
+   * Stops the requests queuing. Works only during offline mode, and if the autoQueue option is set to false.
+   *
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::unsetJwt() "
+  /**
+   * Unset the authentication token and cancel all subscriptions
+   *
+   * @return this
+   */
+  public";

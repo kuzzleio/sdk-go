@@ -187,6 +187,14 @@ namespace kuzzleio {
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       long long now(query_options* options=NULL) Kuz_Throw_KuzzleException;
+      Kuzzle* replayQueue();
+      Kuzzle* setAutoReplay(bool autoReplay);
+      Kuzzle* setDefaultIndex(const std::string& index);
+      Kuzzle* setJwt(const std::string& jwt);
+      Kuzzle* startQueuing();
+      Kuzzle* stopQueuing();
+      Kuzzle* unsetJwt();
+      json_object* updateSelf(json_object* content, query_options* options=NULL);
   };
 }
 
