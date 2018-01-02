@@ -17,6 +17,7 @@
 %rename(KuzzleRequest) kuzzle_request;
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
+%rename(UserData) user_data;
 
 %ignore *::error;
 %ignore *::status;

@@ -170,6 +170,7 @@ namespace kuzzleio {
     for (int i = 0; r->result[i]; i++)
         v.push_back(r->result[i]);
 
+    delete(r);
     return v;
   }
 
@@ -192,7 +193,9 @@ namespace kuzzleio {
     shards_result *r = kuzzle_refresh_index(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
-    return r->result;
+    shards* ret = r->result;
+    delete(r);
+    return ret;
   }
 
   // java wrapper for this method is in typemap.i
@@ -200,7 +203,9 @@ namespace kuzzleio {
     date_result *r = kuzzle_now(_kuzzle, options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
-    return r->result;
+    long long ret = r->result;
+    delete(r);
+    return ret;
   }
 
   Kuzzle* Kuzzle::replayQueue() {
@@ -238,9 +243,22 @@ namespace kuzzleio {
     return this;
   }
 
-  json_object* Kuzzle::updateSelf(json_object* content, query_options* options) {
-    json_result *r = kuzzle_update_self();
-    
+  json_object* Kuzzle::updateSelf(user_data* content, query_options* options) {
+    json_result *r = kuzzle_update_self(_kuzzle, content, options);
+    if (r->error != NULL)
+      throwExceptionFromStatus(r);
+    json_object* ret = r->result;
+    delete(r);
+    return ret;
+  }
+
+  user* Kuzzle::whoAmI() {
+    user_result *r = kuzzle_who_am_i(_kuzzle);
+    if (r->error != NULL)
+      throwExceptionFromStatus(r);
+    user *ret = r->result;
+    delete(r);
+    return ret;
   }
 
 }

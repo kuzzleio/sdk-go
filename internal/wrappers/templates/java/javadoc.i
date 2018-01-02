@@ -426,3 +426,19 @@
    * @return this
    */
   public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::updateSelf(user_data* content, query_options* options) "
+  /**
+   * Update the currently authenticated user informations
+   *
+   * @param content - Current user infos to update
+   * @param options - Request options
+   * @return updated user
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::updateSelf(user_data* content) "
+  /**
+   * {@link #updateSelf(UserData, Options)}
+   */
+  public";

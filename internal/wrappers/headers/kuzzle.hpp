@@ -194,7 +194,8 @@ namespace kuzzleio {
       Kuzzle* startQueuing();
       Kuzzle* stopQueuing();
       Kuzzle* unsetJwt();
-      json_object* updateSelf(json_object* content, query_options* options=NULL);
+      json_object* updateSelf(user_data* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      user* whoAmI()  Kuz_Throw_KuzzleException;
   };
 }
 
