@@ -18,6 +18,7 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 %rename(UserData) user_data;
+%rename(User, match="class") user;
 
 %ignore *::error;
 %ignore *::status;

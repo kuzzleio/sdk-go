@@ -284,6 +284,17 @@ func kuzzle_get_ssl_connection(k *C.kuzzle) C.bool {
 	return C.bool((*kuzzle.Kuzzle)(k.instance).SslConnection())
 }
 
+//export kuzzle_get_volatile
+func kuzzle_get_volatile(k *C.kuzzle) *C.json_object {
+	r, _ := goToCJson((*kuzzle.Kuzzle)(k.instance).Volatile())
+	return r
+}
+
+//export kuzzle_set_volatile
+func kuzzle_set_volatile(k *C.kuzzle, v *C.json_object) {
+	(*kuzzle.Kuzzle)(k.instance).SetVolatile(JsonCConvert(v).(map[string]interface{}))
+}
+
 func main() {
 
 }

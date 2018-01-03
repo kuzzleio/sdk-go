@@ -243,7 +243,7 @@ namespace kuzzleio {
     return this;
   }
 
-  json_object* Kuzzle::updateSelf(user_data* content, query_options* options) {
+  json_object* Kuzzle::updateSelf(user_data* content, query_options* options) Kuz_Throw_KuzzleException {
     json_result *r = kuzzle_update_self(_kuzzle, content, options);
     if (r->error != NULL)
       throwExceptionFromStatus(r);
@@ -252,13 +252,27 @@ namespace kuzzleio {
     return ret;
   }
 
-  user* Kuzzle::whoAmI() {
+  user* Kuzzle::whoAmI() Kuz_Throw_KuzzleException {
     user_result *r = kuzzle_who_am_i(_kuzzle);
     if (r->error != NULL)
       throwExceptionFromStatus(r);
-    user *ret = r->result;
+    user *ret = r->user;
     delete(r);
     return ret;
+  }
+
+  Kuzzle* Kuzzle::flushQueue() {
+    kuzzle_flush_queue(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setVolatile(json_object *volatiles) {
+    kuzzle_set_volatile(_kuzzle, volatiles);
+    return this;
+  }
+
+  json_object* Kuzzle::getVolatile() {
+    return kuzzle_get_volatile(_kuzzle);
   }
 
 }
