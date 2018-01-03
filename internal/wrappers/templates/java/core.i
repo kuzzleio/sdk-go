@@ -25,7 +25,7 @@
 %ignore *::stack;
 
 %{
-#include "core.cpp"
+#include "kuzzle.cpp"
 %}
 
 %include "exceptions.i"
@@ -122,4 +122,4 @@ struct json_object { };
     }
 }
 
-%include "core.cpp"
+%include "kuzzle.cpp"
