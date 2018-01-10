@@ -5,6 +5,7 @@ package main
 	#include "kuzzlesdk.h"
 */
 import "C"
+import "fmt"
 
 //export kuzzle_collection_count
 func kuzzle_collection_count(c *C.collection, searchFilters *C.search_filters, options *C.query_options) *C.int_result {
@@ -20,6 +21,7 @@ func kuzzle_collection_create_document(c *C.collection, id *C.char, document *C.
 
 //export kuzzle_collection_delete_document
 func kuzzle_collection_delete_document(c *C.collection, id *C.char, options *C.query_options) *C.string_result {
+	fmt.Printf("%s\n", C.GoString(id))
 	res, err := cToGoCollection(c).DeleteDocument(C.GoString(id), SetQueryOptions(options))
 	return goToCStringResult(&res, err)
 }

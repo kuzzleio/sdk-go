@@ -8,11 +8,12 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"unsafe"
+
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
-	"unsafe"
 )
 
 func cToGoControllers(c *C.controllers) (*types.Controllers, error) {
@@ -151,17 +152,22 @@ func cToGoSpecification(cSpec *C.specification) *types.Specification {
 }
 
 func cToGoDocument(c *C.collection, cDoc *C.document) *collection.Document {
-	gDoc := cToGoCollection(c).Document()
-	gDoc.Id = C.GoString(cDoc.id)
-	gDoc.Index = C.GoString(cDoc.index)
-	gDoc.Meta = cToGoKuzzleMeta(cDoc.meta)
-	gDoc.Shards = cToGoShards(cDoc.shards)
-	gDoc.Content = []byte(C.GoString(C.json_object_to_json_string(cDoc.content)))
-	gDoc.Version = int(cDoc.version)
-	gDoc.Result = C.GoString(cDoc.result)
-	gDoc.Collection = C.GoString(cDoc.collection)
-	gDoc.Created = bool(cDoc.created)
-
+	gDoc := ((*collection.Document)(cDoc.instance))
+	/*
+		gDoc.Id = C.GoString(cDoc.id)
+		gDoc.Index = C.GoString(cDoc.index)
+		if cDoc.meta != nil {
+			gDoc.Meta = cToGoKuzzleMeta(cDoc.meta)
+		}
+		if cDoc.shards != nil {
+			gDoc.Shards = cToGoShards(cDoc.shards)
+		}
+		gDoc.Content = []byte(C.GoString(C.json_object_to_json_string(cDoc.content)))
+		gDoc.Version = int(cDoc.version)
+		gDoc.Result = C.GoString(cDoc.result)
+		gDoc.Collection = C.GoString(cDoc.collection)
+		gDoc.Created = bool(cDoc.created)
+	*/
 	return gDoc
 }
 

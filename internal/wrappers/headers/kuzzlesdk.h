@@ -200,12 +200,14 @@ typedef struct {
 } shards;
 
 typedef struct {
+    void *instance;
     char *index;
     char *collection;
     kuzzle *kuzzle;
 } collection;
 
 typedef struct {
+    void *instance;
     char *id;
     char *index;
     meta *meta;

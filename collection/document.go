@@ -2,8 +2,9 @@ package collection
 
 import (
 	"encoding/json"
-	"github.com/kuzzleio/sdk-go/types"
 	"strconv"
+
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type IDocument interface {
@@ -29,6 +30,18 @@ type Document struct {
 }
 
 type DocumentContent map[string]interface{}
+
+/*
+ * Instanciate a new document
+ */
+func NewDocument(col *Collection, id string) *Document {
+	return &Document{
+		collection: col,
+		Id:         id,
+		Collection: col.collection,
+		Index:      col.index,
+	}
+}
 
 func (documentContent *DocumentContent) ToString() string {
 	s, _ := json.Marshal(documentContent)
