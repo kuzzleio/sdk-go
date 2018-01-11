@@ -153,21 +153,6 @@ func cToGoSpecification(cSpec *C.specification) *types.Specification {
 
 func cToGoDocument(c *C.collection, cDoc *C.document) *collection.Document {
 	gDoc := ((*collection.Document)(cDoc.instance))
-	/*
-		gDoc.Id = C.GoString(cDoc.id)
-		gDoc.Index = C.GoString(cDoc.index)
-		if cDoc.meta != nil {
-			gDoc.Meta = cToGoKuzzleMeta(cDoc.meta)
-		}
-		if cDoc.shards != nil {
-			gDoc.Shards = cToGoShards(cDoc.shards)
-		}
-		gDoc.Content = []byte(C.GoString(C.json_object_to_json_string(cDoc.content)))
-		gDoc.Version = int(cDoc.version)
-		gDoc.Result = C.GoString(cDoc.result)
-		gDoc.Collection = C.GoString(cDoc.collection)
-		gDoc.Created = bool(cDoc.created)
-	*/
 	return gDoc
 }
 

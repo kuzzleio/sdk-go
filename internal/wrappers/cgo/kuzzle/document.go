@@ -7,7 +7,6 @@ package main
 */
 import "C"
 import (
-	"fmt"
 	"unsafe"
 
 	col "github.com/kuzzleio/sdk-go/collection"
@@ -37,6 +36,7 @@ func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.
 	}
 
 	registerDocument(doc)
+	d._collection = c
 	d.instance = unsafe.Pointer(doc)
 }
 
@@ -81,9 +81,13 @@ func kuzzle_document_exists(d *C.document, options *C.query_options) *C.bool_res
 
 //export kuzzle_document_delete
 func kuzzle_document_delete(d *C.document, options *C.query_options) *C.string_result {
-	fmt.Printf("-- %s %s\n", (*col.Document)(d.instance).Index, (*col.Document)(d.instance).Collection)
 	res, err := (*col.Document)(d.instance).Delete(SetQueryOptions(options))
 	return goToCStringResult(&res, err)
+}
+
+//export kuzzle_document_set_content
+func kuzzle_document_set_content(d *C.document, content *C.json_object, replace C.bool) {
+	(*col.Document)(d.instance).SetContent(JsonCConvert(content).(map[string]interface{}), bool(replace))
 }
 
 // Allocates memory for result, not document
