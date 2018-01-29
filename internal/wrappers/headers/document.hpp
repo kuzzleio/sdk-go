@@ -24,6 +24,7 @@ namespace kuzzleio {
             Document* refresh(query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* save(query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* setContent(json_object* content, bool replace=false);
+            json_object* getContent();
     };
 }
 

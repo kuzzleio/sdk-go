@@ -62,4 +62,8 @@ namespace kuzzleio {
         kuzzle_document_set_content(_document, content, replace);
         return this;
     }
+
+    json_object* Document::getContent() {
+        return kuzzle_document_get_content(_document);
+    }
 }

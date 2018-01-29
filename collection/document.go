@@ -163,7 +163,9 @@ func (d *Document) SetContent(content DocumentContent, replace bool) *Document {
 		json.Unmarshal(d.Content, &source)
 
 		for attr, value := range content {
-			source[attr] = value
+			if source[attr] == nil {
+				source[attr] = value
+			}
 		}
 
 		d.Content, _ = json.Marshal(source)

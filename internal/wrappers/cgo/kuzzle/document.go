@@ -90,6 +90,12 @@ func kuzzle_document_set_content(d *C.document, content *C.json_object, replace 
 	(*col.Document)(d.instance).SetContent(JsonCConvert(content).(map[string]interface{}), bool(replace))
 }
 
+//export kuzzle_document_get_content
+func kuzzle_document_get_content(d *C.document) *C.json_object {
+	r, _ := goToCJson((*col.Document)(d.instance).Content)
+	return r
+}
+
 // Allocates memory for result, not document
 func currentDocumentResult(d *C.document, err error) *C.document_result {
 	result := (*C.document_result)(C.calloc(1, C.sizeof_document_result))
