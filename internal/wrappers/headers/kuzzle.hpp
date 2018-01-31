@@ -10,9 +10,6 @@
 namespace kuzzleio {
 
   class Kuzzle {
-    private:
-      std::vector<kuzzle_event_listener>
-
     public:
       kuzzle *_kuzzle;
           
