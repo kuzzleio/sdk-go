@@ -9,6 +9,12 @@ namespace kuzzleio {
             virtual ~NotificationListener(){};
             virtual void onMessage(notification_result*) const = 0;
     };
+
+    class EventListener {
+        public:
+            virtual ~EventListener(){};
+            virtual void trigger(json_object*, json_object*);
+    };
 }
 
 #endif
