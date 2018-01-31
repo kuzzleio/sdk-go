@@ -3,15 +3,16 @@ package websocket
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+	"sync"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
-	"net/url"
-	"sync"
-	"time"
 )
 
 const (
@@ -29,7 +30,7 @@ type webSocket struct {
 	subscriptions  *types.RoomList
 	lastUrl        string
 	wasConnected   bool
-	eventListeners map[int]chan<- interface{}
+	eventListeners map[int]map[chan<- interface{}]bool
 
 	retrying              bool
 	stopRetryingToConnect bool
@@ -73,7 +74,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
-		eventListeners:        make(map[int]chan<- interface{}),
+		eventListeners:        make(map[int]map[chan<- interface{}]bool),
 		requestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
@@ -236,8 +237,8 @@ func (ws *webSocket) cleanQueue() {
 	if ws.queueMaxSize > 0 && len(ws.offlineQueue) > ws.queueMaxSize {
 		for len(ws.offlineQueue) > ws.queueMaxSize {
 			eventListener := ws.eventListeners[event.OfflineQueuePop]
-			if eventListener != nil {
-				ws.eventListeners[event.OfflineQueuePop] <- ws.offlineQueue[0]
+			for c := range eventListener {
+				c <- ws.offlineQueue[0]
 			}
 			ws.offlineQueue = ws.offlineQueue[1:]
 		}
@@ -303,15 +304,16 @@ func (ws *webSocket) listen() {
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
 func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
-	ws.eventListeners[event] = channel
+	ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+	ws.eventListeners[event][channel] = true
 }
 
 // Removes all listeners, either from all events and close channels
 func (ws *webSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
 		if event == k || event == -1 {
-			if ws.eventListeners[k] != nil {
-				close(ws.eventListeners[k])
+			for c := range ws.eventListeners[k] {
+				close(c)
 			}
 			delete(ws.eventListeners, k)
 		}
@@ -319,14 +321,14 @@ func (ws *webSocket) RemoveAllListeners(event int) {
 }
 
 // Removes a listener from an event.
-func (ws *webSocket) RemoveListener(event int) {
-	delete(ws.eventListeners, event)
+func (ws *webSocket) RemoveListener(event int, c chan<- interface{}) {
+	delete(ws.eventListeners[event], c)
 }
 
 // Emit an event to all registered listeners
 func (ws *webSocket) EmitEvent(event int, arg interface{}) {
-	if ws.eventListeners[event] != nil {
-		ws.eventListeners[event] <- arg
+	for c := range ws.eventListeners[event] {
+		c <- arg
 	}
 }
 

@@ -1,71 +1,27 @@
-// Statistics[]
-%ignore all_statistics_result::result;
-%typemap(javacode) struct all_statistics_result %{
-  public Statistics[] getResult() {
-    Statistics[] result = new Statistics[(int)getResult_length()];
-    for (int i = 0; i < result.length; ++i) {
-      result[i] = getResult(i);
-    }
-    return result;
+%rename (_now) kuzzleio::Kuzzle::now(query_options*);
+%rename (_now) kuzzleio::Kuzzle::now();
+
+%javamethodmodifiers kuzzleio::Kuzzle::now(query_options* options) "private";
+%javamethodmodifiers kuzzleio::Kuzzle::now() "private";
+%typemap(javacode) kuzzleio::Kuzzle %{
+  /**
+   * {@link #now(QueryOptions)}
+   */
+  public java.util.Date now() {
+    long res = _now();
+
+    return new java.util.Date(res);
+  }
+
+  /**
+   * Returns the current Kuzzle UTC timestamp
+   *
+   * @param options - Request options
+   * @return a DateResult
+   */
+  public java.util.Date now(QueryOptions options) {
+    long res = _now(options);
+
+    return new java.util.Date(res);
   }
 %}
-
-%javamethodmodifiers all_statistics_result::getResult(size_t pos) "private";
-%extend all_statistics_result {
-    statistics *getResult(size_t pos) {
-        return $self->result + pos;
-    }
-}
-
-// CollectionsList[]
-%ignore collection_entry_result::result;
-%typemap(javacode) struct collection_entry_result %{
-  public CollectionsList[] getResult() {
-    CollectionsList[] result = new CollectionsList[(int)getResult_length()];
-    for (int i = 0; i < result.length; ++i) {
-      result[i] = getResult(i);
-    }
-    return result;
-  }
-%}
-
-%javamethodmodifiers collection_entry_result::getResult(size_t pos) "private";
-%extend collection_entry_result {
-    collection_entry *getResult(size_t pos) {
-        return $self->result + pos;
-    }
-}
-
-// String[]
-%ignore string_array_result::result;
-%typemap(javacode) struct string_array_result %{
-  public String[] getResult() {
-    String[] result = new String[(int)getResult_length()];
-    for (int i = 0; i < result.length; ++i) {
-      result[i] = getResult(i);
-    }
-    return result;
-  }
-%}
-
-%javamethodmodifiers string_array_result::getResult(size_t pos) "private";
-%extend string_array_result {
-    char *getResult(size_t pos) {
-        return *$self->result + pos;
-    }
-}
-
-// Date
-%ignore date_result::result;
-%typemap(javacode) struct date_result %{
-  public java.util.Date getResult() {
-    return new java.util.Date(getDateResult());
-  }
-%}
-
-%javamethodmodifiers date_result::getDateResult() "private";
-%extend date_result {
-    long long getDateResult() {
-        return $self->result;
-    }
-}

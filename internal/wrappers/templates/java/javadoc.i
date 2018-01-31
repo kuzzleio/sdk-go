@@ -1,4 +1,7 @@
-%javamethodmodifiers kuzzle::kuzzle(char*) "
+%typemap(javaimports) kuzzleio::Kuzzle "
+/* The type Kuzzle. */"
+
+%javamethodmodifiers kuzzleio::Kuzzle::Kuzzle(const std::string&) "
   /**
    * Constructor
    *
@@ -6,7 +9,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::kuzzle(char*, options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::Kuzzle(const std::string&, options*) "
   /**
    * Constructor
    *
@@ -15,7 +18,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::checkToken(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::checkToken(const std::string& token) "
   /**
    * Check an authentication token validity
    *
@@ -24,7 +27,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::connect() "
+%javamethodmodifiers kuzzleio::Kuzzle::connect() "
   /**
    * Connects to a Kuzzle instance using the provided host and port.
    *
@@ -32,7 +35,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::createIndex(char*, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::createIndex(const std::string&, query_options*) "
   /**
    * Create a new data index
    *
@@ -42,13 +45,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::createIndex(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::createIndex(const std::string&) "
   /**
    * {@link #createIndex(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::createMyCredentials(char*, json_object*, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::createMyCredentials(const std::string&, json_object*, query_options*) "
   /**
    * Create credentials of the specified strategy for the current user.
    *
@@ -59,13 +62,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::createMyCredentials(char*, json_object*) "
+%javamethodmodifiers kuzzleio::Kuzzle::createMyCredentials(const std::string&, json_object*) "
   /**
    * {@link #createIndex(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::deleteMyCredentials(char*, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::deleteMyCredentials(const std::string&, query_options*) "
   /**
    * Delete credentials of the specified strategy for the current user.
    *
@@ -75,13 +78,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::deleteMyCredentials(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::deleteMyCredentials(const std::string&) "
   /**
    * {@link #deleteMyCredentials(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getMyCredentials(char *strategy, query_options *options) "
+%javamethodmodifiers kuzzleio::Kuzzle::getMyCredentials(const std::string& strategy, query_options *options) "
   /**
    * Get credential information of the specified strategy for the current user.
    *
@@ -91,13 +94,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getMyCredentials(char *strategy) "
+%javamethodmodifiers kuzzleio::Kuzzle::getMyCredentials(const std::string& strategy) "
   /**
-   * {@link #getMyCredentials(String, QueryOptions, ResponseListener)}
+   * {@link #getMyCredentials(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::updateMyCredentials(char *strategy, json_object* credentials, query_options *options) "
+%javamethodmodifiers kuzzleio::Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) "
   /**
    * Update credentials of the specified strategy for the current user.
    *
@@ -108,13 +111,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::updateMyCredentials(char *strategy, json_object* credentials) "
+%javamethodmodifiers kuzzleio::Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials) "
   /**
-   * {@link #updateMyCredentials(String, JSONObject, QueryOptions)}
+   * {@link #updateMyCredentials(String, JsonObject, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::validateMyCredentials(char *strategy, json_object* credentials, query_options* options) "
+%javamethodmodifiers kuzzleio::Kuzzle::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) "
   /**
    * Validate credentials of the specified strategy for the current user.
    *
@@ -125,13 +128,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::validateMyCredentials(char *strategy, json_object* credentials) "
+%javamethodmodifiers kuzzleio::Kuzzle::validateMyCredentials(const std::string& strategy, json_object* credentials) "
   /**
-   * {@link #validateMyCredentials(String, JSONObject, QueryOptions)}
+   * {@link #validateMyCredentials(String, JsonObject, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::logout() "
+%javamethodmodifiers kuzzleio::Kuzzle::logout() "
   /**
    * Logout method
    *
@@ -139,7 +142,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::login(char*, json_object*, int) "
+%javamethodmodifiers kuzzleio::Kuzzle::login(const std::string&, json_object*, int) "
   /**
    * Log-in Strategy name to use for the authentication
    *
@@ -150,7 +153,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::login(char*, json_object*) "
+%javamethodmodifiers kuzzleio::Kuzzle::login(const std::string&, json_object*) "
   /**
    * Log-in Strategy name to use for the authentication
    *
@@ -159,7 +162,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::login(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::login(const std::string&) "
   /**
    * Log-in Strategy name to use for the authentication
    *
@@ -167,7 +170,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::login(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::login(const std::string&) "
   /**
    * Get all Kuzzle usage statistics frames
    *
@@ -176,7 +179,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getAllStatistics(query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getAllStatistics(query_options*) "
   /**
    * Get all Kuzzle usage statistics frames
    *
@@ -185,13 +188,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getAllStatistics() "
+%javamethodmodifiers kuzzleio::Kuzzle::getAllStatistics() "
   /**
    * {@link #getAllStatistics(QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getStatistics(unsigned long, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getStatistics(unsigned long, query_options*) "
   /**
    * Get Kuzzle usage statistics
    *
@@ -200,13 +203,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getStatistics(unsigned long) "
+%javamethodmodifiers kuzzleio::Kuzzle::getStatistics(unsigned long) "
   /**
    * {@link #getStatistics(QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getAutoRefresh(char*, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getAutoRefresh(const std::string&, query_options*) "
   /**
    * Gets the autoRefresh value for the provided data index name
    *
@@ -215,19 +218,19 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getAutoRefresh(char*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getAutoRefresh(const std::string&) "
   /**
    * {@link #getAutoRefresh(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getAutoRefresh() "
+%javamethodmodifiers kuzzleio::Kuzzle::getAutoRefresh() "
   /**
    * {@link #getAutoRefresh(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getJwt() "
+%javamethodmodifiers kuzzleio::Kuzzle::getJwt() "
   /**
    * Authentication token getter
    *
@@ -235,7 +238,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getMyRights(query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getMyRights(query_options*) "
   /**
    * Gets the rights array for the currently logged user.
    *
@@ -244,13 +247,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getMyRights() "
+%javamethodmodifiers kuzzleio::Kuzzle::getMyRights() "
   /**
    * {@link #getMyRights(QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::getServerInfo(query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::getServerInfo(query_options*) "
   /**
    * Gets server info.
    *
@@ -259,13 +262,13 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::getServerInfo() "
+%javamethodmodifiers kuzzleio::Kuzzle::getServerInfo() "
   /**
    * {@link #getServerInfo(QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::listCollections(char *, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::listCollections(const std::string&, query_options*) "
   /**
    * List data collections
    *
@@ -275,19 +278,19 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::listCollections(char *) "
+%javamethodmodifiers kuzzleio::Kuzzle::listCollections(const std::string&) "
   /**
    * {@link #listCollections(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::listCollections() "
+%javamethodmodifiers kuzzleio::Kuzzle::listCollections() "
   /**
    * {@link #listCollections(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::listIndexes(query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::listIndexes(query_options*) "
   /**
    * List data indexes
    *
@@ -295,26 +298,35 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::listIndexes() "
+%javamethodmodifiers kuzzleio::Kuzzle::listIndexes() "
   /**
    * {@link #listIndexes(QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::disconnect() "
+%javamethodmodifiers kuzzleio::Kuzzle::disconnect() "
   /**
    * Disconnect from Kuzzle and invalidate this instance.
    * Does not fire a disconnected event.
    */
   public";
 
-%javamethodmodifiers kuzzle::logout() "
+%javamethodmodifiers kuzzleio::Kuzzle::logout() "
   /**
    * Logout method
    */
   public";
 
-%javamethodmodifiers kuzzle::query(kuzzle_request*, query_options*) "
+%javamethodmodifiers kuzzleio::Kuzzle::removeListener(enum Event) "
+  /**
+   * Removes a listener from an event.
+   *
+   * @param event - Event name
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::query(kuzzle_request*, query_options*) "
   /**
    * This is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
    * Base method used to send queries to Kuzzle
@@ -325,49 +337,33 @@
    */
   public";
 
-%javamethodmodifiers kuzzle::query(kuzzle_request*) "
+%javamethodmodifiers kuzzleio::Kuzzle::query(kuzzle_request*) "
   /**
-   * {@link #query(KuzzleResponse, QueryOptions)}
+   * {@link #query(KuzzleRequest, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::refreshIndex(char* index, query_options* options) "
+%javamethodmodifiers kuzzleio::Kuzzle::refreshIndex(const std::string& index, query_options* options) "
   /**
    * Forces the default data index to refresh on each modification
    *
    * @param options - Request options
-   * @param listener - Response callback listener
    * @return this
    */
   public";
 
-%javamethodmodifiers kuzzle::refreshIndex(char* index) "
+%javamethodmodifiers kuzzleio::Kuzzle::refreshIndex(const std::string& index) "
   /**
    * {@link #refreshIndex(String, QueryOptions)}
    */
   public";
 
-%javamethodmodifiers kuzzle::removeListener(enum Event) "
+%javamethodmodifiers kuzzleio::Kuzzle::removeListener(enum Event) "
   /**
    * Removes a listener from an event.
    *
    * @param event - Event name
    * @return this
-   */
-  public";
-
-%javamethodmodifiers kuzzle::now(query_options* options) "
-  /**
-   * Returns the current Kuzzle UTC timestamp
-   *
-   * @param options - Request options
-   * @return a DateResult
-   */
-  public";
-
-%javamethodmodifiers kuzzle::now(query_options* options) "
-  /**
-   * {@link #now(QueryOptions)}
    */
   public";
 

@@ -20,6 +20,9 @@ import (
 // map which stores instances to keep references in case the gc passes
 var instances map[interface{}]interface{}
 
+// map which stores channel and function's pointers adresses for listeners
+var listeners_list map[uintptr]chan<- interface{}
+
 // register new instance to the instances map
 func registerKuzzle(instance interface{}) {
 	instances[instance] = nil
@@ -37,6 +40,10 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 
 	if instances == nil {
 		instances = make(map[interface{}]interface{})
+	}
+
+	if listeners_list == nil {
+		listeners_list = make(map[uintptr]chan<- interface{})
 	}
 
 	opts := SetOptions(options)
@@ -140,6 +147,7 @@ func kuzzle_stop_queuing(k *C.kuzzle) {
 func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 	c := make(chan interface{})
 
+	listeners_list[uintptr(unsafe.Pointer(cb))] = c
 	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
 	go func() {
 		res := <-c
@@ -156,8 +164,13 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 }
 
 //export kuzzle_remove_listener
-func kuzzle_remove_listener(k *C.kuzzle, event C.int) {
-	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event))
+func kuzzle_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
+	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event), listeners_list[uintptr(cb)])
+}
+
+//export kuzzle_remove_all_listeners
+func kuzzle_remove_all_listeners() {
+
 }
 
 //export kuzzle_get_auto_queue

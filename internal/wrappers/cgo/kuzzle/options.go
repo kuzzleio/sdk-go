@@ -62,7 +62,10 @@ func SetQueryOptions(options *C.query_options) (opts types.QueryOptions) {
 	opts.SetRefresh(C.GoString(options.refresh))
 	opts.SetIfExist(C.GoString(options.if_exist))
 	opts.SetRetryOnConflict(int(options.retry_on_conflict))
-	opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))
+	volatiles := JsonCConvert(options.volatiles)
+	if volatiles != nil {
+		opts.SetVolatile(volatiles.(map[string]interface{}))
+	}
 
 	return
 }
