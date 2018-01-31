@@ -4,6 +4,7 @@
 #include "exceptions.hpp"
 #include "core.hpp"
 #include <string>
+#include <iostream>
 
 #include <vector>
 

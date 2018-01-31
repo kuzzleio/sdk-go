@@ -42,13 +42,13 @@ func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.
 
 //export kuzzle_document_subscribe
 // TODO loop and close on Unsubscribe
-func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener) {
+func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) {
 	c := make(chan *types.KuzzleNotification)
 	cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c
-		C.kuzzle_notify(cb, goToCNotificationResult(res))
+		C.kuzzle_notify(cb, goToCNotificationResult(res), data)
 	}()
 }
 

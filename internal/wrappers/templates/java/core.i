@@ -27,6 +27,7 @@
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
+#include "room.cpp"
 #include "document.cpp"
 %}
 
@@ -128,4 +129,5 @@ struct json_object { };
 
 %include "kuzzle.cpp"
 %include "collection.cpp"
+%include "room.cpp"
 %include "document.cpp"

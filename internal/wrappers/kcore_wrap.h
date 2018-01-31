@@ -11,5 +11,20 @@
 #ifndef SWIG_kcore_WRAP_H_
 #define SWIG_kcore_WRAP_H_
 
+class SwigDirector_NotificationListener : public kuzzleio::NotificationListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_NotificationListener(JNIEnv *jenv);
+    virtual ~SwigDirector_NotificationListener();
+    virtual void onMessage(notification_result *arg0) const;
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<1> swig_override;
+};
+
 
 #endif

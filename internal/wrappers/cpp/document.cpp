@@ -53,7 +53,7 @@ namespace kuzzleio {
         document_result *r = kuzzle_document_save(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-        //Document* ret = new Document(_collection, r->result->id, r->result->content);
+        Document* ret = new Document(_collection, r->result->id, r->result->content);
         delete(r);
         return this;
     }
@@ -65,5 +65,20 @@ namespace kuzzleio {
 
     json_object* Document::getContent() {
         return kuzzle_document_get_content(_document);
+    }
+
+    void call_cb(notification_result* res, void* data) {
+        ((Document*)data)->getListener()->onMessage(res);
+    }
+
+    Room* Document::subscribe(NotificationListener* listener, room_options* options) {
+        _listener_instance = listener;
+        kuzzle_document_subscribe(_document, options, &call_cb, this);
+        //TODO return a room from kuzzle_document_subscribe once implemented
+        return NULL;
+    }
+
+    NotificationListener* Document::getListener() {
+        return _listener_instance;
     }
 }
