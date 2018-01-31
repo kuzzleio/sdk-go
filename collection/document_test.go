@@ -3,13 +3,14 @@ package collection_test
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestDocumentSetContent(t *testing.T) {
@@ -27,7 +28,7 @@ func TestDocumentSetContent(t *testing.T) {
 		},
 	}, false)
 
-	assert.Equal(t, string(json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"cena"}}`))), string(d.Content))
+	assert.Equal(t, string(json.RawMessage([]byte(`{"foo":"bar","subfield":{"john":"smith"}}`))), string(d.Content))
 }
 
 func ExampleDocument_SetContent() {
