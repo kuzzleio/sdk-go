@@ -19,8 +19,8 @@ static void kuzzle_notify(kuzzle_notification_listener f, notification_result* r
     f(res, data);
 }
 
-static void kuzzle_trigger_event(kuzzle_event_listener f, json_object* res) {
-    f(res);
+static void kuzzle_trigger_event(int event, kuzzle_event_listener f, json_object* res, void* data) {
+    f(event, res, data);
 }
 
 static bool kuzzle_filter_query(kuzzle_queue_filter f, const char *rq) {

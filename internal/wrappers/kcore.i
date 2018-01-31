@@ -15,8 +15,6 @@
 %define _Complex
 %enddef
 
-%feature("director") NotificationListener;
-
 %include "kuzzlesdk.h"
 %include "kuzzle.h"
 %include "listeners.hpp"

@@ -32,7 +32,7 @@ enum Event {
     ERROR
 };
 
-typedef void (*kuzzle_event_listener)(json_object*);
+typedef void (*kuzzle_event_listener)(int, json_object*, void*);
 
 //define a request
 typedef struct {

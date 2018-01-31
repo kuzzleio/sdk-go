@@ -145,7 +145,7 @@ func kuzzle_stop_queuing(k *C.kuzzle) {
 
 //export kuzzle_add_listener
 // TODO loop and close on Unsubscribe
-func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
+func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.Pointer) {
 	c := make(chan interface{})
 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
@@ -160,7 +160,7 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 		jsonRes = C.json_tokener_parse(buffer)
 		C.free(unsafe.Pointer(buffer))
 
-		C.kuzzle_trigger_event(cb, jsonRes)
+		C.kuzzle_trigger_event(e, cb, jsonRes, data)
 	}()
 }
 

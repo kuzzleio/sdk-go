@@ -3,20 +3,25 @@
 
 #include "exceptions.hpp"
 #include "core.hpp"
+#include "listeners.hpp"
 #include <string>
 #include <iostream>
-
 #include <vector>
+#include <map>
 
 namespace kuzzleio {
 
   class Kuzzle {
+    private:
+      std::map<int, EventListener*>  _listener_instances;
+
     public:
       kuzzle *_kuzzle;
           
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
+      Kuzzle* addListener(Event e, EventListener* listener);
       token_validity* checkToken(const std::string& token);
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -53,6 +58,8 @@ namespace kuzzleio {
       Kuzzle* flushQueue();
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);
+      std::map<int, EventListener*> getListeners();
+      Kuzzle* removeListener(Event e, );
   };
 }
 

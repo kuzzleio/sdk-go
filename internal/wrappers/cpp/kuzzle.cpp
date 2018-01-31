@@ -24,6 +24,21 @@ namespace kuzzleio {
     delete(this->_kuzzle);
   }
 
+  void trigger_event_listener(int event, json_object* res, void* data) {
+    ((Kuzzle*)data)->getListeners()[event]->trigger(res);
+  }
+
+  Kuzzle* Kuzzle::addListener(Event e, EventListener* listener) {
+    kuzzle_add_listener(_kuzzle, e, &trigger_event_listener, this);
+    _listener_instances[e] = listener;
+
+    return this;
+  }
+
+  std::map<int, EventListener*> Kuzzle::getListeners() {
+    return _listener_instances;
+  }
+
   token_validity* Kuzzle::checkToken(const std::string& token) {
     return kuzzle_check_token(_kuzzle, const_cast<char*>(token.c_str()));
   }
