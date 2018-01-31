@@ -2,6 +2,7 @@ package kuzzle
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
@@ -14,7 +15,8 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		return
 	}
 
-	requestId := uuid.NewV4().String()
+	u, _ := uuid.NewV4()
+	requestId := u.String()
 
 	if query.RequestId == "" {
 		query.RequestId = requestId

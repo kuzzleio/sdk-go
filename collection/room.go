@@ -3,6 +3,7 @@ package collection
 import (
 	"container/list"
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
@@ -40,11 +41,12 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 	if opts == nil {
 		opts = types.NewRoomOptions()
 	}
+	u, _ := uuid.NewV4()
 	r := &Room{
 		scope:                opts.Scope(),
 		state:                opts.State(),
 		users:                opts.Users(),
-		id:                   uuid.NewV4().String(),
+		id:                   u.String(),
 		collection:           c,
 		pendingSubscriptions: make(map[string]chan<- *types.KuzzleNotification),
 		SubscribeToSelf:      opts.SubscribeToSelf(),
