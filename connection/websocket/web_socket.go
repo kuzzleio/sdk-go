@@ -313,7 +313,9 @@ func (ws *webSocket) listen() {
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
 func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
-	ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+	if ws.eventListeners[event] == nil {
+		ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+	}
 	ws.eventListeners[event][channel] = true
 }
 
@@ -321,22 +323,12 @@ func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
 func (ws *webSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
 		if event == k || event == -1 {
-			for c := range ws.eventListeners[k] {
-				if c != nil {
-					close(c)
-				}
-			}
 			delete(ws.eventListeners, k)
 		}
 	}
 
 	for k := range ws.eventListenersOnce {
 		if event == k || event == -1 {
-			for c := range ws.eventListenersOnce[k] {
-				if c != nil {
-					close(c)
-				}
-			}
 			delete(ws.eventListenersOnce, k)
 		}
 	}
@@ -349,7 +341,9 @@ func (ws *webSocket) RemoveListener(event int, c chan<- interface{}) {
 }
 
 func (ws *webSocket) Once(event int, channel chan<- interface{}) {
-	ws.eventListenersOnce[event] = make(map[chan<- interface{}]bool)
+	if ws.eventListenersOnce[event] == nil {
+		ws.eventListenersOnce[event] = make(map[chan<- interface{}]bool)
+	}
 	ws.eventListenersOnce[event][channel] = true
 }
 
