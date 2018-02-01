@@ -149,7 +149,7 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	c := make(chan interface{})
 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
-	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
+	(*kuzzle.Kuzzle)(k.instance).AddListener(int(e), c)
 	go func() {
 		res := <-c
 

@@ -1,20 +1,27 @@
 package internal
 
 import (
+	"time"
+
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/mock"
-	"time"
 )
 
 var offlineQueue []*types.QueryObject
 
 type MockedConnection struct {
 	mock.Mock
-	MockSend      func([]byte, types.QueryOptions) *types.KuzzleResponse
-	MockEmitEvent func(int, interface{})
-	MockGetRooms  func() *types.RoomList
-	state         int
+	MockSend               func([]byte, types.QueryOptions) *types.KuzzleResponse
+	MockEmitEvent          func(int, interface{})
+	MockGetRooms           func() *types.RoomList
+	MockAddListener        func(int, chan<- interface{})
+	MockRemoveAllListeners func(int)
+	MockRemoveListener     func(int, chan<- interface{})
+	MockOnce               func(int, chan<- interface{})
+	MockListenerCount      func(int) int
+
+	state int
 }
 
 func (c *MockedConnection) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
@@ -34,7 +41,24 @@ func (c *MockedConnection) Close() error {
 	return nil
 }
 
-func (c *MockedConnection) AddListener(event int, channel chan<- interface{}) {}
+func (c *MockedConnection) AddListener(event int, channel chan<- interface{}) {
+	if c.MockAddListener != nil {
+		c.MockAddListener(event, channel)
+	}
+}
+
+func (c *MockedConnection) Once(event int, channel chan<- interface{}) {
+	if c.MockOnce != nil {
+		c.MockOnce(event, channel)
+	}
+}
+
+func (c *MockedConnection) ListenerCount(event int) int {
+	if c.MockListenerCount != nil {
+		return c.MockListenerCount(event)
+	}
+	return -1
+}
 
 func (c *MockedConnection) State() int {
 	return c.state
@@ -65,11 +89,20 @@ func (c *MockedConnection) Rooms() *types.RoomList {
 
 func (c *MockedConnection) StartQueuing() {}
 
-func (c *MockedConnection) StopQueuing()                                         {}
-func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{}) {}
+func (c *MockedConnection) StopQueuing() {}
+
+func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{}) {
+	if c.MockRemoveListener != nil {
+		c.MockRemoveListener(event, channel)
+	}
+}
 
 func (c *MockedConnection) ReplayQueue() {}
+
 func (c *MockedConnection) RemoveAllListeners(event int) {
+	if c.MockRemoveAllListeners != nil {
+		c.MockRemoveAllListeners(event)
+	}
 }
 
 func (c *MockedConnection) ClearQueue() {

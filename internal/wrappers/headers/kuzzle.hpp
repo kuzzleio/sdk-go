@@ -17,7 +17,7 @@ namespace kuzzleio {
 
     public:
       kuzzle *_kuzzle;
-          
+
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
@@ -59,7 +59,7 @@ namespace kuzzleio {
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);
       std::map<int, EventListener*> getListeners();
-      Kuzzle* removeListener(Event e, );
+      Kuzzle* removeListener(Event e, EventListener* listener);
   };
 }
 
