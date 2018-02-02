@@ -53,9 +53,10 @@ namespace kuzzleio {
         document_result *r = kuzzle_document_save(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
+        std::cout << r->result << std::endl;
         Document* ret = new Document(_collection, r->result->id, r->result->content);
         delete(r);
-        return this;
+        return ret;
     }
 
     Document* Document::setContent(json_object* content, bool replace) {
