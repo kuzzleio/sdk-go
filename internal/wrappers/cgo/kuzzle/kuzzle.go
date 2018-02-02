@@ -164,6 +164,31 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	}()
 }
 
+//export kuzzle_once
+func kuzzle_once(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.Pointer) {
+	c := make(chan interface{})
+
+	listeners_list[uintptr(unsafe.Pointer(cb))] = c
+	(*kuzzle.Kuzzle)(k.instance).Once(int(e), c)
+	go func() {
+		res := <-c
+
+		var jsonRes *C.json_object
+		r, _ := json.Marshal(res)
+
+		buffer := C.CString(string(r))
+		jsonRes = C.json_tokener_parse(buffer)
+		C.free(unsafe.Pointer(buffer))
+
+		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+	}()
+}
+
+//export kuzzle_listener_count
+func kuzzle_listener_count(k *C.kuzzle, event C.int) int {
+	return (*kuzzle.Kuzzle)(k.instance).ListenerCount(int(event))
+}
+
 //export kuzzle_remove_listener
 func kuzzle_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
 	(*kuzzle.Kuzzle)(k.instance).RemoveListener(int(event), listeners_list[uintptr(cb)])

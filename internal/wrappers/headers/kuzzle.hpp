@@ -4,6 +4,7 @@
 #include "exceptions.hpp"
 #include "core.hpp"
 #include "listeners.hpp"
+#include "event_emitter.hpp"
 #include <string>
 #include <iostream>
 #include <vector>
@@ -11,7 +12,7 @@
 
 namespace kuzzleio {
 
-  class Kuzzle {
+  class Kuzzle : public KuzzleEventEmitter {
     private:
       std::map<int, EventListener*>  _listener_instances;
 
@@ -21,7 +22,6 @@ namespace kuzzleio {
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
-      Kuzzle* addListener(Event e, EventListener* listener);
       token_validity* checkToken(const std::string& token);
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -59,7 +59,13 @@ namespace kuzzleio {
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);
       std::map<int, EventListener*> getListeners();
-      Kuzzle* removeListener(Event e, EventListener* listener);
+
+      virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener);
+      virtual KuzzleEventEmitter* removeListener(Event event, EventListener* listener);
+      virtual KuzzleEventEmitter* removeAllListeners(Event event);
+      virtual KuzzleEventEmitter* once(Event event, EventListener* listener);
+      virtual int listenerCount(Event event);
+
   };
 }
 
