@@ -3,19 +3,16 @@ package collection
 import (
 	"container/list"
 	"encoding/json"
+	"time"
+
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
-	"time"
 )
 
 // Renew the subscription. Force a resubscription using the same filters
 // if no new ones are provided.
 // Unsubscribes first if this Room was already listening to events.
-func (room *Room) Renew(filters interface{}, realtimeNotificationChannel chan<- *types.KuzzleNotification, subscribeResponseChan chan<- *types.SubscribeResponse) {
-	if filters != nil {
-		room.filters = filters
-	}
-
+func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNotification, subscribeResponseChan chan<- *types.SubscribeResponse) {
 	if room.collection.Kuzzle.State() != state.Connected {
 		room.realtimeNotificationChannel = realtimeNotificationChannel
 		room.pendingSubscriptions[room.id] = realtimeNotificationChannel

@@ -106,11 +106,22 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 
 //Connect connects to a kuzzle instance
 func (ws *webSocket) Connect() (bool, error) {
-	if !ws.isValidState() {
+	if ws.state != state.Offline {
 		return false, nil
 	}
 
+	ws.state = state.Connecting
+
+	if ws.autoQueue {
+		ws.queuing = true
+	}
+
 	addr := fmt.Sprintf("%s:%d", ws.host, ws.port)
+
+	if ws.lastUrl != addr {
+		ws.wasConnected = false
+		ws.lastUrl = addr
+	}
 
 	var scheme string
 
@@ -121,50 +132,44 @@ func (ws *webSocket) Connect() (bool, error) {
 	}
 
 	u := url.URL{Scheme: scheme, Host: addr}
-	resChan := make(chan []byte)
-
 	socket, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+
 	if err != nil {
-		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
-			for err != nil {
-				ws.retrying = true
-				ws.EmitEvent(event.NetworkError, err)
-				time.Sleep(ws.reconnectionDelay)
-				ws.retrying = false
-				socket, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
-			}
-		}
+		ws.state = state.Offline
 		ws.EmitEvent(event.NetworkError, err)
-		return ws.wasConnected, err
-	}
 
-	if ws.lastUrl != ws.host {
-		ws.wasConnected = false
-		ws.lastUrl = ws.host
-	}
+		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
+			ws.retrying = true
+			time.Sleep(ws.reconnectionDelay)
+			ws.retrying = false
+			ws.Connect()
+		} else {
+			ws.EmitEvent(event.Disconnected, nil)
+		}
 
-	if ws.wasConnected {
-		ws.EmitEvent(event.Reconnected, nil)
-		ws.state = state.Connected
-	} else {
-		ws.EmitEvent(event.Connected, nil)
-		ws.state = state.Connected
+		return false, err
 	}
 
 	ws.ws = socket
+	ws.state = state.Connected
 	ws.stopRetryingToConnect = false
+	ws.queuing = false
 
-	if ws.autoReplay {
-		ws.cleanQueue()
-		ws.dequeue()
+	if ws.wasConnected {
+		ws.EmitEvent(event.Reconnected, nil)
+	} else {
+		ws.wasConnected = true
+		ws.EmitEvent(event.Connected, nil)
 	}
 
-	ws.RenewSubscriptions()
+	resChan := make(chan []byte)
 
 	go func() {
 		for {
 			_, message, err := ws.ws.ReadMessage()
 
+			// TODO: either send a Disconnected event on a proper disconnection,
+			// or a NetworkError one if the socket has been unexpectedly closed
 			if err != nil {
 				close(resChan)
 				ws.ws.Close()
@@ -183,6 +188,8 @@ func (ws *webSocket) Connect() (bool, error) {
 
 	ws.listenChan = resChan
 	go ws.listen()
+	ws.ReplayQueue()
+
 	return ws.wasConnected, err
 }
 
@@ -484,17 +491,6 @@ func (ws *webSocket) State() int {
 
 func (ws *webSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
-}
-
-func (ws *webSocket) RenewSubscriptions() {
-	ws.subscriptions.Range(func(key, value interface{}) bool {
-		value.(*sync.Map).Range(func(key, value interface{}) bool {
-			value.(types.IRoom).Renew(value.(types.IRoom).Filters(), value.(types.IRoom).RealtimeChannel(), value.(types.IRoom).ResponseChannel())
-			return true
-		})
-
-		return true
-	})
 }
 
 func (ws *webSocket) Rooms() *types.RoomList {

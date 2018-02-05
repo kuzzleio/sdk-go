@@ -37,7 +37,7 @@ type Room struct {
 // What it means is that, to subscribe, you provide to Kuzzle a set of matching filters.
 // Once you have subscribed, if a pub/sub message is published matching your filters, or if a matching stored
 // document change (because it is created, updated or deleted), then you'll receive a notification about it.
-func NewRoom(c *Collection, opts types.RoomOptions) *Room {
+func NewRoom(c *Collection, filters interface{}, opts types.RoomOptions) *Room {
 	if opts == nil {
 		opts = types.NewRoomOptions()
 	}
@@ -52,6 +52,7 @@ func NewRoom(c *Collection, opts types.RoomOptions) *Room {
 		SubscribeToSelf:      opts.SubscribeToSelf(),
 		Volatile:             opts.Volatile(),
 		queue:                &list.List{},
+		filters:              filters,
 	}
 	r.queue.Init()
 
