@@ -3,6 +3,8 @@
 
 namespace kuzzleio {
     class Room {
+        room *_instace;
+
         public:
             Room();
     };

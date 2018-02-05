@@ -93,6 +93,10 @@ typedef struct {
     kuzzle_offline_queue_loader loader;
 } kuzzle;
 
+typedef struct {
+    void *instance;
+} room;
+
 //options passed to query()
 typedef struct {
     bool queuable;
