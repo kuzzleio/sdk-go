@@ -107,6 +107,7 @@ func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNoti
 			room.AddListener(event.Disconnected, room.onDisconnect)
 			room.AddListener(event.TokenExpired, room.onTokenExpired)
 			room.AddListener(event.Reconnected, room.onReconnect)
+			room.isListening = true
 		}
 	}()
 }
