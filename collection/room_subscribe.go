@@ -1,38 +1,30 @@
 package collection
 
 import (
-	"container/list"
 	"encoding/json"
-	"time"
 
-	"github.com/kuzzleio/sdk-go/state"
+	"github.com/kuzzleio/sdk-go/event"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Renew the subscription. Force a resubscription using the same filters
 // if no new ones are provided.
 // Unsubscribes first if this Room was already listening to events.
-func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNotification, subscribeResponseChan chan<- *types.SubscribeResponse) {
-	if room.collection.Kuzzle.State() != state.Connected {
-		room.realtimeNotificationChannel = realtimeNotificationChannel
-		room.pendingSubscriptions[room.id] = realtimeNotificationChannel
+func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNotification) {
+	if room.internalState == active {
+		if room.subscribeResponseChan != nil {
+			room.subscribeResponseChan <- &types.SubscribeResponse{Room: room}
+		}
 		return
 	}
 
-	if room.subscribing {
-		room.queue.PushFront(func(e *list.Element) {
-			room.Renew(filters, realtimeNotificationChannel, subscribeResponseChan)
-			room.queue.Remove(e)
-			time.Sleep(1 * time.Second)
-		})
+	if room.internalState == subscribing {
 		return
 	}
 
-	room.Unsubscribe()
-	room.roomId = ""
-	room.subscribing = true
-	room.pendingSubscriptions[room.id] = realtimeNotificationChannel
-	room.realtimeNotificationChannel = realtimeNotificationChannel
+	room.err = nil
+	room.internalState = subscribing
 
 	go func() {
 		result := make(chan *types.KuzzleResponse)
@@ -48,21 +40,31 @@ func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNoti
 			Scope:      room.scope,
 			State:      room.state,
 			Users:      room.users,
-			Body:       filters,
+			Body:       room.filters,
 		}, opts, result)
 
 		res := <-result
 		room.subscribing = false
+		room.internalState = subscribing
 
 		if res.Error != nil {
-			room.queue.Init()
-			if subscribeResponseChan != nil {
-				subscribeResponseChan <- &types.SubscribeResponse{Error: res.Error}
+			if res.Error.Message == "Not Connected" {
+				c := make(chan interface{})
+				room.Once(event.Connected, c)
+				go func() {
+					<-c
+					room.internalState = inactive
+					room.err = nil
+					room.Subscribe(realtimeNotificationChannel)
+				}()
+				return
+			}
+			room.internalState = inactive
+			if room.subscribeResponseChan != nil {
+				room.subscribeResponseChan <- &types.SubscribeResponse{Error: res.Error}
 			}
 			return
 		}
-
-		delete(room.pendingSubscriptions, room.id)
 
 		type RoomResult struct {
 			RequestId string `json:"requestId"`
@@ -76,31 +78,35 @@ func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNoti
 		room.requestId = resRoom.RequestId
 		room.channel = resRoom.Channel
 		room.roomId = resRoom.RoomId
+		room.internalState = active
 
-		room.collection.Kuzzle.RegisterRoom(room.channel, room.id, room)
-		room.dequeue()
+		room.realtimeNotificationChannel = realtimeNotificationChannel
+		room.collection.Kuzzle.RegisterRoom(room)
 
-		if room.requestId != "" && !room.collection.Kuzzle.RequestHistory[room.requestId].IsZero() {
-			if room.SubscribeToSelf {
-				if subscribeResponseChan != nil {
-					subscribeResponseChan <- &types.SubscribeResponse{Room: room}
+		if room.subscribeResponseChan != nil {
+			room.subscribeResponseChan <- &types.SubscribeResponse{Room: room}
+		}
+		if room.isListening {
+			go func() {
+				<-room.onDisconnect
+				room.internalState = inactive
+			}()
+			go func() {
+				<-room.onTokenExpired
+				room.internalState = inactive
+			}()
+			go func() {
+				<-room.onReconnect
+				room.internalState = inactive
+
+				if room.autoResubscribe {
+					room.Subscribe(realtimeNotificationChannel)
 				}
-			}
-			delete(room.collection.Kuzzle.RequestHistory, room.requestId)
-		} else {
-			if subscribeResponseChan != nil {
-				subscribeResponseChan <- &types.SubscribeResponse{Room: room}
-			}
+			}()
+
+			room.AddListener(event.Disconnected, room.onDisconnect)
+			room.AddListener(event.TokenExpired, room.onTokenExpired)
+			room.AddListener(event.Reconnected, room.onReconnect)
 		}
 	}()
-
-	return
-}
-
-func (room *Room) dequeue() {
-	if room.queue.Len() > 0 {
-		for sub := room.queue.Front(); sub != nil; sub = sub.Next() {
-			go sub.Value.(func(e *list.Element))(sub)
-		}
-	}
 }

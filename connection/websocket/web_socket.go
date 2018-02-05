@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/state"
@@ -194,29 +193,32 @@ func (ws *webSocket) Connect() (bool, error) {
 }
 
 func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
-	if ws.state == state.Connected || (options != nil && !options.Queuable()) {
-		ws.emitRequest(&types.QueryObject{
+	queuable := options == nil || options.Queuable()
+	queuable = queuable && ws.queueFilter(query)
+
+	if ws.queuing && queuable {
+		ws.cleanQueue()
+		qo := &types.QueryObject{
+			Timestamp: time.Now(),
+			ResChan:   responseChannel,
+			Query:     query,
+			RequestId: requestId,
+			Options:   options,
+		}
+		ws.offlineQueue = append(ws.offlineQueue, qo)
+		ws.EmitEvent(event.OfflineQueuePush, qo)
+		return nil
+	}
+
+	if ws.state == state.Connected {
+		return ws.emitRequest(&types.QueryObject{
 			Query:     query,
 			ResChan:   responseChannel,
 			RequestId: requestId,
 		})
-	} else if ws.queuing || (options != nil && options.Queuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
-		ws.cleanQueue()
-
-		if ws.queueFilter(query) {
-			qo := &types.QueryObject{
-				Timestamp: time.Now(),
-				ResChan:   responseChannel,
-				Query:     query,
-				RequestId: requestId,
-				Options:   options,
-			}
-			ws.offlineQueue = append(ws.offlineQueue, qo)
-			ws.EmitEvent(event.OfflineQueuePush, qo)
-		}
-	} else {
-		ws.discardRequest(responseChannel, query)
 	}
+
+	ws.discardRequest(responseChannel, query)
 	return nil
 }
 
@@ -261,13 +263,15 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterRoom(roomId, id string, room types.IRoom) {
-	_, ok := ws.subscriptions.Load(roomId)
-	if !ok {
-		s := &sync.Map{}
-		s.Store(id, room)
-		ws.subscriptions.Store(roomId, s)
+func (ws *webSocket) RegisterRoom(room types.IRoom) {
+	rooms, found := ws.subscriptions.Load(room.Channel())
+
+	if !found {
+		rooms = map[string]types.IRoom{}
+		ws.subscriptions.Store(room.Channel(), rooms)
 	}
+
+	rooms.(map[string]types.IRoom)[room.Id()] = room
 }
 
 func (ws *webSocket) UnregisterRoom(roomId string) {
@@ -277,6 +281,7 @@ func (ws *webSocket) UnregisterRoom(roomId string) {
 	}
 }
 
+/*
 func (ws *webSocket) listen() {
 	for {
 		var message types.KuzzleResponse
@@ -314,6 +319,42 @@ func (ws *webSocket) listen() {
 			c.(chan<- *types.KuzzleResponse) <- &message
 			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(m.RequestId)
+		}
+	}
+}
+*/
+
+func (ws *webSocket) listen() {
+	for {
+		msg := <-ws.listenChan
+
+		var message types.KuzzleResponse
+		json.Unmarshal(msg, &message)
+
+		if s, found := ws.subscriptions.Load(message.RoomId); found {
+			var notification types.KuzzleNotification
+			_, fromSelf := ws.requestHistory[message.RequestId]
+
+			json.Unmarshal(msg, &notification)
+
+			for _, room := range s.(map[string]types.IRoom) {
+				channel := room.RealtimeChannel()
+
+				if channel != nil && (!fromSelf || room.SubscribeToSelf()) {
+					channel <- &notification
+				}
+			}
+		} else if c, found := ws.channelsResult.Load(message.RequestId); found {
+			if message.Error != nil && message.Error.Message == "Token expired" {
+				ws.EmitEvent(event.TokenExpired, nil)
+			}
+
+			// If this is a response to a query we simply broadcast the response to the corresponding channel
+			c.(chan<- *types.KuzzleResponse) <- &message
+			close(c.(chan<- *types.KuzzleResponse))
+			ws.channelsResult.Delete(message.RequestId)
+		} else {
+			ws.EmitEvent(event.Discarded, &message)
 		}
 	}
 }

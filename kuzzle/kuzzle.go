@@ -82,13 +82,13 @@ func (k *Kuzzle) Connect() error {
 
 					if err != nil {
 						k.jwt = ""
-						k.socket.EmitEvent(event.JwtExpired, nil)
+						k.socket.EmitEvent(event.TokenExpired, nil)
 						return
 					}
 
 					if !res.Valid {
 						k.jwt = ""
-						k.socket.EmitEvent(event.JwtExpired, nil)
+						k.socket.EmitEvent(event.TokenExpired, nil)
 					}
 				}()
 			}
@@ -107,7 +107,6 @@ func (k *Kuzzle) SetJwt(token string) {
 	k.jwt = token
 
 	if token != "" {
-		k.socket.RenewSubscriptions()
 		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
 	}
 }
@@ -121,8 +120,7 @@ func (k *Kuzzle) UnsetJwt() {
 		k.socket.Rooms().Range(func(key, value interface{}) bool {
 			value.(*sync.Map).Range(func(key, value interface{}) bool {
 				room := value.(types.IRoom)
-				room.Renew(room.Filters(), room.RealtimeChannel(), room.ResponseChannel())
-
+				room.Subscribe(room.RealtimeChannel())
 				return true
 			})
 
@@ -131,8 +129,8 @@ func (k *Kuzzle) UnsetJwt() {
 	}
 }
 
-func (k *Kuzzle) RegisterRoom(roomId, id string, room types.IRoom) {
-	k.socket.RegisterRoom(roomId, id, room)
+func (k *Kuzzle) RegisterRoom(room types.IRoom) {
+	k.socket.RegisterRoom(room)
 }
 
 func (k *Kuzzle) UnregisterRoom(roomId string) {

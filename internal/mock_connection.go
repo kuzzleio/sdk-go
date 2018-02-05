@@ -70,7 +70,7 @@ func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (c *MockedConnection) RegisterRoom(roomId, id string, room types.IRoom) {
+func (c *MockedConnection) RegisterRoom(room types.IRoom) {
 }
 
 func (c *MockedConnection) UnregisterRoom(id string) {}

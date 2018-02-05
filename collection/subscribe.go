@@ -9,7 +9,8 @@ func (dc *Collection) Subscribe(filters interface{}, options types.RoomOptions, 
 	r := NewRoom(dc, filters, options)
 
 	res := make(chan *types.SubscribeResponse)
-	r.Subscribe(realtimeNotificationChannel, res)
+	r.OnDone(res)
+	r.Subscribe(realtimeNotificationChannel)
 
 	return res
 }

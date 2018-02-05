@@ -2,13 +2,14 @@ package collection_test
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestInitRoomWithoutOptions(t *testing.T) {
@@ -20,7 +21,7 @@ func TestInitRoomWithoutOptions(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	r := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil)
+	r := collection.NewRoom(collection.NewCollection(k, "collection", "index"), nil, nil)
 
 	assert.NotNil(t, r)
 }

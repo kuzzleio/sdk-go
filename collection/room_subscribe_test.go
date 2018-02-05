@@ -1,36 +1,16 @@
 package collection
 
 import (
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestRenewNotConnected(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-
-	room := NewRoom(NewCollection(k, "collection", "index"), nil)
-	room.Renew(nil, nil, nil)
-
-	assert.Equal(t, 1, len(room.pendingSubscriptions))
-}
-
-func TestRenewSubscribing(t *testing.T) {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	c.SetState(state.Connected)
-
-	room := NewRoom(NewCollection(k, "collection", "index"), nil)
-	room.subscribing = true
-	room.Renew(nil, nil, nil)
-
-	assert.Equal(t, 1, room.queue.Len())
-}
-
-func TestRenewQueryError(t *testing.T) {
+func TestSubscribeQueryError(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
@@ -42,7 +22,9 @@ func TestRenewQueryError(t *testing.T) {
 	c.SetState(state.Connected)
 
 	subResChan := make(chan *types.SubscribeResponse)
-	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
+	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
+	r.OnDone(subResChan)
+	r.Subscribe(nil)
 
 	res := <-subResChan
 	assert.Equal(t, "ah!", res.Error.Error())
@@ -61,13 +43,15 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 	c.SetState(state.Connected)
 
 	subResChan := make(chan *types.SubscribeResponse)
-	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, subResChan)
+	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
+	r.OnDone(subResChan)
+	r.Subscribe(nil)
 
 	res := <-subResChan
 	assert.Equal(t, "42", res.Room.RoomId())
 }
 
-func TestRenew(t *testing.T) {
+func TestRoomSubscribe(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
 	c := &internal.MockedConnection{
@@ -79,13 +63,13 @@ func TestRenew(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
+	NewRoom(NewCollection(k, "collection", "index"), nil, nil).Subscribe(nil)
 }
 
-func ExampleRoom_Renew() {
+func ExampleRoom_Subscribe() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	NewRoom(NewCollection(k, "collection", "index"), nil).Renew(nil, nil, nil)
+	NewRoom(NewCollection(k, "collection", "index"), nil, nil).Subscribe(nil)
 }

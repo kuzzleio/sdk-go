@@ -3,12 +3,15 @@ package types
 import "sync"
 
 type IRoom interface {
-	Renew(filters interface{}, realtimeNotificationChannel chan<- *KuzzleNotification, subscribeResponseChan chan<- *SubscribeResponse)
-	Unsubscribe()
+	Subscribe(realtimeNotificationChannel chan<- *KuzzleNotification)
+	Unsubscribe() error
 	RealtimeChannel() chan<- *KuzzleNotification
 	ResponseChannel() chan<- *SubscribeResponse
 	RoomId() string
 	Filters() interface{}
+	Channel() string
+	Id() string
+	SubscribeToSelf() bool
 }
 
 type SubscribeResponse struct {
