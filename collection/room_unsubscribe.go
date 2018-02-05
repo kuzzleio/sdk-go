@@ -16,22 +16,6 @@ func (room *Room) Unsubscribe() error {
 	}
 
 	if room.isListening {
-		go func() {
-			<-room.onDisconnect
-			room.internalState = inactive
-		}()
-		go func() {
-			<-room.onTokenExpired
-			room.internalState = inactive
-		}()
-		go func() {
-			<-room.onReconnect
-			room.internalState = inactive
-
-			if room.autoResubscribe {
-				room.Subscribe(room.realtimeNotificationChannel)
-			}
-		}()
 		room.collection.Kuzzle.RemoveListener(event.Disconnected, room.onDisconnect)
 		room.collection.Kuzzle.RemoveListener(event.TokenExpired, room.onTokenExpired)
 		room.collection.Kuzzle.RemoveListener(event.Reconnected, room.onReconnect)
@@ -51,7 +35,7 @@ func (room *Room) Unsubscribe() error {
 			Body:       &body{room.roomId},
 		}
 
-		room.collection.Kuzzle.Query(query, nil, nil)
+		go room.collection.Kuzzle.Query(query, nil, nil)
 	}
 	return nil
 }

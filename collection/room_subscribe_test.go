@@ -54,16 +54,23 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 func TestRoomSubscribe(t *testing.T) {
 	var k *kuzzle.Kuzzle
 
+	done := make(chan bool)
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			roomRaw := []byte(`{"requestId": "rqid", "channel": "foo", "roomId": "42"}`)
 			return &types.KuzzleResponse{Result: roomRaw}
 		},
+		MockAddListener: func(e int, c chan<- interface{}) {
+			done <- true
+		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	NewRoom(NewCollection(k, "collection", "index"), nil, nil).Subscribe(nil)
+	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
+	r.isListening = true
+	r.Subscribe(nil)
+	<-done
 }
 
 func TestRoomSubscribeAlreadyActive(t *testing.T) {
@@ -89,6 +96,28 @@ func TestRoomSubscribeAlreadyActive(t *testing.T) {
 	}()
 	r.Subscribe(nil)
 
+	<-done
+}
+
+func TestRoomSubscribeNotConnected(t *testing.T) {
+	var k *kuzzle.Kuzzle
+
+	done := make(chan bool)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Not Connected"}}
+		},
+		MockOnce: func(e int, c chan<- interface{}) {
+			done <- true
+		},
+	}
+
+	k, _ = kuzzle.NewKuzzle(c, nil)
+	c.SetState(state.Connected)
+
+	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
+
+	r.Subscribe(nil)
 	<-done
 }
 

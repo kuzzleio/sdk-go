@@ -258,11 +258,7 @@ func TestOnDoneError(t *testing.T) {
 }
 
 func TestOnDoneAlreadyActive(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return nil
-		},
-	}
+	c := &internal.MockedConnection{}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
@@ -289,7 +285,7 @@ func TestOnDone(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
-	ch := make(chan<- *types.SubscribeResponse)
+	ch := make(chan *types.SubscribeResponse)
 	r.OnDone(ch)
 
 	r.Subscribe(nil)
