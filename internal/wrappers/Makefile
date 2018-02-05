@@ -15,7 +15,7 @@ CPP = g++
 CPPFLAGS = -g -fPIC
 INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
-LIBS = -lkuzzlesdk -ljson-c -lffi
+LIBS = -lkuzzlesdk -ljson-c
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 

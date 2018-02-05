@@ -3,10 +3,12 @@
 
 namespace kuzzleio {
     class Room {
-        room *_instace;
+        room *_room;
+        Room(){}
 
         public:
-            Room();
+            Room(Collection *c, json_object *filters=NULL, room_options* options=NULL);
+            virtual ~Room();
     };
 }
 

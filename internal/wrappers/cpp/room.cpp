@@ -1,8 +1,14 @@
 #include "room.hpp"
+#include "collection.hpp"
 
 namespace kuzzleio {
-    Room::Room() {
-      this->_kuzzle = new kuzzle();
-      kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
+    Room::Room(Collection *c, json_object *filters, room_options* options) {
+      this->_room = new room();
+      room_new_room(this->_room, c->_collection, filters, options);
     }
+
+    Room::~Room() {
+      unregisterRoom(this->_room);
+      delete(this->_room);
+  }
 }
