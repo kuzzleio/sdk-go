@@ -19,6 +19,7 @@
 %rename(DateResult) date_result;
 %rename(UserData) user_data;
 %rename(User, match="class") user;
+%rename(RoomOptions) room_options;
 
 %ignore *::error;
 %ignore *::status;
@@ -39,6 +40,7 @@
 %include "typemap.i"
 %include "javadoc/kuzzle.i"
 %include "javadoc/document.i"
+%include "javadoc/room.i"
 %include "../../kcore.i"
 
 %include "std_vector.i"

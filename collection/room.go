@@ -122,7 +122,7 @@ func (room *Room) Filters() interface{} {
 }
 
 // ResponseChannel returns the channel handling the subscription request result
-func (room *Room) ResponseChannel() chan<- *types.SubscribeResponse {
+func (room *Room) ResponseChannel() chan *types.SubscribeResponse {
 	return room.subscribeResponseChan
 }
 

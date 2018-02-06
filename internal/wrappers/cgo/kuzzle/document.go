@@ -41,15 +41,26 @@ func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.
 }
 
 //export kuzzle_document_subscribe
-// TODO loop and close on Unsubscribe
-func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) {
+// TODO close on Unsubscribe
+func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) *C.room_result {
 	c := make(chan *types.KuzzleNotification)
-	cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
+	goroom, _ := cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
 
 	go func() {
-		res := <-c
-		C.kuzzle_notify(cb, goToCNotificationResult(res), data)
+		for {
+			res := <-c
+			C.kuzzle_notify(cb, goToCNotificationResult(res), data)
+		}
 	}()
+	<-goroom.ResponseChannel()
+
+	room := (*C.room)(C.calloc(1, C.sizeof_room))
+	room.instance = unsafe.Pointer(goroom)
+	registerRoom(room)
+	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
+
+	result.result = room
+	return result
 }
 
 // Does not re-allocate the document

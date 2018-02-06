@@ -19,6 +19,9 @@ var roomInstances map[interface{}]bool
 
 // register new instance to the instances map
 func registerRoom(instance interface{}) {
+	if roomInstances == nil {
+		roomInstances = make(map[interface{}]bool)
+	}
 	roomInstances[instance] = true
 }
 
@@ -34,10 +37,14 @@ func room_new_room(room *C.room, col *C.collection, filters *C.json_object, opti
 
 	r := collection.NewRoom((*collection.Collection)(col.instance), JsonCConvert(filters), opts)
 
-	if roomInstances == nil {
-		roomInstances = make(map[interface{}]bool)
-	}
-
 	registerRoom(room)
 	room.instance = unsafe.Pointer(r)
+	room.filters = filters
+	room.options = options
+}
+
+//export room_count
+func room_count(room *C.room) *C.int_result {
+	res, err := (*collection.Room)(room.instance).Count()
+	return goToCIntResult(res, err)
 }

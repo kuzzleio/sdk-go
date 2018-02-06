@@ -93,9 +93,27 @@ typedef struct {
     kuzzle_offline_queue_loader loader;
 } kuzzle;
 
+//options passed to room constructor
+typedef struct {
+    char *scope;
+    char *state;
+    char *user;
+    bool subscribe_to_self;
+    json_object *volatiles;
+} room_options;
+
 typedef struct {
     void *instance;
+    json_object *filters;
+    room_options *options;
 } room;
+
+typedef struct {
+  room *result;
+  int status;
+  char *error;
+  char *stack;
+} room_result;
 
 //options passed to query()
 typedef struct {
@@ -111,15 +129,6 @@ typedef struct {
     int retry_on_conflict;
     json_object *volatiles;
 } query_options;
-
-//options passed to room constructor
-typedef struct {
-    char *scope;
-    char *state;
-    char *user;
-    bool subscribe_to_self;
-    json_object *volatiles;
-} room_options;
 
 enum Mode {AUTO, MANUAL};
 //options passed to the Kuzzle() fct

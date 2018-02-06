@@ -890,3 +890,19 @@ func goToCDateResult(goRes int, err error) *C.date_result {
 
 	return result
 }
+
+// Allocates memory
+func goToCRoomResult(err error) *C.room_result {
+	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
+
+	if err != nil {
+		Set_room_result_error(result, err)
+		return result
+	}
+
+	room := (*C.room)(C.calloc(1, C.sizeof_room))
+	room.instance = unsafe.Pointer(room)
+	registerRoom(room)
+	result.result = room
+	return result
+}
