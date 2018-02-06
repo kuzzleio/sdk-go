@@ -24,4 +24,17 @@ namespace kuzzleio {
       delete(r);
       return ret;
     }
+
+    void call_cb(room_result* res, void* data) {
+        ((Room*)data)->getSubscribeListener()->onSubscribe(res);
+    }
+
+    SubscribeListener* Room::getSubscribeListener() {
+        return _listener_instance;
+    }
+
+    Room* Room::onDone(SubscribeListener *listener) {
+        _listener_instance = listener;
+        room_on_done(_room, &call_cb, this);
+    }
 }

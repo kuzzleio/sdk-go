@@ -41,5 +41,20 @@ protected:
     Swig::BoolArray<1> swig_override;
 };
 
+class SwigDirector_SubscribeListener : public kuzzleio::SubscribeListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_SubscribeListener(JNIEnv *jenv);
+    virtual ~SwigDirector_SubscribeListener();
+    virtual void onSubscribe(room_result *arg0) const;
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<1> swig_override;
+};
+
 
 #endif

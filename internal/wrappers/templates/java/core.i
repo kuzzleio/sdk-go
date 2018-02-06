@@ -27,6 +27,7 @@
 
 %feature("director") NotificationListener;
 %feature("director") EventListener;
+%feature("director") SubscribeListener;
 
 %{
 #include "kuzzle.cpp"

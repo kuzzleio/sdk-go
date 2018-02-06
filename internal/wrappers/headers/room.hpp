@@ -4,6 +4,7 @@
 namespace kuzzleio {
     class Room {
         room *_room;
+        SubscribeListener *_listener_instance;
 
         Room(){}
 
@@ -12,6 +13,8 @@ namespace kuzzleio {
             Room(room* r);
             virtual ~Room();
             int count() Kuz_Throw_KuzzleException;
+            SubscribeListener *getSubscribeListener();
+            Room* onDone(SubscribeListener* listener);
     };
 }
 

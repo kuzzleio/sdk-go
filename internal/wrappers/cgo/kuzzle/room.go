@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 /*
@@ -47,4 +48,15 @@ func room_new_room(room *C.room, col *C.collection, filters *C.json_object, opti
 func room_count(room *C.room) *C.int_result {
 	res, err := (*collection.Room)(room.instance).Count()
 	return goToCIntResult(res, err)
+}
+
+//export room_on_done
+func room_on_done(room *C.room, cb C.kuzzle_subscribe_listener, data unsafe.Pointer) {
+	c := make(chan types.SubscribeResponse)
+
+	(*collection.Room)(room.instance).OnDone(c)
+	go func() {
+		res := <-c
+		C.room_on_subscribe(cb, goToCRoomResult(res.Error), data)
+	}()
 }

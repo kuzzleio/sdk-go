@@ -603,5 +603,6 @@ typedef struct collection_entry_result {
 } collection_entry_result;
 
 typedef void (*kuzzle_notification_listener)(notification_result*, void*);
+typedef void (*kuzzle_subscribe_listener)(room_result*, void*);
 
 #endif
