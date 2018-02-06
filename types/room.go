@@ -8,10 +8,10 @@ type SubscribeResponse struct {
 }
 
 type IRoom interface {
-	Subscribe(realtimeNotificationChannel chan<- *KuzzleNotification)
+	Subscribe(realtimeNotificationChannel chan<- KuzzleNotification)
 	Unsubscribe() error
-	RealtimeChannel() chan<- *KuzzleNotification
-	ResponseChannel() chan *SubscribeResponse
+	RealtimeChannel() chan<- KuzzleNotification
+	ResponseChannel() chan SubscribeResponse
 	RoomId() string
 	Filters() interface{}
 	Channel() string

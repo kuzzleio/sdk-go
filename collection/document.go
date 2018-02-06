@@ -59,7 +59,7 @@ func (d *Document) SourceToMap() DocumentContent {
 
 // Subscribe listens to events concerning this document. Has no effect if the document does not have an ID
 // (i.e. if the document has not yet been created as a persisted document).
-func (d *Document) Subscribe(options types.RoomOptions, ch chan<- *types.KuzzleNotification) (*Room, error) {
+func (d *Document) Subscribe(options types.RoomOptions, ch chan<- types.KuzzleNotification) (*Room, error) {
 	if d.Id == "" {
 		return nil, types.NewError("Document.Subscribe: cannot subscribe to a document if no ID has been provided", 400)
 	}

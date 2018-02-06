@@ -35,8 +35,8 @@ type Room struct {
 	subscribing   bool
 
 	// channels
-	realtimeNotificationChannel chan<- *types.KuzzleNotification
-	subscribeResponseChan       chan *types.SubscribeResponse
+	realtimeNotificationChannel chan<- types.KuzzleNotification
+	subscribeResponseChan       chan types.SubscribeResponse
 	onReconnect                 chan interface{}
 	onDisconnect                chan interface{}
 	onTokenExpired              chan interface{}
@@ -102,7 +102,7 @@ func (room *Room) ListenerCount(event int) int {
 }
 
 // RealtimeChannel returns the channel handling the notifications received by this room
-func (room *Room) RealtimeChannel() chan<- *types.KuzzleNotification {
+func (room *Room) RealtimeChannel() chan<- types.KuzzleNotification {
 	return room.realtimeNotificationChannel
 }
 
@@ -122,7 +122,7 @@ func (room *Room) Filters() interface{} {
 }
 
 // ResponseChannel returns the channel handling the subscription request result
-func (room *Room) ResponseChannel() chan *types.SubscribeResponse {
+func (room *Room) ResponseChannel() chan types.SubscribeResponse {
 	return room.subscribeResponseChan
 }
 
@@ -144,11 +144,11 @@ func (room *Room) Users() string {
 }
 
 //OnDone Calls the provided callback when the subscription finishes.
-func (room *Room) OnDone(c chan *types.SubscribeResponse) *Room {
+func (room *Room) OnDone(c chan types.SubscribeResponse) *Room {
 	if room.err != nil {
-		c <- &types.SubscribeResponse{Error: room.err}
+		c <- types.SubscribeResponse{Error: room.err}
 	} else if room.internalState == active {
-		c <- nil
+		c <- types.SubscribeResponse{}
 	} else {
 		room.subscribeResponseChan = c
 	}

@@ -21,7 +21,7 @@ func TestSubscribeQueryError(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	subResChan := make(chan *types.SubscribeResponse)
+	subResChan := make(chan types.SubscribeResponse)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
 	r.OnDone(subResChan)
 	r.Subscribe(nil)
@@ -42,7 +42,7 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	subResChan := make(chan *types.SubscribeResponse)
+	subResChan := make(chan types.SubscribeResponse)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
 	r.OnDone(subResChan)
 	r.Subscribe(nil)
@@ -87,7 +87,7 @@ func TestRoomSubscribeAlreadyActive(t *testing.T) {
 
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
 	r.internalState = active
-	r.subscribeResponseChan = make(chan *types.SubscribeResponse)
+	r.subscribeResponseChan = make(chan types.SubscribeResponse)
 	done := make(chan bool)
 
 	go func() {

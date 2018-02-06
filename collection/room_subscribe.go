@@ -11,10 +11,10 @@ import (
 // Renew the subscription. Force a resubscription using the same filters
 // if no new ones are provided.
 // Unsubscribes first if this Room was already listening to events.
-func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNotification) {
+func (room *Room) Subscribe(realtimeNotificationChannel chan<- types.KuzzleNotification) {
 	if room.internalState == active {
 		if room.subscribeResponseChan != nil {
-			room.subscribeResponseChan <- &types.SubscribeResponse{Room: room}
+			room.subscribeResponseChan <- types.SubscribeResponse{Room: room}
 		}
 		return
 	}
@@ -61,7 +61,7 @@ func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNoti
 			}
 			room.internalState = inactive
 			if room.subscribeResponseChan != nil {
-				room.subscribeResponseChan <- &types.SubscribeResponse{Error: res.Error}
+				room.subscribeResponseChan <- types.SubscribeResponse{Error: res.Error}
 			}
 			return
 		}
@@ -84,7 +84,7 @@ func (room *Room) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNoti
 		room.collection.Kuzzle.RegisterRoom(room)
 
 		if room.subscribeResponseChan != nil {
-			room.subscribeResponseChan <- &types.SubscribeResponse{Room: room}
+			room.subscribeResponseChan <- types.SubscribeResponse{Room: room}
 		}
 		if room.isListening {
 			go func() {

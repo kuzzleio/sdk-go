@@ -51,10 +51,10 @@ func TestRoomFilters(t *testing.T) {
 	}
 
 	c.SetState(state.Connected)
-	rtc := make(chan *types.KuzzleNotification)
-	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	rtc := make(chan types.KuzzleNotification)
+	res := cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
-	assert.Equal(t, filters, res.Room.Filters())
+	assert.Equal(t, filters, res.Filters())
 }
 
 func ExampleRoom_Filters() {
@@ -75,8 +75,8 @@ func ExampleRoom_Filters() {
 	}
 
 	c.SetState(state.Connected)
-	rtc := make(chan *types.KuzzleNotification)
-	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	rtc := make(chan types.KuzzleNotification)
+	res := cl.Subscribe(filters, types.NewRoomOptions(), rtc)
 
 	fmt.Println(res)
 }
@@ -107,10 +107,11 @@ func TestRoomRealtimeChannel(t *testing.T) {
 	}
 
 	c.SetState(state.Connected)
-	rtc := make(chan<- *types.KuzzleNotification)
-	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	rtc := make(chan<- types.KuzzleNotification)
+	res := cl.Subscribe(filters, nil, rtc)
+	<-res.ResponseChannel()
 
-	assert.Equal(t, rtc, res.Room.RealtimeChannel())
+	assert.Equal(t, rtc, res.RealtimeChannel())
 }
 
 func ExampleRoom_RealtimeChannel() {
@@ -131,9 +132,9 @@ func ExampleRoom_RealtimeChannel() {
 	}
 
 	c.SetState(state.Connected)
-	rtc := make(chan<- *types.KuzzleNotification)
-	res := <-cl.Subscribe(filters, types.NewRoomOptions(), rtc)
-	rtChannel := res.Room.RealtimeChannel()
+	rtc := make(chan<- types.KuzzleNotification)
+	res := cl.Subscribe(filters, types.NewRoomOptions(), rtc)
+	rtChannel := res.RealtimeChannel()
 
 	fmt.Println(rtChannel)
 }
@@ -244,7 +245,7 @@ func TestOnDoneError(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
-	ch := make(chan *types.SubscribeResponse)
+	ch := make(chan types.SubscribeResponse)
 	done := make(chan bool)
 
 	go func() {
@@ -262,7 +263,7 @@ func TestOnDoneAlreadyActive(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
-	ch := make(chan *types.SubscribeResponse)
+	ch := make(chan types.SubscribeResponse)
 	done := make(chan bool)
 
 	go func() {
@@ -285,7 +286,7 @@ func TestOnDone(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
-	ch := make(chan *types.SubscribeResponse)
+	ch := make(chan types.SubscribeResponse)
 	r.OnDone(ch)
 
 	r.Subscribe(nil)

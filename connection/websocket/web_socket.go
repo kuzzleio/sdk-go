@@ -341,7 +341,7 @@ func (ws *webSocket) listen() {
 				channel := room.RealtimeChannel()
 
 				if channel != nil && (!fromSelf || room.SubscribeToSelf()) {
-					channel <- &notification
+					channel <- notification
 				}
 			}
 		} else if c, found := ws.channelsResult.Load(message.RequestId); found {

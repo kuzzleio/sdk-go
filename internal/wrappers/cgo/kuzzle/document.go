@@ -43,13 +43,13 @@ func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.
 //export kuzzle_document_subscribe
 // TODO close on Unsubscribe
 func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) *C.room_result {
-	c := make(chan *types.KuzzleNotification)
+	c := make(chan types.KuzzleNotification)
 	goroom, _ := cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
 
 	go func() {
 		for {
 			res := <-c
-			C.kuzzle_notify(cb, goToCNotificationResult(res), data)
+			C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
 		}
 	}()
 	<-goroom.ResponseChannel()
