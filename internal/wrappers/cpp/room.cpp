@@ -2,8 +2,10 @@
 #include "collection.hpp"
 
 namespace kuzzleio {
-    Room::Room(room* r) {
+    Room::Room(room* r, SubscribeListener* subscribe_listener, NotificationListener* notification_listener) {
       this->_room = r;
+      this->_listener_instance = subscribe_listener;
+      this->_notification_listener_instance = notification_listener;
     }
 
     Room::Room(Collection *collection, json_object *filters, room_options* options) {
@@ -49,5 +51,14 @@ namespace kuzzleio {
     Room* Room::subscribe(NotificationListener* listener) {
         _notification_listener_instance = listener;
         room_subscribe(_room, &notify, this);
+    }
+
+    void Room::unsubscribe() Kuz_Throw_KuzzleException {
+        void_result *r = room_unsubscribe(_room);
+        if (r && r->error != NULL)
+            throwExceptionFromStatus(r);
+        _notification_listener_instance = NULL;
+        _listener_instance = NULL;
+        delete(r);
     }
 }

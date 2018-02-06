@@ -77,7 +77,7 @@ namespace kuzzleio {
           throwExceptionFromStatus(r);
         _listener_instance = listener;
         
-        Room* ret = new Room(r->result);
+        Room* ret = new Room(r->result, NULL, listener);
         free(r);
         return ret;
     }

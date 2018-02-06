@@ -71,3 +71,9 @@ func room_subscribe(room *C.room, cb C.kuzzle_notification_listener, data unsafe
 		C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
 	}()
 }
+
+//export room_unsubscribe
+func room_unsubscribe(room *C.room) *C.void_result {
+	err := (*collection.Room)(room.instance).Unsubscribe()
+	return goToCVoidResult(err)
+}
