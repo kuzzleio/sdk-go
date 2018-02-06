@@ -29,12 +29,25 @@ namespace kuzzleio {
         ((Room*)data)->getSubscribeListener()->onSubscribe(res);
     }
 
+    void notify(notification_result* res, void* data) {
+        ((Room*)data)->getNotificationListener()->onMessage(res);
+    }
+
     SubscribeListener* Room::getSubscribeListener() {
         return _listener_instance;
+    }
+
+    NotificationListener* Room::getNotificationListener() {
+        return _notification_listener_instance;
     }
 
     Room* Room::onDone(SubscribeListener *listener) {
         _listener_instance = listener;
         room_on_done(_room, &call_cb, this);
+    }
+
+    Room* Room::subscribe(NotificationListener* listener) {
+        _notification_listener_instance = listener;
+        room_subscribe(_room, &notify, this);
     }
 }

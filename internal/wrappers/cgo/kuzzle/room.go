@@ -60,3 +60,14 @@ func room_on_done(room *C.room, cb C.kuzzle_subscribe_listener, data unsafe.Poin
 		C.room_on_subscribe(cb, goToCRoomResult(res.Error), data)
 	}()
 }
+
+//export room_subscribe
+func room_subscribe(room *C.room, cb C.kuzzle_notification_listener, data unsafe.Pointer) {
+	c := make(chan types.KuzzleNotification)
+
+	(*collection.Room)(room.instance).Subscribe(c)
+	go func() {
+		res := <-c
+		C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
+	}()
+}
