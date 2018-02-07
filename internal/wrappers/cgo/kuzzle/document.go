@@ -31,6 +31,9 @@ func unregisterDocument(d *C.document) {
 func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.json_object) {
 	doc := col.NewDocument((*col.Collection)(c.instance), C.GoString(id))
 
+	if content != nil {
+		doc.SetContent(JsonCConvert(content).(map[string]interface{}), true)
+	}
 	if documentInstances == nil {
 		documentInstances = make(map[interface{}]bool)
 	}

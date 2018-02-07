@@ -54,7 +54,6 @@ namespace kuzzleio {
         document_result *r = kuzzle_document_save(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-        Document* ret = new Document(_collection, r->result->id, r->result->content);
         delete(r);
         return this;
     }

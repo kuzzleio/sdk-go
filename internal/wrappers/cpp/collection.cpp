@@ -40,4 +40,12 @@ namespace kuzzleio {
       return ret;
     }
 
+    Document* Collection::fetchDocument(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
+      document_result *r = kuzzle_collection_fetch_document(_collection, const_cast<char*>(id.c_str()), options);
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+      Document* ret = new Document(this, r->result->id, r->result->content);
+      delete(r);
+      return ret;
+    }
 }
