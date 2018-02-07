@@ -6,8 +6,6 @@ package main
 */
 import "C"
 import (
-	"fmt"
-
 	"github.com/kuzzleio/sdk-go/collection"
 )
 
@@ -25,7 +23,6 @@ func kuzzle_collection_create_document(c *C.collection, id *C.char, document *C.
 
 //export kuzzle_collection_delete_document
 func kuzzle_collection_delete_document(c *C.collection, id *C.char, options *C.query_options) *C.string_result {
-	fmt.Printf("%s\n", C.GoString(id))
 	res, err := (*collection.Collection)(c.instance).DeleteDocument(C.GoString(id), SetQueryOptions(options))
 	return goToCStringResult(&res, err)
 }

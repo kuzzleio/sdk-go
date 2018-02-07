@@ -1,3 +1,5 @@
+#include <iostream>
+#include <vector>
 #include "collection.hpp"
 #include "document.hpp"
 
@@ -27,6 +29,15 @@ namespace kuzzleio {
           throwExceptionFromStatus(r);
       delete(r);
       return this;
+    }
+
+    std::string Collection::deleteDocument(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
+      string_result *r = kuzzle_collection_delete_document(_collection, const_cast<char*>(id.c_str()), options);
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+      std::string ret = r->result;
+      delete(r);
+      return ret;
     }
 
 }
