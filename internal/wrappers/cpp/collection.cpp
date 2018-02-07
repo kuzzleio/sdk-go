@@ -10,4 +10,13 @@ namespace kuzzleio {
         unregisterCollection(_collection);
         delete(_collection);
     }
+
+    int Collection::count(search_filters* filters, query_options* options) Kuz_Throw_KuzzleException {
+      int_result *r = kuzzle_collection_count(_collection, filters, options);
+      if (r->error != NULL)
+          throwExceptionFromStatus(r);
+      int ret = r->result;
+      delete(r);
+      return ret;
+    }
 }

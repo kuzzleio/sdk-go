@@ -20,6 +20,7 @@
 %rename(UserData) user_data;
 %rename(User, match="class") user;
 %rename(RoomOptions) room_options;
+%rename(SearchFilters) search_filters;
 
 %ignore *::error;
 %ignore *::status;
@@ -42,6 +43,7 @@
 %include "javadoc/kuzzle.i"
 %include "javadoc/document.i"
 %include "javadoc/room.i"
+%include "javadoc/collection.i"
 %include "../../kcore.i"
 
 %include "std_vector.i"

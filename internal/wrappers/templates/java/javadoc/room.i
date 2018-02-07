@@ -17,7 +17,7 @@
    */
   public";
 
-  %javamethodmodifiers kuzzleio::Room::Room(Collection *collection) "
+%javamethodmodifiers kuzzleio::Room::Room(Collection *collection) "
   /**
    * {@link #Room(Collection collection, JsonObject filters, RoomOptions options)}
    */

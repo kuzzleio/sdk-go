@@ -7,6 +7,8 @@ package main
 import "C"
 import (
 	"encoding/json"
+
+	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -21,7 +23,7 @@ func kuzzle_new_mapping(c *C.collection) *C.mapping {
 
 //export kuzzle_collection_get_mapping
 func kuzzle_collection_get_mapping(c *C.collection, options *C.query_options) *C.mapping_result {
-	res, err := cToGoCollection(c).GetMapping(SetQueryOptions(options))
+	res, err := (*collection.Collection)(c.instance).GetMapping(SetQueryOptions(options))
 	return goToCMappingResult(c, res, err)
 }
 
