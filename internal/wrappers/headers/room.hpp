@@ -3,11 +3,12 @@
 
 #include "listeners.hpp"
 #include "exceptions.hpp"
-#include "collection.hpp"
 #include "core.hpp"
 #include "room.hpp"
 
 namespace kuzzleio {
+    class Collection;
+
     class Room {
         room *_room;
         SubscribeListener *_listener_instance;

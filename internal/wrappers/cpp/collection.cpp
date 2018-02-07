@@ -1,4 +1,5 @@
 #include "collection.hpp"
+#include "document.hpp"
 
 namespace kuzzleio {
     Collection::Collection(Kuzzle* kuzzle, const std::string& col, const std::string& index) {
@@ -19,4 +20,13 @@ namespace kuzzleio {
       delete(r);
       return ret;
     }
+
+    Collection* Collection::createDocument(Document* document, const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
+      document_result *r = kuzzle_collection_create_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
+      if (r->error != NULL)
+          throwExceptionFromStatus(r);
+      delete(r);
+      return this;
+    }
+
 }
