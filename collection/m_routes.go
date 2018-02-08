@@ -2,6 +2,7 @@ package collection
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -45,9 +46,13 @@ func (dc *Collection) parseMultiActionsResult(response *types.KuzzleResponse) ([
 func performMultipleCreate(dc *Collection, documents []*Document, action string, options types.QueryOptions) ([]*Document, error) {
 	ch := make(chan *types.KuzzleResponse)
 
+	type subDoc struct {
+		Document interface{} `json:document`
+	}
+
 	type CreationDocument struct {
-		Id   string      `json:"_id"`
-		Body interface{} `json:"body"`
+		Id   string  `json:"_id"`
+		Body *subDoc `json:"body"`
 	}
 
 	docs := []*CreationDocument{}
@@ -58,8 +63,10 @@ func performMultipleCreate(dc *Collection, documents []*Document, action string,
 
 	for _, doc := range documents {
 		docs = append(docs, &CreationDocument{
-			Id:   doc.Id,
-			Body: doc.Content,
+			Id: doc.Id,
+			Body: &subDoc{
+				Document: doc.Content,
+			},
 		})
 	}
 

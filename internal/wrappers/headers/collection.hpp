@@ -2,6 +2,7 @@
 #define _COLLECTION_HPP_
 
 #include <iostream>
+#include <list>
 #include "core.hpp"
 
 namespace kuzzleio {
@@ -17,6 +18,7 @@ namespace kuzzleio {
             Collection* createDocument(Document* document, const std::string& id="", query_options* options=NULL) Kuz_Throw_KuzzleException;
             std::string deleteDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* fetchDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
+            std::vector<Document*> mCreateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
     };
 }
 

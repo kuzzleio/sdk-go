@@ -47,8 +47,9 @@
 %include "../../kcore.i"
 
 %include "std_vector.i"
-%template(StringVector) std::vector<std::string>;
 
+%template(StringVector) std::vector<std::string>;
+%template(DocumentVector) std::vector<kuzzleio::Document*>;
 
 %typemap(out) const StringVector& %{
     return $1;

@@ -83,3 +83,13 @@
    * {@link #fetchDocument(String id, QueryOptions options)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::mCreateDocument(std::vector<Document*>& documents, query_options* options) "
+  /**
+   * Create multiple documents
+   *
+   * @param documents  List of Document objects to create
+   * @param options  Request options
+   * @return a list of all document created 
+   */
+  public";
