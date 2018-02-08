@@ -134,7 +134,7 @@
 
 %javamethodmodifiers kuzzleio::Collection::mGetDocument(std::vector<std::string>& ids, query_options* options) "
   /**
-   * Fetch multiple documents 
+   * Fetch multiple documents
    *
    * @param ids  Array of document IDs to get
    * @param options  Request options
@@ -145,5 +145,21 @@
 %javamethodmodifiers kuzzleio::Collection::mGetDocument(std::vector<std::string>& ids) "
   /**
    * {@link #mGetDocument(StringVector ids, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mReplaceDocument(std::vector<Document*>& documents, query_options* options) "
+  /**
+   * Replace multiple documents
+   *
+   * @param documents  Array of Document objects to replace
+   * @param options  Request options
+   * @return a list of all created or updated documents
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mReplaceDocument(std::vector<Document*>& documents) "
+  /**
+   * {@link #mReplaceDocument(DocumentVector documents, QueryOptions options)}
    */
   public";
