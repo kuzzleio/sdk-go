@@ -101,17 +101,33 @@
   public";
 
 %javamethodmodifiers kuzzleio::Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options) "
-/**
+  /**
    * Create or replace multiple documents
    *
    * @param documents  Array of Document objects to create or replace
    * @param options  Request options
-   * @return a list of all document created or updated
+   * @return a list of all created or updated documents
    */
   public";
 
 %javamethodmodifiers kuzzleio::Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents) "
   /**
    * {@link #mCreateOrReplaceDocument(DocumentVector documents, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mDeleteDocument(std::vector<std::string>& ids, query_options* options) "
+  /**
+   * Delete multiple documents using their unique IDs
+   *
+   * @param ids  Array of document IDs to delete
+   * @param options  Request options
+   * @return a lit of all deleted ids's documents
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mDeleteDocument(std::vector<std::string>& ids) "
+  /**
+   * {@link #mDeleteDocument(StringVector ids, QueryOptions options)}
    */
   public";

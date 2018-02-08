@@ -48,7 +48,7 @@ namespace kuzzleio {
     }
 
     std::vector<Document*> Collection::mCreateDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = (document**)calloc(1, sizeof(*docs) * documents.size());
+      document **docs = new document *[documents.size()];
       int i = 0;
       for(auto const& doc: documents) {
         docs[i] = doc->_document;
@@ -56,8 +56,7 @@ namespace kuzzleio {
       }
       document_array_result *r = kuzzle_collection_m_create_document(_collection, docs, documents.size(), options);
 
-      for (int j = 0; j < documents.size(); j++)
-        free(docs[j]);
+      delete[] docs;
 
       if (r->error != NULL)
         throwExceptionFromStatus(r);
@@ -71,23 +70,42 @@ namespace kuzzleio {
     }
 
     std::vector<Document*> Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = (document**)calloc(1, sizeof(*docs) * documents.size());
+      document **docs = new document *[documents.size()];
       int i = 0;
-      for(auto const& doc: documents) {
+      for (auto const& doc : documents) {
         docs[i] = doc->_document;
         i++;
       }
       document_array_result *r = kuzzle_collection_m_create_or_replace_document(_collection, docs, documents.size(), options);
 
-      for (int j = 0; j < documents.size(); j++)
-        free(docs[j]);
-
+      delete[] docs;
       if (r->error != NULL)
         throwExceptionFromStatus(r);
 
       std::vector<Document*> v;
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
+
+      delete(r);
+      return v;
+    }
+
+    std::vector<std::string> Collection::mDeleteDocument(std::vector<std::string>& ids, query_options* options) Kuz_Throw_KuzzleException {
+      char **docsIds = new char *[ids.size()];
+      int i = 0;
+      for (auto const& id : ids) {
+        docsIds[i] = const_cast<char*>(id.c_str());
+        i++;
+      }
+      string_array_result *r = kuzzle_collection_m_delete_document(_collection, docsIds, ids.size(), options);
+
+      delete[] docsIds;
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+
+      std::vector<std::string> v;
+      for (int i = 0; i < r->result_length; i++)
+        v.push_back(r->result[i]);
 
       delete(r);
       return v;
