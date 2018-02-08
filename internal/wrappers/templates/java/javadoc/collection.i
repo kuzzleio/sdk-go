@@ -138,7 +138,7 @@
    *
    * @param ids  Array of document IDs to get
    * @param options  Request options
-   * @return a lit of Documents
+   * @return a list of Documents
    */
   public";
 
@@ -154,12 +154,28 @@
    *
    * @param documents  Array of Document objects to replace
    * @param options  Request options
-   * @return a list of all created or updated documents
+   * @return a list of all updated documents
    */
   public";
 
 %javamethodmodifiers kuzzleio::Collection::mReplaceDocument(std::vector<Document*>& documents) "
   /**
    * {@link #mReplaceDocument(DocumentVector documents, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mUpdateDocument(std::vector<Document*>& documents, query_options* options) "
+  /**
+   * Update multiple documents
+   *
+   * @param documents  Array of Document objects to replace
+   * @param options  Request options
+   * @return a list of all updated documents
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mUpdateDocument(std::vector<Document*>& documents) "
+  /**
+   * {@link #mUpdateDocument(DocumentVector documents, QueryOptions options)}
    */
   public";

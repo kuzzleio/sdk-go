@@ -23,6 +23,7 @@ namespace kuzzleio {
             std::vector<std::string> mDeleteDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;
             std::vector<Document*> mGetDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;            
             std::vector<Document*> mReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
+            std::vector<Document*> mUpdateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
     };
 }
 
