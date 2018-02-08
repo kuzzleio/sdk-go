@@ -93,3 +93,25 @@
    * @return a list of all document created 
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::mCreateDocument(std::vector<Document*>& documents) "
+  /**
+   * {@link #mCreateDocument(DocumentVector documents, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options) "
+/**
+   * Create or replace multiple documents
+   *
+   * @param documents  Array of Document objects to create or replace
+   * @param options  Request options
+   * @return a list of all document created or updated
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents) "
+  /**
+   * {@link #mCreateOrReplaceDocument(DocumentVector documents, QueryOptions options)}
+   */
+  public";

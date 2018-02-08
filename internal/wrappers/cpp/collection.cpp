@@ -70,4 +70,27 @@ namespace kuzzleio {
       return v;
     }
 
+    std::vector<Document*> Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
+      document **docs = (document**)calloc(1, sizeof(*docs) * documents.size());
+      int i = 0;
+      for(auto const& doc: documents) {
+        docs[i] = doc->_document;
+        i++;
+      }
+      document_array_result *r = kuzzle_collection_m_create_or_replace_document(_collection, docs, documents.size(), options);
+
+      for (int j = 0; j < documents.size(); j++)
+        free(docs[j]);
+
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+
+      std::vector<Document*> v;
+      for (int i = 0; i < r->result_length; i++)
+        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
+
+      delete(r);
+      return v;
+    }
+
 }
