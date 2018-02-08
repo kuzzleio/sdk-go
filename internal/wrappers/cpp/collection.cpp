@@ -111,4 +111,25 @@ namespace kuzzleio {
       return v;
     }
 
+    std::vector<Document*> Collection::mGetDocument(std::vector<std::string>& ids, query_options* options) Kuz_Throw_KuzzleException {
+      char **docsIds = new char *[ids.size()];
+      int i = 0;
+      for (auto const& id : ids) {
+        docsIds[i] = const_cast<char*>(id.c_str());
+        i++;
+      }
+      document_array_result *r = kuzzle_collection_m_get_document(_collection, docsIds, ids.size(), options);
+
+      delete[] docsIds;
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+
+      std::vector<Document*> v;
+      for (int i = 0; i < r->result_length; i++)
+        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
+
+      delete(r);
+      return v;
+    }
+
 }

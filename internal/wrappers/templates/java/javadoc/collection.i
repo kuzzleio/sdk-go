@@ -122,12 +122,28 @@
    *
    * @param ids  Array of document IDs to delete
    * @param options  Request options
-   * @return a lit of all deleted ids's documents
+   * @return a list of all deleted ids's documents
    */
   public";
 
 %javamethodmodifiers kuzzleio::Collection::mDeleteDocument(std::vector<std::string>& ids) "
   /**
    * {@link #mDeleteDocument(StringVector ids, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mGetDocument(std::vector<std::string>& ids, query_options* options) "
+  /**
+   * Fetch multiple documents 
+   *
+   * @param ids  Array of document IDs to get
+   * @param options  Request options
+   * @return a lit of Documents
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::mGetDocument(std::vector<std::string>& ids) "
+  /**
+   * {@link #mGetDocument(StringVector ids, QueryOptions options)}
    */
   public";
