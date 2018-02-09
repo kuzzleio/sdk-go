@@ -32,8 +32,6 @@ enum Event {
     ERROR
 };
 
-typedef void (*Callback_t)(const int);
-
 typedef void (*kuzzle_event_listener)(json_object*);
 
 //define a request
@@ -200,12 +198,14 @@ typedef struct {
 } shards;
 
 typedef struct {
+    void *instance;
     char *index;
     char *collection;
     kuzzle *kuzzle;
 } collection;
 
 typedef struct {
+    void *instance;
     char *id;
     char *index;
     meta *meta;
@@ -589,6 +589,6 @@ typedef struct collection_entry_result {
     char* stack;
 } collection_entry_result;
 
-typedef void (*kuzzle_notification_listener)(notification_result*);
+typedef void (*kuzzle_notification_listener)(notification_result*, void*);
 
 #endif

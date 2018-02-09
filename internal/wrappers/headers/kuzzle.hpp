@@ -2,25 +2,17 @@
 #define _KUZZLE_HPP_
 
 #include "exceptions.hpp"
+#include "core.hpp"
 #include <string>
 
 #include <vector>
 
-extern "C" {
-  #define _Complex
-  #include <stdio.h>
-
-  #include "kuzzle.h"
-  #include "kuzzlesdk.h"
-  #include "swig.h"
-}
-
 namespace kuzzleio {
 
   class Kuzzle {
-    kuzzle *_kuzzle;
-
     public:
+      kuzzle *_kuzzle;
+          
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 

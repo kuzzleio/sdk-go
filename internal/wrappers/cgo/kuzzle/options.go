@@ -7,8 +7,9 @@ package main
 */
 import "C"
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"time"
+
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 //export kuzzle_new_options
@@ -97,15 +98,16 @@ func SetOptions(options *C.options) (opts types.Options) {
 func SetRoomOptions(options *C.room_options) (opts types.RoomOptions) {
 	opts = types.NewRoomOptions()
 
-	opts.SetScope(C.GoString(options.scope))
-	opts.SetState(C.GoString(options.state))
-	opts.SetUsers(C.GoString(options.user))
+	if options != nil {
+		opts.SetScope(C.GoString(options.scope))
+		opts.SetState(C.GoString(options.state))
+		opts.SetUsers(C.GoString(options.user))
 
-	opts.SetSubscribeToSelf(bool(options.subscribe_to_self))
+		opts.SetSubscribeToSelf(bool(options.subscribe_to_self))
 
-	if options.volatiles != nil {
-		opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))
+		if options.volatiles != nil {
+			opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))
+		}
 	}
-
 	return
 }

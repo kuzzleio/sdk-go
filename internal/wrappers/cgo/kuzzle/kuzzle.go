@@ -19,14 +19,14 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var instances map[interface{}]interface{}
+var instances map[interface{}]bool
 
 // map which stores channel and function's pointers adresses for listeners
 var listeners_list map[uintptr]chan<- interface{}
 
 // register new instance to the instances map
 func registerKuzzle(instance interface{}) {
-	instances[instance] = nil
+	instances[instance] = true
 }
 
 // unregister an instance from the instances map
@@ -40,7 +40,7 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 	var c connection.Connection
 
 	if instances == nil {
-		instances = make(map[interface{}]interface{})
+		instances = make(map[interface{}]bool)
 	}
 
 	if listeners_list == nil {

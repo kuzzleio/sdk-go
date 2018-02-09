@@ -14,8 +14,7 @@
   PreconditionException, \
   ServiceUnavailableException, \
   SizeLimitException, \
-  UnauthorizedException, \
-  KuzzleException \
+  UnauthorizedException \
 )
 
 #define PARTIAL_EXCEPTION 206

@@ -1,6 +1,8 @@
 #ifndef SWIG_H_
 #define SWIG_H_
 
+#define __swig_build
+
 //Json
 extern void kuzzle_json_put(json_object*, char*, void*, int);
 extern char* kuzzle_json_get_string(json_object*, char*);

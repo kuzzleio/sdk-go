@@ -26,16 +26,21 @@
 
 %{
 #include "kuzzle.cpp"
+#include "collection.cpp"
+#include "room.cpp"
+#include "document.cpp"
 %}
 
 %include "exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
-%include "javadoc.i"
+%include "javadoc/kuzzle.i"
+%include "javadoc/document.i"
 %include "../../kcore.i"
 
 %include "std_vector.i"
 %template(StringVector) std::vector<std::string>;
+
 
 %typemap(out) const StringVector& %{
     return $1;
@@ -123,3 +128,6 @@ struct json_object { };
 }
 
 %include "kuzzle.cpp"
+%include "collection.cpp"
+%include "room.cpp"
+%include "document.cpp"

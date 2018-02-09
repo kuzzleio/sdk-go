@@ -15,8 +15,8 @@ static void set_errno(int err) {
   errno = err;
 }
 
-static void kuzzle_notify(kuzzle_notification_listener f, notification_result* res) {
-    f(res);
+static void kuzzle_notify(kuzzle_notification_listener f, notification_result* res, void* data) {
+    f(res, data);
 }
 
 static void kuzzle_trigger_event(kuzzle_event_listener f, json_object* res) {
