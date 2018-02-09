@@ -26,5 +26,20 @@ protected:
     Swig::BoolArray<1> swig_override;
 };
 
+class SwigDirector_EventListener : public kuzzleio::EventListener, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_EventListener(JNIEnv *jenv);
+    virtual ~SwigDirector_EventListener();
+    virtual void trigger(json_object *arg0) const;
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<1> swig_override;
+};
+
 
 #endif

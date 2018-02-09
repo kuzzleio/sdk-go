@@ -25,12 +25,13 @@ type webSocket struct {
 	queuing bool
 	state   int
 
-	listenChan     chan []byte
-	channelsResult sync.Map
-	subscriptions  *types.RoomList
-	lastUrl        string
-	wasConnected   bool
-	eventListeners map[int]map[chan<- interface{}]bool
+	listenChan         chan []byte
+	channelsResult     sync.Map
+	subscriptions      *types.RoomList
+	lastUrl            string
+	wasConnected       bool
+	eventListeners     map[int]map[chan<- interface{}]bool
+	eventListenersOnce map[int]map[chan<- interface{}]bool
 
 	retrying              bool
 	stopRetryingToConnect bool
@@ -75,6 +76,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		channelsResult:        sync.Map{},
 		subscriptions:         &types.RoomList{},
 		eventListeners:        make(map[int]map[chan<- interface{}]bool),
+		eventListenersOnce:    make(map[int]map[chan<- interface{}]bool),
 		requestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
@@ -240,6 +242,13 @@ func (ws *webSocket) cleanQueue() {
 			for c := range eventListener {
 				c <- ws.offlineQueue[0]
 			}
+
+			eventListener = ws.eventListenersOnce[event.OfflineQueuePop]
+			for c := range eventListener {
+				c <- ws.offlineQueue[0]
+				delete(ws.eventListenersOnce[event.OfflineQueuePop], c)
+			}
+
 			ws.offlineQueue = ws.offlineQueue[1:]
 		}
 	}
@@ -304,7 +313,9 @@ func (ws *webSocket) listen() {
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
 func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
-	ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+	if ws.eventListeners[event] == nil {
+		ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+	}
 	ws.eventListeners[event][channel] = true
 }
 
@@ -312,10 +323,13 @@ func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
 func (ws *webSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
 		if event == k || event == -1 {
-			for c := range ws.eventListeners[k] {
-				close(c)
-			}
 			delete(ws.eventListeners, k)
+		}
+	}
+
+	for k := range ws.eventListenersOnce {
+		if event == k || event == -1 {
+			delete(ws.eventListenersOnce, k)
 		}
 	}
 }
@@ -323,12 +337,29 @@ func (ws *webSocket) RemoveAllListeners(event int) {
 // Removes a listener from an event.
 func (ws *webSocket) RemoveListener(event int, c chan<- interface{}) {
 	delete(ws.eventListeners[event], c)
+	delete(ws.eventListenersOnce[event], c)
+}
+
+func (ws *webSocket) Once(event int, channel chan<- interface{}) {
+	if ws.eventListenersOnce[event] == nil {
+		ws.eventListenersOnce[event] = make(map[chan<- interface{}]bool)
+	}
+	ws.eventListenersOnce[event][channel] = true
+}
+
+func (ws *webSocket) ListenerCount(event int) int {
+	return len(ws.eventListenersOnce[event]) + len(ws.eventListeners[event])
 }
 
 // Emit an event to all registered listeners
 func (ws *webSocket) EmitEvent(event int, arg interface{}) {
 	for c := range ws.eventListeners[event] {
 		c <- arg
+	}
+	for c := range ws.eventListenersOnce[event] {
+		c <- arg
+		close(c)
+		delete(ws.eventListenersOnce[event], c)
 	}
 }
 

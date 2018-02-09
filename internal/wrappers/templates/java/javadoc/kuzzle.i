@@ -494,7 +494,57 @@
   /**
    * Global volatile data setter
    *
-   * @param _volatile - New global volatile data content
+   * @param volatiles - New global volatile data content
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::addListener(Event event, EventListener* listener) "
+   /**
+   * Adds a listener to a Kuzzle global event. When an event is triggered, 
+   * listeners are called in the order of their insertion.
+   *
+   * @param event - Name of the global event to subscribe to
+   * @param listener - Response callback listener
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::removeListener(Event event, EventListener* listener) "
+  /**
+   * Removes a listener from an event.
+   *
+   * @param event - Event name
+   * @param listener - Response callback listener
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::removeAllListeners(Event event) "
+  /**
+   * Removes all listeners, either from all events
+   *
+   * @param event - Event name
+   * @return this
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Kuzzle::once(Event event, EventListener* listener) "
+  /**
+   * Adds a one time listener to an event.
+   * The next time the event is triggered, the listener is removed and then invoked.
+   *
+   * @param event - Event name
+   * @param listener - Response callback listener
+   * @return this
+   */
+  public";
+
+  %javamethodmodifiers kuzzleio::Kuzzle::listenerCount(Event event) "
+  /**
+   * Returns the number of callbacks who listen to an event.
+   *
+   * @param event - Event name
    * @return this
    */
   public";

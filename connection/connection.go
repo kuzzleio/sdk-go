@@ -1,14 +1,17 @@
 package connection
 
 import (
-	"github.com/kuzzleio/sdk-go/types"
 	"time"
+
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type Connection interface {
 	AddListener(event int, channel chan<- interface{})
 	RemoveListener(event int, channel chan<- interface{})
 	RemoveAllListeners(event int)
+	Once(event int, channel chan<- interface{})
+	ListenerCount(event int) int
 	Connect() (bool, error)
 	Send([]byte, types.QueryOptions, chan<- *types.KuzzleResponse, string) error
 	Close() error

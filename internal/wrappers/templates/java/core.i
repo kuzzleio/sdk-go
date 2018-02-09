@@ -24,6 +24,9 @@
 %ignore *::status;
 %ignore *::stack;
 
+%feature("director") NotificationListener;
+%feature("director") EventListener;
+
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
