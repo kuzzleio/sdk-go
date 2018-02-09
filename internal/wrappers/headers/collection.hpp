@@ -32,6 +32,7 @@ namespace kuzzleio {
             search_result* search(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
             Room* subscribe(search_filters* filters, NotificationListener* listener, room_options* options=NULL) Kuz_Throw_KuzzleException;
             NotificationListener* getListener();
+            Document* updateDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;            
     };
 }
 

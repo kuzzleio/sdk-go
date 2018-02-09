@@ -264,3 +264,20 @@
    * {@link #subscribe(SearchFilters filters, NotificationListener listeners)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::updateDocument(const std::string& id, Document *document, query_options* options) "
+  /**
+   * Update parts of a document
+   *
+   * @param id  Document unique identifier
+   * @param content  Document content to update
+   * @param options  Request options
+   * @return the document
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::updateDocument(const std::string& id, Document *document) "
+  /**
+   * {@link #updateDocument(String id, Document document)}
+   */
+  public";
