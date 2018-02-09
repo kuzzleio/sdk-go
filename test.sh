@@ -6,13 +6,14 @@ workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
 dirs=(kuzzle connection/websocket collection security ms)
+timeout=${TIMEOUT:=1m}
 
 generate_cover_data() {
     rm -rf "$workdir"
     mkdir "$workdir"
 
     for pkg in ${dirs[@]}; do
-        go test -covermode="$mode" -coverprofile="$workdir/$(basename $pkg).cover" "./$pkg"
+        go test -timeout "$timeout" -covermode="$mode" -coverprofile="$workdir/$(basename $pkg).cover" "./$pkg"
     done
 
     echo "mode: $mode" >"$profile"

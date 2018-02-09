@@ -11,6 +11,7 @@ const (
 	OfflineQueuePush
 	QueryError
 	Reconnected
-	JwtExpired
+	TokenExpired
 	Error
+	Done
 )

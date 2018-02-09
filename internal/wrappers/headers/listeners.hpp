@@ -15,6 +15,12 @@ namespace kuzzleio {
             virtual ~EventListener(){};
             virtual void trigger(json_object*) const = 0;
     };
+
+    class SubscribeListener {
+        public: 
+            virtual ~SubscribeListener(){};
+            virtual void onSubscribe(room_result*) const = 0;
+    };
 }
 
 #endif

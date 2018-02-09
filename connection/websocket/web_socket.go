@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/state"
@@ -106,11 +105,22 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 
 //Connect connects to a kuzzle instance
 func (ws *webSocket) Connect() (bool, error) {
-	if !ws.isValidState() {
+	if ws.state != state.Offline {
 		return false, nil
 	}
 
+	ws.state = state.Connecting
+
+	if ws.autoQueue {
+		ws.queuing = true
+	}
+
 	addr := fmt.Sprintf("%s:%d", ws.host, ws.port)
+
+	if ws.lastUrl != addr {
+		ws.wasConnected = false
+		ws.lastUrl = addr
+	}
 
 	var scheme string
 
@@ -121,50 +131,44 @@ func (ws *webSocket) Connect() (bool, error) {
 	}
 
 	u := url.URL{Scheme: scheme, Host: addr}
-	resChan := make(chan []byte)
-
 	socket, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+
 	if err != nil {
-		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
-			for err != nil {
-				ws.retrying = true
-				ws.EmitEvent(event.NetworkError, err)
-				time.Sleep(ws.reconnectionDelay)
-				ws.retrying = false
-				socket, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
-			}
-		}
+		ws.state = state.Offline
 		ws.EmitEvent(event.NetworkError, err)
-		return ws.wasConnected, err
-	}
 
-	if ws.lastUrl != ws.host {
-		ws.wasConnected = false
-		ws.lastUrl = ws.host
-	}
+		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
+			ws.retrying = true
+			time.Sleep(ws.reconnectionDelay)
+			ws.retrying = false
+			ws.Connect()
+		} else {
+			ws.EmitEvent(event.Disconnected, nil)
+		}
 
-	if ws.wasConnected {
-		ws.EmitEvent(event.Reconnected, nil)
-		ws.state = state.Connected
-	} else {
-		ws.EmitEvent(event.Connected, nil)
-		ws.state = state.Connected
+		return false, err
 	}
 
 	ws.ws = socket
+	ws.state = state.Connected
 	ws.stopRetryingToConnect = false
+	ws.queuing = false
 
-	if ws.autoReplay {
-		ws.cleanQueue()
-		ws.dequeue()
+	if ws.wasConnected {
+		ws.EmitEvent(event.Reconnected, nil)
+	} else {
+		ws.wasConnected = true
+		ws.EmitEvent(event.Connected, nil)
 	}
 
-	ws.RenewSubscriptions()
+	resChan := make(chan []byte)
 
 	go func() {
 		for {
 			_, message, err := ws.ws.ReadMessage()
 
+			// TODO: either send a Disconnected event on a proper disconnection,
+			// or a NetworkError one if the socket has been unexpectedly closed
 			if err != nil {
 				close(resChan)
 				ws.ws.Close()
@@ -183,33 +187,38 @@ func (ws *webSocket) Connect() (bool, error) {
 
 	ws.listenChan = resChan
 	go ws.listen()
+	ws.ReplayQueue()
+
 	return ws.wasConnected, err
 }
 
 func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
-	if ws.state == state.Connected || (options != nil && !options.Queuable()) {
-		ws.emitRequest(&types.QueryObject{
+	queuable := options == nil || options.Queuable()
+	queuable = queuable && ws.queueFilter(query)
+
+	if ws.queuing && queuable {
+		ws.cleanQueue()
+		qo := &types.QueryObject{
+			Timestamp: time.Now(),
+			ResChan:   responseChannel,
+			Query:     query,
+			RequestId: requestId,
+			Options:   options,
+		}
+		ws.offlineQueue = append(ws.offlineQueue, qo)
+		ws.EmitEvent(event.OfflineQueuePush, qo)
+		return nil
+	}
+
+	if ws.state == state.Connected {
+		return ws.emitRequest(&types.QueryObject{
 			Query:     query,
 			ResChan:   responseChannel,
 			RequestId: requestId,
 		})
-	} else if ws.queuing || (options != nil && options.Queuable()) || ws.state == state.Initializing || ws.state == state.Connecting {
-		ws.cleanQueue()
-
-		if ws.queueFilter(query) {
-			qo := &types.QueryObject{
-				Timestamp: time.Now(),
-				ResChan:   responseChannel,
-				Query:     query,
-				RequestId: requestId,
-				Options:   options,
-			}
-			ws.offlineQueue = append(ws.offlineQueue, qo)
-			ws.EmitEvent(event.OfflineQueuePush, qo)
-		}
-	} else {
-		ws.discardRequest(responseChannel, query)
 	}
+
+	ws.discardRequest(responseChannel, query)
 	return nil
 }
 
@@ -254,13 +263,15 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterRoom(roomId, id string, room types.IRoom) {
-	_, ok := ws.subscriptions.Load(roomId)
-	if !ok {
-		s := &sync.Map{}
-		s.Store(id, room)
-		ws.subscriptions.Store(roomId, s)
+func (ws *webSocket) RegisterRoom(room types.IRoom) {
+	rooms, found := ws.subscriptions.Load(room.Channel())
+
+	if !found {
+		rooms = map[string]types.IRoom{}
+		ws.subscriptions.Store(room.Channel(), rooms)
 	}
+
+	rooms.(map[string]types.IRoom)[room.Id()] = room
 }
 
 func (ws *webSocket) UnregisterRoom(roomId string) {
@@ -270,6 +281,7 @@ func (ws *webSocket) UnregisterRoom(roomId string) {
 	}
 }
 
+/*
 func (ws *webSocket) listen() {
 	for {
 		var message types.KuzzleResponse
@@ -307,6 +319,42 @@ func (ws *webSocket) listen() {
 			c.(chan<- *types.KuzzleResponse) <- &message
 			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(m.RequestId)
+		}
+	}
+}
+*/
+
+func (ws *webSocket) listen() {
+	for {
+		msg := <-ws.listenChan
+
+		var message types.KuzzleResponse
+		json.Unmarshal(msg, &message)
+
+		if s, found := ws.subscriptions.Load(message.RoomId); found {
+			var notification types.KuzzleNotification
+			_, fromSelf := ws.requestHistory[message.RequestId]
+
+			json.Unmarshal(msg, &notification)
+
+			for _, room := range s.(map[string]types.IRoom) {
+				channel := room.RealtimeChannel()
+
+				if channel != nil && (!fromSelf || room.SubscribeToSelf()) {
+					channel <- notification
+				}
+			}
+		} else if c, found := ws.channelsResult.Load(message.RequestId); found {
+			if message.Error != nil && message.Error.Message == "Token expired" {
+				ws.EmitEvent(event.TokenExpired, nil)
+			}
+
+			// If this is a response to a query we simply broadcast the response to the corresponding channel
+			c.(chan<- *types.KuzzleResponse) <- &message
+			close(c.(chan<- *types.KuzzleResponse))
+			ws.channelsResult.Delete(message.RequestId)
+		} else {
+			ws.EmitEvent(event.Discarded, &message)
 		}
 	}
 }
@@ -484,17 +532,6 @@ func (ws *webSocket) State() int {
 
 func (ws *webSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
-}
-
-func (ws *webSocket) RenewSubscriptions() {
-	ws.subscriptions.Range(func(key, value interface{}) bool {
-		value.(*sync.Map).Range(func(key, value interface{}) bool {
-			value.(types.IRoom).Renew(value.(types.IRoom).Filters(), value.(types.IRoom).RealtimeChannel(), value.(types.IRoom).ResponseChannel())
-			return true
-		})
-
-		return true
-	})
 }
 
 func (ws *webSocket) Rooms() *types.RoomList {

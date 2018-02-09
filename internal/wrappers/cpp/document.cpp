@@ -75,10 +75,14 @@ namespace kuzzleio {
     }
 
     Room* Document::subscribe(NotificationListener* listener, room_options* options) {
+        room_result* r = kuzzle_document_subscribe(_document, options, &call_cb, this);
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
         _listener_instance = listener;
-        kuzzle_document_subscribe(_document, options, &call_cb, this);
-        //TODO return a room from kuzzle_document_subscribe once implemented
-        return NULL;
+        
+        Room* ret = new Room(r->result, NULL, listener);
+        free(r);
+        return ret;
     }
 
     NotificationListener* Document::getListener() {

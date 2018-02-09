@@ -73,11 +73,10 @@ func TestDocumentSubscribeEmptyId(t *testing.T) {
 	dc := collection.NewCollection(k, "collection", "index")
 	cd := dc.Document()
 
-	ch := make(chan *types.KuzzleNotification)
-	res := <-cd.Subscribe(types.NewRoomOptions(), ch)
+	ch := make(chan types.KuzzleNotification)
+	_, err := cd.Subscribe(types.NewRoomOptions(), ch)
 
-	assert.Nil(t, res.Room)
-	assert.Equal(t, "[400] Document.Subscribe: cannot subscribe to a document if no ID has been provided", fmt.Sprint(res.Error))
+	assert.Equal(t, "[400] Document.Subscribe: cannot subscribe to a document if no ID has been provided", err.Error())
 }
 
 func TestDocumentSubscribe(t *testing.T) {
@@ -118,9 +117,9 @@ func TestDocumentSubscribe(t *testing.T) {
 	d := dc.Document()
 	d.Id = id
 
-	ch := make(chan *types.KuzzleNotification)
-	subRes := d.Subscribe(types.NewRoomOptions(), ch)
-	r := <-subRes
+	ch := make(chan types.KuzzleNotification)
+	room, _ := d.Subscribe(types.NewRoomOptions(), ch)
+	r := <-room.ResponseChannel()
 
 	assert.Nil(t, r.Error)
 	assert.NotNil(t, r.Room)
@@ -138,10 +137,10 @@ func ExampleDocument_Subscribe() {
 	d := dc.Document()
 	d.Id = id
 
-	ch := make(chan *types.KuzzleNotification)
-	subRes := d.Subscribe(types.NewRoomOptions(), ch)
+	ch := make(chan types.KuzzleNotification)
+	room, _ := d.Subscribe(types.NewRoomOptions(), ch)
 
-	notification := <-subRes
+	notification := <-room.ResponseChannel()
 
 	fmt.Println(notification.Room.RoomId(), notification.Error)
 }

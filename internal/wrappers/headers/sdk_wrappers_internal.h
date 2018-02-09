@@ -23,6 +23,10 @@ static void kuzzle_trigger_event(int event, kuzzle_event_listener f, json_object
     f(event, res, data);
 }
 
+static void room_on_subscribe(kuzzle_subscribe_listener f, room_result* res, void* data) {
+    f(res, data);
+}
+
 static bool kuzzle_filter_query(kuzzle_queue_filter f, const char *rq) {
   return f(rq);
 }

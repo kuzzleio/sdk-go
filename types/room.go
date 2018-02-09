@@ -2,18 +2,21 @@ package types
 
 import "sync"
 
-type IRoom interface {
-	Renew(filters interface{}, realtimeNotificationChannel chan<- *KuzzleNotification, subscribeResponseChan chan<- *SubscribeResponse)
-	Unsubscribe()
-	RealtimeChannel() chan<- *KuzzleNotification
-	ResponseChannel() chan<- *SubscribeResponse
-	RoomId() string
-	Filters() interface{}
-}
-
 type SubscribeResponse struct {
 	Room  IRoom
 	Error error
+}
+
+type IRoom interface {
+	Subscribe(realtimeNotificationChannel chan<- KuzzleNotification)
+	Unsubscribe() error
+	RealtimeChannel() chan<- KuzzleNotification
+	ResponseChannel() chan SubscribeResponse
+	RoomId() string
+	Filters() interface{}
+	Channel() string
+	Id() string
+	SubscribeToSelf() bool
 }
 
 type RoomList = sync.Map

@@ -2,12 +2,13 @@ package collection
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestSubscribeError(t *testing.T) {
@@ -19,9 +20,9 @@ func TestSubscribeError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
+	room := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
-	r := <-subRes
+	r := <-room.ResponseChannel()
 	assert.Equal(t, "error", r.Error.Error())
 }
 
@@ -37,9 +38,9 @@ func TestSubscribe(t *testing.T) {
 	k, _ = kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
+	room := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
-	r := <-subRes
+	r := <-room.ResponseChannel()
 	assert.Equal(t, "42", r.Room.RoomId())
 }
 
@@ -48,9 +49,9 @@ func ExampleCollection_Subscribe() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	c.SetState(state.Connected)
 
-	subRes := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
+	room := NewCollection(k, "collection", "index").Subscribe(nil, nil, nil)
 
-	r := <-subRes
+	r := <-room.ResponseChannel()
 
-	fmt.Println(r.Room.RoomId())
+	fmt.Println(r.Room.RoomId)
 }

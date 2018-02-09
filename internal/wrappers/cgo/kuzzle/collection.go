@@ -74,11 +74,11 @@ func kuzzle_collection_truncate(c *C.collection, options *C.query_options) *C.bo
 //export kuzzle_collection_subscribe
 // TODO loop and close on Unsubscribe
 func kuzzle_collection_subscribe(col *C.collection, filters *C.search_filters, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) {
-	c := make(chan *types.KuzzleNotification)
+	c := make(chan types.KuzzleNotification)
 	cToGoCollection(col).Subscribe(cToGoSearchFilters(filters), SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c
-		C.kuzzle_notify(cb, goToCNotificationResult(res), data)
+		C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
 	}()
 }

@@ -2,11 +2,16 @@ package collection
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Count returns the number of other subscriptions on that room.
 func (room *Room) Count() (int, error) {
+	if room.internalState != active {
+		return -1, types.NewError("Cannot count subscriptions on a non-active room", 400)
+	}
+
 	query := &types.KuzzleRequest{
 		Controller: "realtime",
 		Action:     "count",

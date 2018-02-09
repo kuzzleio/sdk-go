@@ -17,10 +17,9 @@ type Connection interface {
 	Close() error
 	State() int
 	EmitEvent(int, interface{})
-	RegisterRoom(string, string, types.IRoom)
+	RegisterRoom(types.IRoom)
 	UnregisterRoom(string)
 	RequestHistory() map[string]time.Time
-	RenewSubscriptions()
 	Rooms() *types.RoomList
 	StartQueuing()
 	StopQueuing()
