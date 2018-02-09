@@ -207,4 +207,72 @@ namespace kuzzleio {
     delete(r);
     return ret;
   }
+
+  Kuzzle* Kuzzle::replayQueue() {
+    kuzzle_replay_queue(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setAutoReplay(bool autoReplay) {
+    kuzzle_set_auto_replay(_kuzzle, autoReplay);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setDefaultIndex(const std::string& index) {
+    kuzzle_set_default_index(_kuzzle, const_cast<char*>(index.c_str()));
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setJwt(const std::string& jwt) {
+    kuzzle_set_jwt(_kuzzle, const_cast<char*>(jwt.c_str()));
+    return this;
+  }
+
+  Kuzzle* Kuzzle::startQueuing() {
+    kuzzle_start_queuing(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::stopQueuing() {
+    kuzzle_stop_queuing(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::unsetJwt() {
+    kuzzle_unset_jwt(_kuzzle);
+    return this;
+  }
+
+  json_object* Kuzzle::updateSelf(user_data* content, query_options* options) Kuz_Throw_KuzzleException {
+    json_result *r = kuzzle_update_self(_kuzzle, content, options);
+    if (r->error != NULL)
+      throwExceptionFromStatus(r);
+    json_object* ret = r->result;
+    delete(r);
+    return ret;
+  }
+
+  user* Kuzzle::whoAmI() Kuz_Throw_KuzzleException {
+    user_result *r = kuzzle_who_am_i(_kuzzle);
+    if (r->error != NULL)
+      throwExceptionFromStatus(r);
+    user *ret = r->user;
+    delete(r);
+    return ret;
+  }
+
+  Kuzzle* Kuzzle::flushQueue() {
+    kuzzle_flush_queue(_kuzzle);
+    return this;
+  }
+
+  Kuzzle* Kuzzle::setVolatile(json_object *volatiles) {
+    kuzzle_set_volatile(_kuzzle, volatiles);
+    return this;
+  }
+
+  json_object* Kuzzle::getVolatile() {
+    return kuzzle_get_volatile(_kuzzle);
+  }
+
 }

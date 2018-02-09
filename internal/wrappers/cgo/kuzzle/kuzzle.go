@@ -10,11 +10,12 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"time"
+	"unsafe"
+
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
-	"time"
-	"unsafe"
 )
 
 // map which stores instances to keep references in case the gc passes
@@ -169,8 +170,8 @@ func kuzzle_remove_listener(k *C.kuzzle, event C.int, cb unsafe.Pointer) {
 }
 
 //export kuzzle_remove_all_listeners
-func kuzzle_remove_all_listeners() {
-
+func kuzzle_remove_all_listeners(k *C.kuzzle, event C.int) {
+	(*kuzzle.Kuzzle)(k.instance).RemoveAllListeners(int(event))
 }
 
 //export kuzzle_get_auto_queue
@@ -281,6 +282,17 @@ func kuzzle_get_reconnection_delay(k *C.kuzzle) C.int {
 //export kuzzle_get_ssl_connection
 func kuzzle_get_ssl_connection(k *C.kuzzle) C.bool {
 	return C.bool((*kuzzle.Kuzzle)(k.instance).SslConnection())
+}
+
+//export kuzzle_get_volatile
+func kuzzle_get_volatile(k *C.kuzzle) *C.json_object {
+	r, _ := goToCJson((*kuzzle.Kuzzle)(k.instance).Volatile())
+	return r
+}
+
+//export kuzzle_set_volatile
+func kuzzle_set_volatile(k *C.kuzzle, v *C.json_object) {
+	(*kuzzle.Kuzzle)(k.instance).SetVolatile(JsonCConvert(v).(map[string]interface{}))
 }
 
 func main() {

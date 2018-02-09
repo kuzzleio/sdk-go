@@ -2,6 +2,7 @@
 
 %module(directors="1") kcore
 %{
+#include "exceptions.hpp"
 #include "kuzzle.hpp"
 #include <assert.h>
 #include <ffi.h>
@@ -13,4 +14,5 @@
 
 %include "kuzzlesdk.h"
 %include "kuzzle.h"
+%include "exceptions.hpp"
 %include "kuzzle.hpp"

@@ -55,7 +55,7 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
-	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp

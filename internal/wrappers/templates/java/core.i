@@ -17,13 +17,15 @@
 %rename(KuzzleRequest) kuzzle_request;
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
+%rename(UserData) user_data;
+%rename(User, match="class") user;
 
 %ignore *::error;
 %ignore *::status;
 %ignore *::stack;
 
 %{
-#include "core.cpp"
+#include "kuzzle.cpp"
 %}
 
 %include "exceptions.i"
@@ -120,4 +122,4 @@ struct json_object { };
     }
 }
 
-%include "core.cpp"
+%include "kuzzle.cpp"
