@@ -199,4 +199,11 @@ namespace kuzzleio {
       return r;
     }
 
+    search_result* Collection::search(search_filters* filters, query_options* options) Kuz_Throw_KuzzleException {
+      search_result* r = kuzzle_collection_search(_collection, filters, options);
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+      return r;
+    }
+
 }

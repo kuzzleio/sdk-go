@@ -225,6 +225,25 @@
 
 %javamethodmodifiers kuzzleio::Collection::scroll(const std::string& id) "
   /**
-   * {@link #scroll(String id)}
+   * {@link #scroll(String id, QueryOptions options)}
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::search(search_filters* filters, query_options* options) "
+  /**
+   * Executes a search on the data collection.
+   * /!\ There is a small delay between documents creation and their existence in our search layer,
+   * usually a couple of seconds.
+   * That means that a document that was just been created won’t be returned by this function.
+   *
+   * @param filters  Search filters to apply
+   * @param options  Request options
+   * @returns a SearchResult
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::search(search_filters* filters) "
+  /**
+   * {@link #search(SearchFilters filters, QueryOptions options)}
    */
   public";

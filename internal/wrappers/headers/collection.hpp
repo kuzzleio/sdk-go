@@ -27,6 +27,7 @@ namespace kuzzleio {
             bool publishMessage(json_object* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* replaceDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;
             search_result* scroll(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
+            search_result* search(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
     };
 }
 
