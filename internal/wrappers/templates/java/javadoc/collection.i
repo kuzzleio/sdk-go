@@ -180,18 +180,18 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Collection::publishMessage(Document* documents, query_options* options) "
+%javamethodmodifiers kuzzleio::Collection::publishMessage(json_object* content, query_options* options) "
   /**
    * Publish a real-time message
    *
-   * @param document  Document to publish
+   * @param content  Content to publish
    * @param options  Request options
    * @return boolean
    */
   public";
 
-%javamethodmodifiers kuzzleio::Collection::publishMessage(Document* documents) "
+%javamethodmodifiers kuzzleio::Collection::publishMessage(json_object* content) "
   /**
-   * {@link #publishMessage(Document document, QueryOptions options)}
+   * {@link #publishMessage(JsonObject content, QueryOptions options)}
    */
   public";

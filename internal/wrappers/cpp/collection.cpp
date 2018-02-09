@@ -174,8 +174,8 @@ namespace kuzzleio {
       return v;
     }
 
-    bool Collection::publishMessage(Document* document, query_options* options) Kuz_Throw_KuzzleException {
-      bool_result *r = kuzzle_document_publish(document->_document, options);
+    bool Collection::publishMessage(json_object* content, query_options* options) Kuz_Throw_KuzzleException {
+      bool_result *r = kuzzle_collection_publish_message(_collection, content, options);
       if (r->error != NULL)
           throwExceptionFromStatus(r);
       bool ret = r->result;
