@@ -179,3 +179,19 @@
    * {@link #mUpdateDocument(DocumentVector documents, QueryOptions options)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::publishMessage(Document* documents, query_options* options) "
+  /**
+   * Publish a real-time message
+   *
+   * @param document  Document to publish
+   * @param options  Request options
+   * @return boolean
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::publishMessage(Document* documents) "
+  /**
+   * {@link #publishMessage(Document document, QueryOptions options)}
+   */
+  public";
