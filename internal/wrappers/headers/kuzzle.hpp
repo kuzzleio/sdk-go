@@ -3,16 +3,22 @@
 
 #include "exceptions.hpp"
 #include "core.hpp"
+#include "listeners.hpp"
+#include "event_emitter.hpp"
 #include <string>
-
+#include <iostream>
 #include <vector>
+#include <map>
 
 namespace kuzzleio {
 
-  class Kuzzle {
+  class Kuzzle : public KuzzleEventEmitter {
+    private:
+      std::map<int, EventListener*>  _listener_instances;
+
     public:
       kuzzle *_kuzzle;
-          
+
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
@@ -52,6 +58,14 @@ namespace kuzzleio {
       Kuzzle* flushQueue();
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);
+      std::map<int, EventListener*> getListeners();
+
+      virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener);
+      virtual KuzzleEventEmitter* removeListener(Event event, EventListener* listener);
+      virtual KuzzleEventEmitter* removeAllListeners(Event event);
+      virtual KuzzleEventEmitter* once(Event event, EventListener* listener);
+      virtual int listenerCount(Event event);
+
   };
 }
 

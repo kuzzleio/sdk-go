@@ -2,13 +2,14 @@
 package kuzzle
 
 import (
+	"sync"
+	"time"
+
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
-	"sync"
-	"time"
 )
 
 const version = "1.0.0"

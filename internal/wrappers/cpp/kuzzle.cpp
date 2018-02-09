@@ -275,4 +275,40 @@ namespace kuzzleio {
     return kuzzle_get_volatile(_kuzzle);
   }
 
+  void trigger_event_listener(int event, json_object* res, void* data) {
+    ((Kuzzle*)data)->getListeners()[event]->trigger(res);
+  }
+
+  std::map<int, EventListener*> Kuzzle::getListeners() {
+    return _listener_instances;
+  }
+
+  KuzzleEventEmitter* Kuzzle::addListener(Event event, EventListener* listener) {
+    kuzzle_add_listener(_kuzzle, event, &trigger_event_listener, this);
+    _listener_instances[event] = listener;
+
+    return this;
+  }
+
+  KuzzleEventEmitter* Kuzzle::removeListener(Event event, EventListener* listener) {
+    kuzzle_remove_listener(_kuzzle, event, (void*)&trigger_event_listener);
+    _listener_instances[event] = NULL;
+
+    return this;
+  }
+
+  KuzzleEventEmitter* Kuzzle::removeAllListeners(Event event) {
+    kuzzle_remove_all_listeners(_kuzzle, event);
+
+    return this;
+  }
+
+  KuzzleEventEmitter* Kuzzle::once(Event event, EventListener* listener) {
+    kuzzle_once(_kuzzle, event, &trigger_event_listener, this);
+  }
+
+  int Kuzzle::listenerCount(Event event) {
+    return kuzzle_listener_count(_kuzzle, event);
+  }
+  
 }

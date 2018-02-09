@@ -5,7 +5,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(kuzzle connection collection security ms)
+dirs=(kuzzle connection/websocket collection security ms)
 
 generate_cover_data() {
     rm -rf "$workdir"

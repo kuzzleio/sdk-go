@@ -145,11 +145,11 @@ func kuzzle_stop_queuing(k *C.kuzzle) {
 
 //export kuzzle_add_listener
 // TODO loop and close on Unsubscribe
-func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
+func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.Pointer) {
 	c := make(chan interface{})
 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
-	kuzzle.AddListener((*kuzzle.Kuzzle)(k.instance), int(e), c)
+	(*kuzzle.Kuzzle)(k.instance).AddListener(int(e), c)
 	go func() {
 		res := <-c
 
@@ -160,8 +160,33 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener) {
 		jsonRes = C.json_tokener_parse(buffer)
 		C.free(unsafe.Pointer(buffer))
 
-		C.kuzzle_trigger_event(cb, jsonRes)
+		C.kuzzle_trigger_event(e, cb, jsonRes, data)
 	}()
+}
+
+//export kuzzle_once
+func kuzzle_once(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.Pointer) {
+	c := make(chan interface{})
+
+	listeners_list[uintptr(unsafe.Pointer(cb))] = c
+	(*kuzzle.Kuzzle)(k.instance).Once(int(e), c)
+	go func() {
+		res := <-c
+
+		var jsonRes *C.json_object
+		r, _ := json.Marshal(res)
+
+		buffer := C.CString(string(r))
+		jsonRes = C.json_tokener_parse(buffer)
+		C.free(unsafe.Pointer(buffer))
+
+		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+	}()
+}
+
+//export kuzzle_listener_count
+func kuzzle_listener_count(k *C.kuzzle, event C.int) int {
+	return (*kuzzle.Kuzzle)(k.instance).ListenerCount(int(event))
 }
 
 //export kuzzle_remove_listener

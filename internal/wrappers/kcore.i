@@ -4,6 +4,7 @@
 %{
 #include "listeners.hpp"    
 #include "exceptions.hpp"
+#include "event_emitter.hpp"
 #include "kuzzle.hpp"
 #include "collection.hpp"
 #include "room.hpp"
@@ -15,12 +16,11 @@
 %define _Complex
 %enddef
 
-%feature("director") NotificationListener;
-
 %include "kuzzlesdk.h"
 %include "kuzzle.h"
 %include "listeners.hpp"
 %include "exceptions.hpp"
+%include "event_emitter.hpp"
 %include "kuzzle.hpp"
 %include "collection.hpp"
 %include "room.hpp"

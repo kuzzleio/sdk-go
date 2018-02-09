@@ -53,8 +53,10 @@ namespace kuzzleio {
         document_result *r = kuzzle_document_save(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-        std::cout << r->result << std::endl;
         Document* ret = new Document(_collection, r->result->id, r->result->content);
+
+        _document->id = r->result->id;
+        _document->version = r->result->version;
         delete(r);
         return ret;
     }
