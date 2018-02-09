@@ -212,3 +212,19 @@
    * {@link #replaceDocument(String id, Document document, QueryOptions options)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::scroll(const std::string& id, query_options* options) "
+  /**
+   * Gets the next page of results from a previous search or scroll request
+   * 
+   * @param id  Scroll unique identifier
+   * @param options  Request options
+   * @returns a SearchResult
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::scroll(const std::string& id) "
+  /**
+   * {@link #scroll(String id)}
+   */
+  public";

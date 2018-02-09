@@ -192,5 +192,11 @@ namespace kuzzleio {
       return ret;
     }
 
+    search_result* Collection::scroll(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
+      search_result* r = kuzzle_collection_scroll(_collection, const_cast<char*>(id.c_str()), options);
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+      return r;
+    }
 
 }
