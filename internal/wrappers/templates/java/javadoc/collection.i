@@ -195,3 +195,20 @@
    * {@link #publishMessage(JsonObject content, QueryOptions options)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::replaceDocument(const std::string& id, Document* document, query_options* options) "
+  /**
+   * Replace an existing document with a new one.
+   *
+   * @param id  Document unique identifier
+   * @param document  New document
+   * @param options  Request options
+   * @return the document
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::replaceDocument(const std::string& id, Document* document) "
+  /**
+   * {@link #replaceDocument(String id, Document document, QueryOptions options)}
+   */
+  public";

@@ -25,6 +25,7 @@ namespace kuzzleio {
             std::vector<Document*> mReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
             std::vector<Document*> mUpdateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
             bool publishMessage(json_object* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
+            Document* replaceDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;
     };
 }
 
