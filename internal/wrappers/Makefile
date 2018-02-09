@@ -4,10 +4,11 @@ GOROOT ?= /usr/local
 GOCC = $(GOROOT)/bin/go
 JAVA_HOME ?= /usr/local
 PYTHON_INCLUDE_DIR ?= /usr/include/python3.5
-GOFLAGS = -buildmode=c-shared
+GOFLAGS = -buildmode=c-archive
 GOSRC = ./cgo/kuzzle/
 GOTARGETDIR = $(ROOTOUTDIR)/c
-GOTARGET = $(GOTARGETDIR)/libkuzzlesdk.so
+GOTARGET = $(GOTARGETDIR)/libkuzzlesdk.a
+GOTARGETSO = $(GOTARGETDIR)/libkuzzlesdk.so
 CPPDIR = $(ROOT_DIR)cpp
 HEADERSDIR = $(ROOT_DIR)headers
 
@@ -19,6 +20,14 @@ LIBS = -lkuzzlesdk -ljson-c
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
+CPPSRCS = 	kuzzle.cpp \
+					document.cpp \
+					collection.cpp \
+					room.cpp \
+					kcore_wrap.cxx
+
+CPPSDK = $(CPPSRCS:.cpp=.o)
+
 SWIG = swig
 
 all: java
@@ -26,12 +35,16 @@ all: java
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
+%.o: cpp/%.cpp
+	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
+
 core:
 ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
 	mkdir -p $(GOTARGETDIR)
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
+	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
 
 wrapper: $(OBJS)
@@ -41,12 +54,16 @@ object:
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
-	rm -f $(OUTDIR)/kcore_wrap.o
-	rm -f kcore_wrap.cxx
+	cp -p $(GOTARGETSO) $(OUTDIR)
+	#rm -f $(OUTDIR)/kcore_wrap.o
+	#rm -f kcore_wrap.cxx
 
 swig:
 	mkdir -p $(OUTDIR)
 	$(SWIG) -Wall -c++ -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
+
+makedir:
+	mkdir -p $(OUTDIR)			
 
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
@@ -60,8 +77,7 @@ java: core swig wrapper object posttask
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp
 csharp: SWIGOPTS = -dllimport kuzzlesdk
-csharp: core swig wrapper object posttask
-	mkdir -p $(OUTDIR)
+csharp: core swig wrapper object posttask makedir
 	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
 	rm -f $(OUTDIR)/*.cs
 
@@ -71,13 +87,16 @@ python: LANGUAGE = python
 python: SWIGOPTS = -py3
 python: CC = g++
 python: CFLAGS = -fPIC
-python: core swig wrapper
-	mkdir -p $(OUTDIR)
+python: core swig wrapper makedir
 	cp $(ROOT_DIR)templates/$(LANGUAGE)/*.py $(OUTDIR)
 	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
 	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
 	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
 
+cpp: OUTDIR = $(ROOTOUTDIR)/cpp
+cpp: makedir $(CPPSDK)
+		ar rvs $(OUTDIR)/libcpp.a $(OUTDIR)/*.o
+		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
 	rm -rf build

@@ -318,11 +318,11 @@ typedef struct user_result {
     char *stack;
 } user_result;
 
-enum {
+enum is_action_allowed {
     ALLOWED=0,
     CONDITIONNAL=1,
     DENIED=2
-} is_action_allowed;
+};
 
 //statistics
 typedef struct {

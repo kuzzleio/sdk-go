@@ -1,3 +1,4 @@
+#include "kuzzle.hpp"
 #include "collection.hpp"
 #include "document.hpp"
 #include "room.hpp"
