@@ -1,3 +1,4 @@
+#include "kuzzle.hpp"
 #include "collection.hpp"
 
 namespace kuzzleio {
