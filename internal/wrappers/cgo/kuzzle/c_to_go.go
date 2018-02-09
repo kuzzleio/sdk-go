@@ -76,6 +76,9 @@ func cToGoRole(crole *C.role) (*security.Role, error) {
 }
 
 func cToGoSearchFilters(searchFilters *C.search_filters) *types.SearchFilters {
+	if searchFilters == nil {
+		return nil
+	}
 	return &types.SearchFilters{
 		Query:        JsonCConvert(searchFilters.query),
 		Sort:         JsonCConvert(searchFilters.sort).([]interface{}),

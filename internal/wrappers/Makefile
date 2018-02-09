@@ -13,7 +13,7 @@ CPPDIR = $(ROOT_DIR)cpp
 HEADERSDIR = $(ROOT_DIR)headers
 
 CPP = g++
-CPPFLAGS = -g -fPIC
+CPPFLAGS = -g -fPIC -std=c++11
 INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
 LIBS = -lkuzzlesdk -ljson-c

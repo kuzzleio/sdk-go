@@ -2,6 +2,7 @@ package collection
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -15,13 +16,19 @@ func (dc *Collection) Count(filters *types.SearchFilters, options types.QueryOpt
 		Status int
 	}
 
+	searchfilters := &types.SearchFilters{}
+
+	if filters != nil {
+		searchfilters = filters
+	}
+
 	ch := make(chan *types.KuzzleResponse)
 	query := &types.KuzzleRequest{
 		Collection: dc.collection,
 		Index:      dc.index,
 		Controller: "document",
 		Action:     "count",
-		Body:       filters,
+		Body:       searchfilters,
 	}
 	go dc.Kuzzle.Query(query, options, ch)
 

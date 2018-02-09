@@ -1,11 +1,12 @@
 #include "document.hpp"
+#include "collection.hpp"
 
 namespace kuzzleio {
     
     Document::Document(Collection *collection, const std::string& id, json_object* content) Kuz_Throw_KuzzleException {
         _document = new document();
         _collection = collection;
-        kuzzle_new_document(_document, collection->_collection, const_cast<char*>(id.c_str()), content);
+        kuzzle_new_document(_document, collection->_collection, const_cast<char*>(id.c_str()), content); 
     }
 
     Document::~Document() {

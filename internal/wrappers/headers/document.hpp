@@ -3,22 +3,23 @@
 
 #include "listeners.hpp"
 #include "exceptions.hpp"
-#include "collection.hpp"
 #include "core.hpp"
 #include "room.hpp"
 
 #include <string>
 #include <iostream>
 
-namespace kuzzleio {
+namespace kuzzleio {    
+    class Collection;
+
     class Document {
         Document(){};
-        document *_document;
         Collection *_collection;
         NotificationListener* _listener_instance;
 
         public:
-            Document(Collection *collection, const std::string& id=NULL, json_object* content=NULL) Kuz_Throw_KuzzleException;
+            document *_document;
+            Document(Collection *collection, const std::string& id="", json_object* content=NULL) Kuz_Throw_KuzzleException;
             virtual ~Document();
             std::string delete_(query_options* options=NULL) Kuz_Throw_KuzzleException;
             bool exists(query_options* options=NULL) Kuz_Throw_KuzzleException;

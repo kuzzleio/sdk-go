@@ -20,6 +20,8 @@
 %rename(UserData) user_data;
 %rename(User, match="class") user;
 %rename(RoomOptions) room_options;
+%rename(SearchFilters) search_filters;
+%rename(SearchResult) search_result;
 
 %ignore *::error;
 %ignore *::status;
@@ -42,11 +44,13 @@
 %include "javadoc/kuzzle.i"
 %include "javadoc/document.i"
 %include "javadoc/room.i"
+%include "javadoc/collection.i"
 %include "../../kcore.i"
 
 %include "std_vector.i"
-%template(StringVector) std::vector<std::string>;
 
+%template(StringVector) std::vector<std::string>;
+%template(DocumentVector) std::vector<kuzzleio::Document*>;
 
 %typemap(out) const StringVector& %{
     return $1;
