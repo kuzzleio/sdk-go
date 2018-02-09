@@ -1,5 +1,6 @@
 #include "collection.hpp"
 #include "document.hpp"
+#include "room.hpp"
 
 namespace kuzzleio {
     Collection::Collection(Kuzzle* kuzzle, const std::string& col, const std::string& index) {
@@ -204,6 +205,25 @@ namespace kuzzleio {
       if (r->error != NULL)
         throwExceptionFromStatus(r);
       return r;
+    }
+
+    void call_collection_cb(notification_result* res, void* data) {
+      ((Collection*)data)->getListener()->onMessage(res);
+    }
+
+    NotificationListener* Collection::getListener() {
+      return _listener_instance;
+    }
+
+    Room* Collection::subscribe(search_filters* filters, NotificationListener *listener, room_options* options) Kuz_Throw_KuzzleException {
+      room_result* r = kuzzle_collection_subscribe(_collection, filters, options, &call_collection_cb, this);
+      if (r->error != NULL)
+        throwExceptionFromStatus(r);
+      _listener_instance = listener;
+      
+      Room* ret = new Room(r->result, NULL, listener);
+      free(r);
+      return ret;
     }
 
 }

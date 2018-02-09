@@ -66,12 +66,22 @@ func kuzzle_collection_truncate(c *C.collection, options *C.query_options) *C.bo
 
 //export kuzzle_collection_subscribe
 // TODO loop and close on Unsubscribe
-func kuzzle_collection_subscribe(col *C.collection, filters *C.search_filters, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) {
+func kuzzle_collection_subscribe(col *C.collection, filters *C.search_filters, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) *C.room_result {
 	c := make(chan types.KuzzleNotification)
-	cToGoCollection(col).Subscribe(cToGoSearchFilters(filters), SetRoomOptions(options), c)
+	goRoom := cToGoCollection(col).Subscribe(cToGoSearchFilters(filters), SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c
 		C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
 	}()
+
+	<-goRoom.ResponseChannel()
+
+	room := (*C.room)(C.calloc(1, C.sizeof_room))
+	room.instance = unsafe.Pointer(goRoom)
+	registerRoom(room)
+	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
+
+	result.result = room
+	return result
 }

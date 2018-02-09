@@ -7,10 +7,12 @@
 
 namespace kuzzleio {
     class Document;
+    class Room;
 
     class Collection {
         public:
             collection* _collection;
+            NotificationListener* _listener_instance;
 
             Collection(Kuzzle* kuzzle, const std::string& collection, const std::string& index);
             virtual ~Collection();
@@ -28,6 +30,8 @@ namespace kuzzleio {
             Document* replaceDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;
             search_result* scroll(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
             search_result* search(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
+            Room* subscribe(search_filters* filters, NotificationListener* listener, room_options* options=NULL) Kuz_Throw_KuzzleException;
+            NotificationListener* getListener();
     };
 }
 

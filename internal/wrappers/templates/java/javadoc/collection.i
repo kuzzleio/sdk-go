@@ -247,3 +247,20 @@
    * {@link #search(SearchFilters filters, QueryOptions options)}
    */
   public";
+
+%javamethodmodifiers kuzzleio::Collection::subscribe(search_filters* filters, NotificationListener *listener, room_options* options) "
+  /**
+   * Subscribes to this data collection with a set of Kuzzle DSL filters.
+   *
+   * @param filters  Subscription filters
+   * @param options  Request options
+   * @param listener  Response callback listener
+   * @return an object with a onDone() callback triggered when the subscription is active
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::subscribe(search_filters* filters, NotificationListener *listener) "
+  /**
+   * {@link #subscribe(SearchFilters filters, NotificationListener listeners)}
+   */
+  public";
