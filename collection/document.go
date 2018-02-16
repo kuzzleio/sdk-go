@@ -2,6 +2,7 @@ package collection
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
@@ -73,37 +74,47 @@ func (d *Document) Subscribe(options types.RoomOptions, ch chan<- types.KuzzleNo
 	return d.collection.Subscribe(filters, options, ch), nil
 }
 
-/*
-  Saves the document into Kuzzle.
-
-  If this is a new document, will create it in Kuzzle and the id property will be made available.
-  Otherwise, will replace the latest version of the document in Kuzzle by the current content of this object.
-*/
-func (d *Document) Save(options types.QueryOptions) (*Document, error) {
-	if d.Id == "" {
-		return d, types.NewError("Document.Save: missing document id", 400)
-	}
-
+// Create a new document in Kuzzle.
+// Takes an optional argument object with the following properties:
+//   - volatile (object, default: null):
+//       Additional information passed to notifications to other users
+//   - ifExist (string, allowed values: "error" (default), "replace"):
+//       If the same document already exists:
+//         - resolves with an error if set to "error".
+//         - replaces the existing document if set to "replace"
+func (d *Document) Create(options types.QueryOptions) (*Document, error) {
 	ch := make(chan *types.KuzzleResponse)
 
-	query := &types.KuzzleRequest{
-		Index:      d.collection.index,
-		Collection: d.collection.collection,
-		Controller: "document",
-		Action:     "createOrReplace",
-		Id:         d.Id,
-		Body:       d.Content,
+	action := "create"
+
+	if options != nil {
+		if options.IfExist() == "replace" {
+			action = "createOrReplace"
+		} else if options.IfExist() != "error" {
+			return nil, types.NewError(fmt.Sprintf("Invalid value for the 'ifExist' option: '%s'", options.IfExist()), 400)
+		}
 	}
 
+	query := &types.KuzzleRequest{
+		Collection: d.collection.collection,
+		Index:      d.collection.index,
+		Controller: "document",
+		Action:     action,
+		Body:       d.Content,
+		Id:         d.Id,
+	}
 	go d.collection.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
 	if res.Error != nil {
-		return d, res.Error
+		return nil, res.Error
 	}
 
-	return d, nil
+	documentResponse := &Document{collection: d.collection}
+	json.Unmarshal(res.Result, documentResponse)
+
+	return documentResponse, nil
 }
 
 /*
