@@ -9,6 +9,12 @@ namespace kuzzleio {
         kuzzle_new_document(_document, collection->_collection, const_cast<char*>(id.c_str()), content); 
     }
 
+    Document::Document(Document& document) {
+      _document = document._document;
+      _collection = document._collection;
+      kuzzle_new_document(_document, _collection->_collection, _document->id, _document->content); 
+    }
+
     Document::~Document() {
         unregisterDocument(_document);
         delete(_document);

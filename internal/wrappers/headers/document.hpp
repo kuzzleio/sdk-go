@@ -20,6 +20,7 @@ namespace kuzzleio {
         public:
             document *_document;
             Document(Collection *collection, const std::string& id="", json_object* content=NULL) Kuz_Throw_KuzzleException;
+            Document(Document& document);
             virtual ~Document();
             std::string delete_(query_options* options=NULL) Kuz_Throw_KuzzleException;
             bool exists(query_options* options=NULL) Kuz_Throw_KuzzleException;
