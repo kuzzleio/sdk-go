@@ -50,8 +50,8 @@ namespace kuzzleio {
         return ret;
     }
 
-    Document* Document::save(query_options* options) Kuz_Throw_KuzzleException {
-        document_result *r = kuzzle_document_save(_document, options);
+    Document* Document::create(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_create(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         Document* ret = new Document(_collection, r->result->id, r->result->content);

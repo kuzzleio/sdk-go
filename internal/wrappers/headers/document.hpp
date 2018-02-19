@@ -25,7 +25,7 @@ namespace kuzzleio {
             bool exists(query_options* options=NULL) Kuz_Throw_KuzzleException;
             bool publish(query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* refresh(query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Document* save(query_options* options=NULL) Kuz_Throw_KuzzleException;
+            Document* create(query_options* options=NULL) Kuz_Throw_KuzzleException;
             Document* setContent(json_object* content, bool replace=false);
             json_object* getContent();
             Room* subscribe(NotificationListener* listener, room_options* options=NULL);

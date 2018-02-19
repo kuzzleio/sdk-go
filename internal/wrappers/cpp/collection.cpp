@@ -23,14 +23,6 @@ namespace kuzzleio {
       return ret;
     }
 
-    Collection* Collection::createDocument(Document* document, const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
-      document_result *r = kuzzle_collection_create_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-          throwExceptionFromStatus(r);
-      delete(r);
-      return this;
-    }
-
     std::string Collection::deleteDocument(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
       string_result *r = kuzzle_collection_delete_document(_collection, const_cast<char*>(id.c_str()), options);
       if (r->error != NULL)
