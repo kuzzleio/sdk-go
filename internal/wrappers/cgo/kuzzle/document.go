@@ -73,6 +73,18 @@ func kuzzle_document_create(d *C.document, options *C.query_options) *C.document
 	return currentDocumentResult(d, err)
 }
 
+//export kuzzle_document_replace
+func kuzzle_document_replace(d *C.document, options *C.query_options) *C.document_result {
+	_, err := cToGoDocument(d._collection, d).Replace(SetQueryOptions(options))
+	return currentDocumentResult(d, err)
+}
+
+//export kuzzle_document_update
+func kuzzle_document_update(d *C.document, options *C.query_options) *C.document_result {
+	_, err := cToGoDocument(d._collection, d).Update(SetQueryOptions(options))
+	return currentDocumentResult(d, err)
+}
+
 //export kuzzle_document_refresh
 func kuzzle_document_refresh(d *C.document, options *C.query_options) *C.document_result {
 	res, err := cToGoDocument(d._collection, d).Refresh(SetQueryOptions(options))

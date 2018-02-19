@@ -541,3 +541,209 @@ func ExampleCollection_CreateDocument() {
 
 	fmt.Println(doc.Id, doc.Content)
 }
+
+//Replace tests
+func TestDocumentReplaceError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	col := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(col, "")
+	_, err := doc.Replace(nil)
+	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+}
+
+func TestReplaceDocument(t *testing.T) {
+	done := make(chan bool)
+	id := "myId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "replace", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			body := make(map[string]interface{}, 0)
+			body["title"] = "yolo"
+
+			assert.Equal(t, body, parsedQuery.Body)
+
+			res := collection.Document{Id: id, Content: []byte(`{"title":"yolo"}`)}
+			r, _ := json.Marshal(res)
+			done <- true
+			return &types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(res, id)
+	content := make(collection.DocumentContent)
+	content["title"] = "yolo"
+	doc.SetContent(content, false)
+	go doc.Replace(nil)
+	<-done
+	assert.Equal(t, id, doc.Id)
+}
+
+func TestReplaceDocumentCreate(t *testing.T) {
+	done := make(chan bool)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "replace", parsedQuery.Action)
+
+			res := collection.Document{Id: "id", Content: []byte(`{"Title":"yolo"}`)}
+			r, _ := json.Marshal(res)
+			done <- true
+			return &types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	newCollection := collection.NewCollection(k, "collection", "index")
+	opts := types.NewQueryOptions()
+	opts.SetIfExist("error")
+
+	doc := collection.NewDocument(newCollection, "id")
+	content := make(collection.DocumentContent)
+	content["title"] = "yolo"
+	doc.SetContent(content, false)
+	go doc.Replace(opts)
+	<-done
+}
+
+func ExampleCollection_ReplaceDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	id := "myId"
+
+	newCollection := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(newCollection, id)
+	content := make(collection.DocumentContent)
+	content["title"] = "foo"
+	doc.SetContent(content, false)
+	doc, err := doc.Replace(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(doc.Id, doc.Content)
+}
+
+//Update tests
+func TestDocumentUpdateError(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	col := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(col, "")
+	_, err := doc.Update(nil)
+	assert.NotNil(t, err)
+	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+}
+
+func TestUpdateDocument(t *testing.T) {
+	done := make(chan bool)
+	id := "myId"
+
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "document", parsedQuery.Controller)
+			assert.Equal(t, "update", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+			assert.Equal(t, id, parsedQuery.Id)
+
+			body := make(map[string]interface{}, 0)
+			body["title"] = "yolo"
+
+			assert.Equal(t, body, parsedQuery.Body)
+
+			res := collection.Document{Id: id, Content: []byte(`{"title":"yolo"}`)}
+			r, _ := json.Marshal(res)
+			done <- true
+			return &types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	res := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(res, id)
+	content := make(collection.DocumentContent)
+	content["title"] = "yolo"
+	doc.SetContent(content, false)
+	go doc.Update(nil)
+	<-done
+	assert.Equal(t, id, doc.Id)
+}
+
+func TestUpdateDocumentCreate(t *testing.T) {
+	done := make(chan bool)
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "update", parsedQuery.Action)
+
+			res := collection.Document{Id: "id", Content: []byte(`{"Title":"yolo"}`)}
+			r, _ := json.Marshal(res)
+			done <- true
+			return &types.KuzzleResponse{Result: r}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	newCollection := collection.NewCollection(k, "collection", "index")
+	opts := types.NewQueryOptions()
+	opts.SetIfExist("error")
+
+	doc := collection.NewDocument(newCollection, "id")
+	content := make(collection.DocumentContent)
+	content["title"] = "yolo"
+	doc.SetContent(content, false)
+	go doc.Update(opts)
+	<-done
+}
+
+func ExampleCollection_UpdateDocument() {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	id := "myId"
+
+	newCollection := collection.NewCollection(k, "collection", "index")
+	doc := collection.NewDocument(newCollection, id)
+	content := make(collection.DocumentContent)
+	content["title"] = "foo"
+	doc.SetContent(content, false)
+	doc, err := doc.Update(nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	fmt.Println(doc.Id, doc.Content)
+}

@@ -33,18 +33,6 @@ func kuzzle_collection_fetch_document(c *C.collection, id *C.char, options *C.qu
 	return goToCDocumentResult(c, res, err)
 }
 
-//export kuzzle_collection_replace_document
-func kuzzle_collection_replace_document(c *C.collection, id *C.char, document *C.document, options *C.query_options) *C.document_result {
-	res, err := (*collection.Collection)(c.instance).ReplaceDocument(C.GoString(id), cToGoDocument(c, document), SetQueryOptions(options))
-	return goToCDocumentResult(c, res, err)
-}
-
-//export kuzzle_collection_update_document
-func kuzzle_collection_update_document(c *C.collection, id *C.char, document *C.document, options *C.query_options) *C.document_result {
-	res, err := (*collection.Collection)(c.instance).UpdateDocument(C.GoString(id), cToGoDocument(c, document), SetQueryOptions(options))
-	return goToCDocumentResult(c, res, err)
-}
-
 //export kuzzle_collection_scroll
 func kuzzle_collection_scroll(c *C.collection, scrollId *C.char, options *C.query_options) *C.search_result {
 	res, err := (*collection.Collection)(c.instance).Scroll(C.GoString(scrollId), SetQueryOptions(options))

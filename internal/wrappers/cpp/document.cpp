@@ -62,6 +62,30 @@ namespace kuzzleio {
         return ret;
     }
 
+    Document* Document::replace(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_replace(_document, options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+        Document* ret = new Document(_collection, r->result->id, r->result->content);
+
+        _document->id = r->result->id;
+        _document->version = r->result->version;
+        delete(r);
+        return ret;
+    }
+
+    Document* Document::update(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_update(_document, options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+        Document* ret = new Document(_collection, r->result->id, r->result->content);
+
+        _document->id = r->result->id;
+        _document->version = r->result->version;
+        delete(r);
+        return ret;
+    }
+
     Document* Document::setContent(json_object* content, bool replace) {
         kuzzle_document_set_content(_document, content, replace);
         return this;

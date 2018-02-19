@@ -177,15 +177,6 @@ namespace kuzzleio {
       return ret;
     }
 
-    Document* Collection::replaceDocument(const std::string& id, Document* document, query_options* options) Kuz_Throw_KuzzleException {
-      document_result* r = kuzzle_collection_update_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
-      return ret;
-    }
-
     search_result* Collection::scroll(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
       search_result* r = kuzzle_collection_scroll(_collection, const_cast<char*>(id.c_str()), options);
       if (r->error != NULL)
@@ -218,14 +209,4 @@ namespace kuzzleio {
       free(r);
       return ret;
     }
-
-    Document* Collection::updateDocument(const std::string& id, Document* document, query_options* options) Kuz_Throw_KuzzleException {
-      document_result* r = kuzzle_collection_update_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
-      return ret;
-    }
-
 }

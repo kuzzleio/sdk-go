@@ -117,6 +117,58 @@ func (d *Document) Create(options types.QueryOptions) (*Document, error) {
 	return documentResponse, nil
 }
 
+// Replace a document in Kuzzle.
+func (d *Document) Replace(options types.QueryOptions) (*Document, error) {
+	ch := make(chan *types.KuzzleResponse)
+
+	query := &types.KuzzleRequest{
+		Collection: d.collection.collection,
+		Index:      d.collection.index,
+		Controller: "document",
+		Action:     "replace",
+		Body:       d.Content,
+		Id:         d.Id,
+	}
+	go d.collection.Kuzzle.Query(query, options, ch)
+
+	res := <-ch
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	documentResponse := &Document{collection: d.collection}
+	json.Unmarshal(res.Result, documentResponse)
+
+	return documentResponse, nil
+}
+
+// Replace a document in Kuzzle.
+func (d *Document) Update(options types.QueryOptions) (*Document, error) {
+	ch := make(chan *types.KuzzleResponse)
+
+	query := &types.KuzzleRequest{
+		Collection: d.collection.collection,
+		Index:      d.collection.index,
+		Controller: "document",
+		Action:     "update",
+		Body:       d.Content,
+		Id:         d.Id,
+	}
+	go d.collection.Kuzzle.Query(query, options, ch)
+
+	res := <-ch
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	documentResponse := &Document{collection: d.collection}
+	json.Unmarshal(res.Result, documentResponse)
+
+	return documentResponse, nil
+}
+
 /*
   Replaces the document with the latest version stored in Kuzzle.
 */
