@@ -9,6 +9,12 @@ namespace kuzzleio {
         kuzzle_new_document(_document, collection->_collection, const_cast<char*>(id.c_str()), content); 
     }
 
+    Document::Document(Document& document) {
+      _document = document._document;
+      _collection = document._collection;
+      kuzzle_new_document(_document, _collection->_collection, _document->id, _document->content); 
+    }
+
     Document::~Document() {
         unregisterDocument(_document);
         delete(_document);
@@ -50,8 +56,32 @@ namespace kuzzleio {
         return ret;
     }
 
-    Document* Document::save(query_options* options) Kuz_Throw_KuzzleException {
-        document_result *r = kuzzle_document_save(_document, options);
+    Document* Document::create(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_create(_document, options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+        Document* ret = new Document(_collection, r->result->id, r->result->content);
+
+        _document->id = r->result->id;
+        _document->version = r->result->version;
+        delete(r);
+        return ret;
+    }
+
+    Document* Document::replace(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_replace(_document, options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+        Document* ret = new Document(_collection, r->result->id, r->result->content);
+
+        _document->id = r->result->id;
+        _document->version = r->result->version;
+        delete(r);
+        return ret;
+    }
+
+    Document* Document::update(query_options* options) Kuz_Throw_KuzzleException {
+        document_result *r = kuzzle_document_update(_document, options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         Document* ret = new Document(_collection, r->result->id, r->result->content);

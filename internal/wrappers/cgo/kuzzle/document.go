@@ -67,9 +67,21 @@ func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzz
 }
 
 // Does not re-allocate the document
-//export kuzzle_document_save
-func kuzzle_document_save(d *C.document, options *C.query_options) *C.document_result {
-	_, err := cToGoDocument(d._collection, d).Save(SetQueryOptions(options))
+//export kuzzle_document_create
+func kuzzle_document_create(d *C.document, options *C.query_options) *C.document_result {
+	_, err := cToGoDocument(d._collection, d).Create(SetQueryOptions(options))
+	return currentDocumentResult(d, err)
+}
+
+//export kuzzle_document_replace
+func kuzzle_document_replace(d *C.document, options *C.query_options) *C.document_result {
+	_, err := cToGoDocument(d._collection, d).Replace(SetQueryOptions(options))
+	return currentDocumentResult(d, err)
+}
+
+//export kuzzle_document_update
+func kuzzle_document_update(d *C.document, options *C.query_options) *C.document_result {
+	_, err := cToGoDocument(d._collection, d).Update(SetQueryOptions(options))
 	return currentDocumentResult(d, err)
 }
 

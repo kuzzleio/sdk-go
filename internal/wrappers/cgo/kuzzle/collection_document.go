@@ -15,12 +15,6 @@ func kuzzle_collection_count(c *C.collection, searchFilters *C.search_filters, o
 	return goToCIntResult(res, err)
 }
 
-//export kuzzle_collection_create_document
-func kuzzle_collection_create_document(c *C.collection, id *C.char, document *C.document, options *C.query_options) *C.document_result {
-	res, err := (*collection.Collection)(c.instance).CreateDocument(C.GoString(id), cToGoDocument(c, document), SetQueryOptions(options))
-	return goToCDocumentResult(c, res, err)
-}
-
 //export kuzzle_collection_delete_document
 func kuzzle_collection_delete_document(c *C.collection, id *C.char, options *C.query_options) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).DeleteDocument(C.GoString(id), SetQueryOptions(options))
@@ -36,18 +30,6 @@ func kuzzle_collection_document_exists(c *C.collection, id *C.char, options *C.q
 //export kuzzle_collection_fetch_document
 func kuzzle_collection_fetch_document(c *C.collection, id *C.char, options *C.query_options) *C.document_result {
 	res, err := (*collection.Collection)(c.instance).FetchDocument(C.GoString(id), SetQueryOptions(options))
-	return goToCDocumentResult(c, res, err)
-}
-
-//export kuzzle_collection_replace_document
-func kuzzle_collection_replace_document(c *C.collection, id *C.char, document *C.document, options *C.query_options) *C.document_result {
-	res, err := (*collection.Collection)(c.instance).ReplaceDocument(C.GoString(id), cToGoDocument(c, document), SetQueryOptions(options))
-	return goToCDocumentResult(c, res, err)
-}
-
-//export kuzzle_collection_update_document
-func kuzzle_collection_update_document(c *C.collection, id *C.char, document *C.document, options *C.query_options) *C.document_result {
-	res, err := (*collection.Collection)(c.instance).UpdateDocument(C.GoString(id), cToGoDocument(c, document), SetQueryOptions(options))
 	return goToCDocumentResult(c, res, err)
 }
 
