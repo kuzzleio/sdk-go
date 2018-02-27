@@ -103,24 +103,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  statistics* Kuzzle::getAllStatistics(query_options* options) Kuz_Throw_KuzzleException {
-    all_statistics_result* r = kuzzle_get_all_statistics(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    statistics *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
-  statistics* Kuzzle::getStatistics(time_t start, time_t end, query_options* options) Kuz_Throw_KuzzleException {
-    statistics_result* r = kuzzle_get_statistics(_kuzzle, start, end, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    statistics *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
