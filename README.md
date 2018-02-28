@@ -10,7 +10,6 @@ A backend software, self-hostable and ready to use to power modern apps.
 You can access the Kuzzle repository on [Github](https://github.com/kuzzleio/kuzzle)
 
 * [SDK Documentation](https://godoc.org/github.com/kuzzleio/sdk-go)
-* [Report an issue](#report-an-issue)
 * [Installation](#installation)
 * [Basic usage](#basic-usage)
 * [Running tests](#tests)
@@ -19,12 +18,6 @@ You can access the Kuzzle repository on [Github](https://github.com/kuzzleio/kuz
 ## SDK Documentation
 
 The complete SDK documentation is available [here](http://docs.kuzzle.io/sdk-reference/)
-
-## Report an issue
-
-Use following meta repository to report issues on SDK:
-
-https://github.com/kuzzleio/kuzzle-sdk/issues
 
 ## Installation
 
