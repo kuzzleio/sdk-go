@@ -3,7 +3,6 @@ package server_test
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/kuzzleio/sdk-go/connection/websocket"
@@ -36,37 +35,18 @@ func TestGetAllStats(t *testing.T) {
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getAllStats", request.Action)
 
-			type hits struct {
-				Hits []*types.Statistics `json:"hits"`
-			}
-
-			m := map[string]int{}
-			m["websocket"] = 42
-
-			stats := types.Statistics{
-				CompletedRequests: m,
-			}
-
-			hitsArray := []*types.Statistics{&stats}
-			toMarshal := hits{hitsArray}
-
-			h, err := json.Marshal(toMarshal)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			return &types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: json.RawMessage(`{"foo": "bar"}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := k.Server.GetAllStats(nil)
 
-	assert.Equal(t, 42, res[0].CompletedRequests["websocket"])
+	assert.Equal(t, json.RawMessage(`{"foo": "bar"}`), res)
 }
 
 func ExampleKuzzle_GetAllStats() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	res, err := k.Server.GetAllStats(nil)
@@ -76,7 +56,5 @@ func ExampleKuzzle_GetAllStats() {
 		return
 	}
 
-	for _, stat := range res {
-		fmt.Println(stat.Timestamp, stat.FailedRequests, stat.Connections, stat.CompletedRequests, stat.OngoingRequests)
-	}
+	fmt.Println(res)
 }

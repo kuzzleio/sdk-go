@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -35,26 +36,17 @@ func TestGetConfig(t *testing.T) {
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getConfig", request.Action)
 
-			ret, _ := json.Marshal(true)
-			return &types.KuzzleResponse{Result: ret}
+			return &types.KuzzleResponse{Result: json.RawMessage(`{"foo": "bar"}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.Connect()
 	res, _ := k.Server.GetConfig(nil)
-	assert.Equal(t, true, res)
+	assert.Equal(t, json.RawMessage(`{"foo": "bar"}`), res)
 }
 
 func ExampleGetConfig() {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			request := types.KuzzleRequest{}
-			json.Unmarshal(query, &request)
-
-			ret, _ := json.Marshal(true)
-			return &types.KuzzleResponse{Result: ret}
-		},
-	}
+	c := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.Connect()
 	res, _ := k.Server.GetConfig(nil)

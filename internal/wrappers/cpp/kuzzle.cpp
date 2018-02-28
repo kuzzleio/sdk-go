@@ -125,15 +125,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  json_object* Kuzzle::getServerInfo(query_options* options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_get_server_info(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
@@ -176,16 +167,6 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     shards* ret = r->result;
-    delete(r);
-    return ret;
-  }
-
-  // java wrapper for this method is in typemap.i
-  long long Kuzzle::now(query_options* options) Kuz_Throw_KuzzleException {
-    date_result *r = kuzzle_now(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    long long ret = r->result;
     delete(r);
     return ret;
   }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
@@ -45,20 +46,10 @@ func TestAdminExists(t *testing.T) {
 	assert.Equal(t, true, res)
 }
 
-func ExampleAdminExists(t *testing.T) {
-	c := &internal.MockedConnection{
-		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			request := types.KuzzleRequest{}
-			json.Unmarshal(query, &request)
-			assert.Equal(t, "server", request.Controller)
-			assert.Equal(t, "adminExists", request.Action)
-
-			ret, _ := json.Marshal(true)
-			return &types.KuzzleResponse{Result: ret}
-		},
-	}
+func ExampleAdminExists() {
+	c := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.Connect()
 	res, _ := k.Server.AdminExists(nil)
-	assert.Equal(t, true, res)
+	println(res)
 }

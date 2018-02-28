@@ -1,19 +1,20 @@
-package kuzzle
+package server
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Now retrieves the current Kuzzle time.
-func (k *Kuzzle) Now(options types.QueryOptions) (int, error) {
+func (s *Server) Now(options types.QueryOptions) (int, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
 		Controller: "server",
 		Action:     "now",
 	}
-	go k.Query(query, options, result)
+	go s.k.Query(query, options, result)
 
 	res := <-result
 

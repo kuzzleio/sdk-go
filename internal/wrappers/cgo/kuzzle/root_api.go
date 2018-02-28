@@ -72,17 +72,3 @@ func kuzzle_get_auto_refresh(k *C.kuzzle, index *C.char, options *C.query_option
 
 	return goToCBoolResult(res, err)
 }
-
-//export kuzzle_get_server_info
-func kuzzle_get_server_info(k *C.kuzzle, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetServerInfo(SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_now
-func kuzzle_now(k *C.kuzzle, options *C.query_options) *C.date_result {
-	time, err := (*kuzzle.Kuzzle)(k.instance).Now(SetQueryOptions(options))
-
-	return goToCDateResult(time, err)
-}

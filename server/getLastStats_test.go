@@ -47,7 +47,7 @@ func TestGetLastStats(t *testing.T) {
 }
 
 func ExampleKuzzle_GetLastStats() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	now := time.Now()
