@@ -53,5 +53,5 @@ func ExampleCollection_Subscribe() {
 
 	r := <-room.ResponseChannel()
 
-	fmt.Println(r.Room.RoomId)
+	fmt.Println(r.Room.RoomId())
 }
