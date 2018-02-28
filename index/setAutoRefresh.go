@@ -2,9 +2,9 @@ package index
 
 import "github.com/kuzzleio/sdk-go/types"
 
-func (Index) SetAutoRefresh(index string, autoRefresh bool) error {
+func (i *Index) SetAutoRefresh(index string, autoRefresh bool) error {
 	if index == "" {
-		return false, types.NewError("Index.SetAutoRefresh: index required", 400)
+		return types.NewError("Index.SetAutoRefresh: index required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -18,12 +18,12 @@ func (Index) SetAutoRefresh(index string, autoRefresh bool) error {
 		}{autoRefresh},
 	}
 
-	go k.Query(query, nil, result)
+	go i.k.Query(query, nil, result)
 
 	res := <-result
 
 	if res.Error != nil {
-		return false, res.Error
+		return res.Error
 	}
 
 	return nil

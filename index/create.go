@@ -4,8 +4,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// CreateIndex create a new empty data index, with no associated mapping.
-func (Index) Create(index string) error {
+// Create a new empty data index, with no associated mapping.
+func (i *Index) Create(index string) error {
 	if index == "" {
 		return types.NewError("Index.Create: index required", 400)
 	}
@@ -17,7 +17,7 @@ func (Index) Create(index string) error {
 		Controller: "index",
 		Action:     "create",
 	}
-	go k.Query(query, options, result)
+	go i.k.Query(query, nil, result)
 
 	res := <-result
 

@@ -4,7 +4,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (Index) Refresh(index string) error {
+func (i *Index) Refresh(index string) error {
 	if index == "" {
 		return types.NewError("Index.Refresh: index required", 400)
 	}
@@ -16,12 +16,12 @@ func (Index) Refresh(index string) error {
 		Action:     "refresh",
 		Index:      index,
 	}
-	go k.Query(query, nil, result)
+	go i.k.Query(query, nil, result)
 
 	res := <-result
 
 	if res.Error != nil {
-		return nil, res.Error
+		return res.Error
 	}
 
 	return nil

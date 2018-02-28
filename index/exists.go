@@ -8,7 +8,7 @@ import (
 )
 
 // Exists check if the index exists
-func (Index) Exists(index string) (bool, error) {
+func (i *Index) Exists(index string) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Index.Exists: index required", 400)
 	}
@@ -21,7 +21,7 @@ func (Index) Exists(index string) (bool, error) {
 		Action:     "exists",
 	}
 
-	go k.Query(query, nil, result)
+	go i.k.Query(query, nil, result)
 
 	res := <-result
 
