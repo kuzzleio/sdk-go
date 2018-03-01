@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
@@ -12,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetLastStatsQueryError(t *testing.T) {
+func TestGetStatsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -23,11 +24,11 @@ func TestGetLastStatsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Server.GetLastStats(nil)
+	_, err := k.Server.GetStats(nil, nil, nil)
 	assert.NotNil(t, err)
 }
 
-func TestGetLastStats(t *testing.T) {
+func TestGetStats(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -40,16 +41,17 @@ func TestGetLastStats(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.Server.GetLastStats(nil)
+	res, _ := k.Server.GetStats(nil, nil, nil)
 
 	assert.Equal(t, json.RawMessage(`{"foo": "bar"}`), res)
 }
 
-func ExampleKuzzle_GetLastStats() {
+func ExampleKuzzle_GetStats() {
 	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
-	res, err := k.Server.GetLastStats(nil)
+	now := time.Now()
+	res, err := k.Server.GetStats(&now, nil, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

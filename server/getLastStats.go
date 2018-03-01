@@ -2,32 +2,17 @@ package server
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 //GetLastStats get Kuzzle usage statistics
-func (s *Server) GetLastStats(startTime *time.Time, stopTime *time.Time, options types.QueryOptions) (json.RawMessage, error) {
+func (s *Server) GetLastStats(options types.QueryOptions) (json.RawMessage, error) {
 	result := make(chan *types.KuzzleResponse)
-
-	type data struct {
-		StartTime string `json:"startTime"`
-		StopTime  string `json:"stopTime"`
-	}
-
-	var d data
-	if startTime != nil {
-		d = data{
-			startTime.String(),
-			stopTime.String(),
-		}
-	}
 
 	query := &types.KuzzleRequest{
 		Controller: "server",
 		Action:     "getLastStats",
-		Body:       d,
 	}
 
 	go s.k.Query(query, options, result)

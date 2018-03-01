@@ -65,8 +65,8 @@ func kuzzle_get_all_stats(s *C.server, options *C.query_options) *C.string_resul
 	return goToCStringResult(&str, err)
 }
 
-//export kuzzle_get_last_stats
-func kuzzle_get_last_stats(s *C.server, start_time C.time_t, stop_time C.time_t, options *C.query_options) *C.string_result {
+//export kuzzle_get_stats
+func kuzzle_get_stats(s *C.server, start_time C.time_t, stop_time C.time_t, options *C.query_options) *C.string_result {
 	opts := SetQueryOptions(options)
 
 	t, _ := strconv.ParseInt(C.GoString(C.ctime(&start_time)), 10, 64)
@@ -74,7 +74,17 @@ func kuzzle_get_last_stats(s *C.server, start_time C.time_t, stop_time C.time_t,
 	t, _ = strconv.ParseInt(C.GoString(C.ctime(&stop_time)), 10, 64)
 	stop := time.Unix(t, 0)
 
-	res, err := (*server.Server)(s.instance).GetLastStats(&start, &stop, opts)
+	res, err := (*server.Server)(s.instance).GetStats(&start, &stop, opts)
+
+	str := string(res)
+	return goToCStringResult(&str, err)
+}
+
+//export kuzzle_get_last_stats
+func kuzzle_get_last_stats(s *C.server, options *C.query_options) *C.string_result {
+	opts := SetQueryOptions(options)
+
+	res, err := (*server.Server)(s.instance).GetLastStats(opts)
 
 	str := string(res)
 	return goToCStringResult(&str, err)
