@@ -20,7 +20,6 @@ namespace kuzzleio {
             Room(Collection *collection, json_object *filters=NULL, room_options* options=NULL);
             Room(room* r, SubscribeListener* subscribe_listener, NotificationListener* notification_listener);            
             virtual ~Room();
-            int count() Kuz_Throw_KuzzleException;
             SubscribeListener *getSubscribeListener();
             NotificationListener *getNotificationListener();
             Room* onDone(SubscribeListener* listener);

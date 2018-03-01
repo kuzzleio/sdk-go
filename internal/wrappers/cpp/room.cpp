@@ -18,15 +18,6 @@ namespace kuzzleio {
       delete(this->_room);
     }
 
-    int Room::count() Kuz_Throw_KuzzleException {
-      int_result *r = room_count(_room);
-      if (r->error != NULL)
-          throwExceptionFromStatus(r);
-      int ret = r->result;
-      delete(r);
-      return ret;
-    }
-
     void call_cb(room_result* res, void* data) {
         ((Room*)data)->getSubscribeListener()->onSubscribe(res);
     }

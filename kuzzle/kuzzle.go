@@ -8,6 +8,7 @@ import (
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/realtime"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -33,6 +34,7 @@ type Kuzzle struct {
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
+	Realtime      *realtime.Realtime
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -52,6 +54,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
+	k.Realtime = realtime.NewRealtime(k)
 
 	k.RequestHistory = k.socket.RequestHistory()
 

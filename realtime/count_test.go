@@ -1,9 +1,11 @@
-package collection
+package realtime_test
 
 import (
 	"encoding/json"
 	"fmt"
 	"testing"
+
+	"github.com/kuzzleio/sdk-go/realtime"
 
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -11,19 +13,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRoomCountError(t *testing.T) {
+func TestCountError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	realTime := realtime.NewRealtime(k)
 
-	_, err := NewRoom(NewCollection(k, "collection", "index"), nil, nil).Count()
+	_, err := realTime.Count("index", "collection", "42")
 	assert.NotNil(t, err)
 }
 
-func TestRoomCount(t *testing.T) {
+func TestCount(t *testing.T) {
 	type result struct {
 		Count int `json:"count"`
 	}
@@ -36,22 +39,18 @@ func TestRoomCount(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	realTime := realtime.NewRealtime(k)
 
-	r := NewRoom(NewCollection(k, "collection", "index"), nil, nil)
-	r.internalState = active
-	res, _ := r.Count()
+	res, _ := realTime.Count("index", "collection", "42")
 	assert.Equal(t, 10, res)
 }
 
-func ExampleRoom_Count() {
-	type result struct {
-		Count int `json:"count"`
-	}
-
+func Example_Count() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	realTime := realtime.NewRealtime(k)
 
-	res, err := NewRoom(NewCollection(k, "collection", "index"), nil, nil).Count()
+	res, err := realTime.Count("index", "collection", "42")
 
 	if err != nil {
 		fmt.Println(err.Error())

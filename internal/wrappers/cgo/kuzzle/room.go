@@ -44,12 +44,6 @@ func room_new_room(room *C.room, col *C.collection, filters *C.json_object, opti
 	room.options = options
 }
 
-//export room_count
-func room_count(room *C.room) *C.int_result {
-	res, err := (*collection.Room)(room.instance).Count()
-	return goToCIntResult(res, err)
-}
-
 //export room_on_done
 func room_on_done(room *C.room, cb C.kuzzle_subscribe_listener, data unsafe.Pointer) {
 	c := make(chan types.SubscribeResponse)
