@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
@@ -33,6 +34,7 @@ type Kuzzle struct {
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
+	Auth          *auth.Auth
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -52,6 +54,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
+	k.Auth = auth.NewAuth(k)
 
 	k.RequestHistory = k.socket.RequestHistory()
 
