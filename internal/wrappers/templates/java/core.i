@@ -36,6 +36,7 @@
 #include "collection.cpp"
 #include "room.cpp"
 #include "document.cpp"
+#include "index.cpp"
 %}
 
 %include "exceptions.i"
@@ -141,3 +142,4 @@ struct json_object { };
 %include "collection.cpp"
 %include "room.cpp"
 %include "document.cpp"
+%include "index.cpp"

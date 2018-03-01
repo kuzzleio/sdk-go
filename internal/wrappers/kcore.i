@@ -2,13 +2,14 @@
 
 %module(directors="1") kcore
 %{
-#include "listeners.hpp"    
+#include "listeners.hpp"
 #include "exceptions.hpp"
 #include "event_emitter.hpp"
 #include "kuzzle.hpp"
 #include "collection.hpp"
 #include "room.hpp"
 #include "document.hpp"
+#include "index.hpp"
 #include <assert.h>
 #include <ffi.h>
 %}
@@ -25,3 +26,4 @@
 %include "collection.hpp"
 %include "room.hpp"
 %include "document.hpp"
+%include "index.hpp"

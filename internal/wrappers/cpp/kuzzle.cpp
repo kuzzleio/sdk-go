@@ -32,15 +32,6 @@ namespace kuzzleio {
     return kuzzle_connect(_kuzzle);
   }
 
-  bool Kuzzle::createIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   json_object* Kuzzle::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
     json_result* r = kuzzle_create_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
     if (r->error)
@@ -189,15 +180,6 @@ namespace kuzzleio {
     return r;
   }
 
-  shards* Kuzzle::refreshIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    shards_result *r = kuzzle_refresh_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    shards* ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   // java wrapper for this method is in typemap.i
   long long Kuzzle::now(query_options* options) Kuz_Throw_KuzzleException {
     date_result *r = kuzzle_now(_kuzzle, options);
@@ -310,5 +292,5 @@ namespace kuzzleio {
   int Kuzzle::listenerCount(Event event) {
     return kuzzle_listener_count(_kuzzle, event);
   }
-  
+
 }

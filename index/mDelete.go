@@ -1,11 +1,16 @@
 package index
 
-import "github.com/kuzzleio/sdk-go/types"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/kuzzleio/sdk-go/types"
+)
 
 // Delete delete the index
-func (i *Index) MDelete(indexes []string) error {
+func (i *Index) MDelete(indexes []string) ([]string, error) {
 	if len(indexes) == 0 {
-		return types.NewError("Index.MDelete: at least one index required", 400)
+		return nil, types.NewError("Index.MDelete: at least one index required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -20,8 +25,15 @@ func (i *Index) MDelete(indexes []string) error {
 	res := <-result
 
 	if res.Error != nil {
-		return res.Error
+		return nil, res.Error
 	}
 
-	return nil
+	var deletedIndexes []string
+
+	err := json.Unmarshal(res.Result, &deletedIndexes)
+	if err != nil {
+		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
+
+	return deletedIndexes, nil
 }
