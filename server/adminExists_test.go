@@ -36,7 +36,10 @@ func TestAdminExists(t *testing.T) {
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "adminExists", request.Action)
 
-			ret, _ := json.Marshal(true)
+			type response struct {
+				Exists bool
+			}
+			ret, _ := json.Marshal(response{true})
 			return &types.KuzzleResponse{Result: ret}
 		},
 	}

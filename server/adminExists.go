@@ -23,8 +23,11 @@ func (s *Server) AdminExists(options types.QueryOptions) (bool, error) {
 		return false, res.Error
 	}
 
-	var r bool
-	json.Unmarshal(res.Result, &r)
+	type exists struct {
+		Exists bool `json:"exists"`
+	}
 
-	return r, nil
+	r := exists{}
+	json.Unmarshal(res.Result, &r)
+	return r.Exists, nil
 }
