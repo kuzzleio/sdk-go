@@ -1,14 +1,15 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCreateMyCredentialsQueryError(t *testing.T) {
@@ -22,7 +23,7 @@ func TestCreateMyCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.CreateMyCredentials("local", nil, nil)
+	_, err := k.Auth.CreateMyCredentials("local", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -33,7 +34,7 @@ func TestCreateMyCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.CreateMyCredentials("", nil, nil)
+	_, err := k.Auth.CreateMyCredentials("", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -59,7 +60,7 @@ func TestCreateMyCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
+	res, _ := k.Auth.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
 
 	assert.Equal(t, "foo", res["username"])
 	assert.Equal(t, "bar", res["password"])
@@ -83,7 +84,7 @@ func ExampleKuzzle_CreateMyCredentials() {
 	}
 
 	newCredentials := credentials{"new", "foo"}
-	res, err := k.CreateMyCredentials("other_strategy", newCredentials, nil)
+	res, err := k.Auth.CreateMyCredentials("other_strategy", newCredentials, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

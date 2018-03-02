@@ -47,6 +47,33 @@ func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
 	registerAuth(a)
 }
 
+//export kuzzle_check_token
+func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
+	result := (*C.token_validity)(C.calloc(1, C.sizeof_token_validity))
+
+	res, err := (*auth.Auth)(a.instance).CheckToken(C.GoString(token))
+	if err != nil {
+		Set_token_validity_error(result, err)
+		return result
+	}
+
+	result.valid = C.bool(res.Valid)
+	result.state = C.CString(res.State)
+	result.expires_at = C.ulonglong(res.ExpiresAt)
+
+	return result
+}
+
+//export kuzzle_create_my_credentials
+func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
+	res, err := (*auth.Auth)(a.instance).CreateMyCredentials(
+		C.GoString(strategy),
+		JsonCConvert(credentials).(map[string]interface{}),
+		SetQueryOptions(options))
+
+	return goToCJsonResult(res, err)
+}
+
 //export kuzzle_login
 func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int
@@ -67,33 +94,6 @@ func kuzzle_logout(k *C.kuzzle) *C.char {
 	}
 
 	return nil
-}
-
-//export kuzzle_check_token
-func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
-	result := (*C.token_validity)(C.calloc(1, C.sizeof_token_validity))
-
-	res, err := (*auth.Auth)(a.instance).CheckToken(C.GoString(token))
-	if err != nil {
-		Set_token_validity_error(result, err)
-		return result
-	}
-
-	result.valid = C.bool(res.Valid)
-	result.state = C.CString(res.State)
-	result.expires_at = C.ulonglong(res.ExpiresAt)
-
-	return result
-}
-
-//export kuzzle_create_my_credentials
-func kuzzle_create_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).CreateMyCredentials(
-		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
-		SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
 }
 
 //export kuzzle_delete_my_credentials
