@@ -93,6 +93,11 @@ typedef struct {
     kuzzle_offline_queue_loader loader;
 } kuzzle;
 
+typedef struct {
+  void *instance;
+  kuzzle *kuzzle;
+} auth;
+
 //options passed to room constructor
 typedef struct {
     char *scope;

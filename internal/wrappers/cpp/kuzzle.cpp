@@ -24,10 +24,6 @@ namespace kuzzleio {
     delete(this->_kuzzle);
   }
 
-  token_validity* Kuzzle::checkToken(const std::string& token) {
-    return kuzzle_check_token(_kuzzle, const_cast<char*>(token.c_str()));
-  }
-
   char* Kuzzle::connect() {
     return kuzzle_connect(_kuzzle);
   }
@@ -130,10 +126,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  std::string Kuzzle::getJwt() {
-    return kuzzle_get_jwt(_kuzzle);
-  }
-
   json_object* Kuzzle::getMyRights(query_options* options) Kuz_Throw_KuzzleException {
     json_result *r = kuzzle_get_my_rights(_kuzzle, options);
     if (r->error != NULL)
@@ -223,11 +215,6 @@ namespace kuzzleio {
     return this;
   }
 
-  Kuzzle* Kuzzle::setJwt(const std::string& jwt) {
-    kuzzle_set_jwt(_kuzzle, const_cast<char*>(jwt.c_str()));
-    return this;
-  }
-
   Kuzzle* Kuzzle::startQueuing() {
     kuzzle_start_queuing(_kuzzle);
     return this;
@@ -235,11 +222,6 @@ namespace kuzzleio {
 
   Kuzzle* Kuzzle::stopQueuing() {
     kuzzle_stop_queuing(_kuzzle);
-    return this;
-  }
-
-  Kuzzle* Kuzzle::unsetJwt() {
-    kuzzle_unset_jwt(_kuzzle);
     return this;
   }
 
@@ -251,16 +233,7 @@ namespace kuzzleio {
     delete(r);
     return ret;
   }
-
-  user* Kuzzle::whoAmI() Kuz_Throw_KuzzleException {
-    user_result *r = kuzzle_who_am_i(_kuzzle);
-    if (r->error != NULL)
-      throwExceptionFromStatus(r);
-    user *ret = r->user;
-    delete(r);
-    return ret;
-  }
-
+  
   Kuzzle* Kuzzle::flushQueue() {
     kuzzle_flush_queue(_kuzzle);
     return this;

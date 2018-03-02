@@ -11,23 +11,40 @@ package main
 */
 import "C"
 import (
+	"unsafe"
+
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
-//export kuzzle_set_jwt
-func kuzzle_set_jwt(k *C.kuzzle, token *C.char) {
-	(*kuzzle.Kuzzle)(k.instance).SetJwt(C.GoString(token))
+// map which stores instances to keep references in case the gc passes
+var authInstances map[interface{}]bool
+
+//register new instance of server
+func registerAuth(instance interface{}) {
+	authInstances[instance] = true
 }
 
-//export kuzzle_unset_jwt
-func kuzzle_unset_jwt(k *C.kuzzle) {
-	(*kuzzle.Kuzzle)(k.instance).UnsetJwt()
+// unregister an instance from the instances map
+//export unregisterAuth
+func unregisterAuth(a *C.auth) {
+	delete(authInstances, (*auth.Auth)(a.instance))
 }
 
 // Allocates memory
-//export kuzzle_get_jwt
-func kuzzle_get_jwt(k *C.kuzzle) *C.char {
-	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
+//export kuzzle_new_auth
+func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
+	kuz := (*kuzzle.Kuzzle)(k.instance)
+	auth := auth.NewAuth(kuz)
+
+	if authInstances == nil {
+		authInstances = make(map[interface{}]bool)
+	}
+
+	a.instance = unsafe.Pointer(auth)
+	a.kuzzle = k
+
+	registerAuth(a)
 }
 
 //export kuzzle_login
@@ -53,10 +70,10 @@ func kuzzle_logout(k *C.kuzzle) *C.char {
 }
 
 //export kuzzle_check_token
-func kuzzle_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
+func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
 	result := (*C.token_validity)(C.calloc(1, C.sizeof_token_validity))
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).CheckToken(C.GoString(token))
+	res, err := (*auth.Auth)(a.instance).CheckToken(C.GoString(token))
 	if err != nil {
 		Set_token_validity_error(result, err)
 		return result
@@ -136,11 +153,4 @@ func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options
 		SetQueryOptions(options))
 
 	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_who_am_i
-func kuzzle_who_am_i(k *C.kuzzle) *C.user_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).WhoAmI()
-
-	return goToCUserResult(k, res, err)
 }

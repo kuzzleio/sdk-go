@@ -22,7 +22,6 @@ namespace kuzzleio {
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
 
-      token_validity* checkToken(const std::string& token);
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -36,7 +35,7 @@ namespace kuzzleio {
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
       bool getAutoRefresh(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string getJwt();
+
       json_object* getMyRights(query_options* options=NULL) Kuz_Throw_KuzzleException;
       json_object* getServerInfo(query_options* options=NULL) Kuz_Throw_KuzzleException;
       collection_entry* listCollections(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -49,12 +48,9 @@ namespace kuzzleio {
       Kuzzle* replayQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
       Kuzzle* setDefaultIndex(const std::string& index);
-      Kuzzle* setJwt(const std::string& jwt);
       Kuzzle* startQueuing();
       Kuzzle* stopQueuing();
-      Kuzzle* unsetJwt();
       json_object* updateSelf(user_data* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      user* whoAmI() Kuz_Throw_KuzzleException;
       Kuzzle* flushQueue();
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);

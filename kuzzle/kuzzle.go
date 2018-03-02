@@ -81,7 +81,7 @@ func (k *Kuzzle) Connect() error {
 		if wasConnected {
 			if k.jwt != "" {
 				go func() {
-					res, err := k.CheckToken(k.jwt)
+					res, err := k.Auth.CheckToken(k.jwt)
 
 					if err != nil {
 						k.jwt = ""

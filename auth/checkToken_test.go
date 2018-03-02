@@ -1,19 +1,20 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCheckTokenTokenNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.CheckToken("")
+	_, err := k.Auth.CheckToken("")
 	assert.NotNil(t, err)
 }
 
@@ -24,7 +25,7 @@ func TestCheckTokenQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.CheckToken("token")
+	_, err := k.Auth.CheckToken("token")
 	assert.NotNil(t, err)
 	assert.Equal(t, 123, err.(*types.KuzzleError).Status)
 }
@@ -40,7 +41,7 @@ func TestCheckToken(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.CheckToken("token")
+	res, _ := k.Auth.CheckToken("token")
 	assert.Equal(t, true, res.Valid)
 }
 
@@ -61,7 +62,7 @@ func ExampleKuzzle_CheckToken() {
 		return
 	}
 
-	res, err := k.CheckToken(jwt)
+	res, err := k.Auth.CheckToken(jwt)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
