@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -33,7 +34,7 @@ func TestCheckTokenQueryError(t *testing.T) {
 func TestCheckToken(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			tokenValidity := kuzzle.TokenValidity{Valid: true}
+			tokenValidity := auth.TokenValidity{Valid: true}
 			r, _ := json.Marshal(tokenValidity)
 
 			return &types.KuzzleResponse{Result: r}
