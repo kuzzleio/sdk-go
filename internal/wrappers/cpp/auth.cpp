@@ -23,4 +23,13 @@ namespace kuzzleio {
     delete(r);
     return ret;
   }
+
+  bool Auth::credentialsExist(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
+    bool_result* r = kuzzle_credentials_exist(_auth, const_cast<char*>(strategy.c_str()), options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    bool ret = r->result;
+    delete(r);
+    return ret;
+  }
 }

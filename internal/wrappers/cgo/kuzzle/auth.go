@@ -74,6 +74,15 @@ func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.js
 	return goToCJsonResult(res, err)
 }
 
+//export kuzzle_credentials_exist
+func kuzzle_credentials_exist(a *C.auth, strategy *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*auth.Auth)(a.instance).CredentialsExist(
+		C.GoString(strategy),
+		SetQueryOptions(options))
+
+	return goToCBoolResult(res, err)
+}
+
 //export kuzzle_login
 func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int
