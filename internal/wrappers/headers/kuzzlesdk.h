@@ -96,7 +96,7 @@ typedef struct {
 typedef struct {
   void *instance;
   kuzzle* kuzzle;
-} index;
+} kuzzle_index;
 
 
 //options passed to room constructor

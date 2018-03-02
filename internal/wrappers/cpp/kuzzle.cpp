@@ -1,6 +1,5 @@
 #include <exception>
 #include <stdexcept>
-#include <string>
 #include "kuzzle.hpp"
 #include <iostream>
 #include <vector>

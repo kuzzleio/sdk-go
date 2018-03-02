@@ -1,9 +1,11 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
 
 namespace kuzzleio {
 
-    Index::Index(Kuzzle* kuzzle) Kuz_Throw_KuzzleException {
-        _index = new index();
+    Index::Index(Kuzzle* kuzzle) {
+        _index = new kuzzle_index();
         kuzzle_new_index(_index, kuzzle->_kuzzle);
     }
 
@@ -26,11 +28,25 @@ namespace kuzzleio {
         delete(r);
     }
 
-    string* Index::mDelete(string* indexes) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_index_mdelete(_index, const_cast<char**>(index.c_str()));
+    std::vector<std::string> Index::mDelete(const std::vector<std::string>& indexes) Kuz_Throw_KuzzleException {
+        char **indexesArray = new char *[indexes.size()];
+        int i = 0;
+        for (auto const& index : indexes) {
+          indexesArray[i] = const_cast<char*>(index.c_str());
+          i++;
+        }
+        string_array_result *r = kuzzle_index_mdelete(_index, indexesArray, indexes.size());
+
+        delete[] indexesArray;
         if (r->error != NULL)
-            throwExceptionFromStatus(r);
+          throwExceptionFromStatus(r);
+
+        std::vector<std::string> v;
+        for (int i = 0; i < r->result_length; i++)
+          v.push_back(r->result[i]);
+
         delete(r);
+        return v;
     }
 
     bool Index::exists(const std::string& index) Kuz_Throw_KuzzleException {
