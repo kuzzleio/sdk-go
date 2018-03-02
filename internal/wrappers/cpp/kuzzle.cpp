@@ -37,15 +37,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  bool Kuzzle::deleteMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_delete_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   json_object* Kuzzle::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
     json_result *r = kuzzle_get_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
     if (r->error != NULL)

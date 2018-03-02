@@ -83,6 +83,15 @@ func kuzzle_credentials_exist(a *C.auth, strategy *C.char, options *C.query_opti
 	return goToCBoolResult(res, err)
 }
 
+//export kuzzle_delete_my_credentials
+func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.void_result {
+	err := (*auth.Auth)(a.instance).DeleteMyCredentials(
+		C.GoString(strategy),
+		SetQueryOptions(options))
+
+	return goToCVoidResult(err)
+}
+
 //export kuzzle_login
 func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int
@@ -103,15 +112,6 @@ func kuzzle_logout(k *C.kuzzle) *C.char {
 	}
 
 	return nil
-}
-
-//export kuzzle_delete_my_credentials
-func kuzzle_delete_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.bool_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).DeleteMyCredentials(
-		C.GoString(strategy),
-		SetQueryOptions(options))
-
-	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_get_my_credentials

@@ -9,7 +9,7 @@ import (
 //CredentialsExist check the existence of the specified <strategy>'s credentials for the current user.
 func (a *Auth) CredentialsExist(strategy string, options types.QueryOptions) (bool, error) {
 	if strategy == "" {
-		return false, types.NewError("Kuzzle.CredentialsExist: strategy is required", 400)
+		return false, types.NewError("Auth.CredentialsExist: strategy is required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)
 

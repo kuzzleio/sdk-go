@@ -1,14 +1,15 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestDeleteMyCredentialsQueryError(t *testing.T) {
@@ -22,7 +23,7 @@ func TestDeleteMyCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.DeleteMyCredentials("local", nil)
+	err := k.Auth.DeleteMyCredentials("local", nil)
 	assert.NotNil(t, err)
 }
 
@@ -33,7 +34,7 @@ func TestDeleteMyCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.DeleteMyCredentials("", nil)
+	err := k.Auth.DeleteMyCredentials("", nil)
 	assert.NotNil(t, err)
 }
 
@@ -57,7 +58,7 @@ func TestDeleteMyCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.DeleteMyCredentials("local", nil)
+	err := k.Auth.DeleteMyCredentials("local", nil)
 	assert.Nil(t, err)
 }
 
@@ -78,11 +79,9 @@ func ExampleKuzzle_DeleteMyCredentials() {
 		return
 	}
 
-	res, err := k.DeleteMyCredentials("local", nil)
+	err = k.Auth.DeleteMyCredentials("local", nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	fmt.Printf("%#v\n", res)
 }
