@@ -281,49 +281,6 @@ func (ws *webSocket) UnregisterRoom(roomId string) {
 	}
 }
 
-/*
-func (ws *webSocket) listen() {
-	for {
-		var message types.KuzzleResponse
-		var r collection.Room
-
-		msg := <-ws.listenChan
-
-		json.Unmarshal(msg, &message)
-		m := message
-
-		json.Unmarshal(m.Result, &r)
-
-		s, ok := ws.subscriptions.Load(m.RoomId)
-		if m.RoomId != "" && ok {
-			var notification types.KuzzleNotification
-
-			json.Unmarshal(msg, &notification)
-
-			s.(*sync.Map).Range(func(key, value interface{}) bool {
-				channel := value.(types.IRoom).RealtimeChannel()
-				if channel != nil {
-					value.(types.IRoom).RealtimeChannel() <- &notification
-				}
-				return true
-			})
-		}
-
-		c, ok := ws.channelsResult.Load(m.RequestId)
-		if ok {
-			if message.Error != nil && message.Error.Message == "Token expired" {
-				ws.EmitEvent(event.JwtExpired, nil)
-			}
-
-			// If this is a response to a query we simply broadcast the response to the corresponding channel
-			c.(chan<- *types.KuzzleResponse) <- &message
-			close(c.(chan<- *types.KuzzleResponse))
-			ws.channelsResult.Delete(m.RequestId)
-		}
-	}
-}
-*/
-
 func (ws *webSocket) listen() {
 	for {
 		msg := <-ws.listenChan

@@ -1,19 +1,18 @@
-package kuzzle_test
+package server_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"log"
-	"testing"
-	"time"
 )
 
-func TestGetStatisticsQueryError(t *testing.T) {
+func TestGetLastStatsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -24,11 +23,11 @@ func TestGetStatisticsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.GetStatistics(nil, nil, nil)
+	_, err := k.Server.GetLastStats(nil)
 	assert.NotNil(t, err)
 }
 
-func TestGetStatistics(t *testing.T) {
+func TestGetLastStats(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -36,34 +35,21 @@ func TestGetStatistics(t *testing.T) {
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getLastStats", request.Action)
 
-			m := make(map[string]int)
-			m["websocket"] = 42
-
-			stats := types.Statistics{
-				CompletedRequests: m,
-			}
-
-			h, err := json.Marshal(stats)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			return &types.KuzzleResponse{Result: h}
+			return &types.KuzzleResponse{Result: json.RawMessage(`{"foo": "bar"}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.GetStatistics(nil, nil, nil)
+	res, _ := k.Server.GetLastStats(nil)
 
-	assert.Equal(t, 42, res.CompletedRequests["websocket"])
+	assert.Equal(t, json.RawMessage(`{"foo": "bar"}`), res)
 }
 
-func ExampleKuzzle_GetStatistics() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+func ExampleKuzzle_GetLastStats() {
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
-	now := time.Now()
-	res, err := k.GetStatistics(&now, nil, nil)
+	res, err := k.Server.GetLastStats(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
