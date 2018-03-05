@@ -13,21 +13,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTruncateIndexNull(t *testing.T) {
+func TestUpdateSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection")
+	err := nc.UpdateSpecifications("", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncateCollectionNull(t *testing.T) {
+func TestUpdateSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "")
+	err := nc.UpdateSpecifications("index", "", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncateError(t *testing.T) {
+func TestUpdateSpecificationsBodyNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.UpdateSpecifications("index", "collection", "")
+	assert.NotNil(t, err)
+}
+
+func TestUpdateSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -36,31 +43,29 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateSpecifications("index", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncate(t *testing.T) {
+func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged": true
-			}`)}
+			return &types.KuzzleResponse{Result: []byte(`{}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateSpecifications("index", "collection", "body")
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_Truncate() {
+func ExampleCollection_UpdateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateSpecifications("index", "collection", "body")
 
 	if err != nil {
 		fmt.Println(err.Error())

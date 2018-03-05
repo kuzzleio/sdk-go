@@ -4,14 +4,14 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Truncate delete every Documents from the provided Collection.
-func (dc *Collection) Truncate(index string, collection string) error {
+// Delete deletes a collection
+func (dc *Collection) Delete(index string, collection string) error {
 	if index == "" {
-		return types.NewError("Collection.Truncate: index required", 400)
+		return types.NewError("Collection.Delete: index required", 400)
 	}
 
 	if collection == "" {
-		return types.NewError("Collection.Truncate: collection required", 400)
+		return types.NewError("Collection.Delete: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -20,7 +20,7 @@ func (dc *Collection) Truncate(index string, collection string) error {
 		Collection: collection,
 		Index:      index,
 		Controller: "collection",
-		Action:     "truncate",
+		Action:     "delete",
 	}
 	go dc.Kuzzle.Query(query, nil, ch)
 

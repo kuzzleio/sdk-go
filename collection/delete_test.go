@@ -1,17 +1,31 @@
 package collection_test
 
 import (
-	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestCountError(t *testing.T) {
+func TestDeleteIndexNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Delete("", "collection")
+	assert.NotNil(t, err)
+}
+
+func TestDeleteCollectionNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Delete("index", "")
+	assert.NotNil(t, err)
+}
+
+func TestDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -19,44 +33,36 @@ func TestCountError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	count, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Delete("index", "collection")
 	assert.NotNil(t, err)
-	assert.Equal(t, -1, count)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
-func TestCount(t *testing.T) {
-	type result struct {
-		Count int `json:"count"`
-	}
-
+func TestDelete(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			res := result{Count: 10}
-			r, _ := json.Marshal(res)
-			return &types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"acknowledged":true
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Count(nil, nil)
-	assert.Equal(t, 10, res)
+	nc := collection.NewCollection(k)
+	err := nc.Delete("index", "collection")
+	assert.Nil(t, err)
 }
 
-func ExampleCollection_Count() {
-	type result struct {
-		Count int `json:"count"`
-	}
-
+func ExampleCollection_Delete() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").Count(nil, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Delete("index", "collection")
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	fmt.Println(res)
 }
