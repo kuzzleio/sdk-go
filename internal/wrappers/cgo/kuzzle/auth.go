@@ -92,6 +92,13 @@ func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_
 	return goToCVoidResult(err)
 }
 
+//export kuzzle_get_current_user
+func kuzzle_get_current_user(a *C.auth) *C.user_result {
+	u, err := (*auth.Auth)(a.instance).GetCurrentUser()
+
+	return goToCUserResult(a.kuzzle, u, err)
+}
+
 //export kuzzle_login
 func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int

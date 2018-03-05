@@ -1,10 +1,11 @@
-package security_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
 	"testing"
 
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -12,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWhoAmIQueryError(t *testing.T) {
+func TestGetCurrentUserQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -23,11 +24,12 @@ func TestWhoAmIQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.WhoAmI()
+	auth := auth.NewAuth(k)
+	_, err := auth.GetCurrentUser()
 	assert.NotNil(t, err)
 }
 
-func TestWhoAmI(t *testing.T) {
+func TestGetCurrentUser(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
@@ -41,14 +43,14 @@ func TestWhoAmI(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	res, _ := k.WhoAmI()
+	auth := auth.NewAuth(k)
+	res, _ := auth.GetCurrentUser()
 
 	assert.Equal(t, "id", res.Id)
 }
 
-func ExampleKuzzle_WhoAmI() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+func ExampleKuzzle_GetCurrentUser() {
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	type credentials struct {
@@ -64,11 +66,12 @@ func ExampleKuzzle_WhoAmI() {
 		return
 	}
 
-	res, err := k.WhoAmI()
+	auth := auth.NewAuth(k)
+	res, _ := auth.GetCurrentUser()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Printf("%#v\n", res)
+	fmt.Printf("%v\n", res)
 }

@@ -39,4 +39,11 @@ namespace kuzzleio {
         throwExceptionFromStatus(r);
     delete(r);
   }
+
+  user* Auth::getCurrentUser() Kuz_Throw_KuzzleException {
+    user_result *r = kuzzle_get_current_user(_auth);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    kuzzle_free_user_result(r);
+  }
 }

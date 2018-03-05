@@ -16,6 +16,7 @@ namespace kuzzleio {
       json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
       bool credentialsExist(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       void deleteMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
+      user* getCurrentUser() Kuz_Throw_KuzzleException;
   };
 }
 

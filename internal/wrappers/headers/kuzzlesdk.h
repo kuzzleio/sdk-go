@@ -99,7 +99,7 @@ typedef struct {
 } auth;
 
 typedef struct {
-  void *instance
+  void *instance;
   kuzzle *kuzzle;
 } server;
 
