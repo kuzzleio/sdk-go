@@ -1,9 +1,9 @@
-%rename (_now) kuzzleio::Kuzzle::now(query_options*);
-%rename (_now) kuzzleio::Kuzzle::now();
+%rename (_now) kuzzleio::Server::now(query_options*);
+%rename (_now) kuzzleio::Server::now();
 
-%javamethodmodifiers kuzzleio::Kuzzle::now(query_options* options) "private";
-%javamethodmodifiers kuzzleio::Kuzzle::now() "private";
-%typemap(javacode) kuzzleio::Kuzzle %{
+%javamethodmodifiers kuzzleio::Server::now(query_options* options) "private";
+%javamethodmodifiers kuzzleio::Server::now() "private";
+%typemap(javacode) kuzzleio::Server %{
   /**
    * {@link #now(QueryOptions)}
    */

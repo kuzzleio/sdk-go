@@ -37,6 +37,7 @@
 #include "room.cpp"
 #include "document.cpp"
 #include "auth.cpp"
+#include "server.cpp"
 %}
 
 %include "exceptions.i"
@@ -143,3 +144,4 @@ struct json_object { };
 %include "room.cpp"
 %include "document.cpp"
 %include "auth.cpp"
+%include "server.cpp"

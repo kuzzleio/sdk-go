@@ -35,14 +35,12 @@ namespace kuzzleio {
       bool getAutoRefresh(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
       json_object* getMyRights(query_options* options=NULL) Kuz_Throw_KuzzleException;
-      json_object* getServerInfo(query_options* options=NULL) Kuz_Throw_KuzzleException;
       collection_entry* listCollections(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
       void logout();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      long long now(query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
       Kuzzle* setDefaultIndex(const std::string& index);

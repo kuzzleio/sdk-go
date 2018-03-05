@@ -98,6 +98,11 @@ typedef struct {
   kuzzle *kuzzle;
 } auth;
 
+typedef struct {
+  void *instance
+  kuzzle *kuzzle;
+} server;
+
 //options passed to room constructor
 typedef struct {
     char *scope;
