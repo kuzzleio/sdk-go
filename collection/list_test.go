@@ -1,6 +1,7 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -11,21 +12,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateIndexNull(t *testing.T) {
+func TestListIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Create("", "collection")
+	lo := collection.NewListOptions("stored", 0, 1)
+	_, err := nc.List("", lo)
+
 	assert.NotNil(t, err)
 }
 
-func TestCreateCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nc := collection.NewCollection(k)
-	err := nc.Create("index", "")
-	assert.NotNil(t, err)
-}
-
-func TestCreateError(t *testing.T) {
+func TestListError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -34,35 +30,58 @@ func TestCreateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	lo := collection.NewListOptions("stored", 0, 1)
+	_, err := nc.List("index", lo)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
-func TestCreate(t *testing.T) {
+func TestList(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged":true
-			}`)}
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "collection", parsedQuery.Controller)
+			assert.Equal(t, "list", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+
+			res := types.KuzzleResponse{Result: []byte(`
+				{
+					"collections": [
+						{
+							"name": "stored_n", "type": "stored"
+						}
+					],
+					"type": "all"
+				}`),
+			}
+
+			r, _ := json.Marshal(res.Result)
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	lo := collection.NewListOptions("all", 0, 1)
+	res, err := nc.List("index", lo)
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
 }
 
-func ExampleCollection_Create() {
+func ExampleCollection_List() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	lo := collection.NewListOptions("all", 0, 1)
+	res, err := nc.List("index", lo)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(res)
 }

@@ -1,46 +1,37 @@
 package collection
 
 import (
-	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(options types.QueryOptions) (*Mapping, error) {
+func (dc *Collection) GetMapping(index string, collection string) (string, error) {
+	if index == "" {
+		return "", types.NewError("Collection.GetMapping: index required", 400)
+	}
+
+	if collection == "" {
+		return "", types.NewError("Collection.GetMapping: collection required", 400)
+	}
+
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
-		Collection: dc.collection,
-		Index:      dc.index,
+		Collection: collection,
+		Index:      index,
 		Controller: "collection",
 		Action:     "getMapping",
 	}
-	go dc.Kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, nil, ch)
 
 	res := <-ch
 
 	if res.Error != nil {
-		return nil, res.Error
+		return "", res.Error
 	}
 
-	type mappingResult map[string]struct {
-		Mappings map[string]struct {
-			Properties types.MappingFields `json:"properties"`
-		} `json:"mappings"`
-	}
+	var mapping string
+	mapping = string(res.Result)
 
-	result := mappingResult{}
-	json.Unmarshal(res.Result, &result)
-
-	if _, ok := result[dc.index]; ok {
-		indexMappings := result[dc.index].Mappings
-
-		if _, ok := indexMappings[dc.collection]; ok {
-			return &Mapping{Mapping: indexMappings[dc.collection].Properties, Collection: dc}, nil
-		} else {
-			return nil, types.NewError("No mapping found for collection "+dc.collection, 404)
-		}
-	} else {
-		return nil, types.NewError("No mapping found for index "+dc.index, 404)
-	}
+	return mapping, nil
 }

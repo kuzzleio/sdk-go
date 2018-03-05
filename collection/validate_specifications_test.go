@@ -13,21 +13,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTruncateIndexNull(t *testing.T) {
+func TestValidateSpecificationsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection")
+	err := nc.ValidateSpecifications("")
 	assert.NotNil(t, err)
 }
 
-func TestTruncateCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "")
-	assert.NotNil(t, err)
-}
-
-func TestTruncateError(t *testing.T) {
+func TestValidateSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -36,31 +29,34 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.ValidateSpecifications("body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncate(t *testing.T) {
+func TestValidateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged": true
-			}`)}
+					"valid": true,
+					"details": [],
+					"description": "Some description text"
+				}`),
+			}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.ValidateSpecifications("body")
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_Truncate() {
+func ExampleCollection_ValidateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.ValidateSpecifications("body")
 
 	if err != nil {
 		fmt.Println(err.Error())
