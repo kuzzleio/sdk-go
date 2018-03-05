@@ -1,75 +1,58 @@
-package kuzzle_test
+package server_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestGetServerInfoQueryError(t *testing.T) {
+func TestGetStatsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
-			assert.Equal(t, "info", request.Action)
-
+			assert.Equal(t, "getLastStats", request.Action)
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.GetServerInfo(nil)
+	_, err := k.Server.GetStats(nil, nil, nil)
 	assert.NotNil(t, err)
 }
 
-func TestGetServerInfo(t *testing.T) {
-	type myServerInfo struct {
-		Kuzzle struct {
-			Version string `json:"version"`
-		} `json:"kuzzle"`
-	}
-
+func TestGetStats(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
-			assert.Equal(t, "info", request.Action)
+			assert.Equal(t, "getLastStats", request.Action)
 
-			msi := myServerInfo{struct {
-				Version string `json:"version"`
-			}{"1.0.1"}}
-			msiMarsh, _ := json.Marshal(msi)
-
-			type serverInfo struct {
-				ServerInfo json.RawMessage `json:"serverInfo"`
-			}
-			si := serverInfo{msiMarsh}
-
-			info, _ := json.Marshal(si)
-			return &types.KuzzleResponse{Result: info}
+			return &types.KuzzleResponse{Result: json.RawMessage(`{"foo": "bar"}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.GetServerInfo(nil)
-	fmt.Printf("%s\n", res)
+	res, _ := k.Server.GetStats(nil, nil, nil)
 
-	var info myServerInfo
-	json.Unmarshal(res, &info)
-	assert.Equal(t, "1.0.1", info.Kuzzle.Version)
+	assert.Equal(t, json.RawMessage(`{"foo": "bar"}`), res)
 }
 
-func ExampleKuzzle_GetServerInfo() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+func ExampleKuzzle_GetStats() {
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
-	res, err := k.GetServerInfo(nil)
+	now := time.Now()
+	res, err := k.Server.GetStats(&now, nil, nil)
+
 	if err != nil {
 		fmt.Println(err.Error())
 		return
