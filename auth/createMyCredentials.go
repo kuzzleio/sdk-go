@@ -1,9 +1,6 @@
 package auth
 
 import (
-	"encoding/json"
-	"reflect"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -28,8 +25,5 @@ func (a *Auth) CreateMyCredentials(strategy string, credentials interface{}, opt
 		return nil, res.Error
 	}
 
-	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()
-	json.Unmarshal(res.Result, &ref)
-
-	return ref.(map[string]interface{}), nil
+	return res.Result, nil
 }

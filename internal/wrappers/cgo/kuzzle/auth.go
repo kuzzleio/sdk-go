@@ -65,13 +65,14 @@ func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
 }
 
 //export kuzzle_create_my_credentials
-func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
+func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.string_result {
 	res, err := (*auth.Auth)(a.instance).CreateMyCredentials(
 		C.GoString(strategy),
 		JsonCConvert(credentials).(map[string]interface{}),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	str := string(res)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_credentials_exist
@@ -99,6 +100,37 @@ func kuzzle_get_current_user(a *C.auth) *C.user_result {
 	return goToCUserResult(a.kuzzle, u, err)
 }
 
+//export kuzzle_get_my_credentials
+func kuzzle_get_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.string_result {
+	res, err := (*auth.Auth)(a.instance).GetMyCredentials(
+		C.GoString(strategy),
+		SetQueryOptions(options))
+
+	str := string(res)
+	return goToCStringResult(&str, err)
+}
+
+//export kuzzle_get_my_rights
+func kuzzle_get_my_rights(a *C.auth, options *C.query_options) *C.user_rights_result {
+	res, err := (*auth.Auth)(a.instance).GetMyRights(SetQueryOptions(options))
+
+	return goToCUserRightsResult(res, err)
+}
+
+//export kuzzle_update_self
+func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
+	userData, err := cToGoUserData(data)
+	if err != nil {
+		return goToCJsonResult(nil, err)
+	}
+
+	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateSelf(
+		userData,
+		SetQueryOptions(options))
+
+	return goToCJsonResult(res, err)
+}
+
 //export kuzzle_login
 func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
 	var expire int
@@ -121,15 +153,6 @@ func kuzzle_logout(k *C.kuzzle) *C.char {
 	return nil
 }
 
-//export kuzzle_get_my_credentials
-func kuzzle_get_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyCredentials(
-		C.GoString(strategy),
-		SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
-}
-
 //export kuzzle_update_my_credentials
 func kuzzle_update_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateMyCredentials(
@@ -148,25 +171,4 @@ func kuzzle_validate_my_credentials(k *C.kuzzle, strategy *C.char, credentials *
 		SetQueryOptions(options))
 
 	return goToCBoolResult(res, err)
-}
-
-//export kuzzle_get_my_rights
-func kuzzle_get_my_rights(k *C.kuzzle, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyRights(SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_update_self
-func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
-	userData, err := cToGoUserData(data)
-	if err != nil {
-		return goToCJsonResult(nil, err)
-	}
-
-	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateSelf(
-		userData,
-		SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
 }

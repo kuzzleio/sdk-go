@@ -15,11 +15,11 @@ namespace kuzzleio {
     return kuzzle_check_token(_auth, const_cast<char*>(token.c_str()));
   }
 
-  json_object* Auth::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
-    json_result* r = kuzzle_create_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+  std::string Auth::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_create_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
     if (r->error)
         throwExceptionFromStatus(r);
-    json_object *ret = r->result;
+    std::string ret = r->result;
     delete(r);
     return ret;
   }
@@ -46,4 +46,23 @@ namespace kuzzleio {
         throwExceptionFromStatus(r);
     kuzzle_free_user_result(r);
   }
+
+  std::string Auth::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
+    string_result *r = kuzzle_get_my_credentials(_auth, const_cast<char*>(strategy.c_str()), options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    kuzzle_free_string_result(r);
+    return ret;
+  }
+
+  user_right* Auth::getMyRights(query_options* options) Kuz_Throw_KuzzleException {
+    user_rights_result *r = kuzzle_get_my_rights(_auth, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    user_right *ret = r->result;
+    kuzzle_free_user_rights_result(r);
+    return ret;
+  }
+
 }

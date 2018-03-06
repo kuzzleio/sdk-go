@@ -37,15 +37,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  json_object* Kuzzle::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_get_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   json_object* Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) Kuz_Throw_KuzzleException {
     json_result *r = kuzzle_update_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
     if (r->error != NULL)
@@ -89,16 +80,7 @@ namespace kuzzleio {
     delete(r);
     return ret;
   }
-
-  json_object* Kuzzle::getMyRights(query_options* options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_get_my_rights(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
+  
   collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)

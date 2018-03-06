@@ -314,7 +314,7 @@ typedef struct {
 } user_right;
 
 typedef struct user_rights_result {
-    user_right *user_rights;
+    user_right *result;
     size_t user_rights_length;
     int status;
     char *error;

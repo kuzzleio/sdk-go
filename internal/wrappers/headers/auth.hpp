@@ -13,10 +13,12 @@ namespace kuzzleio {
       Auth(Kuzzle *kuzzle);
       virtual ~Auth();
       token_validity* checkToken(const std::string& token);
-      json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
+      std::string createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
       bool credentialsExist(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       void deleteMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       user* getCurrentUser() Kuz_Throw_KuzzleException;
+      std::string getMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;      
+      user_right* getMyRights(query_options* options=NULL) Kuz_Throw_KuzzleException;      
   };
 }
 

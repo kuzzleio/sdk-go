@@ -61,9 +61,11 @@ func TestCreateMyCredentials(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := k.Auth.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
+	r := myCredentials{}
+	json.Unmarshal(res, &r)
 
-	assert.Equal(t, "foo", res["username"])
-	assert.Equal(t, "bar", res["password"])
+	assert.Equal(t, "foo", r.Username)
+	assert.Equal(t, "bar", r.Password)
 }
 
 func ExampleKuzzle_CreateMyCredentials() {

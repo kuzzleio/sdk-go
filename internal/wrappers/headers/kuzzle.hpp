@@ -25,7 +25,6 @@ namespace kuzzleio {
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
-      json_object* getMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
       json_object* updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;
       bool validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::string login(const std::string& strategy, json_object* credentials, int expiresIn) Kuz_Throw_KuzzleException;
@@ -34,7 +33,6 @@ namespace kuzzleio {
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
       bool getAutoRefresh(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
-      json_object* getMyRights(query_options* options=NULL) Kuz_Throw_KuzzleException;
       collection_entry* listCollections(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
