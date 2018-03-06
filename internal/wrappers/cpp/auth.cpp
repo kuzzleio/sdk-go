@@ -83,7 +83,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
-    delete(r);
+    kuzzle_free_string_result(r);
     return ret;
   }
 
@@ -92,7 +92,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
-    delete(r);
+    kuzzle_free_string_result(r);
     return ret;
   }
 
@@ -100,5 +100,22 @@ namespace kuzzleio {
     kuzzle_logout(_auth);
   }
 
+  std::string Auth::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) Kuz_Throw_KuzzleException {
+    string_result *r = kuzzle_update_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    kuzzle_free_string_result(r);
+    return ret;
+  }
+
+  bool Auth::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
+    bool_result *r = kuzzle_validate_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    bool ret = r->result;
+    kuzzle_free_bool_result(r);
+    return ret;
+  }
 
 }

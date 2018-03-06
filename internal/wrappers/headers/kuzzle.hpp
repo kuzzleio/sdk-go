@@ -25,8 +25,6 @@ namespace kuzzleio {
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
-      json_object* updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;
-      bool validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;

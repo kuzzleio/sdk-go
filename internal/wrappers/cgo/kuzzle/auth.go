@@ -146,6 +146,17 @@ func kuzzle_logout(a *C.auth) *C.char {
 	return nil
 }
 
+//export kuzzle_update_my_credentials
+func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.string_result {
+	res, err := (*auth.Auth)(a.instance).UpdateMyCredentials(
+		C.GoString(strategy),
+		JsonCConvert(credentials).(map[string]interface{}),
+		SetQueryOptions(options))
+
+	str := string(res)
+	return goToCStringResult(&str, err)
+}
+
 //export kuzzle_update_self
 func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
 	userData, err := cToGoUserData(data)
@@ -160,19 +171,9 @@ func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options
 	return goToCJsonResult(res, err)
 }
 
-//export kuzzle_update_my_credentials
-func kuzzle_update_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateMyCredentials(
-		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
-		SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
-}
-
 //export kuzzle_validate_my_credentials
-func kuzzle_validate_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).ValidateMyCredentials(
+func kuzzle_validate_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
+	res, err := (*auth.Auth)(a.instance).ValidateMyCredentials(
 		C.GoString(strategy),
 		JsonCConvert(credentials).(map[string]interface{}),
 		SetQueryOptions(options))
