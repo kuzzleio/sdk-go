@@ -7,27 +7,25 @@ import (
 )
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
-func (dc *Collection) SearchSpecifications(options types.SpecificationSearchOptions) (*types.SpecificationSearchResult, error) {
+func (dc *Collection) SearchSpecifications(options *types.SearchOptions) (*types.SearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "searchSpecifications",
-		Body: struct {
-			Query interface{} `json:"query"`
-		}{Query: filters},
+		Body:       options.Type,
 	}
 
 	if options != nil {
-		query.From = options.From()
-		query.Size = options.Size()
-		scroll := options.Scroll()
+		query.From = options.From
+		query.Size = options.Size
+		scroll := options.Scroll
 		if scroll != "" {
 			query.Scroll = scroll
 		}
 	}
 
-	go dc.Kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, nil, ch)
 
 	res := <-ch
 
@@ -35,8 +33,8 @@ func (dc *Collection) SearchSpecifications(options types.SpecificationSearchOpti
 		return nil, res.Error
 	}
 
-	specifications := &types.SpecificationSearchResult{}
-	json.Unmarshal(res.Result, specifications)
+	specifications := &types.SearchResult{}
+	json.Unmarshal(res.Result, &specifications)
 
 	return specifications, nil
 }

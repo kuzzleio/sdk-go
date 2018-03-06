@@ -42,39 +42,6 @@ package collection
 //	return specifications, nil
 //}
 //
-//// ValidateSpecifications validates the provided specifications.
-//func (dc *Collection) ValidateSpecifications(specifications *types.Specification, options types.QueryOptions) (*types.ValidResponse, error) {
-//	ch := make(chan *types.KuzzleResponse)
-//
-//	type Specifications map[string]map[string]*types.Specification
-//
-//	specificationsData := Specifications{
-//		dc.index: {
-//			dc.collection: specifications,
-//		},
-//	}
-//
-//	query := &types.KuzzleRequest{
-//		Collection: dc.collection,
-//		Index:      dc.index,
-//		Controller: "collection",
-//		Action:     "validateSpecifications",
-//		Body:       specificationsData,
-//	}
-//	go dc.Kuzzle.Query(query, options, ch)
-//
-//	res := <-ch
-//
-//	if res.Error != nil {
-//		return nil, res.Error
-//	}
-//
-//	response := &types.ValidResponse{}
-//	json.Unmarshal(res.Result, response)
-//
-//	return response, nil
-//}
-//
 //// DeleteSpecifications deletes the current specifications of this collection.
 //func (dc *Collection) DeleteSpecifications(options types.QueryOptions) (bool, error) {
 //	ch := make(chan *types.KuzzleResponse)

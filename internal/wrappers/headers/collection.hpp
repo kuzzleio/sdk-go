@@ -6,33 +6,25 @@
 #include "core.hpp"
 
 namespace kuzzleio {
-    class Document;
-    class Room;
 
     class Collection {
-        public:
-            collection* _collection;
-            NotificationListener* _listener_instance;
+        collection* _collection;
+        Collection();
 
-            Collection(Kuzzle* kuzzle, const std::string& collection, const std::string& index);
+        public:
+            Collection(Kuzzle* kuzzle);
             virtual ~Collection();
-            int count(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Collection* createDocument(Document* document, const std::string& id="", query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::string deleteDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Document* fetchDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mCreateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<std::string> mDeleteDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mGetDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;            
-            std::vector<Document*> mReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mUpdateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            bool publishMessage(json_object* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Document* replaceDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            search_result* scroll(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            search_result* search(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Room* subscribe(search_filters* filters, NotificationListener* listener, room_options* options=NULL) Kuz_Throw_KuzzleException;
-            NotificationListener* getListener();
-            Document* updateDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;            
+            void create(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
+            bool exists(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
+            std::string list(const std::string& index, collection_list_options *collectionListOptions) Kuz_Throw_KuzzleException;
+            void truncate(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
+            std::string getMapping(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
+            void updateMapping(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException;
+            std::string getSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
+            search_result* searchSpecifications(search_options *searchOptions) Kuz_Throw_KuzzleException;
+            std::string updateSpecifications(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException;
+            void validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException;
+            void deleteSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
     };
 }
 

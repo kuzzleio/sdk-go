@@ -36,7 +36,7 @@ linter_check() {
 
 make_wrappers() {
 		cd "${dir}/internal/wrappers"
-		make all	
+		make all
 }
 
 cd "$dir"

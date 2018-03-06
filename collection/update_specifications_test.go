@@ -13,28 +13,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUpdateMappingIndexNull(t *testing.T) {
+func TestUpdateSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("", "collection", "body")
+	_, err := nc.UpdateSpecifications("", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestUpdateMappingCollectionNull(t *testing.T) {
+func TestUpdateSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "", "body")
+	_, err := nc.UpdateSpecifications("index", "", "body")
 	assert.NotNil(t, err)
 }
 
-func TestUpdateMappingBodyNull(t *testing.T) {
+func TestUpdateSpecificationsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", "")
+	_, err := nc.UpdateSpecifications("index", "collection", "")
 	assert.NotNil(t, err)
 }
 
-func TestUpdateMappingError(t *testing.T) {
+func TestUpdateSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -43,11 +43,11 @@ func TestUpdateMappingError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", "body")
+	_, err := nc.UpdateSpecifications("index", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestUpdateMapping(t *testing.T) {
+func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Result: []byte(`{}`)}
@@ -56,16 +56,16 @@ func TestUpdateMapping(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", "body")
+	_, err := nc.UpdateSpecifications("index", "collection", "body")
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_UpdateMapping() {
+func ExampleCollection_UpdateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", "body")
+	_, err := nc.UpdateSpecifications("index", "collection", "body")
 
 	if err != nil {
 		fmt.Println(err.Error())

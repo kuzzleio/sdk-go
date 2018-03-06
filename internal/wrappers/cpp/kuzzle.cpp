@@ -152,15 +152,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    collection_entry *ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   std::vector<std::string> Kuzzle::listIndexes(query_options* options) Kuz_Throw_KuzzleException {
     string_array_result *r = kuzzle_list_indexes(_kuzzle, options);
     if (r->error != NULL)
@@ -310,5 +301,5 @@ namespace kuzzleio {
   int Kuzzle::listenerCount(Event event) {
     return kuzzle_listener_count(_kuzzle, event);
   }
-  
+
 }

@@ -4,18 +4,18 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(index string, collection string, body string) error {
+// UpdateMapping updates the current mapping of this collection.
+func (dc *Collection) UpdateMapping(index string, collection string, body string) error {
 	if index == "" {
-		return types.NewError("Collection.UpdateSpecifications: index required", 400)
+		return types.NewError("Collection.UpdateMapping: index required", 400)
 	}
 
 	if collection == "" {
-		return types.NewError("Collection.UpdateSpecifications: collection required", 400)
+		return types.NewError("Collection.UpdateMapping: collection required", 400)
 	}
 
 	if body == "" {
-		return types.NewError("Collection.UpdateSpecifications: body required", 400)
+		return types.NewError("Collection.UpdateMapping: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -24,7 +24,7 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, body
 		Collection: collection,
 		Index:      index,
 		Controller: "collection",
-		Action:     "updateSpecifications",
+		Action:     "updateMapping",
 		Body:       body,
 	}
 	go dc.Kuzzle.Query(query, nil, ch)
