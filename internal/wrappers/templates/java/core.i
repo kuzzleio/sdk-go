@@ -34,12 +34,7 @@
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
-<<<<<<< HEAD
-=======
-#include "room.cpp"
-#include "document.cpp"
 #include "server.cpp"
->>>>>>> 1.x
 %}
 
 %include "exceptions.i"
@@ -142,9 +137,4 @@ struct json_object { };
 
 %include "kuzzle.cpp"
 %include "collection.cpp"
-<<<<<<< HEAD
-=======
-%include "room.cpp"
-%include "document.cpp"
 %include "server.cpp"
->>>>>>> 1.x
