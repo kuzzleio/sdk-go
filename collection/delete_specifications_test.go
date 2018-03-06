@@ -11,21 +11,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteIndexNull(t *testing.T) {
+func TestDeleteSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Delete("", "collection")
+	err := nc.DeleteSpecifications("", "collection")
 	assert.NotNil(t, err)
 }
 
-func TestDeleteCollectionNull(t *testing.T) {
+func TestDeleteSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Delete("index", "")
+	err := nc.DeleteSpecifications("index", "")
 	assert.NotNil(t, err)
 }
 
-func TestDeleteError(t *testing.T) {
+func TestDeleteSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -34,12 +34,12 @@ func TestDeleteError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Delete("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection")
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Result: []byte(`{
@@ -50,16 +50,16 @@ func TestDelete(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Delete("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection")
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_Delete() {
+func ExampleCollection_DeleteSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Delete("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection")
 
 	if err != nil {
 		fmt.Println(err.Error())

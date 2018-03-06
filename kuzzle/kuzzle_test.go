@@ -3,12 +3,13 @@ package kuzzle_test
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func ExampleKuzzle_Connect() {
@@ -25,7 +26,6 @@ func ExampleKuzzle_Connect() {
 		return
 	}
 
-	fmt.Println(k.State)
 }
 
 func ExampleKuzzle_Jwt() {
