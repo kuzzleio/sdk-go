@@ -152,16 +152,6 @@ namespace kuzzleio {
     return r;
   }
 
-  // java wrapper for this method is in typemap.i
-  long long Kuzzle::now(query_options* options) Kuz_Throw_KuzzleException {
-    date_result *r = kuzzle_now(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    long long ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   Kuzzle* Kuzzle::replayQueue() {
     kuzzle_replay_queue(_kuzzle);
     return this;

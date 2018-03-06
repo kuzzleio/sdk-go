@@ -670,6 +670,7 @@ namespace Swig {
 #include "room.cpp"
 #include "document.cpp"
 #include "index.cpp"
+#include "server.cpp"
 
 
 #include <string>
@@ -683,6 +684,7 @@ namespace Swig {
 #include "room.hpp"
 #include "document.hpp"
 #include "index.hpp"
+#include "server.hpp"
 #include <assert.h>
 #include <ffi.h>
 
@@ -3069,6 +3071,85 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_delete_1kuzzle_1index(JNIEnv
   (void)jenv;
   (void)jcls;
   arg1 = *(kuzzle_index **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_server_1instance_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  server *arg1 = (server *) 0 ;
+  void *arg2 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(void **)&jarg2; 
+  if (arg1) (arg1)->instance = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_server_1instance_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(server **)&jarg1; 
+  result = (void *) ((arg1)->instance);
+  *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_server_1kuzzle_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  server *arg1 = (server *) 0 ;
+  kuzzle *arg2 = (kuzzle *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(kuzzle **)&jarg2; 
+  if (arg1) (arg1)->kuzzle = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_server_1kuzzle_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  kuzzle *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(server **)&jarg1; 
+  result = (kuzzle *) ((arg1)->kuzzle);
+  *(kuzzle **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_new_1server(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  server *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (server *)new server();
+  *(server **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_delete_1server(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  server *arg1 = (server *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(server **)&jarg1; 
   delete arg1;
 }
 
@@ -11375,7 +11456,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1login(JNIEnv *jenv,
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   int *arg4 = (int *) 0 ;
   string_result *result = 0 ;
   
@@ -11389,7 +11470,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1login(JNIEnv *jenv,
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(int **)&jarg4; 
   result = (string_result *)kuzzle_login(arg1,arg2,arg3,arg4);
   *(string_result **)&jresult = result; 
@@ -11439,7 +11520,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1create_1my_1credent
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   query_options *arg4 = (query_options *) 0 ;
   json_result *result = 0 ;
   
@@ -11454,7 +11535,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1create_1my_1credent
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (json_result *)kuzzle_create_my_credentials(arg1,arg2,arg3,arg4);
   *(json_result **)&jresult = result; 
@@ -11517,7 +11598,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1update_1my_1credent
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   query_options *arg4 = (query_options *) 0 ;
   json_result *result = 0 ;
   
@@ -11532,7 +11613,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1update_1my_1credent
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (json_result *)kuzzle_update_my_credentials(arg1,arg2,arg3,arg4);
   *(json_result **)&jresult = result; 
@@ -11545,7 +11626,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1validate_1my_1crede
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   query_options *arg4 = (query_options *) 0 ;
   bool_result *result = 0 ;
   
@@ -11560,7 +11641,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1validate_1my_1crede
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (bool_result *)kuzzle_validate_my_credentials(arg1,arg2,arg3,arg4);
   *(bool_result **)&jresult = result; 
@@ -11683,7 +11764,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1collection_1create(
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1collection_1publish_1message(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
   jlong jresult = 0 ;
   collection *arg1 = (collection *) 0 ;
-  controllers *arg2 = (controllers *) 0 ;
+  json_object *arg2 = (json_object *) 0 ;
   query_options *arg3 = (query_options *) 0 ;
   bool_result *result = 0 ;
   
@@ -11693,7 +11774,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1collection_1publish
   (void)jarg2_;
   (void)jarg3_;
   arg1 = *(collection **)&jarg1; 
-  arg2 = *(controllers **)&jarg2; 
+  arg2 = *(json_object **)&jarg2; 
   arg3 = *(query_options **)&jarg3; 
   result = (bool_result *)kuzzle_collection_publish_message(arg1,arg2,arg3);
   *(bool_result **)&jresult = result; 
@@ -12173,14 +12254,14 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1mapping_1refresh(JN
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1mapping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   mapping *arg1 = (mapping *) 0 ;
-  controllers *arg2 = (controllers *) 0 ;
+  json_object *arg2 = (json_object *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(mapping **)&jarg1; 
-  arg2 = *(controllers **)&jarg2; 
+  arg2 = *(json_object **)&jarg2; 
   kuzzle_mapping_set(arg1,arg2);
 }
 
@@ -12973,7 +13054,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1new_1document(JNIEnv
   document *arg1 = (document *) 0 ;
   collection *arg2 = (collection *) 0 ;
   char *arg3 = (char *) 0 ;
-  controllers *arg4 = (controllers *) 0 ;
+  json_object *arg4 = (json_object *) 0 ;
   
   (void)jenv;
   (void)jcls;
@@ -12987,7 +13068,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1new_1document(JNIEnv
     arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
     if (!arg3) return ;
   }
-  arg4 = *(controllers **)&jarg4; 
+  arg4 = *(json_object **)&jarg4; 
   kuzzle_new_document(arg1,arg2,arg3,arg4);
   if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
 }
@@ -13107,7 +13188,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1document_1delete(JN
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1document_1set_1content(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3) {
   document *arg1 = (document *) 0 ;
-  controllers *arg2 = (controllers *) 0 ;
+  json_object *arg2 = (json_object *) 0 ;
   _Bool arg3 ;
   _Bool *argp3 ;
   
@@ -13116,7 +13197,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1document_1set_1conte
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(document **)&jarg1; 
-  arg2 = *(controllers **)&jarg2; 
+  arg2 = *(json_object **)&jarg2; 
   argp3 = *(_Bool **)&jarg3; 
   if (!argp3) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null _Bool");
@@ -13130,14 +13211,14 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1document_1set_1conte
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1document_1get_1content(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   document *arg1 = (document *) 0 ;
-  controllers *result = 0 ;
+  json_object *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(document **)&jarg1; 
-  result = (controllers *)kuzzle_document_get_content(arg1);
-  *(controllers **)&jresult = result; 
+  result = (json_object *)kuzzle_document_get_content(arg1);
+  *(json_object **)&jresult = result; 
   return jresult;
 }
 
@@ -13357,18 +13438,18 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1index_1list(JNIEnv 
 
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1new(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   kuzzle_json_new(arg1);
 }
 
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1put(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3, jint jarg4) {
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
   void *arg3 = (void *) 0 ;
   int arg4 ;
@@ -13376,7 +13457,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1put(JNIEnv *je
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
@@ -13391,14 +13472,14 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1put(JNIEnv *je
 
 SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1string(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jstring jresult = 0 ;
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
   char *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
@@ -13413,14 +13494,14 @@ SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1string
 
 SWIGEXPORT jint JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1int(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jint jresult = 0 ;
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
   int result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
@@ -13435,14 +13516,14 @@ SWIGEXPORT jint JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1int(JNIEn
 
 SWIGEXPORT jdouble JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1double(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jdouble jresult = 0 ;
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
   double result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
@@ -13457,14 +13538,14 @@ SWIGEXPORT jdouble JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1double
 
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1bool(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jlong jresult = 0 ;
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
   json_bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
@@ -13479,33 +13560,33 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1bool(JNI
 
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1json_1get_1json_1object(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jlong jresult = 0 ;
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *result = 0 ;
+  json_object *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   arg2 = 0;
   if (jarg2) {
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (controllers *)kuzzle_json_get_json_object(arg1,arg2);
-  *(controllers **)&jresult = result; 
+  result = (json_object *)kuzzle_json_get_json_object(arg1,arg2);
+  *(json_object **)&jresult = result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1free_1json_1object(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  controllers *arg1 = (controllers *) 0 ;
+  json_object *arg1 = (json_object *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(controllers **)&jarg1; 
+  arg1 = *(json_object **)&jarg1; 
   kuzzle_free_json_object(arg1);
 }
 
@@ -14051,28 +14132,28 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1ssl_1connectio
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1volatile(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
-  controllers *result = 0 ;
+  json_object *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(kuzzle **)&jarg1; 
-  result = (controllers *)kuzzle_get_volatile(arg1);
-  *(controllers **)&jresult = result; 
+  result = (json_object *)kuzzle_get_volatile(arg1);
+  *(json_object **)&jresult = result; 
   return jresult;
 }
 
 
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1set_1volatile(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   kuzzle *arg1 = (kuzzle *) 0 ;
-  controllers *arg2 = (controllers *) 0 ;
+  json_object *arg2 = (json_object *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(controllers **)&jarg2; 
+  arg2 = *(json_object **)&jarg2; 
   kuzzle_set_volatile(arg1,arg2);
 }
 
@@ -14412,7 +14493,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1geoadd(JNIEnv *
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers **arg3 = (controllers **) 0 ;
+  json_object **arg3 = (json_object **) 0 ;
   size_t arg4 ;
   query_options *arg5 = (query_options *) 0 ;
   int_result *result = 0 ;
@@ -14427,7 +14508,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1geoadd(JNIEnv *
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers ***)&jarg3; 
+  arg3 = *(json_object ***)&jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(query_options **)&jarg5; 
   result = (int_result *)kuzzle_ms_geoadd(arg1,arg2,arg3,arg4,arg5);
@@ -14995,7 +15076,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1hmset(JNIEnv *j
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers **arg3 = (controllers **) 0 ;
+  json_object **arg3 = (json_object **) 0 ;
   size_t arg4 ;
   query_options *arg5 = (query_options *) 0 ;
   void_result *result = 0 ;
@@ -15010,7 +15091,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1hmset(JNIEnv *j
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers ***)&jarg3; 
+  arg3 = *(json_object ***)&jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(query_options **)&jarg5; 
   result = (void_result *)kuzzle_ms_hmset(arg1,arg2,arg3,arg4,arg5);
@@ -15621,7 +15702,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1mget(JNIEnv *je
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1mset(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
-  controllers **arg2 = (controllers **) 0 ;
+  json_object **arg2 = (json_object **) 0 ;
   size_t arg3 ;
   query_options *arg4 = (query_options *) 0 ;
   void_result *result = 0 ;
@@ -15631,7 +15712,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1mset(JNIEnv *je
   (void)jarg1_;
   (void)jarg4_;
   arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(controllers ***)&jarg2; 
+  arg2 = *(json_object ***)&jarg2; 
   arg3 = (size_t)jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (void_result *)kuzzle_ms_mset(arg1,arg2,arg3,arg4);
@@ -15643,7 +15724,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1mset(JNIEnv *je
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1msetnx(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
-  controllers **arg2 = (controllers **) 0 ;
+  json_object **arg2 = (json_object **) 0 ;
   size_t arg3 ;
   query_options *arg4 = (query_options *) 0 ;
   bool_result *result = 0 ;
@@ -15653,7 +15734,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1msetnx(JNIEnv *
   (void)jarg1_;
   (void)jarg4_;
   arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(controllers ***)&jarg2; 
+  arg2 = *(json_object ***)&jarg2; 
   arg3 = (size_t)jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (bool_result *)kuzzle_ms_msetnx(arg1,arg2,arg3,arg4);
@@ -16840,7 +16921,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1zadd(JNIEnv *je
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers **arg3 = (controllers **) 0 ;
+  json_object **arg3 = (json_object **) 0 ;
   size_t arg4 ;
   query_options *arg5 = (query_options *) 0 ;
   int_result *result = 0 ;
@@ -16855,7 +16936,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1ms_1zadd(JNIEnv *je
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers ***)&jarg3; 
+  arg3 = *(json_object ***)&jarg3; 
   arg4 = (size_t)jarg4; 
   arg5 = *(query_options **)&jarg5; 
   result = (int_result *)kuzzle_ms_zadd(arg1,arg2,arg3,arg4,arg5);
@@ -17511,7 +17592,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_unregisterRoom(JNIEnv *jenv,
 SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_room_1new_1room(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_) {
   room *arg1 = (room *) 0 ;
   collection *arg2 = (collection *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   room_options *arg4 = (room_options *) 0 ;
   
   (void)jenv;
@@ -17522,7 +17603,7 @@ SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_room_1new_1room(JNIEnv *jenv
   (void)jarg4_;
   arg1 = *(room **)&jarg1; 
   arg2 = *(collection **)&jarg2; 
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(room_options **)&jarg4; 
   room_new_room(arg1,arg2,arg3,arg4);
 }
@@ -17652,94 +17733,6 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1auto_1refresh(
   result = (bool_result *)kuzzle_get_auto_refresh(arg1,arg2,arg3);
   *(bool_result **)&jresult = result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1server_1info(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  kuzzle *arg1 = (kuzzle *) 0 ;
-  query_options *arg2 = (query_options *) 0 ;
-  json_result *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(query_options **)&jarg2; 
-  result = (json_result *)kuzzle_get_server_info(arg1,arg2);
-  *(json_result **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1all_1statistics(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  kuzzle *arg1 = (kuzzle *) 0 ;
-  query_options *arg2 = (query_options *) 0 ;
-  all_statistics_result *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(query_options **)&jarg2; 
-  result = (all_statistics_result *)kuzzle_get_all_statistics(arg1,arg2);
-  *(all_statistics_result **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1statistics(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
-  jlong jresult = 0 ;
-  kuzzle *arg1 = (kuzzle *) 0 ;
-  time_t arg2 ;
-  time_t arg3 ;
-  query_options *arg4 = (query_options *) 0 ;
-  time_t *argp2 ;
-  time_t *argp3 ;
-  statistics_result *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg4_;
-  arg1 = *(kuzzle **)&jarg1; 
-  argp2 = *(time_t **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
-    return 0;
-  }
-  arg2 = *argp2; 
-  argp3 = *(time_t **)&jarg3; 
-  if (!argp3) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
-    return 0;
-  }
-  arg3 = *argp3; 
-  arg4 = *(query_options **)&jarg4; 
-  result = (statistics_result *)kuzzle_get_statistics(arg1,arg2,arg3,arg4);
-  *(statistics_result **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1now(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  kuzzle *arg1 = (kuzzle *) 0 ;
-  query_options *arg2 = (query_options *) 0 ;
-  date_result *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(kuzzle **)&jarg1; 
-  arg2 = *(query_options **)&jarg2; 
-  result = (date_result *)kuzzle_now(arg1,arg2);
-  *(date_result **)&jresult = result; 
   return jresult;
 }
 
@@ -17926,7 +17919,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1new_1role
   jlong jresult = 0 ;
   kuzzle *arg1 = (kuzzle *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   role *result = 0 ;
   
   (void)jenv;
@@ -17939,7 +17932,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1new_1role
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   result = (role *)kuzzle_security_new_role(arg1,arg2,arg3);
   *(role **)&jresult = result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
@@ -18169,7 +18162,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1user_1cre
   jlong jresult = 0 ;
   user *arg1 = (user *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   query_options *arg4 = (query_options *) 0 ;
   json_result *result = 0 ;
   
@@ -18184,7 +18177,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1user_1cre
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (json_result *)kuzzle_security_user_create_credentials(arg1,arg2,arg3,arg4);
   *(json_result **)&jresult = result; 
@@ -18196,7 +18189,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1user_1cre
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1user_1create_1with_1credentials(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
   jlong jresult = 0 ;
   user *arg1 = (user *) 0 ;
-  controllers *arg2 = (controllers *) 0 ;
+  json_object *arg2 = (json_object *) 0 ;
   query_options *arg3 = (query_options *) 0 ;
   user_result *result = 0 ;
   
@@ -18206,7 +18199,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1user_1cre
   (void)jarg2_;
   (void)jarg3_;
   arg1 = *(user **)&jarg1; 
-  arg2 = *(controllers **)&jarg2; 
+  arg2 = *(json_object **)&jarg2; 
   arg3 = *(query_options **)&jarg3; 
   result = (user_result *)kuzzle_security_user_create_with_credentials(arg1,arg2,arg3);
   *(user_result **)&jresult = result; 
@@ -18365,7 +18358,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1update_1c
   jlong jresult = 0 ;
   user *arg1 = (user *) 0 ;
   char *arg2 = (char *) 0 ;
-  controllers *arg3 = (controllers *) 0 ;
+  json_object *arg3 = (json_object *) 0 ;
   query_options *arg4 = (query_options *) 0 ;
   json_result *result = 0 ;
   
@@ -18380,7 +18373,7 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1update_1c
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = *(controllers **)&jarg3; 
+  arg3 = *(json_object **)&jarg3; 
   arg4 = *(query_options **)&jarg4; 
   result = (json_result *)kuzzle_security_update_credentials(arg1,arg2,arg3,arg4);
   *(json_result **)&jresult = result; 
@@ -18429,6 +18422,173 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1security_1is_1actio
   if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
   if (arg5) jenv->ReleaseStringUTFChars(jarg5, (const char *)arg5);
   if (arg6) jenv->ReleaseStringUTFChars(jarg6, (const char *)arg6);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_unregisterServer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  server *arg1 = (server *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(server **)&jarg1; 
+  unregisterServer(arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1new_1server(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  server *arg1 = (server *) 0 ;
+  kuzzle *arg2 = (kuzzle *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(kuzzle **)&jarg2; 
+  kuzzle_new_server(arg1,arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1admin_1exists(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  bool_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (bool_result *)kuzzle_admin_exists(arg1,arg2);
+  *(bool_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1all_1stats(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  string_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (string_result *)kuzzle_get_all_stats(arg1,arg2);
+  *(string_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1stats(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  time_t arg2 ;
+  time_t arg3 ;
+  query_options *arg4 = (query_options *) 0 ;
+  time_t *argp2 ;
+  time_t *argp3 ;
+  string_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg4_;
+  arg1 = *(server **)&jarg1; 
+  argp2 = *(time_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg2 = *argp2; 
+  argp3 = *(time_t **)&jarg3; 
+  if (!argp3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg3 = *argp3; 
+  arg4 = *(query_options **)&jarg4; 
+  result = (string_result *)kuzzle_get_stats(arg1,arg2,arg3,arg4);
+  *(string_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1last_1stats(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  string_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (string_result *)kuzzle_get_last_stats(arg1,arg2);
+  *(string_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1get_1config(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  string_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (string_result *)kuzzle_get_config(arg1,arg2);
+  *(string_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1info(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  string_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (string_result *)kuzzle_info(arg1,arg2);
+  *(string_result **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_kuzzle_1now(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  server *arg1 = (server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  date_result *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  result = (date_result *)kuzzle_now(arg1,arg2);
+  *(date_result **)&jresult = result; 
   return jresult;
 }
 
@@ -22175,235 +22335,6 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1getMyRights_1_1SWIG
 }
 
 
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1getServerInfo_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
-  query_options *arg2 = (query_options *) 0 ;
-  json_object *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(kuzzleio::Kuzzle **)&jarg1; 
-  arg2 = *(query_options **)&jarg2; 
-  try {
-    result = (json_object *)(arg1)->getServerInfo(arg2);
-  }
-  catch(kuzzleio::BadRequestException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ForbiddenException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::GatewayTimeoutException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::InternalException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::NotFoundException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PartialException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PreconditionException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ServiceUnavailableException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::SizeLimitException &_e) {
-    (void)_e;
-    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
-    return 0; 
-  }
-  catch(kuzzleio::UnauthorizedException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  
-  *(json_object **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1getServerInfo_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
-  json_object *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(kuzzleio::Kuzzle **)&jarg1; 
-  try {
-    result = (json_object *)(arg1)->getServerInfo();
-  }
-  catch(kuzzleio::BadRequestException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ForbiddenException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::GatewayTimeoutException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::InternalException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::NotFoundException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PartialException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PreconditionException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ServiceUnavailableException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::SizeLimitException &_e) {
-    (void)_e;
-    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
-    return 0; 
-  }
-  catch(kuzzleio::UnauthorizedException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  
-  *(json_object **)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1listCollections_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3, jobject jarg3_) {
   jlong jresult = 0 ;
   kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
@@ -23135,235 +23066,6 @@ SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1query_1_1SWIG_11(JN
   }
   
   *(kuzzle_response **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1_1now_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
-  query_options *arg2 = (query_options *) 0 ;
-  long long result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(kuzzleio::Kuzzle **)&jarg1; 
-  arg2 = *(query_options **)&jarg2; 
-  try {
-    result = (long long)(arg1)->now(arg2);
-  }
-  catch(kuzzleio::BadRequestException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ForbiddenException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::GatewayTimeoutException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::InternalException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::NotFoundException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PartialException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PreconditionException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ServiceUnavailableException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::SizeLimitException &_e) {
-    (void)_e;
-    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
-    return 0; 
-  }
-  catch(kuzzleio::UnauthorizedException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  
-  jresult = (jlong)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Kuzzle_1_1now_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
-  long long result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(kuzzleio::Kuzzle **)&jarg1; 
-  try {
-    result = (long long)(arg1)->now();
-  }
-  catch(kuzzleio::BadRequestException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ForbiddenException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::GatewayTimeoutException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::InternalException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::NotFoundException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PartialException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::PreconditionException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::ServiceUnavailableException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  catch(kuzzleio::SizeLimitException &_e) {
-    (void)_e;
-    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
-    return 0; 
-  }
-  catch(kuzzleio::UnauthorizedException &_e) {
-    {
-      (void)_e;
-      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
-      if (excpcls) {
-        jenv->ThrowNew(excpcls, (&_e)->what());
-      }
-      return 0;
-    }
-  }
-  
-  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -31263,6 +30965,1553 @@ SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Index_1list(JNIEnv *jenv,
   }
   
   jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_new_1Server(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  kuzzleio::Kuzzle *arg1 = (kuzzleio::Kuzzle *) 0 ;
+  kuzzleio::Server *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Kuzzle **)&jarg1; 
+  result = (kuzzleio::Server *)new kuzzleio::Server(arg1);
+  *(kuzzleio::Server **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_io_kuzzle_sdk_kcoreJNI_delete_1Server(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1adminExists(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jboolean jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (bool)(arg1)->adminExists(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getAllStats_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (arg1)->getAllStats(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getAllStats_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  try {
+    result = (arg1)->getAllStats();
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getStats_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4, jobject jarg4_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  time_t arg2 ;
+  time_t arg3 ;
+  query_options *arg4 = (query_options *) 0 ;
+  time_t *argp2 ;
+  time_t *argp3 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg4_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  argp2 = *(time_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg2 = *argp2; 
+  argp3 = *(time_t **)&jarg3; 
+  if (!argp3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg3 = *argp3; 
+  arg4 = *(query_options **)&jarg4; 
+  try {
+    result = (arg1)->getStats(arg2,arg3,arg4);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getStats_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  time_t arg2 ;
+  time_t arg3 ;
+  time_t *argp2 ;
+  time_t *argp3 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  argp2 = *(time_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg2 = *argp2; 
+  argp3 = *(time_t **)&jarg3; 
+  if (!argp3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null time_t");
+    return 0;
+  }
+  arg3 = *argp3; 
+  try {
+    result = (arg1)->getStats(arg2,arg3);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getLastStats_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (arg1)->getLastStats(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getLastStats_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  try {
+    result = (arg1)->getLastStats();
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getConfig_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (arg1)->getConfig(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1getConfig_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  try {
+    result = (arg1)->getConfig();
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1info_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (arg1)->info(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1info_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  std::string result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  try {
+    result = (arg1)->info();
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = jenv->NewStringUTF((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1_1now_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  query_options *arg2 = (query_options *) 0 ;
+  long long result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  arg2 = *(query_options **)&jarg2; 
+  try {
+    result = (long long)(arg1)->now(arg2);
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_io_kuzzle_sdk_kcoreJNI_Server_1_1now_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  kuzzleio::Server *arg1 = (kuzzleio::Server *) 0 ;
+  long long result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(kuzzleio::Server **)&jarg1; 
+  try {
+    result = (long long)(arg1)->now();
+  }
+  catch(kuzzleio::BadRequestException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/BadRequestException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ForbiddenException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ForbiddenException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::GatewayTimeoutException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/GatewayTimeoutException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::InternalException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/InternalException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::NotFoundException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/NotFoundException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PartialException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PartialException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::PreconditionException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/PreconditionException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::ServiceUnavailableException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/ServiceUnavailableException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  catch(kuzzleio::SizeLimitException &_e) {
+    (void)_e;
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "C++ kuzzleio::SizeLimitException exception thrown");
+    return 0; 
+  }
+  catch(kuzzleio::UnauthorizedException &_e) {
+    {
+      (void)_e;
+      jclass excpcls = jenv->FindClass("io/kuzzle/sdk/UnauthorizedException");
+      if (excpcls) {
+        jenv->ThrowNew(excpcls, (&_e)->what());
+      }
+      return 0;
+    }
+  }
+  
+  jresult = (jlong)result; 
   return jresult;
 }
 
