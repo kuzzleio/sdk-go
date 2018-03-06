@@ -24,6 +24,7 @@ namespace kuzzleio {
       std::string login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException;
       void logout();
       std::string updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;      
+      user* updateSelf(const std::string& content, query_options* options=NULL) Kuz_Throw_KuzzleException;      
       bool validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
   };
 }

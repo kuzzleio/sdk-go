@@ -386,7 +386,7 @@ func kuzzle_free_user_rights_result(st *C.user_rights_result) {
 //export kuzzle_free_user_result
 func kuzzle_free_user_result(st *C.user_result) {
 	if st != nil {
-		kuzzle_free_user(st.user)
+		kuzzle_free_user(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))

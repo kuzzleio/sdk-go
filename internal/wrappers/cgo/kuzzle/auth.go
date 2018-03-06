@@ -11,6 +11,7 @@ package main
 */
 import "C"
 import (
+	"encoding/json"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/auth"
@@ -158,17 +159,14 @@ func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.js
 }
 
 //export kuzzle_update_self
-func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
-	userData, err := cToGoUserData(data)
-	if err != nil {
-		return goToCJsonResult(nil, err)
-	}
+func kuzzle_update_self(a *C.auth, data *C.char, options *C.query_options) *C.user_result {
+	marshed, _ := json.Marshal(C.GoString(data))
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateSelf(
-		userData,
+	res, err := (*auth.Auth)(a.instance).UpdateSelf(
+		marshed,
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	return goToCUserResult(a.kuzzle, res, err)
 }
 
 //export kuzzle_validate_my_credentials

@@ -40,7 +40,6 @@ namespace kuzzleio {
       Kuzzle* setDefaultIndex(const std::string& index);
       Kuzzle* startQueuing();
       Kuzzle* stopQueuing();
-      json_object* updateSelf(user_data* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* flushQueue();
       json_object* getVolatile();
       Kuzzle* setVolatile(json_object* volatiles);

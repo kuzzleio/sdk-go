@@ -733,7 +733,7 @@ func goToCUserResult(k *C.kuzzle, user *security.User, err error) *C.user_result
 		return result
 	}
 
-	result.user = cuser
+	result.result = cuser
 
 	return result
 }

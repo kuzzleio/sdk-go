@@ -322,7 +322,7 @@ typedef struct user_rights_result {
 } user_rights_result;
 
 typedef struct user_result {
-    user *user;
+    user *result;
     int status;
     char *error;
     char *stack;

@@ -113,15 +113,6 @@ namespace kuzzleio {
     return this;
   }
 
-  json_object* Kuzzle::updateSelf(user_data* content, query_options* options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_update_self(_kuzzle, content, options);
-    if (r->error != NULL)
-      throwExceptionFromStatus(r);
-    json_object* ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   Kuzzle* Kuzzle::flushQueue() {
     kuzzle_flush_queue(_kuzzle);
     return this;

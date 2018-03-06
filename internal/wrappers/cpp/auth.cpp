@@ -109,6 +109,15 @@ namespace kuzzleio {
     return ret;
   }
 
+  user* Auth::updateSelf(const std::string& content, query_options* options) Kuz_Throw_KuzzleException {
+    user_result *r = kuzzle_update_self(_auth, const_cast<char*>(content.c_str()), options);
+    if (r->error != NULL)
+      throwExceptionFromStatus(r);
+    user *ret = r->result;
+    kuzzle_free_user_result(r);
+    return ret;
+  }
+
   bool Auth::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_validate_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
     if (r->error != NULL)
