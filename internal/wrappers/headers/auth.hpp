@@ -20,6 +20,9 @@ namespace kuzzleio {
       std::string getMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;      
       user_right* getMyRights(query_options *options=NULL) Kuz_Throw_KuzzleException;
       std::vector<std::string> getStrategies(query_options *options=NULL) Kuz_Throw_KuzzleException;
+      std::string login(const std::string& strategy, json_object* credentials, int expiresIn) Kuz_Throw_KuzzleException;
+      std::string login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException;
+      void logout();
   };
 }
 

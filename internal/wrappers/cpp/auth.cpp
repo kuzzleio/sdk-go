@@ -78,5 +78,27 @@ namespace kuzzleio {
     return v;
   }
   
+  std::string Auth::login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), credentials, NULL);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    delete(r);
+    return ret;
+  }
+
+  std::string Auth::login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), credentials, &expires_in);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    delete(r);
+    return ret;
+  }
+
+  void Auth::logout() {
+    kuzzle_logout(_auth);
+  }
+
 
 }

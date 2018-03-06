@@ -55,23 +55,6 @@ namespace kuzzleio {
     return ret;
   }
 
-  std::string Kuzzle::login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException {
-    string_result* r = kuzzle_login(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, NULL);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    std::string ret = r->result;
-    delete(r);
-    return ret;
-  }
-  std::string Kuzzle::login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException {
-    string_result* r = kuzzle_login(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, &expires_in);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    std::string ret = r->result;
-    delete(r);
-    return ret;
-  }
-
   bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
@@ -80,7 +63,7 @@ namespace kuzzleio {
     delete(r);
     return ret;
   }
-  
+
   collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
@@ -105,10 +88,6 @@ namespace kuzzleio {
 
   void Kuzzle::disconnect() {
     kuzzle_disconnect(_kuzzle);
-  }
-
-  void Kuzzle::logout() {
-    kuzzle_logout(_kuzzle);
   }
 
   kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) Kuz_Throw_KuzzleException {

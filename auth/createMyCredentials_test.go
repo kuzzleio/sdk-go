@@ -79,7 +79,7 @@ func ExampleKuzzle_CreateMyCredentials() {
 
 	myCredentials := credentials{"foo", "bar"}
 
-	_, err := k.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", myCredentials, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

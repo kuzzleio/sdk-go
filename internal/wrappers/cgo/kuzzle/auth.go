@@ -124,6 +124,28 @@ func kuzzle_get_strategies(a *C.auth, options *C.query_options) *C.string_array_
 	return goToCStringArrayResult(res, err)
 }
 
+//export kuzzle_login
+func kuzzle_login(a *C.auth, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
+	var expire int
+	if expires_in != nil {
+		expire = int(*expires_in)
+	}
+
+	res, err := (*auth.Auth)(a.instance).Login(C.GoString(strategy), JsonCConvert(credentials).(map[string]interface{}), &expire)
+
+	return goToCStringResult(&res, err)
+}
+
+//export kuzzle_logout
+func kuzzle_logout(a *C.auth) *C.char {
+	err := (*auth.Auth)(a.instance).Logout()
+	if err != nil {
+		return C.CString(err.Error())
+	}
+
+	return nil
+}
+
 //export kuzzle_update_self
 func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
 	userData, err := cToGoUserData(data)
@@ -136,28 +158,6 @@ func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options
 		SetQueryOptions(options))
 
 	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_login
-func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
-	var expire int
-	if expires_in != nil {
-		expire = int(*expires_in)
-	}
-
-	res, err := (*kuzzle.Kuzzle)(k.instance).Login(C.GoString(strategy), JsonCConvert(credentials).(map[string]interface{}), &expire)
-
-	return goToCStringResult(&res, err)
-}
-
-//export kuzzle_logout
-func kuzzle_logout(k *C.kuzzle) *C.char {
-	err := (*kuzzle.Kuzzle)(k.instance).Logout()
-	if err != nil {
-		return C.CString(err.Error())
-	}
-
-	return nil
 }
 
 //export kuzzle_update_my_credentials

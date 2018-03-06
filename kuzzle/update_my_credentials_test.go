@@ -3,12 +3,13 @@ package kuzzle_test
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestUpdateMyCredentialsQueryError(t *testing.T) {
@@ -75,7 +76,7 @@ func ExampleKuzzle_UpdateMyCredentials() {
 
 	myCredentials := credentials{"foo", "bar"}
 
-	_, err := k.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", myCredentials, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

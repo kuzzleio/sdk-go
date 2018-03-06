@@ -27,8 +27,7 @@ namespace kuzzleio {
 
       json_object* updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;
       bool validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string login(const std::string& strategy, json_object* credentials, int expiresIn) Kuz_Throw_KuzzleException;
-      std::string login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException;
+
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
       bool getAutoRefresh(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -36,7 +35,6 @@ namespace kuzzleio {
       collection_entry* listCollections(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
-      void logout();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();

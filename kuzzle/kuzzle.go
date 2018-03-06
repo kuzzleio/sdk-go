@@ -16,10 +16,6 @@ import (
 
 const version = "1.0.0"
 
-type IKuzzle interface {
-	Query(*types.KuzzleRequest, chan<- *types.KuzzleResponse, types.QueryOptions)
-}
-
 type Kuzzle struct {
 	socket connection.Connection
 
@@ -253,4 +249,8 @@ func (k *Kuzzle) Volatile() types.VolatileData {
 
 func (k *Kuzzle) SetVolatile(v types.VolatileData) {
 	k.volatile = v
+}
+
+func (k *Kuzzle) EmitEvent(e int, arg interface{}) {
+	k.socket.EmitEvent(e, arg)
 }
