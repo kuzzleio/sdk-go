@@ -37,7 +37,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -46,7 +46,7 @@ namespace kuzzleio {
     if (r->error)
         throwExceptionFromStatus(r);
     json_object *ret = r->result;
-    delete(r);
+    kuzzle_free_json_result(r);
     return ret;
   }
 
@@ -55,7 +55,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -64,7 +64,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     json_object *ret = r->result;
-    delete(r);
+    kuzzle_free_json_result(r);
     return ret;
   }
 
@@ -73,7 +73,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     json_object *ret = r->result;
-    delete(r);
+    kuzzle_free_json_result(r);
     return ret;
   }
 
@@ -82,7 +82,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -91,7 +91,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
-    delete(r);
+    kuzzle_free_string_result(r);
     return ret;
   }
   std::string Kuzzle::login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException {
@@ -99,7 +99,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
-    delete(r);
+    kuzzle_free_string_result(r);
     return ret;
   }
 
@@ -108,7 +108,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -121,7 +121,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     json_object *ret = r->result;
-    delete(r);
+    kuzzle_free_json_result(r);
     return ret;
   }
 
@@ -130,7 +130,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     collection_entry *ret = r->result;
-    delete(r);
+    kuzzle_free_collection_entry_result(r);
     return ret;
   }
 
@@ -143,7 +143,7 @@ namespace kuzzleio {
     for (int i = 0; r->result[i]; i++)
         v.push_back(r->result[i]);
 
-    delete(r);
+    kuzzle_free_string_array_result(r);
     return v;
   }
 
@@ -167,7 +167,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     shards* ret = r->result;
-    delete(r);
+    kuzzle_free_shards_result(r);
     return ret;
   }
 
@@ -211,7 +211,7 @@ namespace kuzzleio {
     if (r->error != NULL)
       throwExceptionFromStatus(r);
     json_object* ret = r->result;
-    delete(r);
+    kuzzle_free_json_result(r);
     return ret;
   }
 
@@ -220,7 +220,7 @@ namespace kuzzleio {
     if (r->error != NULL)
       throwExceptionFromStatus(r);
     user *ret = r->user;
-    delete(r);
+    kuzzle_free_user_result(r);
     return ret;
   }
 

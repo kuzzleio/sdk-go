@@ -95,6 +95,9 @@ namespace kuzzleio {
   void throwExceptionFromStatus(T *result) {
     const std::string error = std::string(result->error);
     delete(result->error);
+    if (result->stack) {
+      free(result->stack);
+    }
 
     switch(result->status) {
       case PARTIAL_EXCEPTION:

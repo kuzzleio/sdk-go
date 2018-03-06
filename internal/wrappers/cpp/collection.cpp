@@ -27,7 +27,7 @@ namespace kuzzleio {
       document_result *r = kuzzle_collection_create_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
       if (r->error != NULL)
           throwExceptionFromStatus(r);
-      delete(r);
+      kuzzle_free_document_result(r);
       return this;
     }
 
@@ -36,7 +36,7 @@ namespace kuzzleio {
       if (r->error != NULL)
         throwExceptionFromStatus(r);
       std::string ret = r->result;
-      delete(r);
+      kuzzle_free_string_result(r);
       return ret;
     }
 
@@ -45,7 +45,7 @@ namespace kuzzleio {
       if (r->error != NULL)
         throwExceptionFromStatus(r);
       Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
+      kuzzle_free_document_result(r);
       return ret;
     }
 
@@ -67,7 +67,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
 
-      delete(r);
+      kuzzle_free_document_array_result(r);
       return v;
     }
 
@@ -88,7 +88,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
 
-      delete(r);
+      kuzzle_free_document_array_result(r);
       return v;
     }
 
@@ -109,7 +109,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(r->result[i]);
 
-      delete(r);
+      kuzzle_free_string_array_result(r);
       return v;
     }
 
@@ -130,7 +130,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
 
-      delete(r);
+      kuzzle_free_document_array_result(r);
       return v;
     }
 
@@ -151,7 +151,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
 
-      delete(r);
+      kuzzle_free_document_array_result(r);
       return v;
     }
 
@@ -172,7 +172,7 @@ namespace kuzzleio {
       for (int i = 0; i < r->result_length; i++)
         v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
 
-      delete(r);
+      kuzzle_free_document_array_result(r);
       return v;
     }
 
@@ -181,7 +181,7 @@ namespace kuzzleio {
       if (r->error != NULL)
           throwExceptionFromStatus(r);
       bool ret = r->result;
-      delete(r);
+      kuzzle_free_bool_result(r);
       return ret;
     }
 
@@ -190,7 +190,7 @@ namespace kuzzleio {
       if (r->error != NULL)
         throwExceptionFromStatus(r);
       Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
+      kuzzle_free_document_result(r);
       return ret;
     }
 
@@ -198,6 +198,7 @@ namespace kuzzleio {
       search_result* r = kuzzle_collection_scroll(_collection, const_cast<char*>(id.c_str()), options);
       if (r->error != NULL)
         throwExceptionFromStatus(r);
+      kuzzle_free_search_result(r);
       return r;
     }
 
@@ -205,6 +206,7 @@ namespace kuzzleio {
       search_result* r = kuzzle_collection_search(_collection, filters, options);
       if (r->error != NULL)
         throwExceptionFromStatus(r);
+      kuzzle_free_search_result(r);
       return r;
     }
 
@@ -232,7 +234,7 @@ namespace kuzzleio {
       if (r->error != NULL)
         throwExceptionFromStatus(r);
       Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
+      kuzzle_free_document_result(r);
       return ret;
     }
 

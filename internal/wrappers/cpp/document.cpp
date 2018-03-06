@@ -19,7 +19,7 @@ namespace kuzzleio {
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         std::string ret = r->result;
-        delete(r);
+        kuzzle_free_string_result(r);
         return ret;
     }
 
@@ -28,7 +28,7 @@ namespace kuzzleio {
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         bool ret = r->result;
-        delete(r);
+        kuzzle_free_bool_result(r);
         return ret;
     }
 
@@ -37,7 +37,7 @@ namespace kuzzleio {
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         bool ret = r->result;
-        delete(r);
+        kuzzle_free_bool_result(r);
         return ret;
     }
 
@@ -46,7 +46,7 @@ namespace kuzzleio {
         if (r->error != NULL)
             throwExceptionFromStatus(r);
         Document* ret = new Document(_collection, r->result->id, r->result->content);
-        delete(r);
+        kuzzle_free_document_result(r);
         return ret;
     }
 
@@ -58,7 +58,7 @@ namespace kuzzleio {
 
         _document->id = r->result->id;
         _document->version = r->result->version;
-        delete(r);
+        kuzzle_free_document_result(r);
         return ret;
     }
 
