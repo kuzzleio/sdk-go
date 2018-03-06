@@ -10,6 +10,7 @@
 #include "room.hpp"
 #include "document.hpp"
 #include "index.hpp"
+#include "server.hpp"
 #include <assert.h>
 #include <ffi.h>
 %}
@@ -27,3 +28,4 @@
 %include "room.hpp"
 %include "document.hpp"
 %include "index.hpp"
+%include "server.hpp"

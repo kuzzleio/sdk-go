@@ -98,6 +98,10 @@ typedef struct {
   kuzzle* kuzzle;
 } kuzzle_index;
 
+typedef struct {
+  void *instance;
+  kuzzle* kuzzle;
+} server;
 
 //options passed to room constructor
 typedef struct {
