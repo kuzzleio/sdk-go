@@ -86,3 +86,15 @@ func kuzzle_index_set_auto_refresh(i *C.kuzzle_index, index *C.char, autoRefresh
 	err := (*indexPkg.Index)(i.instance).SetAutoRefresh(C.GoString(index), bool(autoRefresh))
 	return goToCVoidResult(err)
 }
+
+//export kuzzle_index_get_auto_refresh
+func kuzzle_index_get_auto_refresh(i *C.kuzzle_index, index *C.char) *C.bool_result {
+	res, err := (*indexPkg.Index)(i.instance).GetAutoRefresh(C.GoString(index))
+	return goToCBoolResult(res, err)
+}
+
+//export kuzzle_index_list
+func kuzzle_index_list(i *C.kuzzle_index) *C.string_result {
+	res, err := (*indexPkg.Index)(i.instance).List()
+	return goToCStringResult(&res, err)
+}
