@@ -65,4 +65,18 @@ namespace kuzzleio {
     return ret;
   }
 
+  std::vector<std::string> Auth::getStrategies(query_options *options) Kuz_Throw_KuzzleException {
+    string_array_result *r = kuzzle_get_strategies(_auth, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+
+    std::vector<std::string> v;
+    for (int i = 0; r->result[i]; i++)
+        v.push_back(r->result[i]);
+
+    kuzzle_free_string_array_result(r);
+    return v;
+  }
+  
+
 }

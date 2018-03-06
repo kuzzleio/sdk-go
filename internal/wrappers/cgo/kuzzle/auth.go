@@ -117,6 +117,13 @@ func kuzzle_get_my_rights(a *C.auth, options *C.query_options) *C.user_rights_re
 	return goToCUserRightsResult(res, err)
 }
 
+//export kuzzle_get_strategies
+func kuzzle_get_strategies(a *C.auth, options *C.query_options) *C.string_array_result {
+	res, err := (*auth.Auth)(a.instance).GetStrategies(SetQueryOptions(options))
+
+	return goToCStringArrayResult(res, err)
+}
+
 //export kuzzle_update_self
 func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
 	userData, err := cToGoUserData(data)
