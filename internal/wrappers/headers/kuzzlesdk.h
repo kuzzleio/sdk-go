@@ -110,6 +110,11 @@ typedef struct {
     char *scroll;
 } search_options;
 
+typedef struct {
+  void *instance;
+  kuzzle* kuzzle;
+} server;
+
 //options passed to room constructor
 typedef struct {
     char *scope;

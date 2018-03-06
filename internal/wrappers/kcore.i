@@ -7,6 +7,7 @@
 #include "event_emitter.hpp"
 #include "kuzzle.hpp"
 #include "collection.hpp"
+#include "server.hpp"
 #include <assert.h>
 #include <ffi.h>
 %}
@@ -21,3 +22,4 @@
 %include "event_emitter.hpp"
 %include "kuzzle.hpp"
 %include "collection.hpp"
+%include "server.hpp"

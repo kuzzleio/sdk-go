@@ -9,6 +9,7 @@ import (
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/server"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -33,6 +34,7 @@ type Kuzzle struct {
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
+	Server        *server.Server
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -46,16 +48,15 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	}
 
 	k := &Kuzzle{
-		socket:  c,
-		version: version,
+		socket:       c,
+		version:      version,
+		defaultIndex: options.DefaultIndex(),
 	}
 
+	k.RequestHistory = k.socket.RequestHistory()
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
-
-	k.RequestHistory = k.socket.RequestHistory()
-
-	k.defaultIndex = options.DefaultIndex()
+	k.Server = server.NewServer(k)
 
 	var err error
 
