@@ -92,7 +92,6 @@ namespace kuzzleio {
         string_result *r = kuzzle_collection_update_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()));
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-
         std::string ret = r->result;
         kuzzle_free_string_result(r);
 
