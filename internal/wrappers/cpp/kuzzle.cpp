@@ -33,7 +33,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -42,7 +42,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
-    delete(r);
+    kuzzle_free_bool_result(r);
     return ret;
   }
 
@@ -51,7 +51,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     collection_entry *ret = r->result;
-    delete(r);
+    kuzzle_free_collection_entry_result(r);
     return ret;
   }
 
@@ -64,7 +64,7 @@ namespace kuzzleio {
     for (int i = 0; r->result[i]; i++)
         v.push_back(r->result[i]);
 
-    delete(r);
+    kuzzle_free_string_array_result(r);
     return v;
   }
 
@@ -84,7 +84,7 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     shards* ret = r->result;
-    delete(r);
+    kuzzle_free_shards_result(r);
     return ret;
   }
 
