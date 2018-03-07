@@ -108,7 +108,7 @@ func kuzzle_collection_update_specifications(c *C.collection, index *C.char, col
 }
 
 //export kuzzle_collection_validate_specifications
-func kuzzle_collection_validate_specifications(c *C.collection, body *C.char) *C.void_result {
-	err := (*collection.Collection)(c.instance).ValidateSpecifications(C.GoString(body))
-	return goToCVoidResult(err)
+func kuzzle_collection_validate_specifications(c *C.collection, body *C.char) *C.string_result {
+	res, err := (*collection.Collection)(c.instance).ValidateSpecifications(C.GoString(body))
+	return goToCStringResult(&res, err)
 }

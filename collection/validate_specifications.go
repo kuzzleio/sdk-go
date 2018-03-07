@@ -1,13 +1,15 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // ValidateSpecifications validates the provided specifications.
-func (dc *Collection) ValidateSpecifications(body string) error {
+func (dc *Collection) ValidateSpecifications(body string) (string, error) {
 	if body == "" {
-		return types.NewError("Collection.ValidateSpecifications: body required", 400)
+		return "", types.NewError("Collection.ValidateSpecifications: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -22,8 +24,11 @@ func (dc *Collection) ValidateSpecifications(body string) error {
 	res := <-ch
 
 	if res.Error != nil {
-		return res.Error
+		return "", res.Error
 	}
 
-	return nil
+	var valid string
+	json.Unmarshal(res.Result, &valid)
+
+	return valid, nil
 }

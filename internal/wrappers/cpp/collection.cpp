@@ -98,12 +98,15 @@ namespace kuzzleio {
         return ret;
     }
 
-    void Collection::validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()));
+    std::string Collection::validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()));
         if (r->error != NULL)
             throwExceptionFromStatus(r);
 
-        kuzzle_free_void_result(r);
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+
+        return ret;
     }
 
     void Collection::deleteSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException {

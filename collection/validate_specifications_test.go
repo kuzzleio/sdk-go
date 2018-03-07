@@ -16,7 +16,7 @@ import (
 func TestValidateSpecificationsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("")
+	_, err := nc.ValidateSpecifications("")
 	assert.NotNil(t, err)
 }
 
@@ -29,7 +29,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	_, err := nc.ValidateSpecifications("body")
 	assert.NotNil(t, err)
 }
 
@@ -47,7 +47,7 @@ func TestValidateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	_, err := nc.ValidateSpecifications("body")
 	assert.Nil(t, err)
 }
 
@@ -56,10 +56,12 @@ func ExampleCollection_ValidateSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	res, err := nc.ValidateSpecifications("body")
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(res)
 }
