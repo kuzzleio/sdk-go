@@ -8,6 +8,7 @@
 #include "kuzzle.hpp"
 #include "collection.hpp"
 #include "server.hpp"
+#include "document.hpp"
 #include <assert.h>
 #include <ffi.h>
 %}
@@ -23,3 +24,4 @@
 %include "kuzzle.hpp"
 %include "collection.hpp"
 %include "server.hpp"
+%include "document.hpp"
