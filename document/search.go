@@ -31,16 +31,15 @@ func (d *Document) Search(index string, collection string, body string, options 
 	}
 
 	if options != nil {
-		query.From = options.From()
-		query.Size = options.Size()
-
-		scroll := options.Scroll()
+		query.From = options.From
+		query.Size = options.Size
+		scroll := options.Scroll
 		if scroll != "" {
 			query.Scroll = scroll
 		}
 	}
 
-	go d.Kuzzle.Query(query, options, ch)
+	go d.Kuzzle.Query(query, nil, ch)
 
 	res := <-ch
 

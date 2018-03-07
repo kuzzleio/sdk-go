@@ -2,6 +2,7 @@ package document
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -32,8 +33,7 @@ func (d *Document) MDelete(index string, collection string, ids []string, option
 	queryOpts := types.NewQueryOptions()
 
 	if options != nil {
-		queryOpts.SetVolatile(options.Volatile)
-		queryOpts.SetRefresh(options.WaitFor)
+		queryOpts.SetRefresh(strconv.FormatBool(options.WaitFor))
 	}
 
 	go d.Kuzzle.Query(query, queryOpts, ch)
@@ -41,7 +41,7 @@ func (d *Document) MDelete(index string, collection string, ids []string, option
 	res := <-ch
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
 	var mDeleted []string

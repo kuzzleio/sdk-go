@@ -38,7 +38,7 @@ func (d *Document) Validate(index string, collection string, body string) (bool,
 	}
 
 	var valid bool
-	json.Unmarshal(res.Result.valid, &valid)
+	json.Unmarshal(res.Result, &valid)
 
 	return valid, nil
 }

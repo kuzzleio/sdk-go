@@ -12,34 +12,34 @@ import (
 )
 
 func TestCreateIndexNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("", "collection", "id1", "body", opts)
+	_, err := d.Create("", "collection", "id1", "body", opts)
 	assert.NotNil(t, err)
 }
 
 func TestCreateCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("index", "", "id1", "body", opts)
+	_, err := d.Create("index", "", "id1", "body", opts)
 	assert.NotNil(t, err)
 }
 
 func TestCreateIdNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("index", "collection", "", "body", opts)
+	_, err := d.Create("index", "collection", "", "body", opts)
 	assert.NotNil(t, err)
 }
 
 func TestCreateBodyNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("index", "collection", "id1", "", opts)
+	_, err := d.Create("index", "collection", "id1", "", opts)
 	assert.NotNil(t, err)
 }
 
@@ -52,7 +52,7 @@ func TestCreateDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("index", "collection", "id1", "", opts)
+	_, err := d.Create("index", "collection", "id1", "body", opts)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -71,7 +71,8 @@ func TestCreateDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 			assert.Equal(t, id, parsedQuery.Id)
 
-			return &types.KuzzleResponse{Result: []byte(`{
+			return &types.KuzzleResponse{Result: []byte(`
+				{
 					"_id": "myId",
 					"_version": 1,
 				}`),
@@ -81,6 +82,6 @@ func TestCreateDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	d.Create("index", "collection", id, "body", opts)
-	assert.Equal(t, id, res.Id)
+	_, err := d.Create("index", "collection", id, "body", opts)
+	assert.Nil(t, err)
 }

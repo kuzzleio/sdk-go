@@ -2,6 +2,7 @@ package document
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -33,8 +34,7 @@ func (d *Document) MUpdate(index string, collection string, body string, options
 	queryOpts := types.NewQueryOptions()
 
 	if options != nil {
-		queryOpts.SetVolatile(options.Volatile)
-		queryOpts.SetRefresh(options.WaitFor)
+		queryOpts.SetRefresh(strconv.FormatBool(options.WaitFor))
 	}
 
 	go d.Kuzzle.Query(query, queryOpts, ch)

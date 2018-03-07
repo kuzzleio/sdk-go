@@ -2,6 +2,7 @@ package document
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -37,7 +38,11 @@ func (d *Document) Count(index string, collection string, body string) (int, err
 	}
 
 	var count int
-	json.Unmarshal(res.Result, &count)
+	err := json.Unmarshal(res.Result, &count)
+
+	if err != nil {
+		return 0, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
 
 	return count, nil
 }
