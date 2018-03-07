@@ -5,24 +5,26 @@ import (
 )
 
 type Collection struct {
-	Kuzzle            *kuzzle.Kuzzle
-	index, collection string
-	subscribeCallback interface{}
+	Kuzzle *kuzzle.Kuzzle
 }
 
 // NewCollection instanciates a new collection
-func NewCollection(kuzzle *kuzzle.Kuzzle, collection, index string) *Collection {
+func NewCollection(kuzzle *kuzzle.Kuzzle) *Collection {
 	return &Collection{
-		index:      index,
-		collection: collection,
-		Kuzzle:     kuzzle,
+		Kuzzle: kuzzle,
 	}
 }
 
-// Document instanciates a new Document
-func (dc *Collection) Document() *Document {
-	return &Document{
-		Content:    []byte(`{}`),
-		collection: dc,
+type ListOptions struct {
+	Type string
+	From int
+	Size int
+}
+
+func NewListOptions(t string, from int, size int) *ListOptions {
+	return &ListOptions{
+		Type: t,
+		From: from,
+		Size: size,
 	}
 }

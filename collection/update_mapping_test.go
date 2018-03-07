@@ -13,21 +13,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTruncateIndexNull(t *testing.T) {
+func TestUpdateMappingIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection")
+	err := nc.UpdateMapping("", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncateCollectionNull(t *testing.T) {
+func TestUpdateMappingCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "")
+	err := nc.UpdateMapping("index", "", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncateError(t *testing.T) {
+func TestUpdateMappingBodyNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.UpdateMapping("index", "collection", "")
+	assert.NotNil(t, err)
+}
+
+func TestUpdateMappingError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -36,31 +43,29 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateMapping("index", "collection", "body")
 	assert.NotNil(t, err)
 }
 
-func TestTruncate(t *testing.T) {
+func TestUpdateMapping(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged": true
-			}`)}
+			return &types.KuzzleResponse{Result: []byte(`{}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateMapping("index", "collection", "body")
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_Truncate() {
+func ExampleCollection_UpdateMapping() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.UpdateMapping("index", "collection", "body")
 
 	if err != nil {
 		fmt.Println(err.Error())

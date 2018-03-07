@@ -1,6 +1,7 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -11,21 +12,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateIndexNull(t *testing.T) {
+func TestGetSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Create("", "collection")
+	_, err := nc.GetSpecifications("", "collection")
 	assert.NotNil(t, err)
 }
 
-func TestCreateCollectionNull(t *testing.T) {
+func TestGetSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "")
+	_, err := nc.GetSpecifications("index", "")
 	assert.NotNil(t, err)
 }
 
-func TestCreateError(t *testing.T) {
+func TestGetSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -34,35 +35,60 @@ func TestCreateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	_, err := nc.GetSpecifications("index", "collection")
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
-func TestCreate(t *testing.T) {
+func TestGetSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged":true
-			}`)}
+			parsedQuery := &types.KuzzleRequest{}
+			json.Unmarshal(query, parsedQuery)
+
+			assert.Equal(t, "collection", parsedQuery.Controller)
+			assert.Equal(t, "getSpecifications", parsedQuery.Action)
+			assert.Equal(t, "index", parsedQuery.Index)
+			assert.Equal(t, "collection", parsedQuery.Collection)
+
+			res := types.KuzzleResponse{Result: []byte(`{
+				"collection": "collection",
+				"index": "index",
+				"validation": {
+					"fields": {
+						"myField": {
+							"defaultValue": 42,
+							"mandatory": true,
+							"type": "integer"
+						}
+					},
+					"strict": true
+				}`),
+			}
+
+			r, _ := json.Marshal(res.Result)
+			return &types.KuzzleResponse{Result: r}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	res, err := nc.GetSpecifications("index", "collection")
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
 }
 
-func ExampleCollection_Create() {
+func ExampleCollection_GetSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection")
+	res, err := nc.GetSpecifications("index", "collection")
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(res)
 }

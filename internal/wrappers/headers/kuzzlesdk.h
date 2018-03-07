@@ -94,6 +94,23 @@ typedef struct {
 } kuzzle;
 
 typedef struct {
+    enum {
+      ALL,
+      STORED,
+      REALTIME
+    } type_;
+    int from;
+    int size;
+} collection_list_options;
+
+typedef struct {
+    char *type_;
+    int  from;
+    int  size;
+    char *scroll;
+} search_options;
+
+typedef struct {
   void *instance;
   kuzzle* kuzzle;
 } server;
@@ -217,8 +234,6 @@ typedef struct {
 
 typedef struct {
     void *instance;
-    char *index;
-    char *collection;
     kuzzle *kuzzle;
 } collection;
 
@@ -534,14 +549,13 @@ typedef struct specification_result {
 } specification_result;
 
 typedef struct search_result {
-    document *documents;
-    size_t documents_length;
+    json_object *documents;
     unsigned fetched;
     unsigned total;
     json_object *aggregations;
     search_filters *filters;
     query_options *options;
-    collection *collection;
+    json_object *collection;
     int status;
     char *error;
     char *stack;
