@@ -11,6 +11,7 @@ import (
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/collection"
+	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
@@ -272,5 +273,12 @@ func cToGoCollectionListOptions(clo *C.collection_list_options) *collection.List
 		Type: t,
 		From: int(clo.type_),
 		Size: int(clo.size),
+	}
+}
+
+func cToGoDocumentOptions(d *C.document_options) *document.DocumentOptions {
+	return &document.DocumentOptions{
+		Volatile: C.GoString(d.volatile_),
+		WaitFor:  bool(d.waitFor),
 	}
 }
