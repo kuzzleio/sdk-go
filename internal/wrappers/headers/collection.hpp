@@ -23,7 +23,7 @@ namespace kuzzleio {
             std::string getSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
             search_result* searchSpecifications(search_options *searchOptions) Kuz_Throw_KuzzleException;
             std::string updateSpecifications(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException;
-            std::string validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException;
+            bool validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException;
             void deleteSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
     };
 }

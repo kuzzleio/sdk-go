@@ -15,8 +15,10 @@ import (
 func TestListIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	lo := collection.NewListOptions("stored", 0, 1)
-	_, err := nc.List("", lo)
+	from := 0
+	size := 1
+	lo := collection.ListOptions{Type: "stored", From: &from, Size: &size}
+	_, err := nc.List("", &lo)
 
 	assert.NotNil(t, err)
 }
@@ -28,10 +30,11 @@ func TestListError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-
 	nc := collection.NewCollection(k)
-	lo := collection.NewListOptions("stored", 0, 1)
-	_, err := nc.List("index", lo)
+	from := 0
+	size := 1
+	lo := collection.ListOptions{Type: "stored", From: &from, Size: &size}
+	_, err := nc.List("index", &lo)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -64,8 +67,10 @@ func TestList(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	lo := collection.NewListOptions("all", 0, 1)
-	res, err := nc.List("index", lo)
+	from := 0
+	size := 1
+	lo := collection.ListOptions{Type: "stored", From: &from, Size: &size}
+	res, err := nc.List("index", &lo)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }
@@ -75,8 +80,11 @@ func ExampleCollection_List() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	lo := collection.NewListOptions("all", 0, 1)
-	res, err := nc.List("index", lo)
+
+	from := 0
+	size := 1
+	lo := collection.ListOptions{Type: "stored", From: &from, Size: &size}
+	res, err := nc.List("index", &lo)
 
 	if err != nil {
 		fmt.Println(err.Error())

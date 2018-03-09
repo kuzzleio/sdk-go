@@ -1,17 +1,19 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(index string, collection string) (string, error) {
+func (dc *Collection) GetMapping(index string, collection string) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Collection.GetMapping: index required", 400)
+		return nil, types.NewError("Collection.GetMapping: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Collection.GetMapping: collection required", 400)
+		return nil, types.NewError("Collection.GetMapping: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -27,11 +29,8 @@ func (dc *Collection) GetMapping(index string, collection string) (string, error
 	res := <-ch
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var mapping string
-	mapping = string(res.Result)
-
-	return mapping, nil
+	return res.Result, nil
 }

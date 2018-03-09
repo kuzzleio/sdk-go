@@ -17,8 +17,8 @@ func (dc *Collection) SearchSpecifications(options *types.SearchOptions) (*types
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
+		query.From = *options.From
+		query.Size = *options.Size
 		scroll := options.Scroll
 		if scroll != "" {
 			query.Scroll = scroll

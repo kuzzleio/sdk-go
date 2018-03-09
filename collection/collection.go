@@ -4,6 +4,7 @@ import (
 	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
+//Collection controller
 type Collection struct {
 	Kuzzle *kuzzle.Kuzzle
 }
@@ -15,16 +16,9 @@ func NewCollection(kuzzle *kuzzle.Kuzzle) *Collection {
 	}
 }
 
+//ListOptions collection list options
 type ListOptions struct {
 	Type string
-	From int
-	Size int
-}
-
-func NewListOptions(t string, from int, size int) *ListOptions {
-	return &ListOptions{
-		Type: t,
-		From: from,
-		Size: size,
-	}
+	From *int
+	Size *int
 }

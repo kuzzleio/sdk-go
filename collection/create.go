@@ -26,9 +26,5 @@ func (dc *Collection) Create(index string, collection string) error {
 
 	res := <-ch
 
-	if res.Error != nil {
-		return res.Error
-	}
-
-	return nil
+	return res.Error
 }

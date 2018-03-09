@@ -249,10 +249,12 @@ func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 }
 
 func cToGoSearchOptions(s *C.search_options) *types.SearchOptions {
+	from := int(s.from)
+	size := int(s.size)
 	return &types.SearchOptions{
 		Type:   C.GoString(s.type_),
-		From:   int(s.from),
-		Size:   int(s.size),
+		From:   &from,
+		Size:   &size,
 		Scroll: C.GoString(s.scroll),
 	}
 }
@@ -267,10 +269,12 @@ func cToGoCollectionListOptions(clo *C.collection_list_options) *collection.List
 	} else if clo.type_ == C.REALTIME {
 		t = "realtime"
 	}
+	from := int(clo.from)
+	size := int(clo.size)
 
 	return &collection.ListOptions{
 		Type: t,
-		From: int(clo.type_),
-		Size: int(clo.size),
+		From: &from,
+		Size: &size,
 	}
 }
