@@ -1,6 +1,5 @@
 #include <exception>
 #include <stdexcept>
-#include <string>
 #include "kuzzle.hpp"
 #include <iostream>
 #include <vector>
@@ -30,15 +29,6 @@ namespace kuzzleio {
 
   char* Kuzzle::connect() {
     return kuzzle_connect(_kuzzle);
-  }
-
-  bool Kuzzle::createIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
   }
 
   json_object* Kuzzle::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
@@ -151,15 +141,6 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     return r;
-  }
-
-  shards* Kuzzle::refreshIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    shards_result *r = kuzzle_refresh_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    shards* ret = r->result;
-    kuzzle_free_shards_result(r);
-    return ret;
   }
 
   Kuzzle* Kuzzle::replayQueue() {
