@@ -20,7 +20,7 @@ func (i *Index) GetAutoRefresh(index string) (bool, error) {
 		Action:     "getAutoRefresh",
 	}
 
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

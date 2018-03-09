@@ -15,7 +15,7 @@ func (i *Index) Delete(index string) error {
 		Controller: "index",
 		Action:     "delete",
 	}
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

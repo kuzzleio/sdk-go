@@ -35,15 +35,7 @@ func TestList(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Controller)
 			assert.Equal(t, "list", parsedQuery.Action)
 
-			res := types.KuzzleResponse{Result: []byte(`
-				{
-					"total": 2,
-					"hits": [
-						"index_1",
-						"index_2"
-					]
-  			}`),
-			}
+			res := types.KuzzleResponse{Result: []byte(`{"total": 2, "hits":["index_1", "index_2"]}`)}
 
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}
@@ -53,8 +45,10 @@ func TestList(t *testing.T) {
 
 	i := index.NewIndex(k)
 	res, err := i.List()
+	expectedResponse := []string{"index_1", "index_2"}
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
+	assert.Equal(t, expectedResponse, res)
 }
 
 func ExampleIndex_List() {

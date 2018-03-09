@@ -53,9 +53,11 @@ func TestExists(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	_, err := i.Exists("index")
+	res, err := i.Exists("index")
 
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, true, res)
 }
 
 func ExampleIndex_Exists() {

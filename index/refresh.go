@@ -16,13 +16,9 @@ func (i *Index) Refresh(index string) error {
 		Action:     "refresh",
 		Index:      index,
 	}
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 
-	if res.Error != nil {
-		return res.Error
-	}
-
-	return nil
+	return res.Error
 }

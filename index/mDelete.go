@@ -20,7 +20,7 @@ func (i *Index) MDelete(indexes []string) ([]string, error) {
 		Action:     "mDelete",
 		Body:       indexes,
 	}
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 
@@ -28,12 +28,14 @@ func (i *Index) MDelete(indexes []string) ([]string, error) {
 		return nil, res.Error
 	}
 
-	var deletedIndexes []string
+	var deletedIndexes struct {
+		Deleted []string
+	}
 
 	err := json.Unmarshal(res.Result, &deletedIndexes)
 	if err != nil {
 		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
 	}
 
-	return deletedIndexes, nil
+	return deletedIndexes.Deleted, nil
 }

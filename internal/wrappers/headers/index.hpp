@@ -20,7 +20,7 @@ namespace kuzzleio {
       void refreshInternal() Kuz_Throw_KuzzleException;
       void setAutoRefresh(const std::string& index, bool autoRefresh) Kuz_Throw_KuzzleException;
       bool getAutoRefresh(const std::string& index) Kuz_Throw_KuzzleException;
-      std::string list() Kuz_Throw_KuzzleException;
+      std::vector<std::string> list() Kuz_Throw_KuzzleException;
   };
 }
 

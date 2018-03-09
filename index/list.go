@@ -1,8 +1,14 @@
 package index
 
-import "github.com/kuzzleio/sdk-go/types"
+import (
+	"encoding/json"
+	"fmt"
 
-func (i *Index) List() (string, error) {
+	"github.com/kuzzleio/sdk-go/types"
+)
+
+// List list all index
+func (i *Index) List() ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -10,16 +16,24 @@ func (i *Index) List() (string, error) {
 		Action:     "list",
 	}
 
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var collectionList string
-	collectionList = string(res.Result)
+	var collectionList struct {
+		Total int
+		Hits  []string
+	}
 
-	return collectionList, nil
+	err := json.Unmarshal(res.Result, &collectionList)
+
+	if err != nil {
+		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
+
+	return collectionList.Hits, nil
 }

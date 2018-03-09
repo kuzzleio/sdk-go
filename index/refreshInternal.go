@@ -10,7 +10,7 @@ func (i *Index) RefreshInternal() error {
 		Controller: "index",
 		Action:     "refreshInternal",
 	}
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

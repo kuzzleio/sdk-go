@@ -5,7 +5,7 @@ import (
 )
 
 type Index struct {
-	k types.IKuzzle
+	kuzzle types.IKuzzle
 }
 
 func NewIndex(k types.IKuzzle) *Index {

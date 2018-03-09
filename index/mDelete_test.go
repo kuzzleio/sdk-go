@@ -48,16 +48,18 @@ func TestMDelete(t *testing.T) {
 			assert.Equal(t, "index", q.Controller)
 			assert.Equal(t, "mDelete", q.Action)
 
-			return &types.KuzzleResponse{Result: []byte(`["index1"]`)}
+			return &types.KuzzleResponse{Result: []byte(`{"deleted":["index1"]}`)}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	indexes := []string{"index"}
-	_, err := i.MDelete(indexes)
+	indexes := []string{"index1"}
+	res, err := i.MDelete(indexes)
 
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, indexes, res)
 }
 
 func ExampleIndex_MDelete() {

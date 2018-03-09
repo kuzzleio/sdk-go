@@ -94,7 +94,7 @@ func kuzzle_index_get_auto_refresh(i *C.kuzzle_index, index *C.char) *C.bool_res
 }
 
 //export kuzzle_index_list
-func kuzzle_index_list(i *C.kuzzle_index) *C.string_result {
+func kuzzle_index_list(i *C.kuzzle_index) *C.string_array_result {
 	res, err := (*indexPkg.Index)(i.instance).List()
-	return goToCStringResult(&res, err)
+	return goToCStringArrayResult(res, err)
 }

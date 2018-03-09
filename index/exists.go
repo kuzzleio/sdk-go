@@ -21,7 +21,7 @@ func (i *Index) Exists(index string) (bool, error) {
 		Action:     "exists",
 	}
 
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

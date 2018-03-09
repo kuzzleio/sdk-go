@@ -18,7 +18,7 @@ func (i *Index) SetAutoRefresh(index string, autoRefresh bool) error {
 		}{autoRefresh},
 	}
 
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

@@ -17,7 +17,7 @@ func (i *Index) Create(index string) error {
 		Controller: "index",
 		Action:     "create",
 	}
-	go i.k.Query(query, nil, result)
+	go i.kuzzle.Query(query, nil, result)
 
 	res := <-result
 
