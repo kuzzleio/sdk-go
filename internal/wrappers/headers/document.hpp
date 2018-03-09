@@ -9,7 +9,7 @@
 #include <string>
 #include <iostream>
 
-namespace kuzzleio {    
+namespace kuzzleio {
     class Collection;
 
     class Document {

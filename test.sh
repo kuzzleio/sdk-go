@@ -5,7 +5,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(kuzzle connection/websocket collection security ms server)
+dirs=(kuzzle connection/websocket collection security ms index server)
 timeout=${TIMEOUT:=1m}
 
 generate_cover_data() {
@@ -36,7 +36,7 @@ linter_check() {
 
 make_wrappers() {
 		cd "${dir}/internal/wrappers"
-		make all	
+		make all
 }
 
 cd "$dir"
