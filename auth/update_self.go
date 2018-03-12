@@ -20,7 +20,7 @@ func (a *Auth) UpdateSelf(data json.RawMessage, options types.QueryOptions) (*se
 		Action:     "updateSelf",
 		Body:       data,
 	}
-	go a.k.Query(query, options, ch)
+	go a.kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

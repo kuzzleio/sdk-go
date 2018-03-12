@@ -15,7 +15,7 @@ func (a *Auth) GetCurrentUser() (*security.User, error) {
 		Action:     "getCurrentUser",
 	}
 
-	go a.k.Query(query, nil, result)
+	go a.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

@@ -2,7 +2,6 @@ package main
 
 /*
   #cgo CFLAGS: -I../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include <errno.h>
@@ -66,10 +65,10 @@ func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
 }
 
 //export kuzzle_create_my_credentials
-func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.string_result {
+func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.string_result {
 	res, err := (*auth.Auth)(a.instance).CreateMyCredentials(
 		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
+		json.RawMessage(C.GoString(credentials)),
 		SetQueryOptions(options))
 
 	str := string(res)
@@ -126,13 +125,13 @@ func kuzzle_get_strategies(a *C.auth, options *C.query_options) *C.string_array_
 }
 
 //export kuzzle_login
-func kuzzle_login(a *C.auth, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
+func kuzzle_login(a *C.auth, strategy *C.char, credentials *C.char, expires_in *C.int) *C.string_result {
 	var expire int
 	if expires_in != nil {
 		expire = int(*expires_in)
 	}
 
-	res, err := (*auth.Auth)(a.instance).Login(C.GoString(strategy), JsonCConvert(credentials).(map[string]interface{}), &expire)
+	res, err := (*auth.Auth)(a.instance).Login(C.GoString(strategy), json.RawMessage(C.GoString(credentials)), &expire)
 
 	return goToCStringResult(&res, err)
 }
@@ -148,10 +147,10 @@ func kuzzle_logout(a *C.auth) *C.char {
 }
 
 //export kuzzle_update_my_credentials
-func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.string_result {
+func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.string_result {
 	res, err := (*auth.Auth)(a.instance).UpdateMyCredentials(
 		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
+		json.RawMessage(C.GoString(credentials)),
 		SetQueryOptions(options))
 
 	str := string(res)
@@ -170,10 +169,10 @@ func kuzzle_update_self(a *C.auth, data *C.char, options *C.query_options) *C.us
 }
 
 //export kuzzle_validate_my_credentials
-func kuzzle_validate_my_credentials(a *C.auth, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
+func kuzzle_validate_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.bool_result {
 	res, err := (*auth.Auth)(a.instance).ValidateMyCredentials(
 		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
+		json.RawMessage(C.GoString(credentials)),
 		SetQueryOptions(options))
 
 	return goToCBoolResult(res, err)

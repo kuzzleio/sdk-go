@@ -14,7 +14,7 @@ func (a *Auth) GetStrategies(options types.QueryOptions) ([]string, error) {
 		Controller: "auth",
 		Action:     "getStrategies",
 	}
-	go a.k.Query(query, options, ch)
+	go a.kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

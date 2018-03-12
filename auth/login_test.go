@@ -15,7 +15,7 @@ import (
 
 func TestLoginNoStrategy(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Auth.Login("", struct{}{}, nil)
+	_, err := k.Auth.Login("", json.RawMessage("{}"), nil)
 	assert.NotNil(t, err)
 }
 
@@ -36,7 +36,7 @@ func TestLoginError(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	k.Auth.Login("local", struct{}{}, nil)
+	k.Auth.Login("local", json.RawMessage("{}"), nil)
 }
 
 func TestLogin(t *testing.T) {
@@ -67,7 +67,7 @@ func TestLogin(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	expiresIn := 42
-	token, _ := k.Auth.Login("local", struct{}{}, &expiresIn)
+	token, _ := k.Auth.Login("local", json.RawMessage("{}"), &expiresIn)
 	assert.Equal(t, "token", token)
 }
 
@@ -81,8 +81,9 @@ func ExampleKuzzle_Login() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	jwt, err := k.Auth.Login("local", myCredentials, nil)
+	jwt, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

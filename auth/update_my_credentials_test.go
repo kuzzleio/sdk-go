@@ -39,14 +39,16 @@ func TestUpdateMyCredentialsEmptyStrategy(t *testing.T) {
 }
 
 func TestUpdateMyCredentials(t *testing.T) {
-	type myCredentials struct {
+	type credentials struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
+	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			ack := myCredentials{Username: "foo", Password: "bar"}
+			ack := credentials{Username: "foo", Password: "bar"}
 			r, _ := json.Marshal(ack)
 
 			request := types.KuzzleRequest{}
@@ -59,8 +61,8 @@ func TestUpdateMyCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := k.Auth.UpdateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
-	creds := myCredentials{}
+	res, _ := k.Auth.UpdateMyCredentials("local", marsh, nil)
+	creds := credentials{}
 	json.Unmarshal(res, &creds)
 
 	assert.Equal(t, "foo", creds.Username)
@@ -77,15 +79,18 @@ func ExampleKuzzle_UpdateMyCredentials() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Auth.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
 	newCredentials := credentials{"foo", "new"}
-	res, err := k.Auth.UpdateMyCredentials("local", newCredentials, nil)
+	marsh, _ = json.Marshal(newCredentials)
+
+	res, err := k.Auth.UpdateMyCredentials("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

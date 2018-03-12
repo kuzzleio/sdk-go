@@ -7,7 +7,7 @@ import (
 )
 
 // UpdateMyCredentials update credentials of the specified strategy for the current user.
-func (a *Auth) UpdateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (json.RawMessage, error) {
+func (a *Auth) UpdateMyCredentials(strategy string, credentials json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, types.NewError("Kuzzle.UpdateMyCredentials: strategy is required", 400)
 	}
@@ -20,7 +20,7 @@ func (a *Auth) UpdateMyCredentials(strategy string, credentials interface{}, opt
 		Body:       credentials,
 		Strategy:   strategy,
 	}
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

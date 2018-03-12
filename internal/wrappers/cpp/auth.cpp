@@ -15,8 +15,8 @@ namespace kuzzleio {
     return kuzzle_check_token(_auth, const_cast<char*>(token.c_str()));
   }
 
-  std::string Auth::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
-    string_result* r = kuzzle_create_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+  std::string Auth::createMyCredentials(const std::string& strategy, const std::string& credentials, query_options* options) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_create_my_credentials(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), options);
     if (r->error)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
@@ -78,8 +78,8 @@ namespace kuzzleio {
     return v;
   }
   
-  std::string Auth::login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException {
-    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), credentials, NULL);
+  std::string Auth::login(const std::string& strategy, const std::string& credentials) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), NULL);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
@@ -87,8 +87,8 @@ namespace kuzzleio {
     return ret;
   }
 
-  std::string Auth::login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException {
-    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), credentials, &expires_in);
+  std::string Auth::login(const std::string& strategy, const std::string& credentials, int expires_in) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), &expires_in);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
@@ -100,8 +100,8 @@ namespace kuzzleio {
     kuzzle_logout(_auth);
   }
 
-  std::string Auth::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) Kuz_Throw_KuzzleException {
-    string_result *r = kuzzle_update_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+  std::string Auth::updateMyCredentials(const std::string& strategy, const std::string& credentials, query_options *options) Kuz_Throw_KuzzleException {
+    string_result *r = kuzzle_update_my_credentials(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
@@ -118,8 +118,8 @@ namespace kuzzleio {
     return ret;
   }
 
-  bool Auth::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_validate_my_credentials(_auth, const_cast<char*>(strategy.c_str()), credentials, options);
+  bool Auth::validateMyCredentials(const std::string& strategy, const std::string& credentials, query_options* options) Kuz_Throw_KuzzleException {
+    bool_result *r = kuzzle_validate_my_credentials(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;

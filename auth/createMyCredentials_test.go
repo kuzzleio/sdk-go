@@ -59,8 +59,9 @@ func TestCreateMyCredentials(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	marsh, _ := json.Marshal(myCredentials{"foo", "bar"})
 
-	res, _ := k.Auth.CreateMyCredentials("local", myCredentials{"foo", "bar"}, nil)
+	res, _ := k.Auth.CreateMyCredentials("local", marsh, nil)
 	r := myCredentials{}
 	json.Unmarshal(res, &r)
 
@@ -78,15 +79,18 @@ func ExampleKuzzle_CreateMyCredentials() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Auth.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
 	newCredentials := credentials{"new", "foo"}
-	res, err := k.Auth.CreateMyCredentials("other_strategy", newCredentials, nil)
+	marsh, _ = json.Marshal(newCredentials)
+
+	res, err := k.Auth.CreateMyCredentials("other_strategy", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

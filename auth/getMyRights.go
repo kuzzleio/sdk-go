@@ -19,7 +19,7 @@ func (a *Auth) GetMyRights(options types.QueryOptions) ([]*types.UserRights, err
 		Hits []*types.UserRights `json:"hits"`
 	}
 
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

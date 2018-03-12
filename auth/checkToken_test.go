@@ -56,8 +56,9 @@ func ExampleKuzzle_CheckToken() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	jwt, err := k.Auth.Login("local", myCredentials, nil)
+	jwt, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

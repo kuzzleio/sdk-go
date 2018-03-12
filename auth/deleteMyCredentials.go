@@ -21,7 +21,7 @@ func (a *Auth) DeleteMyCredentials(strategy string, options types.QueryOptions) 
 		Strategy:   strategy,
 	}
 
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

@@ -18,7 +18,7 @@ func (a *Auth) CredentialsExist(strategy string, options types.QueryOptions) (bo
 		Action:     "credentialsExist",
 		Strategy:   strategy,
 	}
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

@@ -29,7 +29,7 @@ func (a *Auth) CheckToken(token string) (*TokenValidity, error) {
 		Action:     "checkToken",
 		Body:       &body{token},
 	}
-	go a.k.Query(query, nil, result)
+	go a.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

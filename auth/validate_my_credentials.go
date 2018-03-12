@@ -7,7 +7,7 @@ import (
 )
 
 // ValidateMyCredentials validate credentials of the specified strategy for the current user.
-func (a *Auth) ValidateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (bool, error) {
+func (a *Auth) ValidateMyCredentials(strategy string, credentials json.RawMessage, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -17,7 +17,7 @@ func (a *Auth) ValidateMyCredentials(strategy string, credentials interface{}, o
 		Body:       credentials,
 	}
 
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

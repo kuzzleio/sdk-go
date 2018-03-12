@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMyCredentials get credential information of the specified strategy for the current user.
-func (a *Auth) GetMyCredentials(strategy string, options types.QueryOptions) (types.Credentials, error) {
+func (a *Auth) GetMyCredentials(strategy string, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, types.NewError("Kuzzle.GetMyCredentials: strategy is required", 400)
 	}
@@ -17,7 +19,7 @@ func (a *Auth) GetMyCredentials(strategy string, options types.QueryOptions) (ty
 		Strategy:   strategy,
 	}
 
-	go a.k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

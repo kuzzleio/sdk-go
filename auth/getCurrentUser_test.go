@@ -59,8 +59,9 @@ func ExampleKuzzle_GetCurrentUser() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Auth.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

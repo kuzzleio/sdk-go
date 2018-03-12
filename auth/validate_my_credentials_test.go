@@ -44,11 +44,15 @@ func TestValidateMyCredentials(t *testing.T) {
 		},
 	}
 
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Auth.ValidateMyCredentials("local", struct {
+	type credentials struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
-	}{"foo", "bar"}, nil)
+	}
+	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
+
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	res, err := k.Auth.ValidateMyCredentials("local", marsh, nil)
 	assert.Nil(t, err)
 
 	assert.Equal(t, true, res)
@@ -64,14 +68,16 @@ func ExampleKuzzle_ValidateMyCredentials() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Auth.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	res, err := k.Auth.ValidateMyCredentials("local", myCredentials, nil)
+	marsh, _ = json.Marshal(myCredentials)
+	res, err := k.Auth.ValidateMyCredentials("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

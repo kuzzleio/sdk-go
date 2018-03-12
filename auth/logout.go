@@ -12,7 +12,7 @@ func (a *Auth) Logout() error {
 	}
 	result := make(chan *types.KuzzleResponse)
 
-	go a.k.Query(q, nil, result)
+	go a.kuzzle.Query(q, nil, result)
 
 	res := <-result
 
@@ -20,7 +20,7 @@ func (a *Auth) Logout() error {
 		return res.Error
 	}
 
-	a.k.SetJwt("")
+	a.kuzzle.SetJwt("")
 
 	return nil
 }
