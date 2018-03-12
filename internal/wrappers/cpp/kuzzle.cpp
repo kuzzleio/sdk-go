@@ -27,60 +27,6 @@ namespace kuzzleio {
     return kuzzle_connect(_kuzzle);
   }
 
-  bool Kuzzle::createIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  json_object* Kuzzle::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
-    json_result* r = kuzzle_create_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
-    if (r->error)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    kuzzle_free_json_result(r);
-    return ret;
-  }
-
-  bool Kuzzle::deleteMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_delete_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  json_object* Kuzzle::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_get_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    kuzzle_free_json_result(r);
-    return ret;
-  }
-
-  json_object* Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) Kuz_Throw_KuzzleException {
-    json_result *r = kuzzle_update_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    json_object *ret = r->result;
-    kuzzle_free_json_result(r);
-    return ret;
-  }
-
-  bool Kuzzle::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_validate_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
-  }
-
   bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
