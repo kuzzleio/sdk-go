@@ -23,11 +23,8 @@ namespace kuzzleio {
       virtual ~Kuzzle();
 
       char* connect();
-<<<<<<< HEAD
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
-=======
       json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
->>>>>>> origin/1.x
 
 
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
