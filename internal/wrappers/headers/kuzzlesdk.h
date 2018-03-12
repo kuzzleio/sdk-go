@@ -95,12 +95,21 @@ typedef struct {
 
 typedef struct {
   void *instance;
+<<<<<<< HEAD
   kuzzle *kuzzle;
 } auth;
 
 typedef struct {
   void *instance;
   kuzzle *kuzzle;
+=======
+  kuzzle* kuzzle;
+} kuzzle_index;
+
+typedef struct {
+  void *instance;
+  kuzzle* kuzzle;
+>>>>>>> origin/1.x
 } server;
 
 //options passed to room constructor

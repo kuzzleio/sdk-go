@@ -23,7 +23,11 @@ namespace kuzzleio {
       virtual ~Kuzzle();
 
       char* connect();
+<<<<<<< HEAD
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
+=======
+      json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
+>>>>>>> origin/1.x
 
 
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
@@ -34,7 +38,6 @@ namespace kuzzleio {
       std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
       Kuzzle* setDefaultIndex(const std::string& index);

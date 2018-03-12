@@ -1,6 +1,5 @@
 #include <exception>
 #include <stdexcept>
-#include <string>
 #include "kuzzle.hpp"
 #include <iostream>
 #include <vector>
@@ -28,8 +27,21 @@ namespace kuzzleio {
     return kuzzle_connect(_kuzzle);
   }
 
+<<<<<<< HEAD
   bool Kuzzle::createIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_create_index(_kuzzle, const_cast<char*>(index.c_str()), options);
+=======
+  json_object* Kuzzle::createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
+    json_result* r = kuzzle_create_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
+    if (r->error)
+        throwExceptionFromStatus(r);
+    json_object *ret = r->result;
+    kuzzle_free_json_result(r);
+    return ret;
+  }
+
+  bool Kuzzle::deleteMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
+    bool_result *r = kuzzle_delete_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
@@ -37,6 +49,54 @@ namespace kuzzleio {
     return ret;
   }
 
+  json_object* Kuzzle::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
+    json_result *r = kuzzle_get_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    json_object *ret = r->result;
+    kuzzle_free_json_result(r);
+    return ret;
+  }
+
+  json_object* Kuzzle::updateMyCredentials(const std::string& strategy, json_object* credentials, query_options *options) Kuz_Throw_KuzzleException {
+    json_result *r = kuzzle_update_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    json_object *ret = r->result;
+    kuzzle_free_json_result(r);
+    return ret;
+  }
+
+  bool Kuzzle::validateMyCredentials(const std::string& strategy, json_object* credentials, query_options* options) Kuz_Throw_KuzzleException {
+    bool_result *r = kuzzle_validate_my_credentials(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, options);
+>>>>>>> origin/1.x
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    bool ret = r->result;
+    kuzzle_free_bool_result(r);
+    return ret;
+  }
+
+<<<<<<< HEAD
+=======
+  std::string Kuzzle::login(const std::string& strategy, json_object* credentials) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, NULL);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    kuzzle_free_string_result(r);
+    return ret;
+  }
+  std::string Kuzzle::login(const std::string& strategy, json_object* credentials, int expires_in) Kuz_Throw_KuzzleException {
+    string_result* r = kuzzle_login(_kuzzle, const_cast<char*>(strategy.c_str()), credentials, &expires_in);
+    if (r->error != NULL)
+        throwExceptionFromStatus(r);
+    std::string ret = r->result;
+    kuzzle_free_string_result(r);
+    return ret;
+  }
+
+>>>>>>> origin/1.x
   bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
     bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
     if (r->error != NULL)
@@ -77,15 +137,6 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     return r;
-  }
-
-  shards* Kuzzle::refreshIndex(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    shards_result *r = kuzzle_refresh_index(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    shards* ret = r->result;
-    kuzzle_free_shards_result(r);
-    return ret;
   }
 
   Kuzzle* Kuzzle::replayQueue() {
@@ -162,5 +213,5 @@ namespace kuzzleio {
   int Kuzzle::listenerCount(Event event) {
     return kuzzle_listener_count(_kuzzle, event);
   }
-  
+
 }
