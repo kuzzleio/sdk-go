@@ -7,6 +7,11 @@ namespace kuzzleio {
         kuzzle_new_collection(_collection, kuzzle->_kuzzle);
     }
 
+    Collection::Collection(Kuzzle* kuzzle, collection *collection) {
+        _collection = collection;
+        kuzzle_new_collection(_collection, kuzzle->_kuzzle);
+    }
+
     Collection::~Collection() {
         unregisterCollection(_collection);
         kuzzle_free_collection(_collection);

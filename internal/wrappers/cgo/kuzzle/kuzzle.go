@@ -65,6 +65,11 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 	k.loader = nil
 }
 
+//export kuzzle_get_collection_controller
+func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
+	return (*C.collection)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
+}
+
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {

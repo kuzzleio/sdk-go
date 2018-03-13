@@ -1,16 +1,16 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 //Collection controller
 type Collection struct {
-	Kuzzle *kuzzle.Kuzzle
+	Kuzzle types.IKuzzle
 }
 
 // NewCollection instanciates a new collection
-func NewCollection(kuzzle *kuzzle.Kuzzle) *Collection {
+func NewCollection(kuzzle types.IKuzzle) *Collection {
 	return &Collection{
 		Kuzzle: kuzzle,
 	}

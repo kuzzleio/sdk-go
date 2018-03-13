@@ -13,6 +13,7 @@ namespace kuzzleio {
 
         public:
             Collection(Kuzzle* kuzzle);
+            Collection(Kuzzle* kuzzle, collection *collection);
             virtual ~Collection();
             void create(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
             bool exists(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException;
