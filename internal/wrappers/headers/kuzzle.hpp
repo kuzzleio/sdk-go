@@ -12,12 +12,15 @@
 
 namespace kuzzleio {
 
+  class Index;
+
   class Kuzzle : public KuzzleEventEmitter {
     private:
       std::map<int, EventListener*>  _listener_instances;
 
     public:
       kuzzle *_kuzzle;
+      Index  *index;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
