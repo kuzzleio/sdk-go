@@ -26,6 +26,7 @@ namespace kuzzleio {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
     delete(this->index);
+    delete(this->server);
   }
 
   token_validity* Kuzzle::checkToken(const std::string& token) {
