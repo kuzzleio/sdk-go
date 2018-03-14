@@ -11,6 +11,7 @@ namespace kuzzleio {
 
     public:
       Index(Kuzzle* kuzzle);
+      Index(Kuzzle* kuzzle, kuzzle_index *index);
       virtual ~Index();
       void create(const std::string& index) Kuz_Throw_KuzzleException;
       void delete_(const std::string& index) Kuz_Throw_KuzzleException;

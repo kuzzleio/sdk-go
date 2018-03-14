@@ -12,6 +12,8 @@
 
 namespace kuzzleio {
   class Document;
+  class Index;
+  class Server;
 
   class Kuzzle : public KuzzleEventEmitter {
     private:
@@ -20,6 +22,8 @@ namespace kuzzleio {
     public:
       kuzzle *_kuzzle;
       Document *document;
+      Index  *index;
+      Server *server;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
