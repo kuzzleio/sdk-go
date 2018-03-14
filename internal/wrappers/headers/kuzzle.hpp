@@ -26,7 +26,6 @@ namespace kuzzleio {
 
       token_validity* checkToken(const std::string& token);
       char* connect();
-      bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
       bool deleteMyCredentials(const std::string& strategy, query_options *options=NULL) Kuz_Throw_KuzzleException;
@@ -44,7 +43,6 @@ namespace kuzzleio {
       void disconnect();
       void logout();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      shards* refreshIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
       Kuzzle* setDefaultIndex(const std::string& index);
