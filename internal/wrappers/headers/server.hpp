@@ -11,6 +11,7 @@ namespace kuzzleio {
 
     public:
       Server(Kuzzle* kuzzle);
+      Server(Kuzzle *kuzzle, server *server);
       virtual ~Server();
       bool adminExists(query_options *options) Kuz_Throw_KuzzleException;
       std::string getAllStats(query_options* options=NULL) Kuz_Throw_KuzzleException;

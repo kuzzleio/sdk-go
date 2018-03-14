@@ -9,6 +9,11 @@ namespace kuzzleio {
         kuzzle_new_index(_index, kuzzle->_kuzzle);
     }
 
+    Index::Index(Kuzzle* kuzzle, kuzzle_index *index) {
+      _index = index;
+      kuzzle_new_index(_index, kuzzle->_kuzzle);
+    }
+
     Index::~Index() {
         unregisterIndex(_index);
         delete(_index);

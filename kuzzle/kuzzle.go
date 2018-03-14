@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kuzzleio/sdk-go/index"
+
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
@@ -35,6 +37,7 @@ type Kuzzle struct {
 	MemoryStorage *ms.Ms
 	Security      *security.Security
 	Server        *server.Server
+	Index         *index.Index
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -57,6 +60,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
 	k.Server = server.NewServer(k)
+	k.Index = index.NewIndex(k)
 
 	var err error
 

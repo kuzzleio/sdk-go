@@ -1,6 +1,8 @@
 #include <exception>
 #include <stdexcept>
 #include "kuzzle.hpp"
+#include "index.hpp"
+#include "server.hpp"
 #include <iostream>
 #include <vector>
 
@@ -15,12 +17,16 @@ namespace kuzzleio {
 
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
+    this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
+    this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
   Kuzzle::~Kuzzle() {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
+    delete(this->index);
+    delete(this->server);
   }
 
   token_validity* Kuzzle::checkToken(const std::string& token) {

@@ -65,6 +65,16 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 	k.loader = nil
 }
 
+//export kuzzle_get_index_controller
+func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
+	return (*C.kuzzle_index)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
+}
+
+//export kuzzle_get_server_controller
+func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
+	return (*C.server)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
+}
+
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {
