@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
@@ -35,6 +36,7 @@ type Kuzzle struct {
 	MemoryStorage *ms.Ms
 	Security      *security.Security
 	Server        *server.Server
+	Document      *document.Document
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -57,6 +59,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
 	k.Server = server.NewServer(k)
+	k.Document = document.NewDocument(k)
 
 	var err error
 

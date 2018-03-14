@@ -12,6 +12,7 @@ namespace kuzzleio {
 
         public:
             Document(Kuzzle* kuzzle);
+            Document(Kuzzle* kuzzle, document *document);
             virtual ~Document();
             int count_(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException;
             bool exists(const std::string& index, const std::string& collection, const std::string& id) Kuz_Throw_KuzzleException;

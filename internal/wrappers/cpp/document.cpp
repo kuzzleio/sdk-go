@@ -7,6 +7,11 @@ namespace kuzzleio {
         kuzzle_new_document(_document, kuzzle->_kuzzle);
     }
 
+    Document::Document(Kuzzle* kuzzle, document *document) {
+        _document = document;
+        kuzzle_new_document(_document, kuzzle->_kuzzle);
+    }
+
     Document::~Document() {
         unregisterDocument(_document);
         kuzzle_free_document(_document);

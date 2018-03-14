@@ -1,14 +1,14 @@
 package document
 
 import (
-	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 type Document struct {
-	Kuzzle *kuzzle.Kuzzle
+	Kuzzle types.IKuzzle
 }
 
-func NewDocument(kuzzle *kuzzle.Kuzzle) *Document {
+func NewDocument(kuzzle types.IKuzzle) *Document {
 	return &Document{
 		Kuzzle: kuzzle,
 	}

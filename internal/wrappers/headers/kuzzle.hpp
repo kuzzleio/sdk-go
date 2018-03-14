@@ -11,6 +11,7 @@
 #include <map>
 
 namespace kuzzleio {
+  class Document;
 
   class Kuzzle : public KuzzleEventEmitter {
     private:
@@ -18,6 +19,7 @@ namespace kuzzleio {
 
     public:
       kuzzle *_kuzzle;
+      Document *document;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();

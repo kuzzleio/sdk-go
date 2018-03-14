@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include "kuzzle.hpp"
+#include "document.hpp"
 #include <iostream>
 #include <vector>
 
@@ -16,12 +17,14 @@ namespace kuzzleio {
 
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
+    this->document = new Document(this, kuzzle_get_document_controller(this->_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
   Kuzzle::~Kuzzle() {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
+    delete(this->document);
   }
 
   token_validity* Kuzzle::checkToken(const std::string& token) {
