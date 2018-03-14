@@ -6,6 +6,11 @@ namespace kuzzleio {
       kuzzle_new_auth(_auth, kuzzle->_kuzzle);
   }
 
+  Auth::Auth(Kuzzle *kuzzle, auth *auth) {
+    _auth = auth;
+    kuzzle_new_auth(_auth, kuzzle->_kuzzle);
+  }
+
   Auth::~Auth() {
       unregisterAuth(_auth);
       delete(_auth);

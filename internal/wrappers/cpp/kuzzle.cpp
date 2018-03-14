@@ -1,6 +1,7 @@
 #include <exception>
 #include <stdexcept>
 #include "kuzzle.hpp"
+#include "auth.hpp"
 #include <iostream>
 #include <vector>
 
@@ -15,12 +16,14 @@ namespace kuzzleio {
 
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
+    this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
   Kuzzle::~Kuzzle() {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
+    delete(this->auth);
   }
 
   char* Kuzzle::connect() {

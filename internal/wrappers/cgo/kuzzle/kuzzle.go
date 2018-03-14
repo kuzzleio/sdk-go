@@ -65,6 +65,11 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 	k.loader = nil
 }
 
+//export kuzzle_get_auth_controller
+func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
+	return (*C.auth)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
+}
+
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {

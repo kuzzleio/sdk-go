@@ -11,6 +11,7 @@ namespace kuzzleio {
 
     public:
       Auth(Kuzzle *kuzzle);
+      Auth(Kuzzle *kuzzle, auth *auth);
       virtual ~Auth();
       token_validity* checkToken(const std::string& token);
       std::string createMyCredentials(const std::string& strategy, const std::string& credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;

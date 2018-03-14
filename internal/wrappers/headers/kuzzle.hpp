@@ -12,12 +12,15 @@
 
 namespace kuzzleio {
 
+  class Auth;
+
   class Kuzzle : public KuzzleEventEmitter {
     private:
       std::map<int, EventListener*>  _listener_instances;
 
     public:
       kuzzle *_kuzzle;
+      Auth *auth;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();
