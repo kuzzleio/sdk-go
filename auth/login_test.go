@@ -1,20 +1,21 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestLoginNoStrategy(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Login("", struct{}{}, nil)
+	_, err := k.Auth.Login("", json.RawMessage("{}"), nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,7 +36,7 @@ func TestLoginError(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	k.Login("local", struct{}{}, nil)
+	k.Auth.Login("local", json.RawMessage("{}"), nil)
 }
 
 func TestLogin(t *testing.T) {
@@ -66,7 +67,7 @@ func TestLogin(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	expiresIn := 42
-	token, _ := k.Login("local", struct{}{}, &expiresIn)
+	token, _ := k.Auth.Login("local", json.RawMessage("{}"), &expiresIn)
 	assert.Equal(t, "token", token)
 }
 
@@ -80,8 +81,9 @@ func ExampleKuzzle_Login() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	jwt, err := k.Login("local", myCredentials, nil)
+	jwt, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

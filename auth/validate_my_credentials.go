@@ -1,12 +1,13 @@
-package kuzzle
+package auth
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // ValidateMyCredentials validate credentials of the specified strategy for the current user.
-func (k *Kuzzle) ValidateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (bool, error) {
+func (a *Auth) ValidateMyCredentials(strategy string, credentials json.RawMessage, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -16,7 +17,7 @@ func (k *Kuzzle) ValidateMyCredentials(strategy string, credentials interface{},
 		Body:       credentials,
 	}
 
-	go k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

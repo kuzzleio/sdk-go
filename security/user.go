@@ -3,6 +3,7 @@ package security
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 

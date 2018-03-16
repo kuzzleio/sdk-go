@@ -1,59 +1,79 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestValidateMyCredentialsQueryError(t *testing.T) {
+func TestGetMyRightsQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "validateMyCredentials", request.Action)
-			assert.Equal(t, "local", request.Strategy)
+			assert.Equal(t, "getMyRights", request.Action)
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.ValidateMyCredentials("local", nil, nil)
+	_, err := k.Auth.GetMyRights(nil)
 	assert.NotNil(t, err)
 }
 
-func TestValidateMyCredentials(t *testing.T) {
+func TestGetMyRights(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "validateMyCredentials", request.Action)
-			assert.Equal(t, "local", request.Strategy)
-			assert.Equal(t, "foo", request.Body.(map[string]interface{})["username"])
-			assert.Equal(t, "bar", request.Body.(map[string]interface{})["password"])
+			assert.Equal(t, "getMyRights", request.Action)
 
-			ret, _ := json.Marshal(true)
-			return &types.KuzzleResponse{Result: ret}
+			type hits struct {
+				Hits []*types.UserRights `json:"hits"`
+			}
+
+			m := make(map[string]int)
+			m["websocket"] = 42
+
+			rights := types.UserRights{
+				Controller: "controller",
+				Action:     "action",
+				Index:      "index",
+				Collection: "collection",
+				Value:      "allowed",
+			}
+
+			hitsArray := []*types.UserRights{&rights}
+			toMarshal := hits{hitsArray}
+
+			h, err := json.Marshal(toMarshal)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			return &types.KuzzleResponse{Result: h}
 		},
 	}
-
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.ValidateMyCredentials("local", struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}{"foo", "bar"}, nil)
-	assert.Nil(t, err)
 
-	assert.Equal(t, true, res)
+	res, _ := k.Auth.GetMyRights(nil)
+
+	assert.Equal(t, "controller", res[0].Controller)
+	assert.Equal(t, "action", res[0].Action)
+	assert.Equal(t, "index", res[0].Index)
+	assert.Equal(t, "collection", res[0].Collection)
+	assert.Equal(t, "allowed", res[0].Value)
 }
 
-func ExampleKuzzle_ValidateMyCredentials() {
+func ExampleKuzzle_GetMyRights() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
@@ -63,14 +83,15 @@ func ExampleKuzzle_ValidateMyCredentials() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	res, err := k.ValidateMyCredentials("local", myCredentials, nil)
+	res, err := k.Auth.GetMyRights(nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

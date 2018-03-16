@@ -1,50 +1,51 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestCheckTokenTokenNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.CheckToken("")
-	assert.NotNil(t, err)
-}
-
-func TestCheckTokenQueryError(t *testing.T) {
+func TestUpdateSelfQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: types.NewError("error", 123)}
+			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.CheckToken("token")
+	_, err := k.Auth.UpdateSelf(nil, nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, 123, err.(*types.KuzzleError).Status)
 }
 
-func TestCheckToken(t *testing.T) {
+func TestUpdateSelf(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			tokenValidity := kuzzle.TokenValidity{Valid: true}
-			r, _ := json.Marshal(tokenValidity)
+			request := types.KuzzleRequest{}
+			json.Unmarshal(query, &request)
+			assert.Equal(t, "auth", request.Controller)
+			assert.Equal(t, "updateSelf", request.Action)
 
-			return &types.KuzzleResponse{Result: r}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"_id": "login",
+				"_source": {
+					"username": "foo"
+				}
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
+	res, _ := k.Auth.UpdateSelf(json.RawMessage("{\"foo\":\"bar\"}"), nil)
 
-	res, _ := k.CheckToken("token")
-	assert.Equal(t, true, res.Valid)
+	assert.Equal(t, "login", res.Id)
 }
 
-func ExampleKuzzle_CheckToken() {
+func ExampleKuzzle_UpdateSelf() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
@@ -52,20 +53,20 @@ func ExampleKuzzle_CheckToken() {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
-
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	jwt, err := k.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	res, err := k.CheckToken(jwt)
+	res, _ := k.Auth.UpdateSelf(json.RawMessage("{\"foo\":\"bar\"}"), nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Println(res.Valid, res.ExpiresAt, res.State)
+	fmt.Println(res)
 }
