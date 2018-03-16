@@ -98,7 +98,9 @@ func kuzzle_collection_delete_specifications(c *C.collection, index *C.char, col
 //export kuzzle_collection_get_specifications
 func kuzzle_collection_get_specifications(c *C.collection, index *C.char, col *C.char) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).GetSpecifications(C.GoString(index), C.GoString(col))
-	return goToCStringResult(&res, err)
+	var stringResult string
+	stringResult = string(res)
+	return goToCStringResult(&stringResult, err)
 }
 
 //export kuzzle_collection_search_specifications
