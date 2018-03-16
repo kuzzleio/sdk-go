@@ -6,6 +6,11 @@ namespace kuzzleio {
       kuzzle_new_server(_server, kuzzle->_kuzzle);
   }
 
+  Server::Server(Kuzzle* kuzzle, server *server) {
+      _server = server;
+      kuzzle_new_server(_server, kuzzle->_kuzzle);
+  }
+
   Server::~Server() {
       unregisterServer(_server);
       delete(_server);

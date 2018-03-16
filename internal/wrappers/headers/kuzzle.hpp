@@ -13,6 +13,8 @@
 namespace kuzzleio {
 
   class Auth;
+  class Index;
+  class Server;
 
   class Kuzzle : public KuzzleEventEmitter {
     private:
@@ -21,6 +23,8 @@ namespace kuzzleio {
     public:
       kuzzle *_kuzzle;
       Auth *auth;
+      Index  *index;
+      Server *server;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();

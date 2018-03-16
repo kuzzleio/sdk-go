@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include "kuzzle.hpp"
 #include "auth.hpp"
+#include "index.hpp"
+#include "server.hpp"
 #include <iostream>
 #include <vector>
 
@@ -17,6 +19,8 @@ namespace kuzzleio {
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
+    this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
+    this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
@@ -24,6 +28,8 @@ namespace kuzzleio {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
     delete(this->auth);
+    delete(this->index);
+    delete(this->server);
   }
 
   char* Kuzzle::connect() {
