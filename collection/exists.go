@@ -41,5 +41,5 @@ func (dc *Collection) Exists(index string, collection string) (bool, error) {
 		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
 	}
 
-	return true, nil
+	return exists, nil
 }

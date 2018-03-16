@@ -31,8 +31,8 @@ func (d *Document) Search(index string, collection string, body string, options 
 	}
 
 	if options != nil {
-		query.From = options.From
-		query.Size = options.Size
+		query.From = *options.From
+		query.Size = *options.Size
 		scroll := options.Scroll
 		if scroll != "" {
 			query.Scroll = scroll

@@ -85,6 +85,11 @@ func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
 	return (*C.server)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
 }
 
+//export kuzzle_get_collection_controller
+func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
+	return (*C.collection)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
+}
+
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {

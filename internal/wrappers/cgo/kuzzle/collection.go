@@ -7,6 +7,7 @@ package main
 */
 import "C"
 import (
+	"encoding/json"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/collection"
@@ -64,7 +65,9 @@ func kuzzle_collection_exists(c *C.collection, index *C.char, col *C.char) *C.bo
 //export kuzzle_collection_list
 func kuzzle_collection_list(c *C.collection, index *C.char, clo *C.collection_list_options) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).List(C.GoString(index), cToGoCollectionListOptions(clo))
-	return goToCStringResult(&res, err)
+	var stringResult string
+	json.Unmarshal(res, &stringResult)
+	return goToCStringResult(&stringResult, err)
 }
 
 // Mapping
@@ -72,12 +75,15 @@ func kuzzle_collection_list(c *C.collection, index *C.char, clo *C.collection_li
 //export kuzzle_collection_get_mapping
 func kuzzle_collection_get_mapping(c *C.collection, index *C.char, col *C.char) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).GetMapping(C.GoString(index), C.GoString(col))
-	return goToCStringResult(&res, err)
+	var stringResult string
+	stringResult = string(res)
+	return goToCStringResult(&stringResult, err)
 }
 
 //export kuzzle_collection_update_mapping
 func kuzzle_collection_update_mapping(c *C.collection, index *C.char, col *C.char, body *C.char) *C.void_result {
-	err := (*collection.Collection)(c.instance).UpdateMapping(C.GoString(index), C.GoString(col), C.GoString(body))
+	newBody, _ := json.Marshal(body)
+	err := (*collection.Collection)(c.instance).UpdateMapping(C.GoString(index), C.GoString(col), newBody)
 	return goToCVoidResult(err)
 }
 
@@ -92,7 +98,9 @@ func kuzzle_collection_delete_specifications(c *C.collection, index *C.char, col
 //export kuzzle_collection_get_specifications
 func kuzzle_collection_get_specifications(c *C.collection, index *C.char, col *C.char) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).GetSpecifications(C.GoString(index), C.GoString(col))
-	return goToCStringResult(&res, err)
+	var stringResult string
+	stringResult = string(res)
+	return goToCStringResult(&stringResult, err)
 }
 
 //export kuzzle_collection_search_specifications
@@ -103,12 +111,16 @@ func kuzzle_collection_search_specifications(c *C.collection, searchOptions *C.s
 
 //export kuzzle_collection_update_specifications
 func kuzzle_collection_update_specifications(c *C.collection, index *C.char, col *C.char, body *C.char) *C.string_result {
-	res, err := (*collection.Collection)(c.instance).UpdateSpecifications(C.GoString(index), C.GoString(col), C.GoString(body))
-	return goToCStringResult(&res, err)
+	newBody, _ := json.Marshal(body)
+	res, err := (*collection.Collection)(c.instance).UpdateSpecifications(C.GoString(index), C.GoString(col), newBody)
+	var stringResult string
+	stringResult = string(res)
+	return goToCStringResult(&stringResult, err)
 }
 
 //export kuzzle_collection_validate_specifications
-func kuzzle_collection_validate_specifications(c *C.collection, body *C.char) *C.void_result {
-	err := (*collection.Collection)(c.instance).ValidateSpecifications(C.GoString(body))
-	return goToCVoidResult(err)
+func kuzzle_collection_validate_specifications(c *C.collection, body *C.char) *C.bool_result {
+	newBody, _ := json.Marshal(body)
+	res, err := (*collection.Collection)(c.instance).ValidateSpecifications(newBody)
+	return goToCBoolResult(res, err)
 }

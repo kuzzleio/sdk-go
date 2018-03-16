@@ -51,18 +51,20 @@ func TestGetSpecifications(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			res := types.KuzzleResponse{Result: []byte(`{
-				"collection": "collection",
-				"index": "index",
-				"validation": {
-					"fields": {
-						"myField": {
-							"defaultValue": 42,
-							"mandatory": true,
-							"type": "integer"
-						}
-					},
-					"strict": true
+			res := types.KuzzleResponse{Result: []byte(`
+				{
+					"collection": "collection",
+					"index": "index",
+					"validation": {
+						"fields": {
+							"myField": {
+								"defaultValue": 42,
+								"mandatory": true,
+								"type": "integer"
+							}
+						},
+						"strict": true
+					}
 				}`),
 			}
 

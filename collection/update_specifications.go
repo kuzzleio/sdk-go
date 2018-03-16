@@ -1,21 +1,23 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(index string, collection string, body string) (string, error) {
+func (dc *Collection) UpdateSpecifications(index string, collection string, body json.RawMessage) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Collection.UpdateSpecifications: index required", 400)
+		return nil, types.NewError("Collection.UpdateSpecifications: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Collection.UpdateSpecifications: collection required", 400)
+		return nil, types.NewError("Collection.UpdateSpecifications: collection required", 400)
 	}
 
-	if body == "" {
-		return "", types.NewError("Collection.UpdateSpecifications: body required", 400)
+	if body == nil {
+		return nil, types.NewError("Collection.UpdateSpecifications: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -32,11 +34,8 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, body
 	res := <-ch
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var result string
-	result = string(res.Result)
-
-	return result, nil
+	return res.Result, nil
 }

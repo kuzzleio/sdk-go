@@ -1,13 +1,15 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ListCollections retrieves the list of known data collections contained in a specified index.
-func (dc *Collection) List(index string, options *ListOptions) (string, error) {
+// List retrieves the list of known data collections contained in a specified index.
+func (dc *Collection) List(index string, options *ListOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Collection.List: index required", 400)
+		return nil, types.NewError("Collection.List: index required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -20,19 +22,16 @@ func (dc *Collection) List(index string, options *ListOptions) (string, error) {
 	}
 
 	queryOpts := types.NewQueryOptions()
-	queryOpts.SetFrom(options.From)
-	queryOpts.SetSize(options.Size)
+	queryOpts.SetFrom(*options.From)
+	queryOpts.SetSize(*options.Size)
 
 	go dc.Kuzzle.Query(query, queryOpts, result)
 
 	res := <-result
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var collectionList string
-	collectionList = string(res.Result)
-
-	return collectionList, nil
+	return res.Result, nil
 }

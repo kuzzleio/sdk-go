@@ -1,30 +1,24 @@
 package collection
 
 import (
-	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
+//Collection controller
 type Collection struct {
-	Kuzzle *kuzzle.Kuzzle
+	Kuzzle types.IKuzzle
 }
 
 // NewCollection instanciates a new collection
-func NewCollection(kuzzle *kuzzle.Kuzzle) *Collection {
+func NewCollection(kuzzle types.IKuzzle) *Collection {
 	return &Collection{
 		Kuzzle: kuzzle,
 	}
 }
 
+//ListOptions collection list options
 type ListOptions struct {
 	Type string
-	From int
-	Size int
-}
-
-func NewListOptions(t string, from int, size int) *ListOptions {
-	return &ListOptions{
-		Type: t,
-		From: from,
-		Size: size,
-	}
+	From *int
+	Size *int
 }

@@ -11,6 +11,7 @@
 #include <map>
 
 namespace kuzzleio {
+  class Collection;
   class Document;
   class Auth;
   class Index;
@@ -22,6 +23,7 @@ namespace kuzzleio {
 
     public:
       kuzzle *_kuzzle;
+      Collection *collection;
       Document *document;
       Auth *auth;
       Index  *index;

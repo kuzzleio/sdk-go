@@ -1,17 +1,19 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc *Collection) GetSpecifications(index string, collection string) (string, error) {
+func (dc *Collection) GetSpecifications(index string, collection string) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Collection.GetSpecifications: index required", 400)
+		return nil, types.NewError("Collection.GetSpecifications: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Collection.GetSpecifications: collection required", 400)
+		return nil, types.NewError("Collection.GetSpecifications: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -27,11 +29,8 @@ func (dc *Collection) GetSpecifications(index string, collection string) (string
 	res := <-ch
 
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var specifications string
-	specifications = string(res.Result)
-
-	return specifications, nil
+	return res.Result, nil
 }

@@ -1,11 +1,13 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // UpdateMapping updates the current mapping of this collection.
-func (dc *Collection) UpdateMapping(index string, collection string, body string) error {
+func (dc *Collection) UpdateMapping(index string, collection string, body json.RawMessage) error {
 	if index == "" {
 		return types.NewError("Collection.UpdateMapping: index required", 400)
 	}
@@ -14,7 +16,7 @@ func (dc *Collection) UpdateMapping(index string, collection string, body string
 		return types.NewError("Collection.UpdateMapping: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return types.NewError("Collection.UpdateMapping: body required", 400)
 	}
 

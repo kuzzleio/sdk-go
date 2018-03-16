@@ -1,6 +1,7 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/kuzzleio/sdk-go/collection"
@@ -16,7 +17,7 @@ import (
 func TestValidateSpecificationsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("")
+	_, err := nc.ValidateSpecifications(nil)
 	assert.NotNil(t, err)
 }
 
@@ -29,7 +30,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	_, err := nc.ValidateSpecifications(json.RawMessage("body"))
 	assert.NotNil(t, err)
 }
 
@@ -47,8 +48,10 @@ func TestValidateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	res, err := nc.ValidateSpecifications(json.RawMessage("body"))
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, true, res)
 }
 
 func ExampleCollection_ValidateSpecifications() {
@@ -56,10 +59,12 @@ func ExampleCollection_ValidateSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.ValidateSpecifications("body")
+	res, err := nc.ValidateSpecifications(json.RawMessage("body"))
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(res)
 }

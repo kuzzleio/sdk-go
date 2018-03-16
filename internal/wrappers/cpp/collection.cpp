@@ -7,6 +7,11 @@ namespace kuzzleio {
         kuzzle_new_collection(_collection, kuzzle->_kuzzle);
     }
 
+    Collection::Collection(Kuzzle* kuzzle, collection *collection) {
+        _collection = collection;
+        kuzzle_new_collection(_collection, kuzzle->_kuzzle);
+    }
+
     Collection::~Collection() {
         unregisterCollection(_collection);
         kuzzle_free_collection(_collection);
@@ -98,12 +103,15 @@ namespace kuzzleio {
         return ret;
     }
 
-    void Collection::validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()));
+    bool Collection::validateSpecifications(const std::string& body) Kuz_Throw_KuzzleException {
+        bool_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()));
         if (r->error != NULL)
             throwExceptionFromStatus(r);
 
-        kuzzle_free_void_result(r);
+        bool ret = r->result;
+        kuzzle_free_bool_result(r);
+
+        return ret;
     }
 
     void Collection::deleteSpecifications(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException {

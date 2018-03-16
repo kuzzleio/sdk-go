@@ -14,24 +14,30 @@ import (
 func TestSearchIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := types.NewSearchOptions("all", 2, 4, "1m")
-	_, err := d.Search("", "collection", "body", opts)
+	from := 2
+	size := 4
+	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
+	_, err := d.Search("", "collection", "body", &opts)
 	assert.NotNil(t, err)
 }
 
 func TestSearchCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := types.NewSearchOptions("all", 2, 4, "1m")
-	_, err := d.Search("index", "", "body", opts)
+	from := 2
+	size := 4
+	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
+	_, err := d.Search("index", "", "body", &opts)
 	assert.NotNil(t, err)
 }
 
 func TestSearchBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := types.NewSearchOptions("all", 2, 4, "1m")
-	_, err := d.Search("index", "collection", "", opts)
+	from := 2
+	size := 4
+	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
+	_, err := d.Search("index", "collection", "", &opts)
 	assert.NotNil(t, err)
 }
 
@@ -43,8 +49,10 @@ func TestSearchDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := types.NewSearchOptions("all", 2, 4, "1m")
-	_, err := d.Search("index", "collection", "body", opts)
+	from := 2
+	size := 4
+	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
+	_, err := d.Search("index", "collection", "body", &opts)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -70,7 +78,9 @@ func TestSearchDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := types.NewSearchOptions("all", 2, 4, "1m")
-	_, err := d.Search("index", "collection", "body", opts)
+	from := 2
+	size := 4
+	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
+	_, err := d.Search("index", "collection", "body", &opts)
 	assert.Nil(t, err)
 }

@@ -1,6 +1,7 @@
 #include <exception>
 #include <stdexcept>
 #include "kuzzle.hpp"
+#include "collection.hpp"
 #include "document.hpp"
 #include "auth.hpp"
 #include "index.hpp"
@@ -23,6 +24,7 @@ namespace kuzzleio {
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
+    this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
@@ -33,6 +35,7 @@ namespace kuzzleio {
     delete(this->auth);
     delete(this->index);
     delete(this->server);
+    delete(this->collection);
   }
 
   char* Kuzzle::connect() {
