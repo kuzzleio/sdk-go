@@ -1,12 +1,13 @@
-package kuzzle
+package auth
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // GetMyRights gets the rights array for the currently logged user.
-func (k *Kuzzle) GetMyRights(options types.QueryOptions) ([]*types.Rights, error) {
+func (a *Auth) GetMyRights(options types.QueryOptions) ([]*types.UserRights, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -15,10 +16,10 @@ func (k *Kuzzle) GetMyRights(options types.QueryOptions) ([]*types.Rights, error
 	}
 
 	type rights struct {
-		Hits []*types.Rights `json:"hits"`
+		Hits []*types.UserRights `json:"hits"`
 	}
 
-	go k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 

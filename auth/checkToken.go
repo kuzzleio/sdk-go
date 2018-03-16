@@ -1,7 +1,8 @@
-package kuzzle
+package auth
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -12,7 +13,7 @@ type TokenValidity struct {
 }
 
 // CheckToken checks the validity of a JSON Web Token.
-func (k *Kuzzle) CheckToken(token string) (*TokenValidity, error) {
+func (a *Auth) CheckToken(token string) (*TokenValidity, error) {
 	if token == "" {
 		return nil, types.NewError("Kuzzle.CheckToken: token required", 400)
 	}
@@ -28,7 +29,7 @@ func (k *Kuzzle) CheckToken(token string) (*TokenValidity, error) {
 		Action:     "checkToken",
 		Body:       &body{token},
 	}
-	go k.Query(query, nil, result)
+	go a.kuzzle.Query(query, nil, result)
 
 	res := <-result
 

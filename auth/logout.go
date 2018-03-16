@@ -1,18 +1,18 @@
-package kuzzle
+package auth
 
 import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Logout logs the user out.
-func (k *Kuzzle) Logout() error {
+func (a *Auth) Logout() error {
 	q := &types.KuzzleRequest{
 		Controller: "auth",
 		Action:     "logout",
 	}
 	result := make(chan *types.KuzzleResponse)
 
-	go k.Query(q, nil, result)
+	go a.kuzzle.Query(q, nil, result)
 
 	res := <-result
 
@@ -20,7 +20,7 @@ func (k *Kuzzle) Logout() error {
 		return res.Error
 	}
 
-	k.jwt = ""
+	a.kuzzle.SetJwt("")
 
 	return nil
 }

@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kuzzleio/sdk-go/index"
-
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
+	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/server"
@@ -16,10 +16,6 @@ import (
 )
 
 const version = "1.0.0"
-
-type IKuzzle interface {
-	Query(*types.KuzzleRequest, chan<- *types.KuzzleResponse, types.QueryOptions)
-}
 
 type Kuzzle struct {
 	socket connection.Connection
@@ -36,6 +32,7 @@ type Kuzzle struct {
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
+	Auth          *auth.Auth
 	Server        *server.Server
 	Index         *index.Index
 }
@@ -59,6 +56,11 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.RequestHistory = k.socket.RequestHistory()
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
+	k.Auth = auth.NewAuth(k)
+
+	k.RequestHistory = k.socket.RequestHistory()
+
+	k.defaultIndex = options.DefaultIndex()
 	k.Server = server.NewServer(k)
 	k.Index = index.NewIndex(k)
 
@@ -83,7 +85,7 @@ func (k *Kuzzle) Connect() error {
 		if wasConnected {
 			if k.jwt != "" {
 				go func() {
-					res, err := k.CheckToken(k.jwt)
+					res, err := k.Auth.CheckToken(k.jwt)
 
 					if err != nil {
 						k.jwt = ""
@@ -250,4 +252,8 @@ func (k *Kuzzle) Volatile() types.VolatileData {
 
 func (k *Kuzzle) SetVolatile(v types.VolatileData) {
 	k.volatile = v
+}
+
+func (k *Kuzzle) EmitEvent(e int, arg interface{}) {
+	k.socket.EmitEvent(e, arg)
 }

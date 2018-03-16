@@ -65,6 +65,11 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 	k.loader = nil
 }
 
+//export kuzzle_get_auth_controller
+func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
+	return (*C.auth)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
+}
+
 //export kuzzle_get_index_controller
 func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
 	return (*C.kuzzle_index)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
