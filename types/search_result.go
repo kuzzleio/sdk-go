@@ -41,9 +41,6 @@ func NewSearchResult(collection json.RawMessage, filters *SearchFilters, options
 	if options != nil {
 		sr.Options.SetFrom(options.From())
 		sr.Options.SetSize(options.Size())
-	} else {
-		sr.Options.SetFrom(0)
-		sr.Options.SetSize(10)
 	}
 
 	return sr
