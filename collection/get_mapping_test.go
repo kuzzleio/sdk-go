@@ -15,14 +15,14 @@ import (
 func TestGetMappingIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("", "collection")
+	_, err := nc.GetMapping("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestGetMappingCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("index", "")
+	_, err := nc.GetMapping("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,7 +35,7 @@ func TestGetMappingError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("index", "collection")
+	_, err := nc.GetMapping("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -75,7 +75,7 @@ func TestGetMapping(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetMapping("index", "collection")
+	res, err := nc.GetMapping("index", "collection", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }
@@ -85,7 +85,7 @@ func ExampleCollection_GetMapping() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetMapping("index", "collection")
+	res, err := nc.GetMapping("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

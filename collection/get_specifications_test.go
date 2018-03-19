@@ -15,14 +15,14 @@ import (
 func TestGetSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetSpecifications("", "collection")
+	_, err := nc.GetSpecifications("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestGetSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetSpecifications("index", "")
+	_, err := nc.GetSpecifications("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -35,7 +35,7 @@ func TestGetSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.GetSpecifications("index", "collection")
+	_, err := nc.GetSpecifications("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -75,7 +75,7 @@ func TestGetSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetSpecifications("index", "collection")
+	res, err := nc.GetSpecifications("index", "collection", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }
@@ -85,7 +85,7 @@ func ExampleCollection_GetSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetSpecifications("index", "collection")
+	res, err := nc.GetSpecifications("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -21,10 +21,8 @@ func TestSearchSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	so := types.SearchOptions{Type: "all", Scroll: "1m"}
-	so.SetFrom(0)
-	so.SetSize(4)
-	_, err := nc.SearchSpecifications(&so)
+
+	_, err := nc.SearchSpecifications(nil)
 	assert.NotNil(t, err)
 }
 
@@ -66,10 +64,8 @@ func TestSearchSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	so := types.SearchOptions{Type: "all", Scroll: "1m"}
-	so.SetFrom(0)
-	so.SetSize(4)
-	res, err := nc.SearchSpecifications(&so)
+
+	res, err := nc.SearchSpecifications(nil)
 	assert.Equal(t, 1, res.Total)
 	assert.Nil(t, err)
 }
@@ -79,10 +75,8 @@ func ExampleCollection_SearchSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	so := types.SearchOptions{Type: "all", Scroll: "1m"}
-	so.SetFrom(0)
-	so.SetSize(4)
-	res, err := nc.SearchSpecifications(&so)
+
+	res, err := nc.SearchSpecifications(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

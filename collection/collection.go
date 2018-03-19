@@ -15,10 +15,3 @@ func NewCollection(kuzzle types.IKuzzle) *Collection {
 		Kuzzle: kuzzle,
 	}
 }
-
-//ListOptions collection list options
-type ListOptions struct {
-	Type string
-	From *int
-	Size *int
-}

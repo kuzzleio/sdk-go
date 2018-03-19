@@ -94,16 +94,6 @@ typedef struct {
 } kuzzle;
 
 typedef struct {
-    enum {
-      ALL,
-      STORED,
-      REALTIME
-    } type_;
-    int from;
-    int size;
-} collection_list_options;
-
-typedef struct {
     char *type_;
     int  from;
     int  size;

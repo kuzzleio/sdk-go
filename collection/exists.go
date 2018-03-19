@@ -8,7 +8,7 @@ import (
 )
 
 // Exists check if a collection exists.
-func (dc *Collection) Exists(index string, collection string) (bool, error) {
+func (dc *Collection) Exists(index string, collection string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Collection.Exists: index required", 400)
 	}
@@ -25,7 +25,7 @@ func (dc *Collection) Exists(index string, collection string) (bool, error) {
 		Controller: "collection",
 		Action:     "exists",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

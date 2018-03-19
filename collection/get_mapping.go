@@ -7,7 +7,7 @@ import (
 )
 
 // GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(index string, collection string) (json.RawMessage, error) {
+func (dc *Collection) GetMapping(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Collection.GetMapping: index required", 400)
 	}
@@ -24,7 +24,7 @@ func (dc *Collection) GetMapping(index string, collection string) (json.RawMessa
 		Controller: "collection",
 		Action:     "getMapping",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

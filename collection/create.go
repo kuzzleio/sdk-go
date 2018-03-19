@@ -5,7 +5,7 @@ import (
 )
 
 // Create creates a new empty data collection
-func (dc *Collection) Create(index string, collection string) error {
+func (dc *Collection) Create(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.Create: index required", 400)
 	}
@@ -22,7 +22,7 @@ func (dc *Collection) Create(index string, collection string) error {
 		Controller: "collection",
 		Action:     "create",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

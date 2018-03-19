@@ -23,10 +23,3 @@ const (
 	USERS_OUT  = "out"
 	USERS_NONE = "none"
 )
-
-// user notifications constants
-const (
-	TYPE_ALL      = "all"
-	TYPE_STORED   = "stored"
-	TYPE_REALTIME = "realtime"
-)
