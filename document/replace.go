@@ -2,13 +2,12 @@ package document
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // ReplaceDocument replaces a document in Kuzzle.
-func (d *Document) Replace(index string, collection string, _id string, body string, options *DocumentOptions) (string, error) {
+func (d *Document) Replace(index string, collection string, _id string, body string, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Replace: index required", 400)
 	}
@@ -36,13 +35,7 @@ func (d *Document) Replace(index string, collection string, _id string, body str
 		Id:         _id,
 	}
 
-	queryOpts := types.NewQueryOptions()
-
-	if options != nil {
-		queryOpts.SetRefresh(strconv.FormatBool(options.WaitFor))
-	}
-
-	go d.Kuzzle.Query(query, queryOpts, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

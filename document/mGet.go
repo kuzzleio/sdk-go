@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (d *Document) MGet(index string, collection string, ids []string, includeTrash bool) (string, error) {
+func (d *Document) MGet(index string, collection string, ids []string, includeTrash bool, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.MGet: index required", 400)
 	}
@@ -34,7 +34,7 @@ func (d *Document) MGet(index string, collection string, ids []string, includeTr
 		Body:       &body{Ids: ids, IncludeTrash: includeTrash},
 	}
 
-	go d.Kuzzle.Query(query, nil, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

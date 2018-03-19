@@ -14,32 +14,32 @@ import (
 func TestReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("", "collection", "id1", "body", opts)
+
+	_, err := d.Replace("", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("index", "", "id1", "body", opts)
+
+	_, err := d.Replace("index", "", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestReplaceIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("index", "collection", "", "body", opts)
+
+	_, err := d.Replace("index", "collection", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestReplaceBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("index", "collection", "id1", "", opts)
+
+	_, err := d.Replace("index", "collection", "id1", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -51,8 +51,8 @@ func TestReplaceDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("index", "collection", "id1", "body", opts)
+
+	_, err := d.Replace("index", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -82,7 +82,7 @@ func TestReplaceDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Replace("index", "collection", id, "body", opts)
+
+	_, err := d.Replace("index", "collection", id, "body", nil)
 	assert.Nil(t, err)
 }

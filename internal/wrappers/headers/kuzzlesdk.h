@@ -253,11 +253,6 @@ typedef struct {
 } document;
 
 typedef struct {
-    char *volatile_;
-    bool waitFor;
-} document_options;
-
-typedef struct {
     char *id;
     meta *meta;
     json_object *content;

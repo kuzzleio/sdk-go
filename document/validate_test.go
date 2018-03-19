@@ -14,21 +14,21 @@ import (
 func TestValidateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("", "collection", "body")
+	_, err := d.Validate("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestValidateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("index", "", "body")
+	_, err := d.Validate("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestValidateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("index", "collection", "")
+	_, err := d.Validate("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -40,7 +40,7 @@ func TestValidateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("index", "collection", "body")
+	_, err := d.Validate("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -62,6 +62,6 @@ func TestValidateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("index", "collection", "body")
+	_, err := d.Validate("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }

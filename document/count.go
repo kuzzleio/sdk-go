@@ -7,7 +7,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (d *Document) Count(index string, collection string, body string) (int, error) {
+func (d *Document) Count(index string, collection string, body string, options types.QueryOptions) (int, error) {
 	if index == "" {
 		return 0, types.NewError("Document.Count: index required", 400)
 	}
@@ -29,7 +29,7 @@ func (d *Document) Count(index string, collection string, body string) (int, err
 		Action:     "count",
 		Body:       body,
 	}
-	go d.Kuzzle.Query(query, nil, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

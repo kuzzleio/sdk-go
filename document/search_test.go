@@ -14,30 +14,24 @@ import (
 func TestSearchIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	from := 2
-	size := 4
-	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
-	_, err := d.Search("", "collection", "body", &opts)
+
+	_, err := d.Search("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestSearchCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	from := 2
-	size := 4
-	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
-	_, err := d.Search("index", "", "body", &opts)
+
+	_, err := d.Search("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestSearchBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	from := 2
-	size := 4
-	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
-	_, err := d.Search("index", "collection", "", &opts)
+
+	_, err := d.Search("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -49,10 +43,8 @@ func TestSearchDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	from := 2
-	size := 4
-	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
-	_, err := d.Search("index", "collection", "body", &opts)
+
+	_, err := d.Search("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -78,9 +70,7 @@ func TestSearchDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	from := 2
-	size := 4
-	opts := types.SearchOptions{Type: "all", From: &from, Size: &size, Scroll: "1m"}
-	_, err := d.Search("index", "collection", "body", &opts)
+
+	_, err := d.Search("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }

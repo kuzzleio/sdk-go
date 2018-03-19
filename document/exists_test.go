@@ -14,21 +14,21 @@ import (
 func TestExistsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Exists("", "collection", "id1")
+	_, err := d.Exists("", "collection", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestExistsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Exists("index", "", "id1")
+	_, err := d.Exists("index", "", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestExistsIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Exists("index", "collection", "")
+	_, err := d.Exists("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -40,7 +40,7 @@ func TestExistsDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Exists("index", "collection", "id1")
+	_, err := d.Exists("index", "collection", "id1", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -64,7 +64,7 @@ func TestExistsDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	res, err := d.Exists("index", "collection", id)
+	res, err := d.Exists("index", "collection", id, nil)
 	assert.Nil(t, err)
 	assert.Equal(t, true, res)
 }

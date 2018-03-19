@@ -14,32 +14,28 @@ import (
 func TestCreateOrReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("", "collection", "id1", "body", opts)
+	_, err := d.CreateOrReplace("", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("index", "", "id1", "body", opts)
+	_, err := d.CreateOrReplace("index", "", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("index", "collection", "", "body", opts)
+	_, err := d.CreateOrReplace("index", "collection", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("index", "collection", "id1", "", opts)
+	_, err := d.CreateOrReplace("index", "collection", "id1", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -51,8 +47,7 @@ func TestCreateOrReplaceDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("index", "collection", "id1", "body", opts)
+	_, err := d.CreateOrReplace("index", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -81,7 +76,6 @@ func TestCreateOrReplaceDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.CreateOrReplace("index", "collection", id, "body", opts)
+	_, err := d.CreateOrReplace("index", "collection", id, "body", nil)
 	assert.Nil(t, err)
 }

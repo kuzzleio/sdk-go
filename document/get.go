@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (d *Document) Get(index string, collection string, _id string) (string, error) {
+func (d *Document) Get(index string, collection string, _id string, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Get: index required", 400)
 	}
@@ -29,7 +29,7 @@ func (d *Document) Get(index string, collection string, _id string) (string, err
 		Id:         _id,
 	}
 
-	go d.Kuzzle.Query(query, nil, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

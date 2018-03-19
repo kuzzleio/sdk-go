@@ -14,24 +14,21 @@ import (
 func TestDeleteIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Delete("", "collection", "id1", opts)
+	_, err := d.Delete("", "collection", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestDeleteCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Delete("index", "", "id1", opts)
+	_, err := d.Delete("index", "", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestDeleteIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Delete("index", "collection", "", opts)
+	_, err := d.Delete("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,8 +40,7 @@ func TestDeleteDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Delete("index", "collection", "id1", opts)
+	_, err := d.Delete("index", "collection", "id1", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -72,7 +68,6 @@ func TestDeleteDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Delete("index", "collection", id, opts)
+	_, err := d.Delete("index", "collection", id, nil)
 	assert.Nil(t, err)
 }

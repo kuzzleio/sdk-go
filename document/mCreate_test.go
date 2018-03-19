@@ -14,24 +14,24 @@ import (
 func TestMCreateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MCreate("", "collection", "body", opts)
+
+	_, err := d.MCreate("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMCreateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MCreate("index", "", "body", opts)
+
+	_, err := d.MCreate("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMCreateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MCreate("index", "collection", "", opts)
+
+	_, err := d.MCreate("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,8 +43,8 @@ func TestMCreateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MCreate("index", "collection", "body", opts)
+
+	_, err := d.MCreate("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -95,7 +95,7 @@ func TestMCreateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MCreate("index", "collection", "body", opts)
+
+	_, err := d.MCreate("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }

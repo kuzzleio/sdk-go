@@ -7,7 +7,7 @@ import (
 )
 
 // Search documents in the given Collection, using provided filters and option.
-func (d *Document) Search(index string, collection string, body string, options *types.SearchOptions) (*types.SearchResult, error) {
+func (d *Document) Search(index string, collection string, body string, options types.QueryOptions) (*types.SearchResult, error) {
 	if index == "" {
 		return nil, types.NewError("Document.Search: index required", 400)
 	}
@@ -30,16 +30,7 @@ func (d *Document) Search(index string, collection string, body string, options 
 		Body:       body,
 	}
 
-	if options != nil {
-		query.From = *options.From
-		query.Size = *options.Size
-		scroll := options.Scroll
-		if scroll != "" {
-			query.Scroll = scroll
-		}
-	}
-
-	go d.Kuzzle.Query(query, nil, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

@@ -14,24 +14,24 @@ import (
 func TestMUpdateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MUpdate("", "collection", "body", opts)
+
+	_, err := d.MUpdate("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMUpdateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MUpdate("index", "", "body", opts)
+
+	_, err := d.MUpdate("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMUpdateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MUpdate("index", "collection", "", opts)
+
+	_, err := d.MUpdate("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,8 +43,8 @@ func TestMUpdateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MUpdate("index", "collection", "body", opts)
+
+	_, err := d.MUpdate("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -96,7 +96,7 @@ func TestMUpdateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MUpdate("index", "collection", "body", opts)
+
+	_, err := d.MUpdate("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }

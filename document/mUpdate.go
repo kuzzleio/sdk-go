@@ -2,13 +2,12 @@ package document
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // MUpdateDocument mUpdates a document in Kuzzle.
-func (d *Document) MUpdate(index string, collection string, body string, options *DocumentOptions) (string, error) {
+func (d *Document) MUpdate(index string, collection string, body string, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.MUpdate: index required", 400)
 	}
@@ -31,13 +30,7 @@ func (d *Document) MUpdate(index string, collection string, body string, options
 		Body:       body,
 	}
 
-	queryOpts := types.NewQueryOptions()
-
-	if options != nil {
-		queryOpts.SetRefresh(strconv.FormatBool(options.WaitFor))
-	}
-
-	go d.Kuzzle.Query(query, queryOpts, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

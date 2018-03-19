@@ -14,29 +14,29 @@ import (
 func TestMDeleteIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
+
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MDelete("", "collection", ids, opts)
+	_, err := d.MDelete("", "collection", ids, nil)
 	assert.NotNil(t, err)
 }
 
 func TestMDeleteCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
+
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "", ids, opts)
+	_, err := d.MDelete("index", "", ids, nil)
 	assert.NotNil(t, err)
 }
 
 func TestMDeleteIdsNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
+
 	var ids []string
-	_, err := d.MDelete("index", "collection", ids, opts)
+	_, err := d.MDelete("index", "collection", ids, nil)
 	assert.NotNil(t, err)
 }
 
@@ -48,10 +48,10 @@ func TestMDeleteDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
+
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "collection", ids, opts)
+	_, err := d.MDelete("index", "collection", ids, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -77,9 +77,9 @@ func TestMDeleteDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
+
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "collection", ids, opts)
+	_, err := d.MDelete("index", "collection", ids, nil)
 	assert.Nil(t, err)
 }

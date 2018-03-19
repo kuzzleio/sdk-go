@@ -14,24 +14,24 @@ import (
 func TestMReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MReplace("", "collection", "body", opts)
+
+	_, err := d.MReplace("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MReplace("index", "", "body", opts)
+
+	_, err := d.MReplace("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestMReplaceBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MReplace("index", "collection", "", opts)
+
+	_, err := d.MReplace("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,8 +43,8 @@ func TestMReplaceDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MReplace("index", "collection", "body", opts)
+
+	_, err := d.MReplace("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -96,7 +96,7 @@ func TestMReplaceDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.MReplace("index", "collection", "body", opts)
+
+	_, err := d.MReplace("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }

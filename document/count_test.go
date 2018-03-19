@@ -14,21 +14,21 @@ import (
 func TestCountIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("", "collection", "body")
+	_, err := d.Count("", "collection", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestCountCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "", "body")
+	_, err := d.Count("index", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestCountBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "collection", "")
+	_, err := d.Count("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -40,7 +40,7 @@ func TestCountDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "collection", "body")
+	_, err := d.Count("index", "collection", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -61,7 +61,7 @@ func TestCountDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	res, err := d.Count("index", "collection", "body")
+	res, err := d.Count("index", "collection", "body", nil)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, res)
 }

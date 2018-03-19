@@ -6,7 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (d *Document) Validate(index string, collection string, body string) (bool, error) {
+// Validate validates a document
+func (d *Document) Validate(index string, collection string, body string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Document.Validate: index required", 400)
 	}
@@ -29,7 +30,7 @@ func (d *Document) Validate(index string, collection string, body string) (bool,
 		Body:       body,
 	}
 
-	go d.Kuzzle.Query(query, nil, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

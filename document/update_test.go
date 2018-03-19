@@ -14,32 +14,32 @@ import (
 func TestUpdateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("", "collection", "id1", "body", opts)
+
+	_, err := d.Update("", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("index", "", "id1", "body", opts)
+
+	_, err := d.Update("index", "", "id1", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("index", "collection", "", "body", opts)
+
+	_, err := d.Update("index", "collection", "", "body", nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("index", "collection", "id1", "", opts)
+
+	_, err := d.Update("index", "collection", "id1", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -51,8 +51,8 @@ func TestUpdateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("index", "collection", "id1", "body", opts)
+
+	_, err := d.Update("index", "collection", "id1", "body", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -82,7 +82,7 @@ func TestUpdateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	opts := &document.DocumentOptions{WaitFor: true, Volatile: ""}
-	_, err := d.Update("index", "collection", id, "body", opts)
+
+	_, err := d.Update("index", "collection", id, "body", nil)
 	assert.Nil(t, err)
 }

@@ -14,21 +14,21 @@ import (
 func TestGetIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Get("", "collection", "id1")
+	_, err := d.Get("", "collection", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestGetCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Get("index", "", "id1")
+	_, err := d.Get("index", "", "id1", nil)
 	assert.NotNil(t, err)
 }
 
 func TestGetIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Get("index", "collection", "")
+	_, err := d.Get("index", "collection", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -40,7 +40,7 @@ func TestGetDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Get("index", "collection", "id1")
+	_, err := d.Get("index", "collection", "id1", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -80,6 +80,6 @@ func TestGetDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Get("index", "collection", id)
+	_, err := d.Get("index", "collection", id, nil)
 	assert.Nil(t, err)
 }

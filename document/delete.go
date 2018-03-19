@@ -2,12 +2,11 @@ package document
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (d *Document) Delete(index string, collection string, _id string, options *DocumentOptions) (string, error) {
+func (d *Document) Delete(index string, collection string, _id string, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Delete: index required", 400)
 	}
@@ -30,13 +29,7 @@ func (d *Document) Delete(index string, collection string, _id string, options *
 		Id:         _id,
 	}
 
-	queryOpts := types.NewQueryOptions()
-
-	if options != nil {
-		queryOpts.SetRefresh(strconv.FormatBool(options.WaitFor))
-	}
-
-	go d.Kuzzle.Query(query, queryOpts, ch)
+	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
