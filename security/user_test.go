@@ -294,7 +294,7 @@ func TestUser_CreateWithCredentials(t *testing.T) {
 		Content:    map[string]interface{}{"function": "Jedi"},
 		ProfileIds: []string{"profile1", "profile2"},
 	})
-	_, err = user.CreateWithCredentials(types.Credentials{"strategy": "myCredentials"}, nil)
+	_, err = user.CreateWithCredentials(types.Credentials("{\"strategy\": \"myCredentials\"}"), nil)
 
 	assert.Nil(t, err)
 }

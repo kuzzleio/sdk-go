@@ -102,7 +102,12 @@ typedef struct {
 
 typedef struct {
   void *instance;
-  kuzzle* kuzzle;
+  kuzzle *kuzzle;
+} auth;
+
+typedef struct {
+  void *instance;
+  kuzzle *kuzzle;
 } kuzzle_index;
 
 typedef struct {
@@ -319,7 +324,7 @@ typedef struct {
 } user_right;
 
 typedef struct user_rights_result {
-    user_right *user_rights;
+    user_right *result;
     size_t user_rights_length;
     int status;
     char *error;
@@ -327,7 +332,7 @@ typedef struct user_rights_result {
 } user_rights_result;
 
 typedef struct user_result {
-    user *user;
+    user *result;
     int status;
     char *error;
     char *stack;

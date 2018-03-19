@@ -1,13 +1,13 @@
-package kuzzle
+package auth
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
-	"reflect"
 )
 
 // CreateMyCredentials create credentials of the specified strategy for the current user.
-func (k *Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, options types.QueryOptions) (types.Credentials, error) {
+func (a *Auth) CreateMyCredentials(strategy string, credentials json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if strategy == "" {
 		return nil, types.NewError("Kuzzle.CreateMyCredentials: strategy is required", 400)
 	}
@@ -19,7 +19,7 @@ func (k *Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, o
 		Body:       credentials,
 		Strategy:   strategy,
 	}
-	go k.Query(query, options, result)
+	go a.kuzzle.Query(query, options, result)
 
 	res := <-result
 
@@ -27,8 +27,5 @@ func (k *Kuzzle) CreateMyCredentials(strategy string, credentials interface{}, o
 		return nil, res.Error
 	}
 
-	ref := reflect.New(reflect.TypeOf(credentials)).Elem().Interface()
-	json.Unmarshal(res.Result, &ref)
-
-	return ref.(map[string]interface{}), nil
+	return res.Result, nil
 }

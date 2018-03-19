@@ -1,53 +1,56 @@
-package kuzzle_test
+package auth_test
 
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func TestLogoutError(t *testing.T) {
+func TestGetCurrentUserQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
-
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "logout", request.Action)
+			assert.Equal(t, "getCurrentUser", request.Action)
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
-
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	error := k.Logout()
-	assert.NotNil(t, error)
+	auth := auth.NewAuth(k)
+	_, err := auth.GetCurrentUser()
+	assert.NotNil(t, err)
 }
 
-func TestLogout(t *testing.T) {
+func TestGetCurrentUser(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
-
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "logout", request.Action)
+			assert.Equal(t, "getCurrentUser", request.Action)
 
-			return &types.KuzzleResponse{}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"_id": "id"
+			}`)}
 		},
 	}
-
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	error := k.Logout()
-	assert.Nil(t, error)
+	auth := auth.NewAuth(k)
+	res, _ := auth.GetCurrentUser()
+
+	assert.Equal(t, "id", res.Id)
 }
 
-func ExampleKuzzle_Logout() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
+func ExampleKuzzle_GetCurrentUser() {
+	conn := websocket.NewWebSocket("localhost", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 
 	type credentials struct {
@@ -56,15 +59,20 @@ func ExampleKuzzle_Logout() {
 	}
 
 	myCredentials := credentials{"foo", "bar"}
+	marsh, _ := json.Marshal(myCredentials)
 
-	_, err := k.Login("local", myCredentials, nil)
+	_, err := k.Auth.Login("local", marsh, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	err = k.Logout()
+	auth := auth.NewAuth(k)
+	res, _ := auth.GetCurrentUser()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
+		return
 	}
+
+	fmt.Printf("%v\n", res)
 }

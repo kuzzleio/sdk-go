@@ -619,7 +619,7 @@ func goToCUserResult(k *C.kuzzle, user *security.User, err error) *C.user_result
 		return result
 	}
 
-	result.user = cuser
+	result.result = cuser
 
 	return result
 }
@@ -675,8 +675,8 @@ func goToCUserRightsResult(rights []*types.UserRights, err error) *C.user_rights
 
 	result.user_rights_length = C.size_t(len(rights))
 	if rights != nil {
-		result.user_rights = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
-		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.user_rights))[:len(rights):len(rights)]
+		result.result = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
+		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.result))[:len(rights):len(rights)]
 
 		for i, right := range rights {
 			goToCUserRight(right, &carray[i])

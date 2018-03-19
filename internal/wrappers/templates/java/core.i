@@ -34,6 +34,7 @@
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
+#include "auth.cpp"
 #include "index.cpp"
 #include "server.cpp"
 %}
@@ -138,5 +139,6 @@ struct json_object { };
 
 %include "kuzzle.cpp"
 %include "collection.cpp"
+%include "auth.cpp"
 %include "index.cpp"
 %include "server.cpp"

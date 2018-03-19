@@ -1,8 +1,7 @@
-package security_test
+package auth_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/kuzzleio/sdk-go/connection/websocket"
@@ -12,63 +11,53 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWhoAmIQueryError(t *testing.T) {
+func TestCredentialsExistEmptyStrategy(t *testing.T) {
+	c := &internal.MockedConnection{}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	k.Connect()
+	_, err := k.Auth.CredentialsExist("", nil)
+	assert.NotNil(t, err)
+}
+
+func TestCredentialsExistQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "getCurrentUser", request.Action)
+			assert.Equal(t, "credentialsExist", request.Action)
+
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.WhoAmI()
+	k.Connect()
+	_, err := k.Auth.CredentialsExist("local", nil)
 	assert.NotNil(t, err)
 }
 
-func TestWhoAmI(t *testing.T) {
+func TestCredentialsExists(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
-			assert.Equal(t, "getCurrentUser", request.Action)
+			assert.Equal(t, "credentialsExist", request.Action)
 
-			return &types.KuzzleResponse{Result: []byte(`{
-				"_id": "id"
-			}`)}
+			ret, _ := json.Marshal(true)
+			return &types.KuzzleResponse{Result: ret}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-
-	res, _ := k.WhoAmI()
-
-	assert.Equal(t, "id", res.Id)
+	k.Connect()
+	res, _ := k.Auth.CredentialsExist("local", nil)
+	assert.Equal(t, true, res)
 }
 
-func ExampleKuzzle_WhoAmI() {
-	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(conn, nil)
-
-	type credentials struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	myCredentials := credentials{"foo", "bar"}
-
-	_, err := k.Login("local", myCredentials, nil)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	res, err := k.WhoAmI()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Printf("%#v\n", res)
+func ExampleAdminExists() {
+	c := websocket.NewWebSocket("localhost", nil)
+	k, _ := kuzzle.NewKuzzle(c, nil)
+	k.Connect()
+	res, _ := k.Auth.CredentialsExist("local", nil)
+	println(res)
 }
