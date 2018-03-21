@@ -1,19 +1,24 @@
 package collection
 
 import (
-	"encoding/json"
-
-	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Create creates a new empty data collection, with no associated mapping.
-func (dc *Collection) Create(options types.QueryOptions) (bool, error) {
+// Create creates a new empty data collection
+func (dc *Collection) Create(index string, collection string, options types.QueryOptions) error {
+	if index == "" {
+		return types.NewError("Collection.Create: index required", 400)
+	}
+
+	if collection == "" {
+		return types.NewError("Collection.Create: collection required", 400)
+	}
+
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
-		Collection: dc.collection,
-		Index:      dc.index,
+		Collection: collection,
+		Index:      index,
 		Controller: "collection",
 		Action:     "create",
 	}
@@ -21,17 +26,5 @@ func (dc *Collection) Create(options types.QueryOptions) (bool, error) {
 
 	res := <-ch
 
-	if res.Error != nil {
-		return false, res.Error
-	}
-
-	ack := &struct {
-		Acknowledged bool `json:"acknowledged"`
-	}{}
-	err := json.Unmarshal(res.Result, ack)
-	if err != nil {
-		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
-	}
-
-	return ack.Acknowledged, nil
+	return res.Error
 }

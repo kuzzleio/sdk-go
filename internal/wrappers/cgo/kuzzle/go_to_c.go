@@ -12,21 +12,12 @@ import (
 	"encoding/json"
 	"unsafe"
 
-	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 func duplicateCollection(ptr *C.collection) *C.collection {
 	dest := (*C.collection)(C.calloc(1, C.sizeof_collection))
-
-	if ptr.index != nil {
-		dest.index = C.CString(C.GoString(ptr.index))
-	}
-
-	if ptr.collection != nil {
-		dest.collection = C.CString(C.GoString(ptr.collection))
-	}
 
 	dest.kuzzle = ptr.kuzzle
 
@@ -60,37 +51,6 @@ func goToCShards(gShards *types.Shards) *C.shards {
 	result.failed = C.int(gShards.Failed)
 	result.successful = C.int(gShards.Successful)
 	result.total = C.int(gShards.Total)
-
-	return result
-}
-
-// Allocates memory
-func goToCDocument(col *C.collection, gDoc *collection.Document, dest *C.document) *C.document {
-	var result *C.document
-	if dest == nil {
-		result = (*C.document)(C.calloc(1, C.sizeof_document))
-	} else {
-		result = dest
-	}
-
-	result.id = C.CString(gDoc.Id)
-	result.index = C.CString(gDoc.Index)
-	result.result = C.CString(gDoc.Result)
-	result.collection = C.CString(gDoc.Collection)
-	result.meta = goToCMeta(gDoc.Meta)
-	result.shards = goToCShards(gDoc.Shards)
-	result._collection = duplicateCollection(col)
-
-	if string(gDoc.Content) != "" {
-		buffer := C.CString(string(gDoc.Content))
-		result.content = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-	} else {
-		result.content = C.json_object_new_object()
-	}
-
-	result.version = C.int(gDoc.Version)
-	result.created = C.bool(gDoc.Created)
 
 	return result
 }
@@ -155,42 +115,6 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	if gRes.Error != nil {
 		// The error might be a partial error
 		Set_kuzzle_response_error(result, gRes.Error)
-	}
-
-	return result
-}
-
-// Allocates memory
-func goToCDocumentResult(col *C.collection, goRes *collection.Document, err error) *C.document_result {
-	result := (*C.document_result)(C.calloc(1, C.sizeof_document_result))
-
-	if err != nil {
-		Set_document_error(result, err)
-		return result
-	}
-
-	result.result = goToCDocument(col, goRes, nil)
-
-	return result
-}
-
-func goToCDocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
-	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
-
-	if err != nil {
-		Set_document_array_result_error(result, err)
-		return result
-	}
-
-	if goRes != nil {
-		result.result_length = C.size_t(len(goRes))
-		result.result = (*C.document)(C.calloc(result.result_length, C.sizeof_document))
-
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
-
-		for i, doc := range goRes {
-			goToCDocument(col, doc, &cArray[i])
-		}
 	}
 
 	return result
@@ -430,27 +354,13 @@ func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
 }
 
 // Allocates memory
-func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err error) *C.search_result {
+func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	result := (*C.search_result)(C.calloc(1, C.sizeof_search_result))
-	result.collection = duplicateCollection(col)
+	result.collection, _ = goToCJson(goRes.Collection)
+	result.documents, _ = goToCJson(goRes.Documents)
 
-	if err != nil {
-		Set_search_result_error(result, err)
-		return result
-	}
-
-	result.documents_length = C.size_t(len(goRes.Documents))
 	result.fetched = C.uint(goRes.Fetched)
 	result.total = C.uint(goRes.Total)
-
-	if len(goRes.Documents) > 0 {
-		result.documents = (*C.document)(C.calloc(result.documents_length, C.sizeof_document))
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.documents))[:len(goRes.Documents):len(goRes.Documents)]
-
-		for i, doc := range goRes.Documents {
-			goToCDocument(col, doc, &cArray[i])
-		}
-	}
 
 	if goRes.Filters != nil {
 		result.filters = goToCSearchFilters(goRes.Filters)
@@ -467,30 +377,6 @@ func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err er
 	if len(goRes.Aggregations) > 0 {
 		result.aggregations, _ = goToCJson(goRes.Aggregations)
 	}
-
-	return result
-}
-
-// Allocates memory
-func goToCMapping(c *C.collection, goMapping *collection.Mapping) *C.mapping {
-	result := (*C.mapping)(C.calloc(1, C.sizeof_mapping))
-
-	result.collection = duplicateCollection(c)
-	result.mapping, _ = goToCJson(goMapping.Mapping)
-
-	return result
-}
-
-// Allocates memory
-func goToCMappingResult(c *C.collection, goRes *collection.Mapping, err error) *C.mapping_result {
-	result := (*C.mapping_result)(C.calloc(1, C.sizeof_mapping_result))
-
-	if err != nil {
-		Set_mapping_result_error(result, err)
-		return result
-	}
-
-	result.result = goToCMapping(c, goRes)
 
 	return result
 }
@@ -733,7 +619,7 @@ func goToCUserResult(k *C.kuzzle, user *security.User, err error) *C.user_result
 		return result
 	}
 
-	result.user = cuser
+	result.result = cuser
 
 	return result
 }
@@ -789,8 +675,8 @@ func goToCUserRightsResult(rights []*types.UserRights, err error) *C.user_rights
 
 	result.user_rights_length = C.size_t(len(rights))
 	if rights != nil {
-		result.user_rights = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
-		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.user_rights))[:len(rights):len(rights)]
+		result.result = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
+		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.result))[:len(rights):len(rights)]
 
 		for i, right := range rights {
 			goToCUserRight(right, &carray[i])
@@ -888,21 +774,5 @@ func goToCDateResult(goRes int, err error) *C.date_result {
 
 	result.result = C.longlong(goRes)
 
-	return result
-}
-
-// Allocates memory
-func goToCRoomResult(err error) *C.room_result {
-	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
-
-	if err != nil {
-		Set_room_result_error(result, err)
-		return result
-	}
-
-	room := (*C.room)(C.calloc(1, C.sizeof_room))
-	room.instance = unsafe.Pointer(room)
-	registerRoom(room)
-	result.result = room
 	return result
 }

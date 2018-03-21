@@ -5,19 +5,20 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kuzzleio/sdk-go/auth"
+	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/event"
+	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
 	"github.com/kuzzleio/sdk-go/realtime"
 	"github.com/kuzzleio/sdk-go/security"
+	"github.com/kuzzleio/sdk-go/server"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 const version = "1.0.0"
-
-type IKuzzle interface {
-	Query(*types.KuzzleRequest, chan<- *types.KuzzleResponse, types.QueryOptions)
-}
 
 type Kuzzle struct {
 	socket connection.Connection
@@ -35,6 +36,11 @@ type Kuzzle struct {
 	MemoryStorage *ms.Ms
 	Security      *security.Security
 	Realtime      *realtime.Realtime
+	Auth          *auth.Auth
+	Server        *server.Server
+	Document      *document.Document
+	Index         *index.Index
+	Collection    *collection.Collection
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -48,17 +54,24 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	}
 
 	k := &Kuzzle{
-		socket:  c,
-		version: version,
+		socket:       c,
+		version:      version,
+		defaultIndex: options.DefaultIndex(),
 	}
 
+	k.RequestHistory = k.socket.RequestHistory()
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = &security.Security{k}
+	k.Auth = auth.NewAuth(k)
 	k.Realtime = realtime.NewRealtime(k)
 
 	k.RequestHistory = k.socket.RequestHistory()
 
 	k.defaultIndex = options.DefaultIndex()
+	k.Server = server.NewServer(k)
+	k.Collection = collection.NewCollection(k)
+	k.Document = document.NewDocument(k)
+	k.Index = index.NewIndex(k)
 
 	var err error
 
@@ -81,7 +94,7 @@ func (k *Kuzzle) Connect() error {
 		if wasConnected {
 			if k.jwt != "" {
 				go func() {
-					res, err := k.CheckToken(k.jwt)
+					res, err := k.Auth.CheckToken(k.jwt)
 
 					if err != nil {
 						k.jwt = ""
@@ -248,4 +261,8 @@ func (k *Kuzzle) Volatile() types.VolatileData {
 
 func (k *Kuzzle) SetVolatile(v types.VolatileData) {
 	k.volatile = v
+}
+
+func (k *Kuzzle) EmitEvent(e int, arg interface{}) {
+	k.socket.EmitEvent(e, arg)
 }

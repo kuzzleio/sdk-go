@@ -1,92 +1,212 @@
+#include "kuzzle.hpp"
 #include "document.hpp"
-#include "collection.hpp"
 
 namespace kuzzleio {
-    
-    Document::Document(Collection *collection, const std::string& id, json_object* content) Kuz_Throw_KuzzleException {
+    Document::Document(Kuzzle* kuzzle) {
         _document = new document();
-        _collection = collection;
-        kuzzle_new_document(_document, collection->_collection, const_cast<char*>(id.c_str()), content); 
+        kuzzle_new_document(_document, kuzzle->_kuzzle);
+    }
+
+    Document::Document(Kuzzle* kuzzle, document *document) {
+        _document = document;
+        kuzzle_new_document(_document, kuzzle->_kuzzle);
     }
 
     Document::~Document() {
         unregisterDocument(_document);
-        delete(_document);
+        kuzzle_free_document(_document);
     }
 
-    std::string Document::delete_(query_options* options) Kuz_Throw_KuzzleException {
-        string_result *r = kuzzle_document_delete(_document, options);
+    int Document::count_(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+      int_result *r = kuzzle_document_count(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+      if (r->error != NULL)
+          throwExceptionFromStatus(r);
+      int ret = r->result;
+      kuzzle_free_int_result(r);
+      return ret;
+    }
+
+    bool Document::exists(const std::string& index, const std::string& collection, const std::string& id, query_options *options) Kuz_Throw_KuzzleException {
+        bool_result *r = kuzzle_document_exists(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
+
+        bool ret = r->result;
+        kuzzle_free_bool_result(r);
+        return ret;
+    }
+
+    std::string Document::create(const std::string& index, const std::string& collection, const std::string& id, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_create(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
         std::string ret = r->result;
-        delete(r);
+        kuzzle_free_string_result(r);
         return ret;
     }
 
-    bool Document::exists(query_options* options) Kuz_Throw_KuzzleException {
-        bool_result *r = kuzzle_document_exists(_document, options);
+    std::string Document::createOrReplace(const std::string& index, const std::string& collection, const std::string& id, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_create_or_replace(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), const_cast<char*>(body.c_str()), options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-        bool ret = r->result;
-        delete(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
         return ret;
     }
 
-    bool Document::publish(query_options* options) Kuz_Throw_KuzzleException {
-        bool_result *r = kuzzle_document_publish(_document, options);
+    std::string Document::delete_(const std::string& index, const std::string& collection, const std::string& id, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_delete(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
-        bool ret = r->result;
-        delete(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
         return ret;
     }
 
-    Document* Document::refresh(query_options* options) Kuz_Throw_KuzzleException {
-        document_result *r = kuzzle_document_refresh(_document, options);
-        if (r->error != NULL)
-            throwExceptionFromStatus(r);
-        Document* ret = new Document(_collection, r->result->id, r->result->content);
-        delete(r);
-        return ret;
-    }
+    std::vector<std::string> Document::deleteByQuery(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_array_result *r = kuzzle_document_delete_by_query(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
 
-    Document* Document::save(query_options* options) Kuz_Throw_KuzzleException {
-        document_result *r = kuzzle_document_save(_document, options);
-        if (r->error != NULL)
-            throwExceptionFromStatus(r);
-        Document* ret = new Document(_collection, r->result->id, r->result->content);
-
-        _document->id = r->result->id;
-        _document->version = r->result->version;
-        delete(r);
-        return ret;
-    }
-
-    Document* Document::setContent(json_object* content, bool replace) {
-        kuzzle_document_set_content(_document, content, replace);
-        return this;
-    }
-
-    json_object* Document::getContent() {
-        return kuzzle_document_get_content(_document);
-    }
-
-    void call_cb(notification_result* res, void* data) {
-        ((Document*)data)->getListener()->onMessage(res);
-    }
-
-    Room* Document::subscribe(NotificationListener* listener, room_options* options) {
-        room_result* r = kuzzle_document_subscribe(_document, options, &call_cb, this);
         if (r->error != NULL)
           throwExceptionFromStatus(r);
-        _listener_instance = listener;
-        
-        Room* ret = new Room(r->result, NULL, listener);
-        free(r);
+
+        std::vector<std::string> v;
+        for (int i = 0; i < r->result_length; i++)
+          v.push_back(r->result[i]);
+
+        kuzzle_free_string_array_result(r);
+        return v;
+    }
+
+    std::string Document::get(const std::string& index, const std::string& collection, const std::string& id, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_get(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
         return ret;
     }
 
-    NotificationListener* Document::getListener() {
-        return _listener_instance;
+    std::string Document::replace(const std::string& index, const std::string& collection, const std::string& id, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_replace(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
     }
+
+    std::string Document::update(const std::string& index, const std::string& collection, const std::string& id, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_update(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+    }
+
+    bool Document::validate(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        bool_result *r = kuzzle_document_validate(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
+        bool ret = r->result;
+        kuzzle_free_bool_result(r);
+        return ret;
+    }
+
+    search_result* Document::search(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        search_result *r = kuzzle_document_search(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+            throwExceptionFromStatus(r);
+
+        search_result *ret = r;
+        kuzzle_free_search_result(r);
+        return ret;
+    }
+
+    std::string Document::mCreate(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_mcreate(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+    }
+
+    std::string Document::mCreateOrReplace(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_mcreate_or_replace(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+    }
+
+    std::vector<std::string> Document::mDelete(const std::string& index, const std::string& collection, const std::vector<std::string>& ids, query_options *options) Kuz_Throw_KuzzleException {
+        char **idsArray = new char *[ids.size()];
+        int i = 0;
+        for (auto const& id : ids) {
+          idsArray[i] = const_cast<char*>(id.c_str());
+          i++;
+        }
+
+        string_array_result *r = kuzzle_document_mdelete(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), idsArray, ids.size(), options);
+        delete[] idsArray;
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::vector<std::string> v;
+        for (int i = 0; i < r->result_length; i++)
+          v.push_back(r->result[i]);
+
+        kuzzle_free_string_array_result(r);
+        return v;
+    }
+
+    std::string Document::mGet(const std::string& index, const std::string& collection, const std::vector<std::string>& ids, bool includeTrash, query_options *options) Kuz_Throw_KuzzleException {
+        char **idsArray = new char *[ids.size()];
+        int i = 0;
+        for (auto const& id : ids) {
+          idsArray[i] = const_cast<char*>(id.c_str());
+          i++;
+        }
+
+        string_result *r = kuzzle_document_mget(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), idsArray, ids.size(), includeTrash, options);
+        delete[] idsArray;
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+
+    }
+    std::string Document::mReplace(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_mreplace(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+    }
+
+    std::string Document::mUpdate(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+        string_result *r = kuzzle_document_mupdate(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != NULL)
+          throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
+    }
+
 }

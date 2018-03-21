@@ -34,7 +34,9 @@
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
-#include "room.cpp"
+#include "auth.cpp"
+#include "index.cpp"
+#include "server.cpp"
 #include "document.cpp"
 #include "realtime.cpp"
 %}
@@ -51,7 +53,6 @@
 %include "std_vector.i"
 
 %template(StringVector) std::vector<std::string>;
-%template(DocumentVector) std::vector<kuzzleio::Document*>;
 
 %typemap(out) const StringVector& %{
     return $1;
@@ -143,3 +144,6 @@ struct json_object { };
 %include "room.cpp"
 %include "document.cpp"
 %include "realtime.hpp"
+%include "auth.cpp"
+%include "index.cpp"
+%include "server.cpp"

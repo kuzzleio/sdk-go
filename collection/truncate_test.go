@@ -2,14 +2,30 @@ package collection_test
 
 import (
 	"fmt"
+
 	"github.com/kuzzleio/sdk-go/collection"
+
+	"testing"
 
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
+
+func TestTruncateIndexNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Truncate("", "collection", nil)
+	assert.NotNil(t, err)
+}
+
+func TestTruncateCollectionNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Truncate("index", "", nil)
+	assert.NotNil(t, err)
+}
 
 func TestTruncateError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -19,7 +35,8 @@ func TestTruncateError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := collection.NewCollection(k, "collection", "index").Truncate(nil)
+	nc := collection.NewCollection(k)
+	err := nc.Truncate("index", "collection", nil)
 	assert.NotNil(t, err)
 }
 
@@ -33,20 +50,20 @@ func TestTruncate(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, _ := collection.NewCollection(k, "collection", "index").Truncate(nil)
-	assert.Equal(t, true, res)
+	nc := collection.NewCollection(k)
+	err := nc.Truncate("index", "collection", nil)
+	assert.Nil(t, err)
 }
 
 func ExampleCollection_Truncate() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := collection.NewCollection(k, "collection", "index").Truncate(nil)
+	nc := collection.NewCollection(k)
+	err := nc.Truncate("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	fmt.Printf("%#v\n", res)
 }

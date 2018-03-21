@@ -97,6 +97,26 @@ typedef struct {
   void *instance;
   kuzzle* kuzzle;
 } realtime;
+    char *type_;
+    int  from;
+    int  size;
+    char *scroll;
+} search_options;
+
+typedef struct {
+  void *instance;
+  kuzzle *kuzzle;
+} auth;
+
+typedef struct {
+  void *instance;
+  kuzzle *kuzzle;
+} kuzzle_index;
+
+typedef struct {
+  void *instance;
+  kuzzle* kuzzle;
+} server;
 
 //options passed to room constructor
 typedef struct {
@@ -217,39 +237,13 @@ typedef struct {
 
 typedef struct {
     void *instance;
-    char *index;
-    char *collection;
     kuzzle *kuzzle;
 } collection;
 
 typedef struct {
     void *instance;
-    char *id;
-    char *index;
-    meta *meta;
-    shards *shards;
-    json_object *content;
-    int version;
-    char *result;
-    bool created;
-    collection *_collection;
-    char *collection;
+    kuzzle *kuzzle;
 } document;
-
-typedef struct document_result {
-    document *result;
-    int status;
-    char *error;
-    char *stack;
-} document_result;
-
-typedef struct {
-    document *result;
-    size_t result_length;
-    int status;
-    char *error;
-    char *stack;
-} document_array_result;
 
 typedef struct {
     char *id;
@@ -309,7 +303,7 @@ typedef struct {
 } user_right;
 
 typedef struct user_rights_result {
-    user_right *user_rights;
+    user_right *result;
     size_t user_rights_length;
     int status;
     char *error;
@@ -317,7 +311,7 @@ typedef struct user_rights_result {
 } user_rights_result;
 
 typedef struct user_result {
-    user *user;
+    user *result;
     int status;
     char *error;
     char *stack;
@@ -534,14 +528,13 @@ typedef struct specification_result {
 } specification_result;
 
 typedef struct search_result {
-    document *documents;
-    size_t documents_length;
+    json_object *documents;
     unsigned fetched;
     unsigned total;
     json_object *aggregations;
     search_filters *filters;
     query_options *options;
-    collection *collection;
+    json_object *collection;
     int status;
     char *error;
     char *stack;
