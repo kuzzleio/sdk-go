@@ -90,21 +90,6 @@ func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
 	return (*C.collection)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
 }
 
-//export kuzzle_get_auth_controller
-func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
-	return (*C.auth)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
-}
-
-//export kuzzle_get_index_controller
-func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
-	return (*C.kuzzle_index)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
-}
-
-//export kuzzle_get_server_controller
-func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
-	return (*C.server)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
-}
-
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {

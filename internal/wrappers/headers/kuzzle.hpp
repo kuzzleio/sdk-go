@@ -17,10 +17,6 @@ namespace kuzzleio {
   class Index;
   class Server;
 
-  class Auth;
-  class Index;
-  class Server;
-
   class Kuzzle : public KuzzleEventEmitter {
     private:
       std::map<int, EventListener*>  _listener_instances;
@@ -32,9 +28,6 @@ namespace kuzzleio {
       Server *server;
       Collection *collection;
       Document *document;
-      Auth *auth;
-      Index  *index;
-      Server *server;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();

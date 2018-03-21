@@ -39,7 +39,6 @@ type Kuzzle struct {
 	Document      *document.Document
 	Index         *index.Index
 	Collection    *collection.Collection
-	Index         *index.Index
 }
 
 // NewKuzzle is the Kuzzle constructor
