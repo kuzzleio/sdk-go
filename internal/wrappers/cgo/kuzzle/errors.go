@@ -72,11 +72,6 @@ func Set_shards_result_error(s *C.shards_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
-// apply a types.KuzzleError on a document* C struct
-func Set_document_error(s *C.document_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
 // apply a types.KuzzleError on a search_result* C struct
 func Set_search_result_error(s *C.search_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
@@ -149,10 +144,6 @@ func Set_collection_entry_error(s *C.collection_entry_result, err error) {
 }
 
 func Set_void_result_error(s *C.void_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
-func Set_document_array_result_error(s *C.document_array_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 

@@ -9,6 +9,7 @@
 #include "collection.hpp"
 #include "index.hpp"
 #include "server.hpp"
+#include "document.hpp"
 #include <assert.h>
 #include <ffi.h>
 %}
@@ -25,3 +26,4 @@
 %include "collection.hpp"
 %include "index.hpp"
 %include "server.hpp"
+%include "document.hpp"

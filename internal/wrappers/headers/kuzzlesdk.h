@@ -239,32 +239,8 @@ typedef struct {
 
 typedef struct {
     void *instance;
-    char *id;
-    char *index;
-    meta *meta;
-    shards *shards;
-    json_object *content;
-    int version;
-    char *result;
-    bool created;
-    collection *_collection;
-    char *collection;
+    kuzzle *kuzzle;
 } document;
-
-typedef struct document_result {
-    document *result;
-    int status;
-    char *error;
-    char *stack;
-} document_result;
-
-typedef struct {
-    document *result;
-    size_t result_length;
-    int status;
-    char *error;
-    char *stack;
-} document_array_result;
 
 typedef struct {
     char *id;

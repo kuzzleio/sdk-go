@@ -12,7 +12,7 @@
 
 namespace kuzzleio {
   class Collection;
-
+  class Document;
   class Auth;
   class Index;
   class Server;
@@ -27,6 +27,7 @@ namespace kuzzleio {
       Index  *index;
       Server *server;
       Collection *collection;
+      Document *document;
 
       Kuzzle(const std::string& host, options *options=NULL);
       virtual ~Kuzzle();

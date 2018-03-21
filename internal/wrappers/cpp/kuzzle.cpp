@@ -5,6 +5,10 @@
 #include "index.hpp"
 #include "server.hpp"
 #include "collection.hpp"
+#include "document.hpp"
+#include "auth.hpp"
+#include "index.hpp"
+#include "server.hpp"
 #include <iostream>
 #include <vector>
 
@@ -19,6 +23,7 @@ namespace kuzzleio {
 
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
+    this->document = new Document(this, kuzzle_get_document_controller(this->_kuzzle));
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
@@ -29,6 +34,7 @@ namespace kuzzleio {
   Kuzzle::~Kuzzle() {
     unregisterKuzzle(this->_kuzzle);
     delete(this->_kuzzle);
+    delete(this->document);
     delete(this->auth);
     delete(this->index);
     delete(this->server);

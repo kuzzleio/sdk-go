@@ -240,36 +240,11 @@ func kuzzle_free_collection(st *C.collection) {
 	}
 }
 
-//do not export
-func _free_document(st *C.document) {
-	if st != nil {
-		C.free(unsafe.Pointer(st.id))
-		C.free(unsafe.Pointer(st.index))
-		C.free(unsafe.Pointer(st.shards))
-		C.free(unsafe.Pointer(st.result))
-		C.free(unsafe.Pointer(st.collection))
-
-		kuzzle_free_json_object(st.content)
-
-		kuzzle_free_meta(st.meta)
-		kuzzle_free_collection(st._collection)
-	}
-}
-
 //export kuzzle_free_document
 func kuzzle_free_document(st *C.document) {
-	_free_document(st)
+	C.free(unsafe.Pointer(st.instance))
+	C.free(unsafe.Pointer(st.kuzzle))
 	C.free(unsafe.Pointer(st))
-}
-
-//export kuzzle_free_document_result
-func kuzzle_free_document_result(st *C.document_result) {
-	if st != nil {
-		kuzzle_free_document(st.result)
-		C.free(unsafe.Pointer(st.error))
-		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st))
-	}
 }
 
 //export kuzzle_free_notification_content
@@ -809,24 +784,6 @@ func kuzzle_free_search_users_result(st *C.search_users_result) {
 		kuzzle_free_user_search(st.result)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st))
-	}
-}
-
-//export kuzzle_free_document_array_result
-func kuzzle_free_document_array_result(st *C.document_array_result) {
-	if st != nil {
-		if st.result != nil {
-			documents := (*[1<<30 - 1]C.document)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
-
-			for _, document := range documents {
-				_free_document(&document)
-			}
-
-			C.free(unsafe.Pointer(st.result))
-		}
-		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st))
 	}
 }

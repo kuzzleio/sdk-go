@@ -8,6 +8,7 @@ import (
 	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
@@ -35,8 +36,9 @@ type Kuzzle struct {
 	Security      *security.Security
 	Auth          *auth.Auth
 	Server        *server.Server
-	Collection    *collection.Collection
+	Document      *document.Document
 	Index         *index.Index
+	Collection    *collection.Collection
 }
 
 // NewKuzzle is the Kuzzle constructor
@@ -65,6 +67,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.defaultIndex = options.DefaultIndex()
 	k.Server = server.NewServer(k)
 	k.Collection = collection.NewCollection(k)
+	k.Document = document.NewDocument(k)
 	k.Index = index.NewIndex(k)
 
 	var err error
