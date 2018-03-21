@@ -4,6 +4,7 @@
 #include "auth.hpp"
 #include "index.hpp"
 #include "server.hpp"
+#include "collection.hpp"
 #include <iostream>
 #include <vector>
 
@@ -21,6 +22,7 @@ namespace kuzzleio {
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
+    this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
@@ -30,6 +32,7 @@ namespace kuzzleio {
     delete(this->auth);
     delete(this->index);
     delete(this->server);
+    delete(this->collection);
   }
 
   char* Kuzzle::connect() {
@@ -42,15 +45,6 @@ namespace kuzzleio {
         throwExceptionFromStatus(r);
     bool ret = r->result;
     kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    collection_entry *ret = r->result;
-    kuzzle_free_collection_entry_result(r);
     return ret;
   }
 

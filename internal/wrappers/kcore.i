@@ -7,8 +7,6 @@
 #include "event_emitter.hpp"
 #include "kuzzle.hpp"
 #include "collection.hpp"
-#include "room.hpp"
-#include "document.hpp"
 #include "index.hpp"
 #include "server.hpp"
 #include <assert.h>
@@ -25,7 +23,5 @@
 %include "event_emitter.hpp"
 %include "kuzzle.hpp"
 %include "collection.hpp"
-%include "room.hpp"
-%include "document.hpp"
 %include "index.hpp"
 %include "server.hpp"

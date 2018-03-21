@@ -26,7 +26,6 @@ func ExampleKuzzle_Connect() {
 		return
 	}
 
-	fmt.Println(k.State())
 }
 
 func ExampleKuzzle_Jwt() {

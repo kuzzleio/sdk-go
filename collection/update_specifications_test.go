@@ -1,33 +1,39 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/kuzzleio/sdk-go/collection"
-
 	"testing"
 
+	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTruncateIndexNull(t *testing.T) {
+func TestUpdateSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection", nil)
+	_, err := nc.UpdateSpecifications("", "collection", json.RawMessage("body"), nil)
 	assert.NotNil(t, err)
 }
 
-func TestTruncateCollectionNull(t *testing.T) {
+func TestUpdateSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "", nil)
+	_, err := nc.UpdateSpecifications("index", "", json.RawMessage("body"), nil)
 	assert.NotNil(t, err)
 }
 
-func TestTruncateError(t *testing.T) {
+func TestUpdateSpecificationsBodyNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	_, err := nc.UpdateSpecifications("index", "collection", nil, nil)
+	assert.NotNil(t, err)
+}
+
+func TestUpdateSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -36,31 +42,29 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
 	assert.NotNil(t, err)
 }
 
-func TestTruncate(t *testing.T) {
+func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged": true
-			}`)}
+			return &types.KuzzleResponse{Result: []byte(`{ "myindex": { "mycollection": { "strict": false, "fields": {} } }}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
 	assert.Nil(t, err)
 }
 
-func ExampleCollection_Truncate() {
+func ExampleCollection_UpdateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

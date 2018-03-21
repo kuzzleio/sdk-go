@@ -102,19 +102,6 @@ func cToGoStrings(arr **C.char, len C.size_t) []string {
 	return goStrings
 }
 
-// Helper to convert a C document** to a go array of document pointers
-func cToGoDocuments(col *C.collection, docs **C.document, length C.uint) []*collection.Document {
-	if length == 0 {
-		return nil
-	}
-	tmpslice := (*[1 << 30]*C.document)(unsafe.Pointer(docs))[:length:length]
-	godocuments := make([]*collection.Document, length)
-	for i, doc := range tmpslice {
-		godocuments[i] = cToGoDocument(col, doc)
-	}
-	return godocuments
-}
-
 func cToGoShards(cShards *C.shards) *types.Shards {
 	return &types.Shards{
 		Total:      int(cShards.total),
@@ -135,28 +122,7 @@ func cToGoKuzzleMeta(cMeta *C.meta) *types.Meta {
 }
 
 func cToGoCollection(c *C.collection) *collection.Collection {
-	return collection.NewCollection((*kuzzle.Kuzzle)(c.kuzzle.instance), C.GoString(c.collection), C.GoString(c.index))
-}
-
-func cToGoMapping(cMapping *C.mapping) *collection.Mapping {
-	mapping := collection.NewMapping(cToGoCollection(cMapping.collection))
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cMapping.mapping))), &mapping.Mapping)
-
-	return mapping
-}
-
-func cToGoSpecification(cSpec *C.specification) *types.Specification {
-	spec := types.Specification{}
-	spec.Strict = bool(cSpec.strict)
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cSpec.fields))), &spec.Fields)
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cSpec.validators))), &spec.Validators)
-
-	return &spec
-}
-
-func cToGoDocument(c *C.collection, cDoc *C.document) *collection.Document {
-	gDoc := ((*collection.Document)(cDoc.instance))
-	return gDoc
+	return collection.NewCollection((*kuzzle.Kuzzle)(c.kuzzle.instance))
 }
 
 func cToGoPolicyRestriction(r *C.policy_restriction) *types.PolicyRestriction {
@@ -257,28 +223,24 @@ func cToGoUserRigh(r *C.user_right) *types.UserRights {
 	return right
 }
 
-func cToGoSearchResult(s *C.search_result) *collection.SearchResult {
-	var godocuments []*collection.Document
-
-	if s.documents_length > 0 {
-		tmpslice := (*[1 << 30]C.document)(unsafe.Pointer(s.documents))[:s.documents_length:s.documents_length]
-
-		godocuments = make([]*collection.Document, s.documents_length)
-
-		for i, doc := range tmpslice {
-			godocuments[i] = cToGoDocument(s.collection, &doc)
-		}
-	}
-
+func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 	opts := types.NewQueryOptions()
 
 	opts.SetSize(int(s.options.size))
 	opts.SetFrom(int(s.options.from))
 	opts.SetScrollId(C.GoString(s.options.scroll_id))
 
-	return &collection.SearchResult{
-		Collection: cToGoCollection(s.collection),
-		Documents:  godocuments,
+	var collections json.RawMessage
+	c, _ := json.Marshal(s.collection)
+	collections = c
+
+	var documents json.RawMessage
+	d, _ := json.Marshal(s.documents)
+	documents = d
+
+	return &types.SearchResult{
+		Collection: collections,
+		Documents:  documents,
 		Total:      int(s.total),
 		Fetched:    int(s.fetched),
 		Options:    opts,

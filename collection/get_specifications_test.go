@@ -12,21 +12,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetMappingIndexNull(t *testing.T) {
+func TestGetSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("", "collection", nil)
+	_, err := nc.GetSpecifications("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
-func TestGetMappingCollectionNull(t *testing.T) {
+func TestGetSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("index", "", nil)
+	_, err := nc.GetSpecifications("index", "", nil)
 	assert.NotNil(t, err)
 }
 
-func TestGetMappingError(t *testing.T) {
+func TestGetSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
@@ -35,35 +35,35 @@ func TestGetMappingError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.GetMapping("index", "collection", nil)
+	_, err := nc.GetSpecifications("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
 
-func TestGetMapping(t *testing.T) {
+func TestGetSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			parsedQuery := &types.KuzzleRequest{}
 			json.Unmarshal(query, parsedQuery)
 
 			assert.Equal(t, "collection", parsedQuery.Controller)
-			assert.Equal(t, "getMapping", parsedQuery.Action)
+			assert.Equal(t, "getSpecifications", parsedQuery.Action)
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
 			res := types.KuzzleResponse{Result: []byte(`
 				{
-					"index":{
-						"mappings":{
-							"collection":{
-								"properties":{
-									"foo":{
-										"type":"text",
-										"ignore_above":255
-									}
-								}
+					"collection": "collection",
+					"index": "index",
+					"validation": {
+						"fields": {
+							"myField": {
+								"defaultValue": 42,
+								"mandatory": true,
+								"type": "integer"
 							}
-						}
+						},
+						"strict": true
 					}
 				}`),
 			}
@@ -75,17 +75,17 @@ func TestGetMapping(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetMapping("index", "collection", nil)
+	res, err := nc.GetSpecifications("index", "collection", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }
 
-func ExampleCollection_GetMapping() {
+func ExampleCollection_GetSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.GetMapping("index", "collection", nil)
+	res, err := nc.GetSpecifications("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

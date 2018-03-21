@@ -1,6 +1,7 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/kuzzleio/sdk-go/collection"
@@ -13,21 +14,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTruncateIndexNull(t *testing.T) {
+func TestValidateSpecificationsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection", nil)
+	_, err := nc.ValidateSpecifications(nil, nil)
 	assert.NotNil(t, err)
 }
 
-func TestTruncateCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "", nil)
-	assert.NotNil(t, err)
-}
-
-func TestTruncateError(t *testing.T) {
+func TestValidateSpecificationsError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Unit test error"}}
@@ -36,34 +30,41 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	_, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
 	assert.NotNil(t, err)
 }
 
-func TestTruncate(t *testing.T) {
+func TestValidateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Result: []byte(`{
-				"acknowledged": true
-			}`)}
+					"valid": true,
+					"details": [],
+					"description": "Some description text"
+				}`),
+			}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	res, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
 	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, true, res)
 }
 
-func ExampleCollection_Truncate() {
+func ExampleCollection_ValidateSpecifications() {
 	c := &internal.MockedConnection{}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection", nil)
+	res, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(res)
 }

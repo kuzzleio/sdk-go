@@ -234,8 +234,8 @@ func kuzzle_free_user_data(st *C.user_data) {
 //export kuzzle_free_collection
 func kuzzle_free_collection(st *C.collection) {
 	if st != nil {
-		C.free(unsafe.Pointer(st.index))
-		C.free(unsafe.Pointer(st.collection))
+		C.free(unsafe.Pointer(st.instance))
+		C.free(unsafe.Pointer(st.kuzzle))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -671,17 +671,6 @@ func kuzzle_free_search_result(st *C.search_result) {
 		kuzzle_free_query_options(st.options)
 		kuzzle_free_json_object(st.aggregations)
 		kuzzle_free_search_filters(st.filters)
-		kuzzle_free_collection(st.collection)
-
-		if st.documents != nil {
-			documents := (*[1<<30 - 1]C.document)(unsafe.Pointer(st.documents))[:int(st.documents_length):int(st.documents_length)]
-
-			for _, document := range documents {
-				_free_document(&document)
-			}
-
-			C.free(unsafe.Pointer(st.documents))
-		}
 
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))

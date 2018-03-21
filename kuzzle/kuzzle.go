@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kuzzleio/sdk-go/auth"
+	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/index"
@@ -34,6 +35,7 @@ type Kuzzle struct {
 	Security      *security.Security
 	Auth          *auth.Auth
 	Server        *server.Server
+	Collection    *collection.Collection
 	Index         *index.Index
 }
 
@@ -62,6 +64,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.defaultIndex = options.DefaultIndex()
 	k.Server = server.NewServer(k)
+	k.Collection = collection.NewCollection(k)
 	k.Index = index.NewIndex(k)
 
 	var err error

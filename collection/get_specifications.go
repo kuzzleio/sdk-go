@@ -6,14 +6,14 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// GetMapping retrieves the current mapping of the collection.
-func (dc *Collection) GetMapping(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
+// GetSpecifications retrieves the current specifications of the collection.
+func (dc *Collection) GetSpecifications(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return nil, types.NewError("Collection.GetMapping: index required", 400)
+		return nil, types.NewError("Collection.GetSpecifications: index required", 400)
 	}
 
 	if collection == "" {
-		return nil, types.NewError("Collection.GetMapping: collection required", 400)
+		return nil, types.NewError("Collection.GetSpecifications: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -22,7 +22,7 @@ func (dc *Collection) GetMapping(index string, collection string, options types.
 		Collection: collection,
 		Index:      index,
 		Controller: "collection",
-		Action:     "getMapping",
+		Action:     "getSpecifications",
 	}
 	go dc.Kuzzle.Query(query, options, ch)
 
