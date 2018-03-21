@@ -14,14 +14,14 @@ import (
 func TestExistsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.Exists("", "collection")
+	_, err := nc.Exists("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestExistsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.Exists("index", "")
+	_, err := nc.Exists("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -34,7 +34,7 @@ func TestExistsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.Exists("index", "collection")
+	_, err := nc.Exists("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -48,7 +48,7 @@ func TestExists(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.Exists("index", "collection")
+	res, err := nc.Exists("index", "collection", nil)
 	assert.Nil(t, err)
 	assert.Equal(t, true, res)
 }
@@ -58,7 +58,7 @@ func ExampleCollection_Exists() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.Exists("index", "collection")
+	_, err := nc.Exists("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

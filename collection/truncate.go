@@ -5,7 +5,7 @@ import (
 )
 
 // Truncate delete every Documents from the provided Collection.
-func (dc *Collection) Truncate(index string, collection string) error {
+func (dc *Collection) Truncate(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.Truncate: index required", 400)
 	}
@@ -22,7 +22,7 @@ func (dc *Collection) Truncate(index string, collection string) error {
 		Controller: "collection",
 		Action:     "truncate",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

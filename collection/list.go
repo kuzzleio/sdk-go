@@ -7,7 +7,7 @@ import (
 )
 
 // List retrieves the list of known data collections contained in a specified index.
-func (dc *Collection) List(index string, options *ListOptions) (json.RawMessage, error) {
+func (dc *Collection) List(index string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Collection.List: index required", 400)
 	}
@@ -18,14 +18,9 @@ func (dc *Collection) List(index string, options *ListOptions) (json.RawMessage,
 		Controller: "collection",
 		Action:     "list",
 		Index:      index,
-		Body:       options.Type,
 	}
 
-	queryOpts := types.NewQueryOptions()
-	queryOpts.SetFrom(*options.From)
-	queryOpts.SetSize(*options.Size)
-
-	go dc.Kuzzle.Query(query, queryOpts, result)
+	go dc.Kuzzle.Query(query, options, result)
 
 	res := <-result
 

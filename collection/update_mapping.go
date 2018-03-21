@@ -7,7 +7,7 @@ import (
 )
 
 // UpdateMapping updates the current mapping of this collection.
-func (dc *Collection) UpdateMapping(index string, collection string, body json.RawMessage) error {
+func (dc *Collection) UpdateMapping(index string, collection string, body json.RawMessage, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.UpdateMapping: index required", 400)
 	}
@@ -29,7 +29,7 @@ func (dc *Collection) UpdateMapping(index string, collection string, body json.R
 		Action:     "updateMapping",
 		Body:       body,
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

@@ -8,7 +8,7 @@ import (
 )
 
 // ValidateSpecifications validates the provided specifications.
-func (dc *Collection) ValidateSpecifications(body json.RawMessage) (bool, error) {
+func (dc *Collection) ValidateSpecifications(body json.RawMessage, options types.QueryOptions) (bool, error) {
 	if body == nil {
 		return false, types.NewError("Collection.ValidateSpecifications: body required", 400)
 	}
@@ -20,7 +20,7 @@ func (dc *Collection) ValidateSpecifications(body json.RawMessage) (bool, error)
 		Action:     "validateSpecifications",
 		Body:       body,
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

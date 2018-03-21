@@ -1,6 +1,9 @@
 #include <exception>
 #include <stdexcept>
 #include "kuzzle.hpp"
+#include "auth.hpp"
+#include "index.hpp"
+#include "server.hpp"
 #include "collection.hpp"
 #include "document.hpp"
 #include "auth.hpp"
@@ -48,15 +51,6 @@ namespace kuzzleio {
         throwExceptionFromStatus(r);
     bool ret = r->result;
     kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  collection_entry* Kuzzle::listCollections(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    collection_entry_result *r = kuzzle_list_collections(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    collection_entry *ret = r->result;
-    kuzzle_free_collection_entry_result(r);
     return ret;
   }
 

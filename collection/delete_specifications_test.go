@@ -14,14 +14,14 @@ import (
 func TestDeleteSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.DeleteSpecifications("", "collection")
+	err := nc.DeleteSpecifications("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestDeleteSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.DeleteSpecifications("index", "")
+	err := nc.DeleteSpecifications("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -34,7 +34,7 @@ func TestDeleteSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.DeleteSpecifications("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -50,7 +50,7 @@ func TestDeleteSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.DeleteSpecifications("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection", nil)
 	assert.Nil(t, err)
 }
 
@@ -59,7 +59,7 @@ func ExampleCollection_DeleteSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.DeleteSpecifications("index", "collection")
+	err := nc.DeleteSpecifications("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

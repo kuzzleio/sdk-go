@@ -16,14 +16,14 @@ import (
 func TestTruncateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("", "collection")
+	err := nc.Truncate("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestTruncateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "")
+	err := nc.Truncate("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -36,7 +36,7 @@ func TestTruncateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.Truncate("index", "collection", nil)
 	assert.NotNil(t, err)
 }
 
@@ -51,7 +51,7 @@ func TestTruncate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.Truncate("index", "collection", nil)
 	assert.Nil(t, err)
 }
 
@@ -60,7 +60,7 @@ func ExampleCollection_Truncate() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Truncate("index", "collection")
+	err := nc.Truncate("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

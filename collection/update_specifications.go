@@ -7,7 +7,7 @@ import (
 )
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(index string, collection string, body json.RawMessage) (json.RawMessage, error) {
+func (dc *Collection) UpdateSpecifications(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Collection.UpdateSpecifications: index required", 400)
 	}
@@ -29,7 +29,7 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, body
 		Action:     "updateSpecifications",
 		Body:       body,
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

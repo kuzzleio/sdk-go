@@ -3,7 +3,7 @@ package collection
 import "github.com/kuzzleio/sdk-go/types"
 
 // DeleteSpecifications deletes the current specifications of this collection.
-func (dc *Collection) DeleteSpecifications(index string, collection string) error {
+func (dc *Collection) DeleteSpecifications(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.DeleteSpecifications: index required", 400)
 	}
@@ -20,7 +20,7 @@ func (dc *Collection) DeleteSpecifications(index string, collection string) erro
 		Controller: "collection",
 		Action:     "deleteSpecifications",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 

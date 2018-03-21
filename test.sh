@@ -6,7 +6,6 @@ workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
 dirs=(kuzzle connection/websocket collection security ms index server auth document)
-
 timeout=${TIMEOUT:=1m}
 
 generate_cover_data() {

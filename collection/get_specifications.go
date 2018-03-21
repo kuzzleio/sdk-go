@@ -7,7 +7,7 @@ import (
 )
 
 // GetSpecifications retrieves the current specifications of the collection.
-func (dc *Collection) GetSpecifications(index string, collection string) (json.RawMessage, error) {
+func (dc *Collection) GetSpecifications(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Collection.GetSpecifications: index required", 400)
 	}
@@ -24,7 +24,7 @@ func (dc *Collection) GetSpecifications(index string, collection string) (json.R
 		Controller: "collection",
 		Action:     "getSpecifications",
 	}
-	go dc.Kuzzle.Query(query, nil, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
