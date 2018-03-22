@@ -145,12 +145,12 @@ func (k *Kuzzle) UnsetJwt() {
 	}
 }
 
-func (k *Kuzzle) RegisterRoom(room types.IRoom) {
-	k.socket.RegisterRoom(room)
+func (k *Kuzzle) RegisterSub(channel, roomId string, notifChan chan<- types.KuzzleNotification) {
+	k.socket.RegisterSub(channel, roomId, notifChan)
 }
 
-func (k *Kuzzle) UnregisterRoom(roomId string) {
-	k.socket.UnregisterRoom(roomId)
+func (k *Kuzzle) UnregisterSub(roomId string) {
+	k.socket.UnregisterSub(roomId)
 }
 
 func (k *Kuzzle) State() int {

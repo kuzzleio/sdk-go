@@ -17,8 +17,8 @@ type Connection interface {
 	Close() error
 	State() int
 	EmitEvent(int, interface{})
-	RegisterRoom(types.IRoom)
-	UnregisterRoom(string)
+	RegisterSub(string, string, chan<- types.KuzzleNotification)
+	UnregisterSub(string)
 	RequestHistory() map[string]time.Time
 	Rooms() *types.RoomList
 	StartQueuing()

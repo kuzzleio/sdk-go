@@ -18,6 +18,12 @@ const (
 	MAX_EMIT_TIMEOUT = 10
 )
 
+type Subscription struct {
+	RoomID              string `json:"roomId"`
+	Channel             string `json:"channel"`
+	NotificationChannel chan<- types.KuzzleNotification
+}
+
 type webSocket struct {
 	ws      *websocket.Conn
 	mu      *sync.Mutex
@@ -263,21 +269,21 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterRoom(room types.IRoom) {
-	rooms, found := ws.subscriptions.Load(room.Channel())
+func (ws *webSocket) RegisterSub(channel, roomID string, notifChan chan<- types.KuzzleNotification) {
+	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
-		rooms = map[string]types.IRoom{}
-		ws.subscriptions.Store(room.Channel(), rooms)
+		subs = map[string]Subscription{}
+		ws.subscriptions.Store(channel, subs)
 	}
 
-	rooms.(map[string]types.IRoom)[room.Id()] = room
+	subs.(map[string]Subscription)[roomID] = Subscription{channel, roomID, notifChan}
 }
 
-func (ws *webSocket) UnregisterRoom(roomId string) {
-	_, ok := ws.subscriptions.Load(roomId)
+func (ws *webSocket) UnregisterSub(roomID string) {
+	_, ok := ws.subscriptions.Load(roomID)
 	if ok {
-		ws.subscriptions.Delete(roomId)
+		ws.subscriptions.Delete(roomID)
 	}
 }
 

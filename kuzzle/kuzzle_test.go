@@ -113,7 +113,6 @@ func TestSetDefaultIndex(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.SetDefaultIndex("myindex")
-	k.ListCollections("", nil)
 }
 
 func ExampleKuzzle_SetDefaultIndex() {

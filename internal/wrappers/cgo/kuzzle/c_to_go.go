@@ -247,3 +247,22 @@ func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 		Filters:    cToGoSearchFilters(s.filters),
 	}
 }
+
+func cToGoKuzzleNotificationChannel(c *C.callback) chan<- types.KuzzleNotification {
+	return make(chan<- types.KuzzleNotification)
+}
+
+func cToGoRoomOptions(ro *C.room_options) types.RoomOptions {
+	var volatiles map[string]interface{}
+
+	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(ro.volatiles))), &volatiles)
+
+	newOpt := types.NewRoomOptions()
+	newOpt.SetScope(C.GoString(ro.scope))
+	newOpt.SetState(C.GoString(ro.state))
+	newOpt.SetUsers(C.GoString(ro.user))
+	newOpt.SetVolatile(volatiles)
+	newOpt.SetSubscribeToSelf(bool(ro.subscribe_to_self))
+
+	return newOpt
+}

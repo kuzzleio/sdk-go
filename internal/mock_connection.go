@@ -70,10 +70,10 @@ func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (c *MockedConnection) RegisterRoom(room types.IRoom) {
+func (c *MockedConnection) RegisterSub(channel, roomID string, notifChan chan<- types.KuzzleNotification) {
 }
 
-func (c *MockedConnection) UnregisterRoom(id string) {}
+func (c *MockedConnection) UnregisterSub(roomID string) {}
 
 func (c *MockedConnection) RequestHistory() map[string]time.Time {
 	r := make(map[string]time.Time)

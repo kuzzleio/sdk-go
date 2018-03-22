@@ -2,7 +2,6 @@ package realtime_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/kuzzleio/sdk-go/realtime"
@@ -12,6 +11,33 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestCountIndexNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nr := realtime.NewRealtime(k)
+
+	_, err := nr.Count("", "collection", "roomID")
+
+	assert.NotNil(t, err)
+}
+
+func TestCountCollectionNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nr := realtime.NewRealtime(k)
+
+	_, err := nr.Count("index", "", "roomID")
+
+	assert.NotNil(t, err)
+}
+
+func TestCountRoomIDNull(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nr := realtime.NewRealtime(k)
+
+	_, err := nr.Count("index", "collection", "")
+
+	assert.NotNil(t, err)
+}
 
 func TestCountError(t *testing.T) {
 	c := &internal.MockedConnection{
@@ -43,19 +69,4 @@ func TestCount(t *testing.T) {
 
 	res, _ := realTime.Count("index", "collection", "42")
 	assert.Equal(t, 10, res)
-}
-
-func Example_Count() {
-	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
-	realTime := realtime.NewRealtime(k)
-
-	res, err := realTime.Count("index", "collection", "42")
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(res)
 }

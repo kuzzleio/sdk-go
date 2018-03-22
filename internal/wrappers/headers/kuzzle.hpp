@@ -39,8 +39,6 @@ namespace kuzzleio {
 
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      bool getAutoRefresh(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::vector<std::string> listIndexes(query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();

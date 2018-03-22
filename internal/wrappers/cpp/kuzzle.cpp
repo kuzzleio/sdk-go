@@ -45,28 +45,6 @@ namespace kuzzleio {
     return kuzzle_connect(_kuzzle);
   }
 
-  bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  std::vector<std::string> Kuzzle::listIndexes(query_options* options) Kuz_Throw_KuzzleException {
-    string_array_result *r = kuzzle_list_indexes(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-
-    std::vector<std::string> v;
-    for (int i = 0; r->result[i]; i++)
-        v.push_back(r->result[i]);
-
-    kuzzle_free_string_array_result(r);
-    return v;
-  }
-
   void Kuzzle::disconnect() {
     kuzzle_disconnect(_kuzzle);
   }
