@@ -28,6 +28,7 @@ namespace kuzzleio {
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
     this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
+    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(this->_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
@@ -39,6 +40,7 @@ namespace kuzzleio {
     delete(this->index);
     delete(this->server);
     delete(this->collection);
+    delete(this->realtime);
   }
 
   char* Kuzzle::connect() {
