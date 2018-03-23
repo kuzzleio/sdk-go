@@ -18,10 +18,12 @@ const (
 	MAX_EMIT_TIMEOUT = 10
 )
 
-type Subscription struct {
-	RoomID              string `json:"roomId"`
-	Channel             string `json:"channel"`
-	NotificationChannel chan<- types.KuzzleNotification
+type subscription struct {
+	roomID                   string
+	channel                  string
+	internalState            int
+	subscribeResponseChannel chan<- types.SubscribeResponse
+	notificationChannel      chan<- types.KuzzleNotification
 }
 
 type webSocket struct {
@@ -269,15 +271,21 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterSub(channel, roomID string, notifChan chan<- types.KuzzleNotification) {
+func (ws *webSocket) RegisterSub(channel, roomID string, internalState int, notifChan chan<- types.KuzzleNotification, subChan chan<- types.SubscribeResponse) {
 	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
-		subs = map[string]Subscription{}
+		subs = map[string]subscription{}
 		ws.subscriptions.Store(channel, subs)
 	}
 
-	subs.(map[string]Subscription)[roomID] = Subscription{channel, roomID, notifChan}
+	subs.(map[string]subscription)[roomID] = subscription{
+		channel:                  channel,
+		roomID:                   roomID,
+		internalState:            internalState,
+		notificationChannel:      notifChan,
+		subscribeResponseChannel: subChan,
+	}
 }
 
 func (ws *webSocket) UnregisterSub(roomID string) {

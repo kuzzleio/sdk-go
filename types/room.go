@@ -3,7 +3,7 @@ package types
 import "sync"
 
 type SubscribeResponse struct {
-	Room  IRoom
+	Room  string
 	Error error
 }
 

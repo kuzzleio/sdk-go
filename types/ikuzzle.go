@@ -6,4 +6,6 @@ type IKuzzle interface {
 	SetJwt(string)
 	RegisterSub(string, string, chan<- KuzzleNotification)
 	UnregisterSub(string)
+	AddListener(event int, notifChan chan<- KuzzleNotification)
+	AutoResubscribe() bool
 }
