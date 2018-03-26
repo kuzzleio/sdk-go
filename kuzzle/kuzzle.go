@@ -2,7 +2,7 @@
 package kuzzle
 
 import (
-	"sync"
+	"encoding/json"
 	"time"
 
 	"github.com/kuzzleio/sdk-go/auth"
@@ -131,22 +131,22 @@ func (k *Kuzzle) SetJwt(token string) {
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	rooms := k.socket.Rooms()
-	if rooms != nil {
-		k.socket.Rooms().Range(func(key, value interface{}) bool {
-			value.(*sync.Map).Range(func(key, value interface{}) bool {
-				room := value.(types.IRoom)
-				room.Subscribe(room.RealtimeChannel())
-				return true
-			})
+	// rooms := k.socket.Rooms()
+	// if rooms != nil {
+	// 	k.socket.Rooms().Range(func(key, value interface{}) bool {
+	// 		value.(*sync.Map).Range(func(key, value interface{}) bool {
+	// 			room := value.(types.IRoom)
+	// 			room.Subscribe(room.RealtimeChannel())
+	// 			return true
+	// 		})
 
-			return true
-		})
-	}
+	// 		return true
+	// 	})
+	// }
 }
 
-func (k *Kuzzle) RegisterSub(channel, roomId string, notifChan chan<- types.KuzzleNotification) {
-	k.socket.RegisterSub(channel, roomId, notifChan)
+func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+	k.socket.RegisterSub(channel, roomId, filters, notifChan, onReconnectChannel)
 }
 
 func (k *Kuzzle) UnregisterSub(roomId string) {

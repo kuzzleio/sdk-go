@@ -6,6 +6,11 @@ namespace kuzzleio {
     kuzzle_new_realtime(_realtime, kuzzle->_kuzzle);
   }
 
+  Realtime::Realtime(Kuzzle *kuzzle, realtime *realtime) {
+    _realtime = realtime;
+    kuzzle_new_realtime(_realtime, kuzzle->_kuzzle);
+  }
+
   Realtime::~Realtime() {
     unregisterRealtime(_realtime);
     delete(_realtime);

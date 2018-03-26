@@ -73,7 +73,7 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 
 //export kuzzle_realtime_subscribe
 func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback *C.callback, options *C.room_options) *C.string_result {
-	res, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), C.GoString(body), cToGoKuzzleNotificationChannel(callback), cToGoRoomOptions(options))
+	res, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), cToGoKuzzleNotificationChannel(callback), cToGoRoomOptions(options))
 	return goToCStringResult(&res, err)
 }
 

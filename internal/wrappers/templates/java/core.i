@@ -142,7 +142,7 @@ struct json_object { };
 %include "kuzzle.cpp"
 %include "collection.cpp"
 %include "document.cpp"
-%include "realtime.hpp"
+%include "realtime.cpp"
 %include "auth.cpp"
 %include "index.cpp"
 %include "server.cpp"

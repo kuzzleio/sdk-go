@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/kuzzleio/sdk-go/types"
@@ -17,10 +18,9 @@ type Connection interface {
 	Close() error
 	State() int
 	EmitEvent(int, interface{})
-	RegisterSub(string, string, chan<- types.KuzzleNotification)
+	RegisterSub(string, string, json.RawMessage, chan<- types.KuzzleNotification, chan<- interface{})
 	UnregisterSub(string)
 	RequestHistory() map[string]time.Time
-	Rooms() *types.RoomList
 	StartQueuing()
 	StopQueuing()
 	ReplayQueue()

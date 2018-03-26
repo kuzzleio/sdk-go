@@ -61,9 +61,6 @@ func TestUnsetJwt(t *testing.T) {
 
 			return &types.KuzzleResponse{Result: marsh}
 		},
-		MockGetRooms: func() *types.RoomList {
-			return nil
-		},
 	}
 
 	k, _ = kuzzle.NewKuzzle(c, nil)

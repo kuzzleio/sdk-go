@@ -11,6 +11,7 @@ namespace kuzzleio {
 
     public:
       Realtime(Kuzzle* kuzzle);
+      Realtime(Kuzzle* kuzzle, realtime* realtime);
       virtual ~Realtime();
       int count(const std::string& index, const std::string collection, const std::string roomId) Kuz_Throw_KuzzleException;
       void join(const std::string& index, const std::string collection, const std::string roomId, callback cb) Kuz_Throw_KuzzleException;

@@ -1,16 +1,6 @@
 package realtime_test
 
-import (
-	"encoding/json"
-	"testing"
-
-	"github.com/kuzzleio/sdk-go/internal"
-	"github.com/kuzzleio/sdk-go/kuzzle"
-	"github.com/kuzzleio/sdk-go/realtime"
-	"github.com/kuzzleio/sdk-go/types"
-	"github.com/stretchr/testify/assert"
-)
-
+/*
 func TestJoinIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
@@ -76,3 +66,4 @@ func TestJoin(t *testing.T) {
 	err := nr.Join("index", "collection", "body", nil)
 	assert.Nil(t, err)
 }
+*/

@@ -8,86 +8,59 @@ import (
 )
 
 // Subscribe permits to join a previously created subscription
-func (r *Realtime) Subscribe(index, collection, body string, cb chan<- types.KuzzleNotification, options types.RoomOptions) (string, error) {
-	if (index == "" || collection == "") || (body == "" || cb == nil) {
-		return "", types.NewError("Realtime.Subscribe: index, collection, body and notificationChannel required", 400)
+func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.KuzzleNotification, options types.RoomOptions) (string, error) {
+	if (index == "" || collection == "") || (filters == nil || cb == nil) {
+		return "", types.NewError("Realtime.Subscribe: index, collection, filters and notificationChannel required", 400)
 	}
 
-	if r.k.InternalState() == internalState.active {
-		if room.SubscribeResponseChan != nil {
-			room.SubscribeResponseChan <- types.SubscribeResponse{Room: room}
-		}
-		return room.roomId, nil
+	result := make(chan *types.KuzzleResponse)
+
+	query := &types.KuzzleRequest{
+		Controller: "realtime",
+		Action:     "subscribe",
+		Index:      index,
+		Collection: collection,
+		Body:       filters,
 	}
 
-	if room.internalState == subscribing {
-		return room.id, nil
+	opts := types.NewQueryOptions()
+
+	if options != nil {
+		query.Users = options.Users()
+		query.State = options.State()
+		query.Scope = options.Scope()
+
+		opts.SetVolatile(options.Volatile())
 	}
 
-	queryResult := make(chan types.SubscribeResponse)
+	go r.k.Query(query, opts, result)
+
+	res := <-result
+	if res.Error != nil {
+		return "", res.Error
+	}
+
+	var resSub struct {
+		RequestID string `json:"requestId"`
+		RoomID    string `json:"roomId"`
+		Channel   string `json:"channel"`
+	}
+
+	json.Unmarshal(res.Result, &resSub)
+
+	onReconnect := make(chan interface{})
+
+	r.k.RegisterSub(resSub.Channel, resSub.RoomID, filters, cb, onReconnect)
 
 	go func() {
-		result := make(chan *types.KuzzleResponse)
+		<-onReconnect
 
-		query := &types.KuzzleRequest{
-			Controller: "realtime",
-			Action:     "subscribe",
-			Index:      index,
-			Collection: collection,
-			Body:       body,
+		if r.k.AutoResubscribe() {
+			go r.k.Query(query, opts, result)
 		}
-
-		opts := types.NewQueryOptions()
-
-		if options != nil {
-			query.Users = options.Users()
-			query.State = options.State()
-			query.Scope = options.Scope()
-
-			opts.SetVolatile(options.Volatile())
-		}
-
-		go r.k.Query(query, opts, result)
-
-		res := <-result
-		if res.Error != nil {
-			queryResult <- types.SubscribeResponse{Room: "", Error: res.Error}
-			return
-		}
-
-		var resSub struct {
-			RequestID string `json:"requestId"`
-			RoomID    string `json:"roomId"`
-			Channel   string `json:"channel"`
-		}
-
-		json.Unmarshal(res.Result, &resSub)
-		queryResult <- types.SubscribeResponse{Room: resSub.RoomID, Error: res.Error}
-
-		r.k.RegisterSub(resSub.Channel, resSub.RoomID, cb)
-
-		go func() {
-			<-room.OnDisconnect
-			r.k.SetInternalState(resSub.Channel, resSub.RoomID, inactive)
-
-		}()
-		go func() {
-			<-room.OnTokenExpired
-		}()
-		go func() {
-			<-room.OnReconnect
-
-			if r.k.AutoResubscribe() {
-				r.Subscribe(index, collection, body, cb, options)
-			}
-		}()
-
-		r.k.AddListener(event.Disconnected, cb)
-		r.k.AddListener(event.TokenExpired, cb)
-		r.k.AddListener(event.Reconnected, cb)
 	}()
 
-	res := <-queryResult
+	r.k.AddListener(event.Reconnected, onReconnect)
 
-	return res.Result, res.Error
+	return resSub.RoomID, nil
 }

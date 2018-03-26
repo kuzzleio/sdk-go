@@ -9,6 +9,7 @@
 #include "auth.hpp"
 #include "index.hpp"
 #include "server.hpp"
+#include "realtime.hpp"
 #include <iostream>
 #include <vector>
 
