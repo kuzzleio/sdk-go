@@ -1,9 +1,6 @@
 package security
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -18,62 +15,14 @@ type RoleSearchResult struct {
 	Total int
 }
 
-// Delete a role from Kuzzle
-func (r *Role) Delete(options types.QueryOptions) (string, error) {
-	return r.Security.rawDelete("deleteRole", r.Id, options)
-}
-
-// Save creates or replaces the role in Kuzzle
-func (r *Role) Save(options types.QueryOptions) (*Role, error) {
-	action := "createOrReplaceRole"
-
-	if options == nil && r.Id == "" {
-		action = "createRole"
+func (s *Security) NewRole(id string, controllers *types.Controllers) *Role {
+	r := &Role{
+		Id:       id,
+		Security: s,
+	}
+	if controllers != nil {
+		r.Controllers = controllers.Controllers
 	}
 
-	if options != nil {
-		if options.IfExist() == "error" {
-			action = "createRole"
-		} else if options.IfExist() != "replace" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.IfExist()), 400)
-		}
-	}
-
-	return r.persist(action, options)
-}
-
-func (r *Role) persist(action string, options types.QueryOptions) (*Role, error) {
-	if options == nil {
-		options = types.NewQueryOptions()
-	}
-
-	if action != "createRole" && r.Id == "" {
-		return nil, types.NewError("Role.Save: role id is required", 400)
-	}
-
-	ch := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "security",
-		Action:     action,
-		Body: types.Controllers{
-			Controllers: r.Controllers,
-		},
-		Id: r.Id,
-	}
-	go r.Security.Kuzzle.Query(query, options, ch)
-
-	res := <-ch
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-
-	jsonRole := &jsonRole{}
-	json.Unmarshal(res.Result, jsonRole)
-
-	r.Controllers = jsonRole.Source.Controllers
-	r.Id = jsonRole.Id
-
-	return r, nil
+	return r
 }

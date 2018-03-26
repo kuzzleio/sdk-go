@@ -1,8 +1,6 @@
 package security
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -18,68 +16,10 @@ type ProfileSearchResult struct {
 	ScrollId string `json:"scrollId"`
 }
 
-func (p *Profile) AddPolicy(policy *types.Policy) *Profile {
-	p.Policies = append(p.Policies, policy)
-
-	return p
-}
-
-// Delete deletes the profile form Kuzzle.
-func (p *Profile) Delete(options types.QueryOptions) (string, error) {
-	return p.Security.rawDelete("deleteProfile", p.Id, options)
-}
-
-// Save creates or replaces the profile in Kuzzle.
-func (p Profile) Save(options types.QueryOptions) (*Profile, error) {
-	action := "createOrReplaceProfile"
-
-	if options == nil && p.Id == "" {
-		action = "createProfile"
+func (s *Security) NewProfile(id string, policies []*types.Policy) *Profile {
+	return &Profile{
+		Id:       id,
+		Policies: policies,
+		Security: s,
 	}
-
-	if options != nil {
-		if options.IfExist() == "error" {
-			action = "createProfile"
-		} else if options.IfExist() != "replace" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.IfExist()), 400)
-		}
-	}
-
-	return p.persist(action, options)
-}
-
-func (p *Profile) persist(action string, options types.QueryOptions) (*Profile, error) {
-	if options == nil {
-		options = types.NewQueryOptions()
-	}
-
-	if action != "createProfile" && p.Id == "" {
-		return nil, types.NewError("Profile."+action+": id is required", 400)
-	}
-
-	ch := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "security",
-		Action:     action,
-		Body: types.Policies{
-			Policies: p.Policies,
-		},
-		Id: p.Id,
-	}
-	go p.Security.Kuzzle.Query(query, options, ch)
-
-	res := <-ch
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-
-	jsonProfile := &jsonProfile{}
-	json.Unmarshal(res.Result, jsonProfile)
-
-	p.Id = jsonProfile.Id
-	p.Policies = jsonProfile.Source.Policies
-
-	return p, nil
 }

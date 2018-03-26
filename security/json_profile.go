@@ -2,6 +2,7 @@ package security
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -33,6 +34,5 @@ func ProfileToJson(p *Profile) ([]byte, error) {
 			Policies: p.Policies,
 		},
 	}
-
 	return json.Marshal(j)
 }

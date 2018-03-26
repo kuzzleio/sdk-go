@@ -44,6 +44,7 @@ type KuzzleRequest struct {
 	Limit      string        `json:"limit,omitempty"`
 	Count      int           `json:"count,omitempty"`
 	Match      string        `json:"match,omitempty"`
+	Reset      bool          `json:"reset,omitempty"`
 }
 
 type SubscribeQuery struct {

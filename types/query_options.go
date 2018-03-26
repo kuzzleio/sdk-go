@@ -63,6 +63,8 @@ type QueryOptions interface {
 	SetWithdist(bool) *queryOptions
 	Withcoord() bool
 	SetWithcoord(bool) *queryOptions
+	Reset() bool
+	ID() string
 }
 
 type queryOptions struct {
@@ -97,6 +99,8 @@ type queryOptions struct {
 	unit            string
 	withcoord       bool
 	withdist        bool
+	reset           bool
+	_id             string
 }
 
 func (qo queryOptions) Queuable() bool {
@@ -376,6 +380,14 @@ func (qo *queryOptions) Withdist() bool {
 func (qo *queryOptions) SetWithdist(withdist bool) *queryOptions {
 	qo.withdist = withdist
 	return qo
+}
+
+func (qo *queryOptions) Reset() bool {
+	return qo.reset
+}
+
+func (qo *queryOptions) ID() string {
+	return qo._id
 }
 
 func NewQueryOptions() *queryOptions {

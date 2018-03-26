@@ -10,10 +10,11 @@ package main
 import "C"
 
 import (
+	"unsafe"
+
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
-	"unsafe"
 )
 
 // --- profile
@@ -64,7 +65,7 @@ func kuzzle_security_fetch_profile(k *C.kuzzle, id *C.char, o *C.query_options) 
 	result := (*C.profile_result)(C.calloc(1, C.sizeof_profile_result))
 	options := SetQueryOptions(o)
 
-	profile, err := (*kuzzle.Kuzzle)(k.instance).Security.FetchProfile(C.GoString(id), options)
+	profile, err := (*kuzzle.Kuzzle)(k.instance).Security.GetProfile(C.GoString(id), options)
 	if err != nil {
 		Set_profile_result_error(result, err)
 		return result
@@ -75,18 +76,10 @@ func kuzzle_security_fetch_profile(k *C.kuzzle, id *C.char, o *C.query_options) 
 	return result
 }
 
-//export kuzzle_security_scroll_profiles
-func kuzzle_security_scroll_profiles(k *C.kuzzle, s *C.char, o *C.query_options) *C.search_profiles_result {
-	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.ScrollProfiles(C.GoString(s), options)
-
-	return goToCProfileSearchResult(k, res, err)
-}
-
 //export kuzzle_security_search_profiles
-func kuzzle_security_search_profiles(k *C.kuzzle, f *C.search_filters, o *C.query_options) *C.search_profiles_result {
+func kuzzle_security_search_profiles(k *C.kuzzle, body *C.char, o *C.query_options) *C.search_profiles_result {
 	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchProfiles(cToGoSearchFilters(f), options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchProfiles(C.GoString(body), options)
 
 	return goToCProfileSearchResult(k, res, err)
 }
@@ -100,21 +93,19 @@ func kuzzle_security_profile_add_policy(p *C.profile, policy *C.policy) *C.profi
 }
 
 //export kuzzle_security_profile_delete
-func kuzzle_security_profile_delete(p *C.profile, o *C.query_options) *C.string_result {
+func kuzzle_security_profile_delete(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
 	options := SetQueryOptions(o)
-	profile := cToGoProfile(p)
-
-	res, err := profile.Delete(options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.DeleteProfile(C.GoString(id), options)
 
 	return goToCStringResult(&res, err)
 }
 
-//export kuzzle_security_profile_save
-func kuzzle_security_profile_save(p *C.profile, o *C.query_options) *C.profile_result {
+//export kuzzle_security_profile_create
+func kuzzle_security_profile_create(k *C.kuzzle, id, body *C.char, o *C.query_options) *C.profile_result {
 	options := SetQueryOptions(o)
-	res, err := cToGoProfile(p).Save(options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateProfile(C.GoString(id), C.GoString(body), options)
 
-	return goToCProfileResult(p.kuzzle, res, err)
+	return goToCProfileResult(k, res, err)
 }
 
 // --- role
@@ -145,12 +136,12 @@ func kuzzle_security_destroy_role(r *C.role) {
 	C.free(unsafe.Pointer(r))
 }
 
-//export kuzzle_security_fetch_role
-func kuzzle_security_fetch_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.role_result {
+//export kuzzle_security_get_role
+func kuzzle_security_get_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.role_result {
 	result := (*C.role_result)(C.calloc(1, C.sizeof_role_result))
 	options := SetQueryOptions(o)
 
-	role, err := (*kuzzle.Kuzzle)(k.instance).Security.FetchRole(C.GoString(id), options)
+	role, err := (*kuzzle.Kuzzle)(k.instance).Security.GetRole(C.GoString(id), options)
 	if err != nil {
 		Set_role_result_error(result, err)
 		return result
@@ -162,24 +153,17 @@ func kuzzle_security_fetch_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.
 }
 
 //export kuzzle_security_search_roles
-func kuzzle_security_search_roles(k *C.kuzzle, f *C.search_filters, o *C.query_options) *C.search_roles_result {
+func kuzzle_security_search_roles(k *C.kuzzle, body *C.char, o *C.query_options) *C.search_roles_result {
 	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchRoles(cToGoSearchFilters(f), options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchRoles(C.GoString(body), options)
 
 	return goToCRoleSearchResult(k, res, err)
 }
 
 //export kuzzle_security_role_delete
-func kuzzle_security_role_delete(r *C.role, o *C.query_options) *C.string_result {
-	result := (*C.string_result)(C.calloc(1, C.sizeof_string_result))
-	opts := SetQueryOptions(o)
-
-	role, err := cToGoRole(r)
-	if err != nil {
-		Set_string_result_error(result, err)
-		return result
-	}
-	res, err := role.Delete(opts)
+func kuzzle_security_role_delete(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
+	options := SetQueryOptions(o)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.DeleteRole(C.GoString(id), options)
 
 	return goToCStringResult(&res, err)
 }

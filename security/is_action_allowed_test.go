@@ -57,7 +57,7 @@ func TestIsActionAllowedResultDenied(t *testing.T) {
 	assert.Equal(t, security.ActionIsDenied, res)
 }
 
-func ExampleSecurityUser_IsActionAllowed() {
+func ExampleIsActionAllowed() {
 	userRights := []*types.UserRights{
 		{Controller: "wow-controller", Action: "*", Index: "much-index", Collection: "very-collection", Value: "allowed"},
 	}

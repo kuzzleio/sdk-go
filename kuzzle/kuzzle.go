@@ -59,7 +59,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.RequestHistory = k.socket.RequestHistory()
 	k.MemoryStorage = &ms.Ms{k}
-	k.Security = &security.Security{k}
+	k.Security = security.NewSecurity(k)
 	k.Auth = auth.NewAuth(k)
 
 	k.RequestHistory = k.socket.RequestHistory()
