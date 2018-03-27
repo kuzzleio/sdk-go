@@ -73,6 +73,8 @@ func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 func (c *MockedConnection) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChan chan<- interface{}) {
 }
 
+func (c *MockedConnection) CancelSubs() {}
+
 func (c *MockedConnection) UnregisterSub(roomID string) {}
 
 func (c *MockedConnection) RequestHistory() map[string]time.Time {
