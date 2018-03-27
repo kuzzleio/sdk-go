@@ -132,18 +132,6 @@ func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
 	k.socket.CancelSubs()
-	// rooms := k.socket.Rooms()
-	// if rooms != nil {
-	// 	k.socket.Rooms().Range(func(key, value interface{}) bool {
-	// 		value.(*sync.Map).Range(func(key, value interface{}) bool {
-	// 			room := value.(types.IRoom)
-	// 			room.Subscribe(room.RealtimeChannel())
-	// 			return true
-	// 		})
-
-	// 		return true
-	// 	})
-	// }
 }
 
 func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
