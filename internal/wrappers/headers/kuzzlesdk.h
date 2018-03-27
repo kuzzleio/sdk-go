@@ -291,6 +291,14 @@ typedef struct role_result {
     char *stack;
 } role_result;
 
+typedef struct roles_result {
+    role *roles;
+    size_t roles_length;
+    int status;
+    char *error;
+    char *stack;
+} roles_result;
+
 typedef struct {
     char *controller;
     char *action;
