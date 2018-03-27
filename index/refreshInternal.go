@@ -2,7 +2,7 @@ package index
 
 import "github.com/kuzzleio/sdk-go/types"
 
-func (i *Index) RefreshInternal() error {
+func (i *Index) RefreshInternal(options types.QueryOptions) error {
 
 	result := make(chan *types.KuzzleResponse)
 
@@ -10,7 +10,7 @@ func (i *Index) RefreshInternal() error {
 		Controller: "index",
 		Action:     "refreshInternal",
 	}
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 

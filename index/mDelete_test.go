@@ -17,7 +17,7 @@ func TestMDeleteNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	i := index.NewIndex(k)
 	indexes := []string{}
-	_, err := i.MDelete(indexes)
+	_, err := i.MDelete(indexes, nil)
 	assert.NotNil(t, err)
 }
 
@@ -30,7 +30,7 @@ func TestMDeleteQueryError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
 	indexes := []string{"index"}
-	_, err := i.MDelete(indexes)
+	_, err := i.MDelete(indexes, nil)
 	assert.NotNil(t, err)
 }
 
@@ -55,7 +55,7 @@ func TestMDelete(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
 	indexes := []string{"index1"}
-	res, err := i.MDelete(indexes)
+	res, err := i.MDelete(indexes, nil)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -66,13 +66,13 @@ func ExampleIndex_MDelete() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
-	i.Create("index1")
-	i.Create("index2")
+	i.Create("index1", nil)
+	i.Create("index2", nil)
 	indexes := []string{
 		"index1",
 		"index2",
 	}
-	_, err := i.MDelete(indexes)
+	_, err := i.MDelete(indexes, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

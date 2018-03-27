@@ -16,7 +16,7 @@ import (
 func TestRefreshNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	i := index.NewIndex(k)
-	err := i.Refresh("")
+	err := i.Refresh("", nil)
 	assert.NotNil(t, err)
 }
 
@@ -28,7 +28,7 @@ func TestRefreshQueryError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.Refresh("index")
+	err := i.Refresh("index", nil)
 	assert.NotNil(t, err)
 }
 
@@ -52,7 +52,7 @@ func TestRefresh(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.Refresh("index")
+	err := i.Refresh("index", nil)
 
 	assert.Nil(t, err)
 }
@@ -61,8 +61,8 @@ func ExampleIndex_Refresh() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
-	i.Create("index")
-	err := i.Refresh("index")
+	i.Create("index", nil)
+	err := i.Refresh("index", nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

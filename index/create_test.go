@@ -16,7 +16,7 @@ import (
 func TestCreateNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	i := index.NewIndex(k)
-	err := i.Create("")
+	err := i.Create("", nil)
 	assert.NotNil(t, err)
 }
 
@@ -28,7 +28,7 @@ func TestCreateQueryError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.Create("index")
+	err := i.Create("index", nil)
 	assert.NotNil(t, err)
 }
 
@@ -52,7 +52,7 @@ func TestCreate(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.Create("index")
+	err := i.Create("index", nil)
 
 	assert.Nil(t, err)
 }
@@ -61,7 +61,7 @@ func ExampleIndex_Create() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
-	err := i.Create("index")
+	err := i.Create("index", nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

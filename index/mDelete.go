@@ -8,7 +8,7 @@ import (
 )
 
 // Delete delete the index
-func (i *Index) MDelete(indexes []string) ([]string, error) {
+func (i *Index) MDelete(indexes []string, options types.QueryOptions) ([]string, error) {
 	if len(indexes) == 0 {
 		return nil, types.NewError("Index.MDelete: at least one index required", 400)
 	}
@@ -20,7 +20,7 @@ func (i *Index) MDelete(indexes []string) ([]string, error) {
 		Action:     "mDelete",
 		Body:       indexes,
 	}
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 

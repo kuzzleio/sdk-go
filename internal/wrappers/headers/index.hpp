@@ -13,15 +13,15 @@ namespace kuzzleio {
       Index(Kuzzle* kuzzle);
       Index(Kuzzle* kuzzle, kuzzle_index *index);
       virtual ~Index();
-      void create(const std::string& index) Kuz_Throw_KuzzleException;
-      void delete_(const std::string& index) Kuz_Throw_KuzzleException;
-      std::vector<std::string> mDelete(const std::vector<std::string>& indexes) Kuz_Throw_KuzzleException;
-      bool exists(const std::string& index) Kuz_Throw_KuzzleException;
-      void refresh(const std::string& index) Kuz_Throw_KuzzleException;
-      void refreshInternal() Kuz_Throw_KuzzleException;
-      void setAutoRefresh(const std::string& index, bool autoRefresh) Kuz_Throw_KuzzleException;
-      bool getAutoRefresh(const std::string& index) Kuz_Throw_KuzzleException;
-      std::vector<std::string> list() Kuz_Throw_KuzzleException;
+      void create(const std::string& index, query_options *options) Kuz_Throw_KuzzleException;
+      void delete_(const std::string& index, query_options *options) Kuz_Throw_KuzzleException;
+      std::vector<std::string> mDelete(const std::vector<std::string>& indexes, query_options *options) Kuz_Throw_KuzzleException;
+      bool exists(const std::string& index, query_options *options) Kuz_Throw_KuzzleException;
+      void refresh(const std::string& index, query_options *options) Kuz_Throw_KuzzleException;
+      void refreshInternal(query_options *options) Kuz_Throw_KuzzleException;
+      void setAutoRefresh(const std::string& index, bool autoRefresh, query_options *options) Kuz_Throw_KuzzleException;
+      bool getAutoRefresh(const std::string& index, query_options *options) Kuz_Throw_KuzzleException;
+      std::vector<std::string> list(query_options *options) Kuz_Throw_KuzzleException;
   };
 }
 

@@ -16,7 +16,7 @@ import (
 func TestSetAutoRefreshNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	i := index.NewIndex(k)
-	err := i.SetAutoRefresh("", true)
+	err := i.SetAutoRefresh("", true, nil)
 	assert.NotNil(t, err)
 }
 
@@ -28,7 +28,7 @@ func TestSetAutoRefreshQueryError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.SetAutoRefresh("index", true)
+	err := i.SetAutoRefresh("index", true, nil)
 	assert.NotNil(t, err)
 }
 
@@ -52,7 +52,7 @@ func TestSetAutoRefresh(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	err := i.SetAutoRefresh("index", true)
+	err := i.SetAutoRefresh("index", true, nil)
 
 	assert.Nil(t, err)
 }
@@ -61,7 +61,7 @@ func ExampleIndex_SetAutoRefresh() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
-	err := i.SetAutoRefresh("index", true)
+	err := i.SetAutoRefresh("index", true, nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

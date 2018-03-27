@@ -16,7 +16,7 @@ import (
 func TestExistsNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	i := index.NewIndex(k)
-	_, err := i.Exists("")
+	_, err := i.Exists("", nil)
 	assert.NotNil(t, err)
 }
 
@@ -28,7 +28,7 @@ func TestExistsQueryError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	_, err := i.Exists("index")
+	_, err := i.Exists("index", nil)
 	assert.NotNil(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestExists(t *testing.T) {
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	i := index.NewIndex(k)
-	res, err := i.Exists("index")
+	res, err := i.Exists("index", nil)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -64,8 +64,8 @@ func ExampleIndex_Exists() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
-	i.Create("index")
-	_, err := i.Exists("index")
+	i.Create("index", nil)
+	_, err := i.Exists("index", nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

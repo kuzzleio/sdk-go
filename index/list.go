@@ -8,7 +8,7 @@ import (
 )
 
 // List list all index
-func (i *Index) List() ([]string, error) {
+func (i *Index) List(options types.QueryOptions) ([]string, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -16,7 +16,7 @@ func (i *Index) List() ([]string, error) {
 		Action:     "list",
 	}
 
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 

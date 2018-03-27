@@ -5,7 +5,7 @@ import (
 )
 
 // Create a new empty data index, with no associated mapping.
-func (i *Index) Create(index string) error {
+func (i *Index) Create(index string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Index.Create: index required", 400)
 	}
@@ -17,7 +17,7 @@ func (i *Index) Create(index string) error {
 		Controller: "index",
 		Action:     "create",
 	}
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 

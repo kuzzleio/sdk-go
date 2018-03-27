@@ -7,7 +7,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (i *Index) GetAutoRefresh(index string) (bool, error) {
+func (i *Index) GetAutoRefresh(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Index.GetAutoRefresh: index required", 400)
 	}
