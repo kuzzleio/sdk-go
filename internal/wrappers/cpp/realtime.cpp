@@ -25,8 +25,8 @@ namespace kuzzleio {
     return ret;
   }
 
-  void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, callback cb) Kuz_Throw_KuzzleException {
-    void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), cb);
+  void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, callback cb) Kuz_Throw_KuzzleException {
+    void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, cb);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     kuzzle_free_void_result(r);

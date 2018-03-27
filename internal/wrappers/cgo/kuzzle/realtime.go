@@ -78,8 +78,8 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 }
 
 //export kuzzle_realtime_join
-func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, callback *C.callback) *C.void_result {
-	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), cToGoKuzzleNotificationChannel(callback))
+func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback *C.callback) *C.void_result {
+	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), cToGoRoomOptions(options), cToGoKuzzleNotificationChannel(callback))
 	return goToCVoidResult(err)
 }
 
