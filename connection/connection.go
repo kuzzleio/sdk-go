@@ -20,6 +20,7 @@ type Connection interface {
 	EmitEvent(int, interface{})
 	RegisterSub(string, string, json.RawMessage, chan<- types.KuzzleNotification, chan<- interface{})
 	UnregisterSub(string)
+	CancelSubs()
 	RequestHistory() map[string]time.Time
 	StartQueuing()
 	StopQueuing()

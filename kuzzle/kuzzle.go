@@ -131,6 +131,7 @@ func (k *Kuzzle) SetJwt(token string) {
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
+	k.socket.CancelSubs()
 	// rooms := k.socket.Rooms()
 	// if rooms != nil {
 	// 	k.socket.Rooms().Range(func(key, value interface{}) bool {

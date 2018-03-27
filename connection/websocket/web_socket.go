@@ -299,6 +299,18 @@ func (ws *webSocket) UnregisterSub(roomID string) {
 	}
 }
 
+func (ws *webSocket) CancelSubs() {
+	ws.subscriptions.Range(func(roomId, s interface{}) bool {
+		for _, sub := range s.(map[string]subscription) {
+			if sub.notificationChannel != nil {
+				close(sub.onReconnectChannel)
+			}
+			ws.subscriptions.Delete(roomId)
+		}
+		return true
+	})
+}
+
 func (ws *webSocket) listen() {
 	for {
 		msg := <-ws.listenChan
