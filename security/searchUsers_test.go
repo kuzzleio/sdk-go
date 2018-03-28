@@ -19,7 +19,7 @@ func TestSearchUsersError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.SearchUsers("", nil)
+	_, err := k.Security.SearchUsers(nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -41,7 +41,7 @@ func TestSearchUsers(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, _ := k.Security.SearchUsers("", nil)
+	res, _ := k.Security.SearchUsers(nil, nil)
 
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, 1, len(res.Hits))
@@ -53,7 +53,7 @@ func TestSearchUsers(t *testing.T) {
 func ExampleSearchUsers() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.SearchUsers("", nil)
+	res, err := k.Security.SearchUsers(nil, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -89,5 +89,5 @@ func TestSearchUsersWithScroll(t *testing.T) {
 	opts.SetSize(4)
 	opts.SetScroll("1m")
 
-	k.Security.SearchUsers("", opts)
+	k.Security.SearchUsers(nil, opts)
 }

@@ -7,7 +7,6 @@ import (
 type Profile struct {
 	Id       string `json:"_id"`
 	Policies []*types.Policy
-	Security *Security
 }
 
 type ProfileSearchResult struct {
@@ -16,10 +15,9 @@ type ProfileSearchResult struct {
 	ScrollId string `json:"scrollId"`
 }
 
-func (s *Security) NewProfile(id string, policies []*types.Policy) *Profile {
+func NewProfile(id string, policies []*types.Policy) *Profile {
 	return &Profile{
 		Id:       id,
 		Policies: policies,
-		Security: s,
 	}
 }

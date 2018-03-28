@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) SearchUsers(body string, options types.QueryOptions) (*UserSearchResult, error) {
+func (s *Security) SearchUsers(body json.RawMessage, options types.QueryOptions) (*UserSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -42,7 +42,7 @@ func (s *Security) SearchUsers(body string, options types.QueryOptions) (*UserSe
 	}
 
 	for _, j := range jsonSearchResult.Hits {
-		searchResult.Hits = append(searchResult.Hits, s.jsonUserToUser(j))
+		searchResult.Hits = append(searchResult.Hits, j.jsonUserToUser())
 	}
 
 	return searchResult, nil

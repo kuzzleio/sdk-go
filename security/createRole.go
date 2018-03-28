@@ -7,8 +7,8 @@ import (
 )
 
 // CreateRole creates or replaces (if _id matches an existing one) a Role with a list of policies.
-func (s *Security) CreateRole(id, body string, options types.QueryOptions) (*Role, error) {
-	if id == "" || body == "" {
+func (s *Security) CreateRole(id string, body json.RawMessage, options types.QueryOptions) (*Role, error) {
+	if id == "" || body == nil {
 		return nil, types.NewError("Kuzzle.CreateRole: id and body are required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)

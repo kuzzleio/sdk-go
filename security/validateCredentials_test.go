@@ -23,7 +23,7 @@ func TestValidateCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.ValidateCredentials("local", "someId", "body", nil)
+	_, err := k.Security.ValidateCredentials("local", "someId", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -34,7 +34,7 @@ func TestValidateCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.ValidateCredentials("", "someId", "body", nil)
+	_, err := k.Security.ValidateCredentials("", "someId", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestValidateCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.ValidateCredentials("local", "", "body", nil)
+	_, err := k.Security.ValidateCredentials("local", "", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -67,7 +67,7 @@ func TestValidateCredentials(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.ValidateCredentials("local", "someId", "body", nil)
+	res, err := k.Security.ValidateCredentials("local", "someId", []byte(`{"body": "test"}`), nil)
 	assert.Nil(t, err)
 	assert.Equal(t, true, res)
 }
@@ -75,7 +75,7 @@ func TestValidateCredentials(t *testing.T) {
 func ExampleSecurity_ValidateCredentials() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.ValidateCredentials("local", "someId", "body", nil)
+	res, err := k.Security.ValidateCredentials("local", "someId", []byte(`{"body": "test"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

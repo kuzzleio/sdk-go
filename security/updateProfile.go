@@ -6,8 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateProfile(id, body string, options types.QueryOptions) (*Profile, error) {
-	if id == "" || body == "" {
+func (s *Security) UpdateProfile(id string, body json.RawMessage, options types.QueryOptions) (*Profile, error) {
+	if id == "" || body == nil {
 		return nil, types.NewError("Security.UpdateProfile: id and body are required", 400)
 	}
 

@@ -8,7 +8,6 @@ type User struct {
 	Id         string                 `json:"_id"`
 	Content    map[string]interface{} `json:"_source"`
 	ProfileIds []string
-	Security   *Security
 }
 
 type UserSearchResult struct {
@@ -17,10 +16,9 @@ type UserSearchResult struct {
 	ScrollId string
 }
 
-func (s *Security) NewUser(id string, content *types.UserData) *User {
+func NewUser(id string, content *types.UserData) *User {
 	u := &User{
-		Id:       id,
-		Security: s,
+		Id: id,
 	}
 
 	if content != nil {

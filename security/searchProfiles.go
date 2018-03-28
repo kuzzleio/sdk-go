@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) SearchProfiles(body string, options types.QueryOptions) (*ProfileSearchResult, error) {
+func (s *Security) SearchProfiles(body json.RawMessage, options types.QueryOptions) (*ProfileSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -41,8 +41,7 @@ func (s *Security) SearchProfiles(body string, options types.QueryOptions) (*Pro
 		Total:    jsonSearchResult.Total,
 	}
 	for _, j := range jsonSearchResult.Hits {
-		p := s.jsonProfileToProfile(j)
-		p.Security = s
+		p := j.jsonProfileToProfile()
 		searchResult.Hits = append(searchResult.Hits, p)
 	}
 

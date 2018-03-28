@@ -65,7 +65,7 @@ func TestGetRole(t *testing.T) {
 					},
 				},
 			}
-			r, _ := security.RoleToJson(&res)
+			r, _ := (&res).RoleToJson()
 			return &types.KuzzleResponse{Result: r}
 		},
 	}

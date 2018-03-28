@@ -1,11 +1,13 @@
 package security
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateRoleMapping(body string, options types.QueryOptions) error {
-	if body == "" {
+func (s *Security) UpdateRoleMapping(body json.RawMessage, options types.QueryOptions) error {
+	if body == nil {
 		return types.NewError("Security.UpdateRoleMapping: body is required", 400)
 	}
 

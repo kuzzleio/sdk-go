@@ -2,6 +2,7 @@ package security
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -16,10 +17,9 @@ type jsonUserSearchResult struct {
 	ScrollId string      `json:"scrollId"`
 }
 
-func (s *Security) jsonUserToUser(j *jsonUser) *User {
+func (j *jsonUser) jsonUserToUser() *User {
 	u := &User{
-		Id:       j.Id,
-		Security: s,
+		Id: j.Id,
 	}
 
 	userData := &types.UserData{}

@@ -21,7 +21,7 @@ func TestSearchProfileError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.SearchProfiles("", nil)
+	_, err := k.Security.SearchProfiles(nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,7 +43,7 @@ func TestSearchProfile(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, _ := k.Security.SearchProfiles("", nil)
+	res, _ := k.Security.SearchProfiles(nil, nil)
 
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, "profile42", res.Hits[0].Id)
@@ -55,7 +55,7 @@ func TestSearchProfile(t *testing.T) {
 func ExampleSearchProfiles() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.SearchProfiles("", nil)
+	res, err := k.Security.SearchProfiles(nil, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -90,7 +90,7 @@ func TestSearchProfileWithScroll(t *testing.T) {
 	opts.SetSize(4)
 	opts.SetScroll("1m")
 
-	res, _ := k.Security.SearchProfiles("", opts)
+	res, _ := k.Security.SearchProfiles(nil, opts)
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, 1, len(res.Hits))
 	assert.Equal(t, []*types.Policy{

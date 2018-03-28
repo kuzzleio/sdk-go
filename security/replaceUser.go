@@ -7,8 +7,8 @@ import (
 )
 
 // ReplaceUser replaces the matching user with the given one
-func (s *Security) ReplaceUser(id, content string, options types.QueryOptions) (*User, error) {
-	if id == "" || content == "" {
+func (s *Security) ReplaceUser(id string, content json.RawMessage, options types.QueryOptions) (*User, error) {
+	if id == "" || content == nil {
 		return nil, types.NewError("Security.ReplaceUser: id and content are required", 400)
 	}
 
@@ -29,7 +29,9 @@ func (s *Security) ReplaceUser(id, content string, options types.QueryOptions) (
 	}
 
 	var replaced *User
-	json.Unmarshal(res.Result, &replaced)
+	var rawReplaced *jsonUser
+	json.Unmarshal(res.Result, &rawReplaced)
+	replaced = rawReplaced.jsonUserToUser()
 
 	return replaced, nil
 

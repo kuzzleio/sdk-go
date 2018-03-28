@@ -70,7 +70,7 @@ func cToGoRole(crole *C.role) (*security.Role, error) {
 		controllers = c
 	}
 
-	role := (*kuzzle.Kuzzle)(crole.kuzzle.instance).Security.NewRole(id, controllers)
+	role := security.NewRole(id, controllers)
 
 	return role, nil
 }
@@ -161,8 +161,7 @@ func cToGoPolicy(p *C.policy) *types.Policy {
 
 func cToGoProfile(p *C.profile) *security.Profile {
 	profile := &security.Profile{
-		Id:       C.GoString(p.id),
-		Security: (*kuzzle.Kuzzle)(p.kuzzle.instance).Security,
+		Id: C.GoString(p.id),
 	}
 
 	if p.policies == nil {
@@ -207,7 +206,7 @@ func cToGoUser(u *C.user) *security.User {
 		return nil
 	}
 
-	user := (*kuzzle.Kuzzle)(u.kuzzle.instance).Security.NewUser(C.GoString(u.id), nil)
+	user := security.NewUser(C.GoString(u.id), nil)
 
 	return user
 }

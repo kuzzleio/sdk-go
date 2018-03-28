@@ -7,8 +7,8 @@ import (
 )
 
 // CreateOrReplaceRole creates or replaces (if _id matches an existing one) a Role with a list of policies.
-func (s *Security) CreateOrReplaceRole(id, body string, options types.QueryOptions) (*Role, error) {
-	if body == "" {
+func (s *Security) CreateOrReplaceRole(id string, body json.RawMessage, options types.QueryOptions) (*Role, error) {
+	if body == nil {
 		return nil, types.NewError("Kuzzle.CreateOrReplaceRole: body is required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)

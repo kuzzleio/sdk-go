@@ -6,8 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateUser(id, body string, options types.QueryOptions) (*User, error) {
-	if id == "" || body == "" {
+func (s *Security) UpdateUser(id string, body json.RawMessage, options types.QueryOptions) (*User, error) {
+	if id == "" || body == nil {
 		return nil, types.NewError("Security.UpdateUser: id and body are required", 400)
 	}
 
@@ -27,8 +27,10 @@ func (s *Security) UpdateUser(id, body string, options types.QueryOptions) (*Use
 		return nil, res.Error
 	}
 
+	var rawUpdated *jsonUser
 	var updated *User
-	json.Unmarshal(res.Result, &updated)
+	json.Unmarshal(res.Result, &rawUpdated)
+	updated = rawUpdated.jsonUserToUser()
 
 	return updated, nil
 }

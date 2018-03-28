@@ -34,7 +34,7 @@ func (s *Security) MGetProfiles(ids []string, options types.QueryOptions) ([]*Pr
 	json.Unmarshal(res.Result, &fetchedRaw)
 
 	for _, jsonProfileRaw := range fetchedRaw.Hits {
-		fetchedProfiles = append(fetchedProfiles, s.jsonProfileToProfile(jsonProfileRaw))
+		fetchedProfiles = append(fetchedProfiles, jsonProfileRaw.jsonProfileToProfile())
 	}
 
 	return fetchedProfiles, nil

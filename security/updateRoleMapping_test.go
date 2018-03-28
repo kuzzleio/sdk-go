@@ -12,7 +12,7 @@ import (
 
 func TestUpdateRoleMappingBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	err := k.Security.UpdateRoleMapping("", nil)
+	err := k.Security.UpdateRoleMapping(nil, nil)
 	assert.Error(t, err)
 }
 
@@ -25,7 +25,7 @@ func TestUpdateRoleMappingError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateRoleMapping("body", nil)
+	err := k.Security.UpdateRoleMapping([]byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
@@ -37,13 +37,12 @@ func TestUpdateRoleMapping(t *testing.T) {
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "updateRoleMapping", parsedQuery.Action)
-			assert.Equal(t, "body", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{ "acknowledged" : true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	err := k.Security.UpdateRoleMapping("body", nil)
+	err := k.Security.UpdateRoleMapping([]byte(`{"body": "test"}`), nil)
 	assert.NoError(t, err)
 }

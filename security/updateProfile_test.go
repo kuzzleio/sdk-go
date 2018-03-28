@@ -12,13 +12,13 @@ import (
 
 func TestUpdateProfileIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.UpdateProfile("", "body", nil)
+	_, err := k.Security.UpdateProfile("", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
 func TestUpdateProfileBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.UpdateProfile("id", "", nil)
+	_, err := k.Security.UpdateProfile("id", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -31,7 +31,7 @@ func TestUpdateProfileError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.UpdateProfile("id", "body", nil)
+	_, err := k.Security.UpdateProfile("id", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
@@ -44,7 +44,6 @@ func TestUpdateProfile(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "updateProfile", parsedQuery.Action)
 			assert.Equal(t, "id", parsedQuery.Id)
-			assert.Equal(t, "body", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{
           "_id": "id",
@@ -57,7 +56,7 @@ func TestUpdateProfile(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.Security.UpdateProfile("id", "body", nil)
+	res, err := k.Security.UpdateProfile("id", []byte(`{"body": "test"}`), nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.Equal(t, "id", res.Id)

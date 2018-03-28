@@ -34,7 +34,7 @@ func (s *Security) MGetRoles(ids []string, options types.QueryOptions) ([]*Role,
 	json.Unmarshal(res.Result, &fetchedRaw)
 
 	for _, jsonRoleRaw := range fetchedRaw.Hits {
-		fetchedRoles = append(fetchedRoles, s.jsonRoleToRole(jsonRoleRaw))
+		fetchedRoles = append(fetchedRoles, jsonRoleRaw.jsonRoleToRole())
 	}
 
 	return fetchedRoles, nil

@@ -6,8 +6,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateRole(id, body string, options types.QueryOptions) (*Role, error) {
-	if id == "" || body == "" {
+func (s *Security) UpdateRole(id string, body json.RawMessage, options types.QueryOptions) (*Role, error) {
+	if id == "" || body == nil {
 		return nil, types.NewError("Security.UpdateRole: id and body are required", 400)
 	}
 

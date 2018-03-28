@@ -30,5 +30,5 @@ func (s *Security) GetProfile(id string, options types.QueryOptions) (*Profile, 
 	jsonProfile := &jsonProfile{}
 	json.Unmarshal(res.Result, jsonProfile)
 
-	return s.jsonProfileToProfile(jsonProfile), nil
+	return jsonProfile.jsonProfileToProfile(), nil
 }

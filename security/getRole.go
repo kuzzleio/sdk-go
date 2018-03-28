@@ -29,5 +29,5 @@ func (s *Security) GetRole(id string, options types.QueryOptions) (*Role, error)
 	jsonRole := &jsonRole{}
 	json.Unmarshal(res.Result, jsonRole)
 
-	return s.jsonRoleToRole(jsonRole), nil
+	return jsonRole.jsonRoleToRole(), nil
 }

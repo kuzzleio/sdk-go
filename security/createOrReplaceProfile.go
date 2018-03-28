@@ -7,8 +7,8 @@ import (
 )
 
 // CreateOrReplaceProfile creates or replaces (if _id matches an existing one) a profile with a list of policies.
-func (s *Security) CreateOrReplaceProfile(id, body string, options types.QueryOptions) (*Profile, error) {
-	if body == "" {
+func (s *Security) CreateOrReplaceProfile(id string, body json.RawMessage, options types.QueryOptions) (*Profile, error) {
+	if body == nil {
 		return nil, types.NewError("Kuzzle.CreateOrReplaceProfile: body is required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)

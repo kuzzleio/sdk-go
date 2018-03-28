@@ -12,7 +12,7 @@ import (
 
 func TestCreateFirstAdminBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateFirstAdmin("", nil)
+	_, err := k.Security.CreateFirstAdmin(nil, nil)
 	assert.Error(t, err)
 }
 
@@ -24,7 +24,7 @@ func TestCreateFirstAdminError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateFirstAdmin("body", nil)
+	_, err := k.Security.CreateFirstAdmin([]byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -36,14 +36,13 @@ func TestCreateFirstAdmin(t *testing.T) {
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "createFirstAdmin", parsedQuery.Action)
-			assert.Equal(t, "myFirstAdmin", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte{}}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.CreateFirstAdmin("myFirstAdmin", nil)
+	_, err := k.Security.CreateFirstAdmin([]byte(`{"body": "test"}`), nil)
 
 	assert.Nil(t, err)
 }

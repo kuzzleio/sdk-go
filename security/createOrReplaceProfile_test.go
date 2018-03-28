@@ -12,7 +12,7 @@ import (
 
 func TestCreateOrReplaceProfileBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateOrReplaceProfile("id", "", nil)
+	_, err := k.Security.CreateOrReplaceProfile("id", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -24,7 +24,7 @@ func TestCreateOrReplaceProfileError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateOrReplaceProfile("id", "body", nil)
+	_, err := k.Security.CreateOrReplaceProfile("id", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,6 @@ func TestCreateOrReplaceProfile(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "createOrReplaceProfile", parsedQuery.Action)
 			assert.Equal(t, "id", parsedQuery.Id)
-			assert.Equal(t, "newProfile", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{
 			    "_id": "id",
@@ -50,7 +49,7 @@ func TestCreateOrReplaceProfile(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.CreateOrReplaceProfile("id", "newProfile", nil)
+	res, err := k.Security.CreateOrReplaceProfile("id", []byte(`{"body": "test"}`), nil)
 	assert.Equal(t, "id", res.Id)
 	assert.Nil(t, err)
 }

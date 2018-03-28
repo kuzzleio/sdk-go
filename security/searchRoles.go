@@ -6,7 +6,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) SearchRoles(body string, options types.QueryOptions) (*RoleSearchResult, error) {
+func (s *Security) SearchRoles(body json.RawMessage, options types.QueryOptions) (*RoleSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -39,7 +39,7 @@ func (s *Security) SearchRoles(body string, options types.QueryOptions) (*RoleSe
 		Total: jsonSearchResult.Total,
 	}
 	for _, j := range jsonSearchResult.Hits {
-		r := s.jsonRoleToRole(j)
+		r := j.jsonRoleToRole()
 		searchResult.Hits = append(searchResult.Hits, r)
 	}
 

@@ -12,13 +12,13 @@ import (
 
 func TestCreateRoleIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateRole("", "body", nil)
+	_, err := k.Security.CreateRole("", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
 func TestCreateRoleBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateRole("id", "", nil)
+	_, err := k.Security.CreateRole("id", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -30,7 +30,7 @@ func TestCreateRoleError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateRole("id", "body", nil)
+	_, err := k.Security.CreateRole("id", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -43,14 +43,13 @@ func TestCreateRole(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "createRole", parsedQuery.Action)
 			assert.Equal(t, "id", parsedQuery.Id)
-			assert.Equal(t, "newRole", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte{}}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.CreateRole("id", "newRole", nil)
+	_, err := k.Security.CreateRole("id", []byte(`{"body": "test"}`), nil)
 
 	assert.Nil(t, err)
 }

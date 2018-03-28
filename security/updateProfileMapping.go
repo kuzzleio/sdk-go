@@ -1,11 +1,13 @@
 package security
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func (s *Security) UpdateProfileMapping(body string, options types.QueryOptions) error {
-	if body == "" {
+func (s *Security) UpdateProfileMapping(body json.RawMessage, options types.QueryOptions) error {
+	if body == nil {
 		return types.NewError("Security.UpdateProfileMapping: body is required", 400)
 	}
 

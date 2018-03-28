@@ -7,8 +7,8 @@ import (
 )
 
 // CreateUser creates or replaces (if _id matches an existing one) a User with a list of policies.
-func (s *Security) CreateUser(body string, options types.QueryOptions) (json.RawMessage, error) {
-	if body == "" {
+func (s *Security) CreateUser(body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+	if body == nil {
 		return nil, types.NewError("Kuzzle.CreateUser: body is required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)

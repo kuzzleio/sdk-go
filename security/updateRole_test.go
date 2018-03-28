@@ -12,13 +12,13 @@ import (
 
 func TestUpdateRoleIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.UpdateRole("", "body", nil)
+	_, err := k.Security.UpdateRole("", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
 func TestUpdateRoleBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.UpdateRole("id", "", nil)
+	_, err := k.Security.UpdateRole("id", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -31,7 +31,7 @@ func TestUpdateRoleError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.UpdateRole("id", "body", nil)
+	_, err := k.Security.UpdateRole("id", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
@@ -44,7 +44,6 @@ func TestUpdateRole(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "updateRole", parsedQuery.Action)
 			assert.Equal(t, "id", parsedQuery.Id)
-			assert.Equal(t, "body", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{
           "_id": "id",
@@ -57,7 +56,7 @@ func TestUpdateRole(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	res, err := k.Security.UpdateRole("id", "body", nil)
+	res, err := k.Security.UpdateRole("id", []byte(`{"body": "test"}`), nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.Equal(t, "id", res.Id)

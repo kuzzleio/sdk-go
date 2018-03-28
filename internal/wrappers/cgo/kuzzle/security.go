@@ -10,6 +10,7 @@ package main
 import "C"
 
 import (
+	"encoding/json"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -148,15 +149,19 @@ func kuzzle_security_get_profile(k *C.kuzzle, id *C.char, o *C.query_options) *C
 }
 
 //export kuzzle_security_get_profile_rights
-func kuzzle_security_get_profile_rights(k *C.kuzzle, id *C.char, o *C.query_options) *C.json_result {
+func kuzzle_security_get_profile_rights(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetProfileRights(C.GoString(id), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_profile_mapping
-func kuzzle_security_get_profile_mapping(k *C.kuzzle, o *C.query_options) *C.json_result {
+func kuzzle_security_get_profile_mapping(k *C.kuzzle, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetProfileMapping(SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_role
@@ -176,9 +181,11 @@ func kuzzle_security_get_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.ro
 }
 
 //export kuzzle_security_get_role_mapping
-func kuzzle_security_get_role_mapping(k *C.kuzzle, o *C.query_options) *C.json_result {
+func kuzzle_security_get_role_mapping(k *C.kuzzle, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetRoleMapping(SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_user
@@ -188,45 +195,57 @@ func kuzzle_security_get_user(k *C.kuzzle, id *C.char, o *C.query_options) *C.us
 }
 
 //export kuzzle_security_get_user_rights
-func kuzzle_security_get_user_rights(k *C.kuzzle, id *C.char, o *C.query_options) *C.json_result {
+func kuzzle_security_get_user_rights(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetUserRights(C.GoString(id), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_user_mapping
-func kuzzle_security_get_user_mapping(k *C.kuzzle, o *C.query_options) *C.json_result {
+func kuzzle_security_get_user_mapping(k *C.kuzzle, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetUserMapping(SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_credential_fields
-func kuzzle_security_get_credential_fields(k *C.kuzzle, strategy *C.char, o *C.query_options) *C.json_result {
+func kuzzle_security_get_credential_fields(k *C.kuzzle, strategy *C.char, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetCredentialFields(C.GoString(strategy), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_all_credential_fields
-func kuzzle_security_get_all_credential_fields(k *C.kuzzle, o *C.query_options) *C.json_result {
+func kuzzle_security_get_all_credential_fields(k *C.kuzzle, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetAllCredentialFields(SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_credential
-func kuzzle_security_get_credential(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.json_result {
+func kuzzle_security_get_credential(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetCredentials(C.GoString(strategy), C.GoString(id), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_get_credential_by_id
-func kuzzle_security_get_credential_by_id(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.json_result {
+func kuzzle_security_get_credential_by_id(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.GetCredentialsByID(C.GoString(strategy), C.GoString(id), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_search_profiles
 func kuzzle_security_search_profiles(k *C.kuzzle, body *C.char, o *C.query_options) *C.search_profiles_result {
 	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchProfiles(C.GoString(body), options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchProfiles(json.RawMessage(C.GoString(body)), options)
 
 	return goToCProfileSearchResult(k, res, err)
 }
@@ -234,14 +253,14 @@ func kuzzle_security_search_profiles(k *C.kuzzle, body *C.char, o *C.query_optio
 //export kuzzle_security_search_roles
 func kuzzle_security_search_roles(k *C.kuzzle, body *C.char, o *C.query_options) *C.search_roles_result {
 	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchRoles(C.GoString(body), options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchRoles(json.RawMessage(C.GoString(body)), options)
 
 	return goToCRoleSearchResult(k, res, err)
 }
 
 //export kuzzle_security_search_users
 func kuzzle_security_search_users(k *C.kuzzle, body *C.char, o *C.query_options) *C.search_users_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchUsers(C.GoString(body), SetQueryOptions(o))
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.SearchUsers(json.RawMessage(C.GoString(body)), SetQueryOptions(o))
 	return goToCUserSearchResult(k, res, err)
 }
 
@@ -249,7 +268,6 @@ func kuzzle_security_search_users(k *C.kuzzle, body *C.char, o *C.query_options)
 func kuzzle_security_delete_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
 	options := SetQueryOptions(o)
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.DeleteRole(C.GoString(id), options)
-
 	return goToCStringResult(&res, err)
 }
 
@@ -257,7 +275,6 @@ func kuzzle_security_delete_role(k *C.kuzzle, id *C.char, o *C.query_options) *C
 func kuzzle_security_delete_profile(k *C.kuzzle, id *C.char, o *C.query_options) *C.string_result {
 	options := SetQueryOptions(o)
 	res, err := (*kuzzle.Kuzzle)(k.instance).Security.DeleteProfile(C.GoString(id), options)
-
 	return goToCStringResult(&res, err)
 }
 
@@ -276,7 +293,7 @@ func kuzzle_security_delete_credentials(k *C.kuzzle, strategy, id *C.char, o *C.
 //export kuzzle_security_create_profile
 func kuzzle_security_create_profile(k *C.kuzzle, id, body *C.char, o *C.query_options) *C.profile_result {
 	options := SetQueryOptions(o)
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateProfile(C.GoString(id), C.GoString(body), options)
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateProfile(C.GoString(id), json.RawMessage(C.GoString(body)), options)
 
 	return goToCProfileResult(k, res, err)
 }
@@ -286,7 +303,7 @@ func kuzzle_security_create_role(k *C.kuzzle, id, body *C.char, o *C.query_optio
 	result := (*C.role_result)(C.calloc(1, C.sizeof_role_result))
 	options := SetQueryOptions(o)
 
-	role, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateRole(C.GoString(id), C.GoString(body), options)
+	role, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateRole(C.GoString(id), json.RawMessage(C.GoString(body)), options)
 	if err != nil {
 		Set_role_result_error(result, err)
 		return result
@@ -298,39 +315,47 @@ func kuzzle_security_create_role(k *C.kuzzle, id, body *C.char, o *C.query_optio
 }
 
 //export kuzzle_security_create_user
-func kuzzle_security_create_user(k *C.kuzzle, body *C.char, o *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateUser(C.GoString(body), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+func kuzzle_security_create_user(k *C.kuzzle, body *C.char, o *C.query_options) *C.string_result {
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateUser(json.RawMessage(C.GoString(body)), SetQueryOptions(o))
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_create_credentials
-func kuzzle_security_create_credentials(k *C.kuzzle, cstrategy, id, body *C.char, o *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateCredentials(C.GoString(cstrategy), C.GoString(id), C.GoString(body), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+func kuzzle_security_create_credentials(k *C.kuzzle, cstrategy, id, body *C.char, o *C.query_options) *C.string_result {
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateCredentials(C.GoString(cstrategy), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_create_restricted_user
-func kuzzle_security_create_restricted_user(k *C.kuzzle, body *C.char, o *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateRestrictedUser(C.GoString(body), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+func kuzzle_security_create_restricted_user(k *C.kuzzle, body *C.char, o *C.query_options) *C.string_result {
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateRestrictedUser(json.RawMessage(C.GoString(body)), SetQueryOptions(o))
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_create_first_admin
-func kuzzle_security_create_first_admin(k *C.kuzzle, body *C.char, o *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateFirstAdmin(C.GoString(body), SetQueryOptions(o))
-	return goToCJsonResult(res, err)
+func kuzzle_security_create_first_admin(k *C.kuzzle, body *C.char, o *C.query_options) *C.string_result {
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateFirstAdmin(json.RawMessage(C.GoString(body)), SetQueryOptions(o))
+	var result string
+	json.Unmarshal(res, result)
+	return goToCStringResult(&result, err)
 }
 
 //export kuzzle_security_create_or_replace_profile
 func kuzzle_security_create_or_replace_profile(k *C.kuzzle, id, body *C.char, o *C.query_options) *C.profile_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateOrReplaceProfile(C.GoString(id), C.GoString(body), SetQueryOptions(o))
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateOrReplaceProfile(C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
 	return goToCProfileResult(k, res, err)
 }
 
 //export kuzzle_security_create_or_replace_role
 func kuzzle_security_create_or_replace_role(k *C.kuzzle, id, body *C.char, o *C.query_options) *C.role_result {
 	result := (*C.role_result)(C.calloc(1, C.sizeof_role_result))
-	role, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateOrReplaceRole(C.GoString(id), C.GoString(body), SetQueryOptions(o))
+	role, err := (*kuzzle.Kuzzle)(k.instance).Security.CreateOrReplaceRole(C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
 	if err != nil {
 		Set_role_result_error(result, err)
 		return result
@@ -349,13 +374,13 @@ func kuzzle_security_has_credentials(k *C.kuzzle, strategy *C.char, id *C.char, 
 
 //export kuzzle_security_replace_user
 func kuzzle_security_replace_user(k *C.kuzzle, id, content *C.char, o *C.query_options) *C.user_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.ReplaceUser(C.GoString(id), C.GoString(content), SetQueryOptions(o))
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.ReplaceUser(C.GoString(id), json.RawMessage(C.GoString(content)), SetQueryOptions(o))
 	return goToCUserResult(k, res, err)
 }
 
 //export kuzzle_security_update_credentials
 func kuzzle_security_update_credentials(k *C.kuzzle, strategy *C.char, id *C.char, body *C.char, o *C.query_options) *C.void_result {
-	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateCredentials(C.GoString(strategy), C.GoString(id), C.GoString(body), SetQueryOptions(o))
+	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateCredentials(C.GoString(strategy), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
 	return goToCVoidResult(err)
 }
 
@@ -364,7 +389,7 @@ func kuzzle_security_update_profile(k *C.kuzzle, id *C.char, body *C.char, o *C.
 	result := (*C.profile_result)(C.calloc(1, C.sizeof_profile_result))
 	options := SetQueryOptions(o)
 
-	profile, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateProfile(C.GoString(id), C.GoString(body), options)
+	profile, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateProfile(C.GoString(id), json.RawMessage(C.GoString(body)), options)
 	if err != nil {
 		Set_profile_result_error(result, err)
 		return result
@@ -378,7 +403,7 @@ func kuzzle_security_update_profile(k *C.kuzzle, id *C.char, body *C.char, o *C.
 //export kuzzle_security_update_profile_mapping
 func kuzzle_security_update_profile_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
 	options := SetQueryOptions(o)
-	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateProfileMapping(C.GoString(body), options)
+	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateProfileMapping(json.RawMessage(C.GoString(body)), options)
 	return goToCVoidResult(err)
 }
 
@@ -387,7 +412,7 @@ func kuzzle_security_update_role(k *C.kuzzle, id *C.char, body *C.char, o *C.que
 	result := (*C.role_result)(C.calloc(1, C.sizeof_role_result))
 	options := SetQueryOptions(o)
 
-	role, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateRole(C.GoString(id), C.GoString(body), options)
+	role, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateRole(C.GoString(id), json.RawMessage(C.GoString(body)), options)
 	if err != nil {
 		Set_role_result_error(result, err)
 		return result
@@ -401,20 +426,20 @@ func kuzzle_security_update_role(k *C.kuzzle, id *C.char, body *C.char, o *C.que
 //export kuzzle_security_update_role_mapping
 func kuzzle_security_update_role_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
 	options := SetQueryOptions(o)
-	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateRoleMapping(C.GoString(body), options)
+	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateRoleMapping(json.RawMessage(C.GoString(body)), options)
 	return goToCVoidResult(err)
 }
 
 //export kuzzle_security_update_user
 func kuzzle_security_update_user(k *C.kuzzle, id *C.char, body *C.char, o *C.query_options) *C.user_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateUser(C.GoString(id), C.GoString(body), SetQueryOptions(o))
+	res, err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateUser(C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
 	return goToCUserResult(k, res, err)
 }
 
 //export kuzzle_security_update_user_mapping
 func kuzzle_security_update_user_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
 	options := SetQueryOptions(o)
-	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateUserMapping(C.GoString(body), options)
+	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateUserMapping(json.RawMessage(C.GoString(body)), options)
 	return goToCVoidResult(err)
 }
 

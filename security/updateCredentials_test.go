@@ -23,7 +23,7 @@ func TestUpdateCredentialsQueryError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateCredentials("local", "someId", "", nil)
+	err := k.Security.UpdateCredentials("local", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -34,7 +34,7 @@ func TestUpdateCredentialsEmptyStrategy(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateCredentials("", "someId", "", nil)
+	err := k.Security.UpdateCredentials("", "someId", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestUpdateCredentialsEmptyKuid(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateCredentials("local", "", "", nil)
+	err := k.Security.UpdateCredentials("local", "", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -63,14 +63,14 @@ func TestUpdateCredentials(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	err := k.Security.UpdateCredentials("local", "someId", "body", nil)
+	err := k.Security.UpdateCredentials("local", "someId", []byte(`{"body": "test"}`), nil)
 	assert.Nil(t, err)
 }
 
 func ExampleSecurity_UpdateCredentials() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateCredentials("local", "someId", "body", nil)
+	err := k.Security.UpdateCredentials("local", "someId", []byte(`{"body": "test"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

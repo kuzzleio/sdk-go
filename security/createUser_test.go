@@ -12,7 +12,7 @@ import (
 
 func TestCreateUserBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateUser("", nil)
+	_, err := k.Security.CreateUser(nil, nil)
 	assert.Error(t, err)
 }
 
@@ -24,7 +24,7 @@ func TestCreateUserError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateUser("body", nil)
+	_, err := k.Security.CreateUser([]byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -36,14 +36,13 @@ func TestCreateUser(t *testing.T) {
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "createUser", parsedQuery.Action)
-			assert.Equal(t, "newUser", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte{}}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.CreateUser("newUser", nil)
+	res, err := k.Security.CreateUser([]byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, res)
 	assert.Nil(t, err)
 }

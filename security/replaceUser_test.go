@@ -12,14 +12,14 @@ import (
 
 func TestReplaceUserIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	res, err := k.Security.ReplaceUser("", "content", nil)
+	res, err := k.Security.ReplaceUser("", []byte(`{"body": "test"}`), nil)
 	assert.Nil(t, res)
 	assert.Error(t, err)
 }
 
 func TestReplaceUserContentNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	res, err := k.Security.ReplaceUser("id", "", nil)
+	res, err := k.Security.ReplaceUser("id", nil, nil)
 	assert.Nil(t, res)
 	assert.Error(t, err)
 }
@@ -31,7 +31,7 @@ func TestReplaceUserError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.ReplaceUser("id", "content", nil)
+	res, err := k.Security.ReplaceUser("id", []byte(`{"body": "test"}`), nil)
 	assert.Nil(t, res)
 	assert.Error(t, err)
 }
@@ -45,7 +45,6 @@ func TestReplaceUser(t *testing.T) {
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "replaceUser", request.Action)
 			assert.Equal(t, "id", request.Id)
-			assert.Equal(t, "content", request.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{
           "_id": "id",
@@ -59,7 +58,7 @@ func TestReplaceUser(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.ReplaceUser("id", "content", nil)
+	res, err := k.Security.ReplaceUser("id", []byte(`{"body": "test"}`), nil)
 	assert.NoError(t, err)
 	assert.Equal(t, "id", res.Id)
 }

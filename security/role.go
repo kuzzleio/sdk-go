@@ -7,7 +7,6 @@ import (
 type Role struct {
 	Id          string `json:"_id"`
 	Controllers map[string]*types.Controller
-	Security    *Security
 }
 
 type RoleSearchResult struct {
@@ -15,10 +14,9 @@ type RoleSearchResult struct {
 	Total int
 }
 
-func (s *Security) NewRole(id string, controllers *types.Controllers) *Role {
+func NewRole(id string, controllers *types.Controllers) *Role {
 	r := &Role{
-		Id:       id,
-		Security: s,
+		Id: id,
 	}
 	if controllers != nil {
 		r.Controllers = controllers.Controllers

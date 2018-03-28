@@ -19,7 +19,7 @@ func TestSearchRolesError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.SearchRoles("", nil)
+	_, err := k.Security.SearchRoles(nil, nil)
 
 	assert.NotNil(t, err)
 }
@@ -39,7 +39,7 @@ func TestSearchRoles(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, _ := k.Security.SearchRoles("", nil)
+	res, _ := k.Security.SearchRoles(nil, nil)
 
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, 1, len(res.Hits))
@@ -49,7 +49,7 @@ func TestSearchRoles(t *testing.T) {
 func ExampleSecurityRole_Search() {
 	c := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.SearchRoles("", nil)
+	res, err := k.Security.SearchRoles(nil, nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -96,7 +96,7 @@ func TestSearchWithOptions(t *testing.T) {
 	opts.SetSize(4)
 	opts.SetScroll("1m")
 
-	res, _ := k.Security.SearchRoles("", opts)
+	res, _ := k.Security.SearchRoles(nil, opts)
 	assert.Equal(t, 42, res.Total)
 	assert.Equal(t, res.Hits[0].Id, "role42")
 	assert.Equal(t, 1, len(res.Hits))

@@ -7,8 +7,8 @@ import (
 )
 
 // CreateFirstAdmin create credentials of the specified strategy with given body infos.
-func (s *Security) CreateFirstAdmin(body string, options types.QueryOptions) (json.RawMessage, error) {
-	if body == "" {
+func (s *Security) CreateFirstAdmin(body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+	if body == nil {
 		return nil, types.NewError("Kuzzle.CreateFirstAdmin: strategy, id and body are required", 400)
 	}
 	result := make(chan *types.KuzzleResponse)

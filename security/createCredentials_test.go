@@ -12,19 +12,19 @@ import (
 
 func TestCreateCredentialsStrategyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateCredentials("", "userid", "myCredentials", nil)
+	_, err := k.Security.CreateCredentials("", "userid", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
 func TestCreateCredentialsIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateCredentials("strategy", "", "myCredentials", nil)
+	_, err := k.Security.CreateCredentials("strategy", "", []byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
 func TestCreateCredentialsBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateCredentials("strategy", "userId", "", nil)
+	_, err := k.Security.CreateCredentials("strategy", "userId", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -36,7 +36,7 @@ func TestCreateCredentialsError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateCredentials("strategy", "userId", "body", nil)
+	_, err := k.Security.CreateCredentials("strategy", "userId", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -50,14 +50,13 @@ func TestCreateCredentials(t *testing.T) {
 			assert.Equal(t, "createCredentials", parsedQuery.Action)
 			assert.Equal(t, "strategy", parsedQuery.Strategy)
 			assert.Equal(t, "userid", parsedQuery.Id)
-			assert.Equal(t, "myCredentials", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte{}}
 		},
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	_, err := k.Security.CreateCredentials("strategy", "userid", "myCredentials", nil)
+	_, err := k.Security.CreateCredentials("strategy", "userid", []byte(`{"body": "test"}`), nil)
 
 	assert.Nil(t, err)
 }

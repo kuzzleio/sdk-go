@@ -12,7 +12,7 @@ import (
 
 func TestUpdateProfileMappingBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	err := k.Security.UpdateProfileMapping("", nil)
+	err := k.Security.UpdateProfileMapping(nil, nil)
 	assert.Error(t, err)
 }
 
@@ -25,7 +25,7 @@ func TestUpdateProfileMappingError(t *testing.T) {
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	err := k.Security.UpdateProfileMapping("body", nil)
+	err := k.Security.UpdateProfileMapping([]byte(`{"body": "test"}`), nil)
 	assert.Error(t, err)
 }
 
@@ -37,13 +37,12 @@ func TestUpdateProfileMapping(t *testing.T) {
 
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "updateProfileMapping", parsedQuery.Action)
-			assert.Equal(t, "body", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{ "acknowledged" : true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	err := k.Security.UpdateProfileMapping("body", nil)
+	err := k.Security.UpdateProfileMapping([]byte(`{"body": "test"}`), nil)
 	assert.NoError(t, err)
 }

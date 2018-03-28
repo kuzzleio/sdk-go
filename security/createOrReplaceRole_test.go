@@ -12,7 +12,7 @@ import (
 
 func TestCreateOrReplaceRoleBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	_, err := k.Security.CreateOrReplaceRole("id", "", nil)
+	_, err := k.Security.CreateOrReplaceRole("id", nil, nil)
 	assert.Error(t, err)
 }
 
@@ -24,7 +24,7 @@ func TestCreateOrReplaceRoleError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	_, err := k.Security.CreateOrReplaceRole("id", "body", nil)
+	_, err := k.Security.CreateOrReplaceRole("id", []byte(`{"body": "test"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,6 @@ func TestCreateOrReplaceRole(t *testing.T) {
 			assert.Equal(t, "security", parsedQuery.Controller)
 			assert.Equal(t, "createOrReplaceRole", parsedQuery.Action)
 			assert.Equal(t, "id", parsedQuery.Id)
-			assert.Equal(t, "newRole", parsedQuery.Body)
 
 			return &types.KuzzleResponse{Result: []byte(`{
 			    "_id": "id",
@@ -49,7 +48,7 @@ func TestCreateOrReplaceRole(t *testing.T) {
 	}
 
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	res, err := k.Security.CreateOrReplaceRole("id", "newRole", nil)
+	res, err := k.Security.CreateOrReplaceRole("id", []byte(`{"body": "test"}`), nil)
 
 	assert.NotNil(t, res)
 	assert.Nil(t, err)

@@ -29,5 +29,5 @@ func (s *Security) GetUser(id string, options types.QueryOptions) (*User, error)
 	jsonUser := &jsonUser{}
 	json.Unmarshal(res.Result, jsonUser)
 
-	return s.jsonUserToUser(jsonUser), nil
+	return jsonUser.jsonUserToUser(), nil
 }
