@@ -8,7 +8,7 @@ import (
 )
 
 // Exists check if the index exists
-func (i *Index) Exists(index string) (bool, error) {
+func (i *Index) Exists(index string, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Index.Exists: index required", 400)
 	}
@@ -21,7 +21,7 @@ func (i *Index) Exists(index string) (bool, error) {
 		Action:     "exists",
 	}
 
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 

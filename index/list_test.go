@@ -21,7 +21,7 @@ func TestListError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	i := index.NewIndex(k)
-	_, err := i.List()
+	_, err := i.List(nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -44,7 +44,7 @@ func TestList(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	i := index.NewIndex(k)
-	res, err := i.List()
+	res, err := i.List(nil)
 	expectedResponse := []string{"index_1", "index_2"}
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -56,7 +56,7 @@ func ExampleIndex_List() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	i := index.NewIndex(k)
-	res, err := i.List()
+	res, err := i.List(nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

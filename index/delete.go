@@ -3,7 +3,7 @@ package index
 import "github.com/kuzzleio/sdk-go/types"
 
 // Delete the given index
-func (i *Index) Delete(index string) error {
+func (i *Index) Delete(index string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Index.Delete: index required", 400)
 	}
@@ -15,7 +15,7 @@ func (i *Index) Delete(index string) error {
 		Controller: "index",
 		Action:     "delete",
 	}
-	go i.kuzzle.Query(query, nil, result)
+	go i.kuzzle.Query(query, options, result)
 
 	res := <-result
 
