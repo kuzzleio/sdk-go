@@ -2,6 +2,7 @@ package security
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -16,17 +17,16 @@ type jsonProfileSearchResult struct {
 	ScrollId string         `json:"scrollId"`
 }
 
-func (s *Security) jsonProfileToProfile(j *jsonProfile) *Profile {
+func (j *jsonProfile) jsonProfileToProfile() *Profile {
 	p := &Profile{
 		Id:       j.Id,
 		Policies: j.Source.Policies,
 	}
-	p.Security = s
 
 	return p
 }
 
-func ProfileToJson(p *Profile) ([]byte, error) {
+func (p *Profile) ProfileToJson() ([]byte, error) {
 	j := &jsonProfile{
 		Id: p.Id,
 		Source: types.Policies{

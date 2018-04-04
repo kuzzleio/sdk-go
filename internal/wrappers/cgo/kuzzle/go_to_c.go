@@ -645,6 +645,27 @@ func goToCProfilesResult(k *C.kuzzle, profiles []*security.Profile, err error) *
 	return result
 }
 
+func goToCRolesResult(k *C.kuzzle, roles []*security.Role, err error) *C.roles_result {
+	result := (*C.roles_result)(C.calloc(1, C.sizeof_roles_result))
+	if err != nil {
+		Set_roles_result_error(result, err)
+		return result
+	}
+
+	result.roles_length = C.size_t(len(roles))
+
+	if roles != nil {
+		result.roles = (*C.role)(C.calloc(C.size_t(len(roles)), C.sizeof_role))
+		carray := (*[1<<30 - 1]C.role)(unsafe.Pointer(result.roles))[:len(roles):len(roles)]
+
+		for i, role := range roles {
+			goToCRole(k, role, &carray[i])
+		}
+	}
+
+	return result
+}
+
 func goToCUserRight(right *types.UserRights, dest *C.user_right) *C.user_right {
 	if right == nil {
 		return nil

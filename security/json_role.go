@@ -2,6 +2,7 @@ package security
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -16,16 +17,15 @@ type jsonRoleSearchResult struct {
 	ScrollId string      `json:"scrollId"`
 }
 
-func (s *Security) jsonRoleToRole(j *jsonRole) *Role {
+func (j *jsonRole) jsonRoleToRole() *Role {
 	r := &Role{}
 	r.Id = j.Id
 	r.Controllers = j.Source.Controllers
-	r.Security = s
 
 	return r
 }
 
-func RoleToJson(r *Role) ([]byte, error) {
+func (r *Role) RoleToJson() ([]byte, error) {
 	j := &jsonRole{
 		Id: r.Id,
 		Source: types.Controllers{

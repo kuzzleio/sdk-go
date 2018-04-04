@@ -131,6 +131,10 @@ func Set_profiles_result_error(s *C.profiles_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
+func Set_roles_result_error(s *C.roles_result, err error) {
+	setErr(&s.status, &s.error, &s.stack, err)
+}
+
 func Set_user_rights_error(s *C.user_rights_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }

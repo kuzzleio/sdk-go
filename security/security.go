@@ -9,7 +9,7 @@ type Security struct {
 }
 
 // NewSecurity returns a new instance of Security
-func New(kuzzle types.IKuzzle) *Security {
+func NewSecurity(kuzzle types.IKuzzle) *Security {
 	return &Security{
 		Kuzzle: kuzzle,
 	}
