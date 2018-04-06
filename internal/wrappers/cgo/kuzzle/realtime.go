@@ -13,6 +13,7 @@ import (
 
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/realtime"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // map which stores instances to keep references in case the gc passes
@@ -72,14 +73,30 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 }
 
 //export kuzzle_realtime_subscribe
-func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback *C.callback, options *C.room_options) *C.string_result {
-	res, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), cToGoKuzzleNotificationChannel(callback), cToGoRoomOptions(options))
-	return goToCStringResult(&res, err)
+func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.string_result {
+	c := make(chan types.KuzzleNotification)
+
+	roomId, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, cToGoRoomOptions(options))
+
+	go func() {
+		res := <-c
+		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+	}()
+
+	return goToCStringResult(&roomId, err)
 }
 
 //export kuzzle_realtime_join
-func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback *C.callback) *C.void_result {
-	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), cToGoRoomOptions(options), cToGoKuzzleNotificationChannel(callback))
+func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback C.kuzzle_notification_listener, data unsafe.Pointer) *C.void_result {
+	c := make(chan types.KuzzleNotification)
+
+	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), cToGoRoomOptions(options), c)
+
+	go func() {
+		res := <-c
+		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+	}()
+
 	return goToCVoidResult(err)
 }
 

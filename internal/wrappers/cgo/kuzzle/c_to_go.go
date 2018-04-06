@@ -248,7 +248,7 @@ func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 	}
 }
 
-func cToGoKuzzleNotificationChannel(c *C.callback) chan<- types.KuzzleNotification {
+func cToGoKuzzleNotificationChannel(c *C.kuzzle_notification_listener) chan<- types.KuzzleNotification {
 	return make(chan<- types.KuzzleNotification)
 }
 

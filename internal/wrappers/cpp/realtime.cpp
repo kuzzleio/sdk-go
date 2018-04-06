@@ -25,10 +25,20 @@ namespace kuzzleio {
     return ret;
   }
 
-  void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, callback cb) Kuz_Throw_KuzzleException {
-    void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, cb);
+  NotificationListener* Realtime::getListener(const std::string& roomId) {
+      return _listener_instances[roomId];
+  }
+
+  void call_subscribe_cb(notification_result* res, void* data) {
+      ((Realtime*)data)->getListener(res->room_id)->onMessage(res);
+  }
+
+  void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, NotificationListener* cb) Kuz_Throw_KuzzleException {
+    void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, call_subscribe_cb, this);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
+
+    _listener_instances[roomId] = cb;
     kuzzle_free_void_result(r);
   }
 
@@ -48,19 +58,23 @@ namespace kuzzleio {
     kuzzle_free_void_result(r);
   }
 
-  std::string Realtime::subscribe(const std::string& index, const std::string collection, const std::string body, callback cb, room_options* options) Kuz_Throw_KuzzleException {
-    string_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), cb, options);
+  std::string Realtime::subscribe(const std::string& index, const std::string collection, const std::string body, NotificationListener* cb, room_options* options) Kuz_Throw_KuzzleException {
+    string_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), call_subscribe_cb, this, options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
-    std::string ret = r->result;
+    std::string roomId = r->result;
+
+    _listener_instances[roomId] = cb;
     kuzzle_free_string_result(r);
-    return ret;
+    return roomId;
   }
 
   void Realtime::unsubscribe(const std::string& roomId) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_unsubscribe(_realtime, const_cast<char*>(roomId.c_str()));
     if (r->error != NULL)
         throwExceptionFromStatus(r);
+
+    _listener_instances[roomId] = NULL;
     kuzzle_free_void_result(r);
   }
 
