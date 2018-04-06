@@ -61,9 +61,6 @@ func TestUnsetJwt(t *testing.T) {
 
 			return &types.KuzzleResponse{Result: marsh}
 		},
-		MockGetRooms: func() *types.RoomList {
-			return nil
-		},
 	}
 
 	k, _ = kuzzle.NewKuzzle(c, nil)
@@ -113,7 +110,6 @@ func TestSetDefaultIndex(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	k.SetDefaultIndex("myindex")
-	k.ListCollections("", nil)
 }
 
 func ExampleKuzzle_SetDefaultIndex() {

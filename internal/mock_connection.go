@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/kuzzleio/sdk-go/connection"
@@ -14,7 +15,6 @@ type MockedConnection struct {
 	mock.Mock
 	MockSend               func([]byte, types.QueryOptions) *types.KuzzleResponse
 	MockEmitEvent          func(int, interface{})
-	MockGetRooms           func() *types.RoomList
 	MockAddListener        func(int, chan<- interface{})
 	MockRemoveAllListeners func(int)
 	MockRemoveListener     func(int, chan<- interface{})
@@ -70,10 +70,12 @@ func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (c *MockedConnection) RegisterRoom(room types.IRoom) {
+func (c *MockedConnection) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChan chan<- interface{}) {
 }
 
-func (c *MockedConnection) UnregisterRoom(id string) {}
+func (c *MockedConnection) CancelSubs() {}
+
+func (c *MockedConnection) UnregisterSub(roomID string) {}
 
 func (c *MockedConnection) RequestHistory() map[string]time.Time {
 	r := make(map[string]time.Time)
@@ -82,10 +84,6 @@ func (c *MockedConnection) RequestHistory() map[string]time.Time {
 }
 
 func (c *MockedConnection) RenewSubscriptions() {}
-
-func (c *MockedConnection) Rooms() *types.RoomList {
-	return c.MockGetRooms()
-}
 
 func (c *MockedConnection) StartQueuing() {}
 

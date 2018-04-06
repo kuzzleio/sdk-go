@@ -94,6 +94,11 @@ typedef struct {
 } kuzzle;
 
 typedef struct {
+  void *instance;
+  kuzzle* kuzzle;
+} realtime;
+
+typedef struct {
     char *type_;
     int  from;
     int  size;
@@ -136,6 +141,8 @@ typedef struct {
   char *error;
   char *stack;
 } room_result;
+
+typedef void (callback)(char* notification);
 
 //options passed to query()
 typedef struct {

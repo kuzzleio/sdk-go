@@ -90,6 +90,11 @@ func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
 	return (*C.collection)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
 }
 
+//export kuzzle_get_realtime_controller
+func kuzzle_get_realtime_controller(k *C.kuzzle) *C.realtime {
+	return (*C.realtime)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Realtime))
+}
+
 // Allocates memory
 //export kuzzle_connect
 func kuzzle_connect(k *C.kuzzle) *C.char {

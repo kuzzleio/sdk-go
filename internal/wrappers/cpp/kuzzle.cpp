@@ -9,6 +9,7 @@
 #include "auth.hpp"
 #include "index.hpp"
 #include "server.hpp"
+#include "realtime.hpp"
 #include <iostream>
 #include <vector>
 
@@ -28,6 +29,7 @@ namespace kuzzleio {
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
     this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
+    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(this->_kuzzle));
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
   }
 
@@ -39,32 +41,11 @@ namespace kuzzleio {
     delete(this->index);
     delete(this->server);
     delete(this->collection);
+    delete(this->realtime);
   }
 
   char* Kuzzle::connect() {
     return kuzzle_connect(_kuzzle);
-  }
-
-  bool Kuzzle::getAutoRefresh(const std::string& index, query_options* options) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_get_auto_refresh(_kuzzle, const_cast<char*>(index.c_str()), options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-    bool ret = r->result;
-    kuzzle_free_bool_result(r);
-    return ret;
-  }
-
-  std::vector<std::string> Kuzzle::listIndexes(query_options* options) Kuz_Throw_KuzzleException {
-    string_array_result *r = kuzzle_list_indexes(_kuzzle, options);
-    if (r->error != NULL)
-        throwExceptionFromStatus(r);
-
-    std::vector<std::string> v;
-    for (int i = 0; r->result[i]; i++)
-        v.push_back(r->result[i]);
-
-    kuzzle_free_string_array_result(r);
-    return v;
   }
 
   void Kuzzle::disconnect() {

@@ -18,6 +18,15 @@ const (
 	MAX_EMIT_TIMEOUT = 10
 )
 
+type subscription struct {
+	roomID              string
+	channel             string
+	filters             json.RawMessage
+	notificationChannel chan<- types.KuzzleNotification
+	onReconnectChannel  chan<- interface{}
+	subscribeToSelf     bool
+}
+
 type webSocket struct {
 	ws      *websocket.Conn
 	mu      *sync.Mutex
@@ -26,7 +35,7 @@ type webSocket struct {
 
 	listenChan         chan []byte
 	channelsResult     sync.Map
-	subscriptions      *types.RoomList
+	subscriptions      sync.Map
 	lastUrl            string
 	wasConnected       bool
 	eventListeners     map[int]map[chan<- interface{}]bool
@@ -73,7 +82,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		offlineQueue:          []*types.QueryObject{},
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
-		subscriptions:         &types.RoomList{},
+		subscriptions:         sync.Map{},
 		eventListeners:        make(map[int]map[chan<- interface{}]bool),
 		eventListenersOnce:    make(map[int]map[chan<- interface{}]bool),
 		requestHistory:        make(map[string]time.Time),
@@ -263,22 +272,43 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterRoom(room types.IRoom) {
-	rooms, found := ws.subscriptions.Load(room.Channel())
+func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
-		rooms = map[string]types.IRoom{}
-		ws.subscriptions.Store(room.Channel(), rooms)
+		subs = map[string]subscription{}
+		ws.subscriptions.Store(channel, subs)
 	}
 
-	rooms.(map[string]types.IRoom)[room.Id()] = room
+	subs.(map[string]subscription)[roomID] = subscription{
+		channel:             channel,
+		roomID:              roomID,
+		notificationChannel: notifChan,
+		onReconnectChannel:  onReconnectChannel,
+		filters:             filters,
+	}
 }
 
-func (ws *webSocket) UnregisterRoom(roomId string) {
-	_, ok := ws.subscriptions.Load(roomId)
+func (ws *webSocket) UnregisterSub(roomID string) {
+	s, ok := ws.subscriptions.Load(roomID)
 	if ok {
-		ws.subscriptions.Delete(roomId)
+		for _, sub := range s.(map[string]subscription) {
+			close(sub.onReconnectChannel)
+		}
+		ws.subscriptions.Delete(roomID)
 	}
+}
+
+func (ws *webSocket) CancelSubs() {
+	ws.subscriptions.Range(func(roomId, s interface{}) bool {
+		for _, sub := range s.(map[string]subscription) {
+			if sub.notificationChannel != nil {
+				close(sub.onReconnectChannel)
+			}
+			ws.subscriptions.Delete(roomId)
+		}
+		return true
+	})
 }
 
 func (ws *webSocket) listen() {
@@ -294,13 +324,12 @@ func (ws *webSocket) listen() {
 
 			json.Unmarshal(msg, &notification)
 
-			for _, room := range s.(map[string]types.IRoom) {
-				channel := room.RealtimeChannel()
-
-				if channel != nil && (!fromSelf || room.SubscribeToSelf()) {
-					channel <- notification
+			for _, sub := range s.(map[string]subscription) {
+				if sub.notificationChannel != nil && (!fromSelf || sub.subscribeToSelf) {
+					sub.notificationChannel <- notification
 				}
 			}
+
 		} else if c, found := ws.channelsResult.Load(message.RequestId); found {
 			if message.Error != nil && message.Error.Message == "Token expired" {
 				ws.EmitEvent(event.TokenExpired, nil)
@@ -489,10 +518,6 @@ func (ws *webSocket) State() int {
 
 func (ws *webSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
-}
-
-func (ws *webSocket) Rooms() *types.RoomList {
-	return ws.subscriptions
 }
 
 func (ws *webSocket) AutoQueue() bool {

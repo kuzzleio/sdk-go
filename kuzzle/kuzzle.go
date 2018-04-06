@@ -2,7 +2,7 @@
 package kuzzle
 
 import (
-	"sync"
+	"encoding/json"
 	"time"
 
 	"github.com/kuzzleio/sdk-go/auth"
@@ -12,6 +12,7 @@ import (
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/realtime"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/server"
 	"github.com/kuzzleio/sdk-go/types"
@@ -34,6 +35,7 @@ type Kuzzle struct {
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
+	Realtime      *realtime.Realtime
 	Auth          *auth.Auth
 	Server        *server.Server
 	Document      *document.Document
@@ -61,6 +63,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = security.NewSecurity(k)
 	k.Auth = auth.NewAuth(k)
+	k.Realtime = realtime.NewRealtime(k)
 
 	k.RequestHistory = k.socket.RequestHistory()
 
@@ -128,26 +131,15 @@ func (k *Kuzzle) SetJwt(token string) {
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	rooms := k.socket.Rooms()
-	if rooms != nil {
-		k.socket.Rooms().Range(func(key, value interface{}) bool {
-			value.(*sync.Map).Range(func(key, value interface{}) bool {
-				room := value.(types.IRoom)
-				room.Subscribe(room.RealtimeChannel())
-				return true
-			})
-
-			return true
-		})
-	}
+	k.socket.CancelSubs()
 }
 
-func (k *Kuzzle) RegisterRoom(room types.IRoom) {
-	k.socket.RegisterRoom(room)
+func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+	k.socket.RegisterSub(channel, roomId, filters, notifChan, onReconnectChannel)
 }
 
-func (k *Kuzzle) UnregisterRoom(roomId string) {
-	k.socket.UnregisterRoom(roomId)
+func (k *Kuzzle) UnregisterSub(roomId string) {
+	k.socket.UnregisterSub(roomId)
 }
 
 func (k *Kuzzle) State() int {
