@@ -1,3 +1,17 @@
+// Copyright 2015-2017 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package types
 
 import (
@@ -6,12 +20,14 @@ import (
 )
 
 type (
+	// KuzzleError is a custom Error type for Kuzzle
 	KuzzleError struct {
 		Message string `json:"message"`
 		Stack   string `json:"stack"`
 		Status  int    `json:"status"`
 	}
 
+	// Meta contains metadata
 	Meta struct {
 		Author    string `json:"author"`
 		CreatedAt int    `json:"createdAt"`
@@ -21,6 +37,7 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
+	// NotificationResult contains
 	NotificationResult struct {
 		Id      string          `json:"_id"`
 		Meta    *Meta           `json:"_meta"`
@@ -28,6 +45,7 @@ type (
 		Count   int             `json:"count"`
 	}
 
+	// KuzzleNotification is a notification from Kuzzle
 	KuzzleNotification struct {
 		RequestId  string              `json:"requestId"`
 		Result     *NotificationResult `json:"result"`
@@ -47,6 +65,7 @@ type (
 		Error      *KuzzleError        `json:"error"`
 	}
 
+	// KuzzleResponse is a response to a KuzzleRequest
 	KuzzleResponse struct {
 		RequestId  string          `json:"requestId"`
 		Result     json.RawMessage `json:"result"`
@@ -252,6 +271,7 @@ func (e *KuzzleError) Error() string {
 	return msg
 }
 
+// NewError instanciates a new KuzzleError
 func NewError(msg string, status ...int) *KuzzleError {
 	err := &KuzzleError{Message: msg}
 
