@@ -1,14 +1,13 @@
 #ifndef _KUZZLESDK_H_
 #define _KUZZLESDK_H_
 
-#include <json-c/json.h>
 #include <time.h>
 #include <errno.h>
 #include <stdbool.h>
 
 //query object used by query()
 typedef struct {
-    json_object *query;
+    char *query;
     unsigned long long timestamp;
     char   *request_id;
 } query_object;
@@ -32,7 +31,7 @@ enum Event {
     ERROR
 };
 
-typedef void (*kuzzle_event_listener)(int, json_object*, void*);
+typedef void (*kuzzle_event_listener)(int, char*, void*);
 
 //define a request
 typedef struct {
@@ -41,7 +40,7 @@ typedef struct {
     char *action;
     char *index;
     char *collection;
-    json_object *body;
+    char *body;
     char *id;
     long from;
     long size;
@@ -49,7 +48,7 @@ typedef struct {
     char *scroll_id;
     char *strategy;
     unsigned long long expires_in;
-    json_object *volatiles;
+    char *volatiles;
     char *scope;
     char *state;
     char *user;
@@ -66,7 +65,7 @@ typedef struct {
     double lat;
     double distance;
     char *unit;
-    json_object *options;
+    char *options;
     char **keys;
     size_t keys_length;
     long cursor;
@@ -126,12 +125,12 @@ typedef struct {
     char *state;
     char *user;
     bool subscribe_to_self;
-    json_object *volatiles;
+    char *volatiles;
 } room_options;
 
 typedef struct {
     void *instance;
-    json_object *filters;
+    char *filters;
     room_options *options;
 } room;
 
@@ -156,7 +155,7 @@ typedef struct {
     char *refresh;
     char *if_exist;
     int retry_on_conflict;
-    json_object *volatiles;
+    char *volatiles;
 } query_options;
 
 enum Mode {AUTO, MANUAL};
@@ -188,7 +187,7 @@ typedef struct {
 
 /* === Security === */
 
-typedef json_object controllers;
+typedef char controllers;
 
 typedef struct  {
     char *index;
@@ -211,14 +210,14 @@ typedef struct {
 
 typedef struct {
     char *id;
-    json_object *controllers;
+    char *controllers;
     kuzzle *kuzzle;
 } role;
 
 //kuzzle user
 typedef struct {
     char *id;
-    json_object *content;
+    char *content;
     char **profile_ids;
     size_t profile_ids_length;
     kuzzle *kuzzle;
@@ -226,7 +225,7 @@ typedef struct {
 
 // user content passed to user constructor
 typedef struct {
-    json_object *content;
+    char *content;
     char **profile_ids;
     size_t profile_ids_length;
 } user_data;
@@ -252,14 +251,14 @@ typedef struct {
 typedef struct {
     char *id;
     meta *meta;
-    json_object *content;
+    char *content;
     int count;
 } notification_content;
 
 typedef struct notification_result {
     char *request_id;
     notification_content *result;
-    json_object *volatiles;
+    char *volatiles;
     char *index;
     char *collection;
     char *controller;
@@ -337,10 +336,10 @@ enum is_action_allowed {
 
 //statistics
 typedef struct {
-    json_object* completed_requests;
-    json_object* connections;
-    json_object* failed_requests;
-    json_object* ongoing_requests;
+    char* completed_requests;
+    char* connections;
+    char* failed_requests;
+    char* ongoing_requests;
     unsigned long long timestamp;
 } statistics;
 
@@ -383,8 +382,8 @@ typedef struct token_validity {
 // raw Kuzzle response
 typedef struct kuzzle_response {
     char *request_id;
-    json_object *result;
-    json_object *volatiles;
+    char *result;
+    char *volatiles;
     char *index;
     char *collection;
     char *controller;
@@ -405,15 +404,15 @@ typedef struct void_result {
 
 //any json result
 typedef struct json_result {
-    json_object *result;
+    char *result;
     int status;
     char *error;
     char *stack;
 } json_result;
 
-//any array of json_object result
+//any array of char result
 typedef struct json_array_result {
-    json_object **result;
+    char **result;
     size_t result_length;
     int status;
     char *error;
@@ -478,10 +477,10 @@ typedef struct string_array_result {
 } string_array_result;
 
 typedef struct {
-    json_object* query;
-    json_object* sort;
-    json_object* aggregations;
-    json_object* search_after;
+    char* query;
+    char* sort;
+    char* aggregations;
+    char* search_after;
 } search_filters;
 
 typedef struct {
@@ -522,8 +521,8 @@ typedef struct shards_result {
 
 typedef struct {
     bool strict;
-    json_object *fields;
-    json_object *validators;
+    char *fields;
+    char *validators;
 } specification;
 
 typedef struct {
@@ -540,13 +539,13 @@ typedef struct specification_result {
 } specification_result;
 
 typedef struct search_result {
-    json_object *documents;
+    char *documents;
     unsigned fetched;
     unsigned total;
-    json_object *aggregations;
+    char *aggregations;
     search_filters *filters;
     query_options *options;
-    json_object *collection;
+    char *collection;
     int status;
     char *error;
     char *stack;
@@ -588,7 +587,7 @@ typedef struct specification_search_result {
 } specification_search_result;
 
 typedef struct {
-    json_object *mapping;
+    char *mapping;
     collection *collection;
 } mapping;
 

@@ -31,7 +31,7 @@ type (
 	KuzzleNotification struct {
 		RequestId  string              `json:"requestId"`
 		Result     *NotificationResult `json:"result"`
-		Volatile   VolatileData        `json:"volatile"`
+		Volatile   json.RawMessage     `json:"volatile"`
 		Index      string              `json:"index"`
 		Collection string              `json:"collection"`
 		Controller string              `json:"controller"`

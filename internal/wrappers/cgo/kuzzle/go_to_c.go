@@ -61,7 +61,7 @@ func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notifi
 	result.id = C.CString(gNotifContent.Id)
 	result.meta = goToCMeta(gNotifContent.Meta)
 	result.count = C.int(gNotifContent.Count)
-	result.content, _ = goToCJson(gNotifContent)
+	result.content = C.char(gNotifContent)
 
 	return result
 }
@@ -75,7 +75,7 @@ func goToCNotificationResult(gNotif *types.KuzzleNotification) *C.notification_r
 		return result
 	}
 
-	result.volatiles, _ = goToCJson(gNotif.Volatile)
+	result.volatiles = json.RawMessage(gNotif.Volatile)
 	result.request_id = C.CString(gNotif.RequestId)
 	result.result = goToCNotificationContent(gNotif.Result)
 	result.index = C.CString(gNotif.Index)
@@ -100,7 +100,7 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.request_id = C.CString(gRes.RequestId)
 
 	bufResult := C.CString(string(gRes.Result))
-	result.result = C.json_tokener_parse(bufResult)
+	result.result = C.CString(string(bufResult))
 	C.free(unsafe.Pointer(bufResult))
 
 	result.volatiles, _ = goToCJson(gRes.Volatile)
@@ -462,69 +462,6 @@ func goToCSpecificationSearchResult(goRes *types.SpecificationSearchResult, err 
 
 		for i, spec := range goRes.Hits {
 			goToCSpecificationEntry(&spec.Source, &cArray[i])
-		}
-	}
-
-	return result
-}
-
-func goToCJson(data interface{}) (*C.json_object, error) {
-	r, err := json.Marshal(data)
-	if err != nil {
-		return nil, types.NewError(err.Error(), 400)
-	}
-
-	buffer := C.CString(string(r))
-	defer C.free(unsafe.Pointer(buffer))
-
-	tok := C.json_tokener_new()
-	defer C.json_tokener_free(tok)
-
-	j := C.json_tokener_parse_ex(tok, buffer, C.int(C.strlen(buffer)))
-	jerr := C.json_tokener_get_error(tok)
-	if jerr != C.json_tokener_success {
-		return nil, types.NewError(C.GoString(C.json_tokener_error_desc(jerr)), 400)
-	}
-
-	return j, nil
-}
-
-func goToCJsonResult(goRes interface{}, err error) *C.json_result {
-	result := (*C.json_result)(C.calloc(1, C.sizeof_json_result))
-
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	result.result, err = goToCJson(goRes)
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	return result
-}
-
-func goToCJsonArrayResult(goRes []interface{}, err error) *C.json_array_result {
-	result := (*C.json_array_result)(C.calloc(1, C.sizeof_json_array_result))
-
-	if err != nil {
-		Set_json_array_result_error(result, err)
-		return result
-	}
-
-	result.result_length = C.size_t(len(goRes))
-	if goRes != nil {
-		result.result = (**C.json_object)(C.calloc(result.result_length, C.sizeof_json_object_ptr))
-		cArray := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
-
-		for i, res := range goRes {
-			cArray[i], err = goToCJson(res)
-			if err != nil {
-				Set_json_array_result_error(result, err)
-				return result
-			}
 		}
 	}
 

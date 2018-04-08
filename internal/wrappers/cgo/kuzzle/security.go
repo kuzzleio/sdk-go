@@ -89,7 +89,7 @@ func kuzzle_security_destroy_user(u *C.user) {
 		C.free(unsafe.Pointer(u.id))
 	}
 	if u.content != nil {
-		C.json_object_put(u.content)
+		C.free(u.content)
 	}
 	if u.profile_ids != nil {
 		size := int(u.profile_ids_length)
@@ -128,7 +128,7 @@ func kuzzle_security_destroy_role(r *C.role) {
 		return
 	}
 
-	C.json_object_put(r.controllers)
+	C.free(r.controllers)
 	C.free(unsafe.Pointer(r))
 }
 
