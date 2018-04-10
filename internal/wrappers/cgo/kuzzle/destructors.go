@@ -90,7 +90,7 @@ func kuzzle_free_query_object(st *C.query_object) {
 //export kuzzle_free_offline_queue
 func kuzzle_free_offline_queue(st *C.offline_queue) {
 	if st != nil && st.queries != nil {
-		queries := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(st.queries))[:int(st.queries_length):int(st.queries_length)]
+		queries := (*[1<<28 - 1]*C.query_object)(unsafe.Pointer(st.queries))[:int(st.queries_length):int(st.queries_length)]
 
 		for _, query := range queries {
 			kuzzle_free_query_object(query)
@@ -166,7 +166,7 @@ func _free_policy(st *C.policy) {
 		C.free(unsafe.Pointer(st.role_id))
 
 		if st.restricted_to != nil {
-			restrictions := (*[1<<30 - 1]C.policy_restriction)(unsafe.Pointer(st.restricted_to))[:int(st.restricted_to_length):int(st.restricted_to_length)]
+			restrictions := (*[1<<27 - 1]C.policy_restriction)(unsafe.Pointer(st.restricted_to))[:int(st.restricted_to_length):int(st.restricted_to_length)]
 
 			for _, restriction := range restrictions {
 				_free_policy_restriction(&restriction)
@@ -190,7 +190,7 @@ func _free_profile(st *C.profile) {
 		C.free(unsafe.Pointer(st.id))
 
 		if st.policies != nil {
-			policies := (*[1<<30 - 1]C.policy)(unsafe.Pointer(st.policies))[:int(st.policies_length):int(st.policies_length)]
+			policies := (*[1<<27 - 1]C.policy)(unsafe.Pointer(st.policies))[:int(st.policies_length):int(st.policies_length)]
 
 			for _, policy := range policies {
 				_free_policy(&policy)
@@ -310,7 +310,7 @@ func kuzzle_free_profile_result(st *C.profile_result) {
 func kuzzle_free_profiles_result(st *C.profiles_result) {
 	if st != nil {
 		if st.profiles != nil {
-			profiles := (*[1<<30 - 1]C.profile)(unsafe.Pointer(st.profiles))[:int(st.profiles_length):int(st.profiles_length)]
+			profiles := (*[1<<27 - 1]C.profile)(unsafe.Pointer(st.profiles))[:int(st.profiles_length):int(st.profiles_length)]
 
 			for _, profile := range profiles {
 				_free_profile(&profile)
@@ -357,7 +357,7 @@ func kuzzle_free_user_right(st *C.user_right) {
 func kuzzle_free_user_rights_result(st *C.user_rights_result) {
 	if st != nil {
 		if st.result != nil {
-			rights := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(st.result))[:int(st.user_rights_length):int(st.user_rights_length)]
+			rights := (*[1<<26 - 1]C.user_right)(unsafe.Pointer(st.result))[:int(st.user_rights_length):int(st.user_rights_length)]
 
 			for _, right := range rights {
 				_free_user_right(&right)
@@ -413,7 +413,7 @@ func kuzzle_free_statistics_result(st *C.statistics_result) {
 func kuzzle_free_all_statistics_result(st *C.all_statistics_result) {
 	if st != nil {
 		if st.result != nil {
-			stats := (*[1<<30 - 1]C.statistics)(unsafe.Pointer(st.result))
+			stats := (*[1<<26 - 1]C.statistics)(unsafe.Pointer(st.result))
 
 			for _, stat := range stats {
 				_free_statistics(&stat)
@@ -482,7 +482,7 @@ func kuzzle_free_json_result(st *C.json_result) {
 func kuzzle_free_json_array_result(st *C.json_array_result) {
 	if st != nil {
 		if st.result != nil {
-			jobjects := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
+			jobjects := (*[1<<28 - 1]*C.json_object)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
 
 			for _, jobject := range jobjects {
 				kuzzle_free_json_object(jobject)
@@ -571,7 +571,7 @@ func kuzzle_free_profile_search(st *C.profile_search) {
 		C.free(unsafe.Pointer(st.scroll_id))
 
 		if st.hits != nil {
-			hits := (*[1<<30 - 1]C.profile)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
+			hits := (*[1<<27 - 1]C.profile)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
 
 			for _, profile := range hits {
 				_free_profile(&profile)
@@ -588,7 +588,7 @@ func kuzzle_free_profile_search(st *C.profile_search) {
 func kuzzle_free_role_search(st *C.role_search) {
 	if st != nil {
 		if st.hits != nil {
-			hits := (*[1<<30 - 1]C.role)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
+			hits := (*[1<<27 - 1]C.role)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
 
 			for _, role := range hits {
 				_free_role(&role)
@@ -691,7 +691,7 @@ func kuzzle_free_search_roles_result(st *C.search_roles_result) {
 func kuzzle_free_specification_search(st *C.specification_search) {
 	if st != nil {
 		if st.hits != nil {
-			hits := (*[1<<30 - 1]C.specification_entry)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
+			hits := (*[1<<27 - 1]C.specification_entry)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
 
 			for _, entry := range hits {
 				_free_specification_entry(&entry)
@@ -759,7 +759,7 @@ func kuzzle_free_collection_entry(st *C.collection_entry) {
 func kuzzle_free_collection_entry_result(st *C.collection_entry_result) {
 	if st != nil {
 		if st.result != nil {
-			entries := (*[1<<30 - 1]C.collection_entry)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
+			entries := (*[1<<27 - 1]C.collection_entry)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
 
 			for _, entry := range entries {
 				_free_collection_entry(&entry)
@@ -778,7 +778,7 @@ func kuzzle_free_collection_entry_result(st *C.collection_entry_result) {
 func kuzzle_free_user_search(st *C.user_search) {
 	if st != nil {
 		if st.hits != nil {
-			hits := (*[1<<30 - 1]C.user)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
+			hits := (*[1<<26 - 1]C.user)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
 
 			for _, user := range hits {
 				_free_user(&user)

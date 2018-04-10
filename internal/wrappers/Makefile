@@ -1,6 +1,6 @@
 ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 ROOTOUTDIR = $(ROOT_DIR)build
-GOROOT ?= /usr/local
+GOROOT ?= /usr/local/go
 GOCC = $(GOROOT)/bin/go
 JAVA_HOME ?= /usr/local
 PYTHON_INCLUDE_DIR ?= /usr/include/python3.5
@@ -12,7 +12,7 @@ GOTARGETSO = $(GOTARGETDIR)/libkuzzlesdk.so
 CPPDIR = $(ROOT_DIR)cpp
 HEADERSDIR = $(ROOT_DIR)headers
 
-CPP = g++
+CPP = $(CXX)
 CPPFLAGS = -g -fPIC -std=c++11
 INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
@@ -63,15 +63,15 @@ swig:
 	$(SWIG) -Wall -c++ -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
 makedir:
-	mkdir -p $(OUTDIR)			
+	mkdir -p $(OUTDIR)
 
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
-	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
+	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+	taskset -c 1 $(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp

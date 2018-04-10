@@ -53,15 +53,15 @@ func kuzzle_security_destroy_profile(p *C.profile) {
 
 	if p.policies != nil {
 		size := int(p.policies_length)
-		policies := (*[1<<30 - 1]*C.policy)(unsafe.Pointer(p.policies))[:size:size]
+		policies := (*[1<<28 - 1]*C.policy)(unsafe.Pointer(p.policies))[:size:size]
 		for _, policy := range policies {
 			C.free(unsafe.Pointer(policy.role_id))
 			size = int(policy.restricted_to_length)
-			restrictions := (*[1<<30 - 1]*C.policy_restriction)(unsafe.Pointer(policy.restricted_to))[:size:size]
+			restrictions := (*[1<<28 - 1]*C.policy_restriction)(unsafe.Pointer(policy.restricted_to))[:size:size]
 			for _, restriction := range restrictions {
 				C.free(unsafe.Pointer(restriction.index))
 				size = int(restriction.collections_length)
-				collections := (*[1<<30 - 1]*C.char)(unsafe.Pointer(restriction.collections))[:size:size]
+				collections := (*[1<<28 - 1]*C.char)(unsafe.Pointer(restriction.collections))[:size:size]
 				for _, collection := range collections {
 					C.free(unsafe.Pointer(collection))
 				}
@@ -107,7 +107,7 @@ func kuzzle_security_destroy_user(u *C.user) {
 	}
 	if u.profile_ids != nil {
 		size := int(u.profile_ids_length)
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(u.profile_ids))[:size:size]
+		carray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(u.profile_ids))[:size:size]
 
 		for i := 0; i < size; i++ {
 			C.free(unsafe.Pointer(carray[i]))
@@ -461,7 +461,7 @@ func kuzzle_security_update_user_mapping(k *C.kuzzle, body *C.char, o *C.query_o
 func kuzzle_security_is_action_allowed(crights **C.user_right, crlength C.uint, controller *C.char, action *C.char, index *C.char, collection *C.char) C.uint {
 	rights := make([]*types.UserRights, int(crlength))
 
-	carray := (*[1<<30 - 1]*C.user_right)(unsafe.Pointer(crights))[:int(crlength):int(crlength)]
+	carray := (*[1<<28 - 1]*C.user_right)(unsafe.Pointer(crights))[:int(crlength):int(crlength)]
 	for i := 0; i < int(crlength); i++ {
 		rights[i] = cToGoUserRigh(carray[i])
 	}

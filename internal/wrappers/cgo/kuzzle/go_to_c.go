@@ -146,7 +146,7 @@ func goToCPolicyRestriction(restriction *types.PolicyRestriction, dest *C.policy
 
 	if restriction.Collections != nil {
 		crestriction.collections = (**C.char)(C.calloc(C.size_t(len(restriction.Collections)), C.sizeof_char_ptr))
-		collections := (*[1<<30 - 1]*C.char)(unsafe.Pointer(crestriction.collections))[:len(restriction.Collections)]
+		collections := (*[1<<28 - 1]*C.char)(unsafe.Pointer(crestriction.collections))[:len(restriction.Collections)]
 
 		for i, col := range restriction.Collections {
 			collections[i] = C.CString(col)
@@ -184,7 +184,7 @@ func goToCStringArrayResult(goRes []string, err error) *C.string_array_result {
 		result.result = (**C.char)(C.calloc(C.size_t(len(goRes)), C.sizeof_char_ptr))
 		result.result_length = C.size_t(len(goRes))
 
-		cArray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+		cArray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
 
 		for i, substring := range goRes {
 			cArray[i] = C.CString(substring)
@@ -258,7 +258,7 @@ func goToCPolicy(policy *types.Policy, dest *C.policy) *C.policy {
 
 	if policy.RestrictedTo != nil {
 		cpolicy.restricted_to = (*C.policy_restriction)(C.calloc(C.size_t(len(policy.RestrictedTo)), C.sizeof_policy_restriction))
-		restrictions := (*[1<<30 - 1]C.policy_restriction)(unsafe.Pointer(cpolicy.restricted_to))[:len(policy.RestrictedTo)]
+		restrictions := (*[1<<27 - 1]C.policy_restriction)(unsafe.Pointer(cpolicy.restricted_to))[:len(policy.RestrictedTo)]
 
 		for i, restriction := range policy.RestrictedTo {
 			goToCPolicyRestriction(restriction, &restrictions[i])
@@ -282,7 +282,7 @@ func goToCProfile(k *C.kuzzle, profile *security.Profile, dest *C.profile) *C.pr
 
 	if profile.Policies != nil {
 		cprofile.policies = (*C.policy)(C.calloc(C.size_t(len(profile.Policies)), C.sizeof_policy))
-		policies := (*[1<<30 - 1]C.policy)(unsafe.Pointer(cprofile.policies))[:len(profile.Policies)]
+		policies := (*[1<<27 - 1]C.policy)(unsafe.Pointer(cprofile.policies))[:len(profile.Policies)]
 		for i, policy := range profile.Policies {
 			goToCPolicy(policy, &policies[i])
 		}
@@ -308,7 +308,7 @@ func goToCProfileSearchResult(k *C.kuzzle, res *security.ProfileSearchResult, er
 
 	if len(res.Hits) > 0 {
 		result.result.hits = (*C.profile)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_profile))
-		profiles := (*[1<<30 - 1]C.profile)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
+		profiles := (*[1<<27 - 1]C.profile)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
 
 		for i, profile := range res.Hits {
 			goToCProfile(k, profile, &profiles[i])
@@ -332,7 +332,7 @@ func goToCRoleSearchResult(k *C.kuzzle, res *security.RoleSearchResult, err erro
 
 	if len(res.Hits) > 0 {
 		result.result.hits = (*C.role)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_role))
-		cArray := (*[1<<30 - 1]C.role)(unsafe.Pointer(result.result.hits))[:len(res.Hits):len(res.Hits)]
+		cArray := (*[1<<27 - 1]C.role)(unsafe.Pointer(result.result.hits))[:len(res.Hits):len(res.Hits)]
 
 		for i, role := range res.Hits {
 			goToCRole(k, role, &cArray[i])
@@ -472,7 +472,7 @@ func goToCSpecificationSearchResult(goRes *types.SpecificationSearchResult, err 
 
 	if len(goRes.Hits) > 0 {
 		result.result.hits = (*C.specification_entry)(C.calloc(C.size_t(len(goRes.Hits)), C.sizeof_specification_entry))
-		cArray := (*[1<<30 - 1]C.specification_entry)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
+		cArray := (*[1<<27 - 1]C.specification_entry)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
 
 		for i, spec := range goRes.Hits {
 			goToCSpecificationEntry(&spec.Source, &cArray[i])
@@ -531,7 +531,7 @@ func goToCJsonArrayResult(goRes []interface{}, err error) *C.json_array_result {
 	result.result_length = C.size_t(len(goRes))
 	if goRes != nil {
 		result.result = (**C.json_object)(C.calloc(result.result_length, C.sizeof_json_object_ptr))
-		cArray := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+		cArray := (*[1<<28 - 1]*C.json_object)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
 
 		for i, res := range goRes {
 			cArray[i], err = goToCJson(res)
@@ -574,7 +574,7 @@ func goToCUserData(data *types.UserData) (*C.user_data, error) {
 	if data.ProfileIds != nil {
 		cdata.profile_ids_length = C.size_t(len(data.ProfileIds))
 		cdata.profile_ids = (**C.char)(C.calloc(C.size_t(len(data.ProfileIds)), C.sizeof_char_ptr))
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:len(data.ProfileIds):len(data.ProfileIds)]
+		carray := (*[1<<27 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:len(data.ProfileIds):len(data.ProfileIds)]
 
 		for i, profileId := range data.ProfileIds {
 			carray[i] = C.CString(profileId)
@@ -610,7 +610,7 @@ func goToCUser(k *C.kuzzle, user *security.User, dest *C.user) (*C.user, error) 
 	if user.ProfileIds != nil {
 		cuser.profile_ids_length = C.size_t(len(user.ProfileIds))
 		cuser.profile_ids = (**C.char)(C.calloc(C.size_t(len(user.ProfileIds)), C.sizeof_char_ptr))
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(cuser.profile_ids))[:len(user.ProfileIds):len(user.ProfileIds)]
+		carray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(cuser.profile_ids))[:len(user.ProfileIds):len(user.ProfileIds)]
 
 		for i, profileId := range user.ProfileIds {
 			carray[i] = C.CString(profileId)
@@ -649,7 +649,7 @@ func goToCProfilesResult(k *C.kuzzle, profiles []*security.Profile, err error) *
 
 	if profiles != nil {
 		result.profiles = (*C.profile)(C.calloc(C.size_t(len(profiles)), C.sizeof_profile))
-		carray := (*[1<<30 - 1]C.profile)(unsafe.Pointer(result.profiles))[:len(profiles):len(profiles)]
+		carray := (*[1<<27 - 1]C.profile)(unsafe.Pointer(result.profiles))[:len(profiles):len(profiles)]
 
 		for i, profile := range profiles {
 			goToCProfile(k, profile, &carray[i])
@@ -670,7 +670,7 @@ func goToCRolesResult(k *C.kuzzle, roles []*security.Role, err error) *C.roles_r
 
 	if roles != nil {
 		result.roles = (*C.role)(C.calloc(C.size_t(len(roles)), C.sizeof_role))
-		carray := (*[1<<30 - 1]C.role)(unsafe.Pointer(result.roles))[:len(roles):len(roles)]
+		carray := (*[1<<27 - 1]C.role)(unsafe.Pointer(result.roles))[:len(roles):len(roles)]
 
 		for i, role := range roles {
 			goToCRole(k, role, &carray[i])
@@ -711,7 +711,7 @@ func goToCUserRightsResult(rights []*types.UserRights, err error) *C.user_rights
 	result.user_rights_length = C.size_t(len(rights))
 	if rights != nil {
 		result.result = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
-		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.result))[:len(rights):len(rights)]
+		carray := (*[1<<26 - 1]C.user_right)(unsafe.Pointer(result.result))[:len(rights):len(rights)]
 
 		for i, right := range rights {
 			goToCUserRight(right, &carray[i])
@@ -738,7 +738,7 @@ func goToCUserSearchResult(k *C.kuzzle, res *security.UserSearchResult, err erro
 
 	if len(res.Hits) > 0 {
 		result.result.hits = (*C.user)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_user))
-		users := (*[1<<30 - 1]C.user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
+		users := (*[1<<26 - 1]C.user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
 
 		for i, user := range res.Hits {
 			goToCUser(k, user, &users[i])
@@ -767,7 +767,7 @@ func goToCCollectionListResult(collections []*types.CollectionsList, err error) 
 	if collections != nil {
 		result.result = (*C.collection_entry)(C.calloc(C.size_t(len(collections)), C.sizeof_collection_entry))
 		result.result_length = C.size_t(len(collections))
-		carray := (*[1<<30 - 1]C.collection_entry)(unsafe.Pointer(result.result))[:len(collections):len(collections)]
+		carray := (*[1<<27 - 1]C.collection_entry)(unsafe.Pointer(result.result))[:len(collections):len(collections)]
 
 		for i, collection := range collections {
 			fillCollectionList(collection, &carray[i])

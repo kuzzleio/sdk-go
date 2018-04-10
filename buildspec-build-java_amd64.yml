@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker pull kuzzleio/cgo-cross:amd64
+  build:
+    commands:
+      - docker run --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/cgo-cross:amd64 &
+      - sleep 5
+      - docker exec build-machine /build.sh
+      - docker kill build-machine
+artifacts:
+  files:
+    - internal/wrappers/build/java/io/kuzzle/sdk/kuzzlesdk.jar
