@@ -173,7 +173,7 @@ func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result.queries_length = C.size_t(len(offlineQueue))
 
 	result.queries = (**C.query_object)(C.calloc(result.queries_length, C.sizeof_query_object_ptr))
-	queryObjects := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.queries_length:result.queries_length]
+	queryObjects := (*[1<<28 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.queries_length:result.queries_length]
 
 	idx := 0
 	for _, queryObject := range offlineQueue {

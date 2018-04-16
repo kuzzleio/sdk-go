@@ -100,6 +100,7 @@ func TestQueryWithVolatile(t *testing.T) {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
+			fmt.Printf("%s %s\n", request.Volatile, volatileData)
 			assert.Equal(t, volatileData, request.Volatile)
 			assert.NotNil(t, request.Volatile)
 
