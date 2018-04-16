@@ -70,7 +70,7 @@ type SubscribeQuery struct {
 	Body  interface{} `json:"body"`
 }
 
-type VolatileData json.RawMessage
+type VolatileData = json.RawMessage
 
 type UserData struct {
 	ProfileIds []string               `json:"profileIds"`

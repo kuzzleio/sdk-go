@@ -118,7 +118,7 @@ typedef struct {
     char *scroll;
 } search_options;
 
-typedef struct {
+typedef struct auth {
   void *instance;
   kuzzle *kuzzle;
 } auth;

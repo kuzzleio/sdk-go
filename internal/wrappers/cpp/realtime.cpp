@@ -35,7 +35,7 @@ namespace kuzzleio {
 
   void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, NotificationListener* cb) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, call_subscribe_cb, this);
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
 
     _listener_instances[roomId] = cb;
@@ -53,7 +53,7 @@ namespace kuzzleio {
 
   void Realtime::publish(const std::string& index, const std::string collection, const std::string body) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_publish(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()));
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
     kuzzle_free_void_result(r);
   }
@@ -71,7 +71,7 @@ namespace kuzzleio {
 
   void Realtime::unsubscribe(const std::string& roomId) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_unsubscribe(_realtime, const_cast<char*>(roomId.c_str()));
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
 
     _listener_instances[roomId] = NULL;

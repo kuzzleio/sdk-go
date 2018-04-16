@@ -40,7 +40,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	type body struct{}
 
 	if query.Body == nil {
-		query.Body = make(map[string]interface{})
+		query.Body = json.RawMessage("{}")
 	}
 
 	if options == nil {
@@ -63,6 +63,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	}
 
 	jsonRequest, _ := json.Marshal(query)
+
 	out := map[string]interface{}{}
 	json.Unmarshal(jsonRequest, &out)
 
@@ -87,6 +88,11 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	retryOnConflict := options.RetryOnConflict()
 	if retryOnConflict > 0 {
 		out["retryOnConflict"] = retryOnConflict
+	}
+
+	jwt := k.Jwt()
+	if jwt != "" {
+		out["jwt"] = jwt
 	}
 
 	finalRequest, err := json.Marshal(out)
