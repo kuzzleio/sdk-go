@@ -187,7 +187,7 @@ typedef struct {
 
 /* === Security === */
 
-typedef char controllers;
+typedef char *controllers;
 
 typedef struct  {
     char *index;

@@ -56,11 +56,11 @@ func kuzzle_query(k *C.kuzzle, request *C.kuzzle_request, options *C.query_optio
 	}
 
 	if request.body != nil {
-		req.Body = JsonCConvert(request.body)
+		req.Body = request.body
 	}
 
 	if request.volatiles != nil {
-		req.Volatile = JsonCConvert(request.volatiles).(map[string]interface{})
+		req.Volatile = types.VolatileData(C.GoString(request.volatiles))
 	}
 
 	start := int(request.start)

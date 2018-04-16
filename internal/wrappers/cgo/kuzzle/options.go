@@ -63,9 +63,9 @@ func SetQueryOptions(options *C.query_options) (opts types.QueryOptions) {
 	opts.SetRefresh(C.GoString(options.refresh))
 	opts.SetIfExist(C.GoString(options.if_exist))
 	opts.SetRetryOnConflict(int(options.retry_on_conflict))
-	volatiles := JsonCConvert(options.volatiles)
+	volatiles := types.VolatileData(C.GoString(options.volatiles))
 	if volatiles != nil {
-		opts.SetVolatile(volatiles.(map[string]interface{}))
+		opts.SetVolatile(volatiles)
 	}
 
 	return
@@ -106,7 +106,7 @@ func SetRoomOptions(options *C.room_options) (opts types.RoomOptions) {
 		opts.SetSubscribeToSelf(bool(options.subscribe_to_self))
 
 		if options.volatiles != nil {
-			opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))
+			opts.SetVolatile(types.VolatileData(C.GoString(options.volatiles)))
 		}
 	}
 	return

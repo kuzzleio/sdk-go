@@ -3,12 +3,13 @@ package kuzzle_test
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestQueryDefaultOptions(t *testing.T) {
@@ -19,7 +20,7 @@ func TestQueryDefaultOptions(t *testing.T) {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
-			assert.NotNil(t, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile)
 			assert.Equal(t, 0, request.From)
 			assert.Equal(t, 10, request.Size)
 			assert.Equal(t, "", request.Scroll)
@@ -44,7 +45,7 @@ func TestQueryWithOptions(t *testing.T) {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
-			assert.NotNil(t, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile)
 			assert.Equal(t, 42, request.From)
 			assert.Equal(t, 24, request.Size)
 			assert.Equal(t, "5m", request.Scroll)
@@ -78,18 +79,16 @@ func TestQueryWithOptions(t *testing.T) {
 
 func TestQueryWithVolatile(t *testing.T) {
 	var k *kuzzle.Kuzzle
-	var volatileData = types.VolatileData{
-		"modifiedBy": "awesome me",
-		"reason":     "it needed to be modified",
-	}
+	var volatileData = types.VolatileData(`{"modifiedBy":"awesome me","reason":"it needed to be modified","sdkVersion":"1.0.0"}`)
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 
+			fmt.Printf("%s %s\n", request.Volatile, volatileData)
 			assert.Equal(t, volatileData, request.Volatile)
-			assert.NotNil(t, request.Volatile["sdkVersion"])
+			assert.NotNil(t, request.Volatile)
 
 			return &types.KuzzleResponse{}
 		},

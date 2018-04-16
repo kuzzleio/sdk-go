@@ -89,16 +89,16 @@ namespace kuzzleio {
     return this;
   }
 
-  Kuzzle* Kuzzle::setVolatile(json_object *volatiles) {
-    kuzzle_set_volatile(_kuzzle, volatiles);
+  Kuzzle* Kuzzle::setVolatile(const std::string& volatiles) {
+    kuzzle_set_volatile(_kuzzle, const_cast<char*>(volatiles.c_str()));
     return this;
   }
 
-  json_object* Kuzzle::getVolatile() {
-    return kuzzle_get_volatile(_kuzzle);
+  std::string Kuzzle::getVolatile() {
+    return std::string(kuzzle_get_volatile(_kuzzle));
   }
 
-  void trigger_event_listener(int event, json_object* res, void* data) {
+  void trigger_event_listener(int event, char* res, void* data) {
     ((Kuzzle*)data)->getListeners()[event]->trigger(res);
   }
 
