@@ -68,9 +68,9 @@ func kuzzle_free_kuzzle_request(st *C.kuzzle_request) {
 		C.free_char_array(st.keys, st.keys_length)
 		C.free_char_array(st.fields, st.fields_length)
 
-		kuzzle_free_json_object(st.body)
-		kuzzle_free_json_object(st.volatiles)
-		kuzzle_free_json_object(st.options)
+		C.free(unsafe.Pointer(st.body))
+		C.free(unsafe.Pointer(st.volatiles))
+		C.free(unsafe.Pointer(st.options))
 
 		C.free(unsafe.Pointer(st))
 	}
@@ -80,7 +80,7 @@ func kuzzle_free_kuzzle_request(st *C.kuzzle_request) {
 //export kuzzle_free_query_object
 func kuzzle_free_query_object(st *C.query_object) {
 	if st != nil {
-		kuzzle_free_json_object(st.query)
+		C.free(unsafe.Pointer(st.query))
 		C.free(unsafe.Pointer(st.request_id))
 
 		C.free(unsafe.Pointer(st))
@@ -109,7 +109,7 @@ func kuzzle_free_query_options(st *C.query_options) {
 		C.free(unsafe.Pointer(st.scroll_id))
 		C.free(unsafe.Pointer(st.refresh))
 		C.free(unsafe.Pointer(st.if_exist))
-		kuzzle_free_json_object(st.volatiles)
+		C.free(unsafe.Pointer(st.volatiles))
 
 		C.free(unsafe.Pointer(st))
 	}
@@ -121,7 +121,7 @@ func kuzzle_free_room_options(st *C.room_options) {
 		C.free(unsafe.Pointer(st.scope))
 		C.free(unsafe.Pointer(st.state))
 		C.free(unsafe.Pointer(st.user))
-		kuzzle_free_json_object(st.volatiles)
+		C.free(unsafe.Pointer(st.volatiles))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -211,7 +211,7 @@ func kuzzle_free_profile(st *C.profile) {
 func _free_role(st *C.role) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
-		kuzzle_free_json_object(st.controllers)
+		C.free(unsafe.Pointer(st.controllers))
 	}
 }
 
@@ -225,7 +225,7 @@ func kuzzle_free_role(st *C.role) {
 func _free_user(st *C.user) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
-		kuzzle_free_json_object(st.content)
+		C.free(unsafe.Pointer(st.content))
 		C.free_char_array(st.profile_ids, st.profile_ids_length)
 	}
 }
@@ -239,7 +239,7 @@ func kuzzle_free_user(st *C.user) {
 //export kuzzle_free_user_data
 func kuzzle_free_user_data(st *C.user_data) {
 	if st != nil {
-		kuzzle_free_json_object(st.content)
+		C.free(unsafe.Pointer(st.content))
 		C.free_char_array(st.profile_ids, st.profile_ids_length)
 		C.free(unsafe.Pointer(st))
 	}
@@ -266,7 +266,7 @@ func kuzzle_free_notification_content(st *C.notification_content) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
 		kuzzle_free_meta(st.meta)
-		kuzzle_free_json_object(st.content)
+		C.free(unsafe.Pointer(st.content))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -288,7 +288,7 @@ func kuzzle_free_notification_result(st *C.notification_result) {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 
-		kuzzle_free_json_object(st.volatiles)
+		C.free(unsafe.Pointer(st.volatiles))
 
 		kuzzle_free_notification_content(st.result)
 
@@ -386,10 +386,10 @@ func kuzzle_free_user_result(st *C.user_result) {
 // and not the structure itself
 func _free_statistics(st *C.statistics) {
 	if st != nil {
-		kuzzle_free_json_object(st.completed_requests)
-		kuzzle_free_json_object(st.connections)
-		kuzzle_free_json_object(st.failed_requests)
-		kuzzle_free_json_object(st.ongoing_requests)
+		C.free(unsafe.Pointer(st.completed_requests))
+		C.free(unsafe.Pointer(st.connections))
+		C.free(unsafe.Pointer(st.failed_requests))
+		C.free(unsafe.Pointer(st.ongoing_requests))
 	}
 }
 
@@ -461,8 +461,8 @@ func kuzzle_free_kuzzle_response(st *C.kuzzle_response) {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 
-		kuzzle_free_json_object(st.result)
-		kuzzle_free_json_object(st.volatiles)
+		C.free(unsafe.Pointer(st.result))
+		C.free(unsafe.Pointer(st.volatiles))
 
 		C.free(unsafe.Pointer(st))
 	}
@@ -471,26 +471,7 @@ func kuzzle_free_kuzzle_response(st *C.kuzzle_response) {
 //export kuzzle_free_json_result
 func kuzzle_free_json_result(st *C.json_result) {
 	if st != nil {
-		kuzzle_free_json_object(st.result)
-		C.free(unsafe.Pointer(st.error))
-		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st))
-	}
-}
-
-//export kuzzle_free_json_array_result
-func kuzzle_free_json_array_result(st *C.json_array_result) {
-	if st != nil {
-		if st.result != nil {
-			jobjects := (*[1<<28 - 1]*C.json_object)(unsafe.Pointer(st.result))[:int(st.result_length):int(st.result_length)]
-
-			for _, jobject := range jobjects {
-				kuzzle_free_json_object(jobject)
-			}
-
-			C.free(unsafe.Pointer(st.result))
-		}
-
+		C.free(unsafe.Pointer(st.result))
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
@@ -557,10 +538,10 @@ func kuzzle_free_string_array_result(st *C.string_array_result) {
 //export kuzzle_free_search_filters
 func kuzzle_free_search_filters(st *C.search_filters) {
 	if st != nil {
-		kuzzle_free_json_object(st.query)
-		kuzzle_free_json_object(st.sort)
-		kuzzle_free_json_object(st.aggregations)
-		kuzzle_free_json_object(st.search_after)
+		C.free(unsafe.Pointer(st.query))
+		C.free(unsafe.Pointer(st.sort))
+		C.free(unsafe.Pointer(st.aggregations))
+		C.free(unsafe.Pointer(st.search_after))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -623,8 +604,8 @@ func kuzzle_free_shards_result(st *C.shards_result) {
 //export kuzzle_free_specification
 func kuzzle_free_specification(st *C.specification) {
 	if st != nil {
-		kuzzle_free_json_object(st.fields)
-		kuzzle_free_json_object(st.validators)
+		C.free(unsafe.Pointer(st.fields))
+		C.free(unsafe.Pointer(st.validators))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -658,7 +639,7 @@ func kuzzle_free_specification_result(st *C.specification_result) {
 func kuzzle_free_search_result(st *C.search_result) {
 	if st != nil {
 		kuzzle_free_query_options(st.options)
-		kuzzle_free_json_object(st.aggregations)
+		C.free(unsafe.Pointer(st.aggregations))
 		kuzzle_free_search_filters(st.filters)
 
 		C.free(unsafe.Pointer(st.error))
@@ -717,7 +698,7 @@ func kuzzle_free_specification_search_result(st *C.specification_search_result) 
 //export kuzzle_free_mapping
 func kuzzle_free_mapping(st *C.mapping) {
 	if st != nil {
-		kuzzle_free_json_object(st.mapping)
+		C.free(unsafe.Pointer(st.mapping))
 		kuzzle_free_collection(st.collection)
 		C.free(unsafe.Pointer(st))
 	}

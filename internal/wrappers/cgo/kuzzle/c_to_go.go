@@ -30,74 +30,15 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func cToGoControllers(c *C.controllers) (*types.Controllers, error) {
-	if c == nil {
-		return nil, nil
-	}
-
-	if JsonCType(c) != C.json_type_object {
-		return nil, types.NewError("Invalid controller structure", 400)
-	}
-	j := JsonCConvert(c)
-	controllers := &types.Controllers{}
-
-	for controller, val := range j.(map[string]interface{}) {
-		rawController, ok := val.(map[string]interface{})
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		rawActions, ok := rawController["Actions"]
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		actionsMap, ok := rawActions.(map[string]interface{})
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		controllers.Controllers[controller] = &types.Controller{}
-		for action, value := range actionsMap {
-			boolValue, ok := value.(bool)
-			if !ok {
-				return nil, types.NewError("Invalid controllers structure", 400)
-			}
-
-			controllers.Controllers[controller].Actions[action] = boolValue
-		}
-	}
-
-	return controllers, nil
-}
-
-func cToGoRole(crole *C.role) (*security.Role, error) {
-	id := C.GoString(crole.id)
-	var controllers *types.Controllers
-
-	if crole.controllers != nil {
-		c, err := cToGoControllers(crole.controllers)
-
-		if err != nil {
-			return nil, err
-		}
-		controllers = c
-	}
-
-	role := security.NewRole(id, controllers)
-
-	return role, nil
-}
-
 func cToGoSearchFilters(searchFilters *C.search_filters) *types.SearchFilters {
 	if searchFilters == nil {
 		return nil
 	}
 	return &types.SearchFilters{
-		Query:        JsonCConvert(searchFilters.query),
-		Sort:         JsonCConvert(searchFilters.sort).([]interface{}),
-		Aggregations: JsonCConvert(searchFilters.aggregations),
-		SearchAfter:  JsonCConvert(searchFilters.search_after).([]interface{}),
+		Query:        json.RawMessage(C.GoString(searchFilters.query)),
+		Sort:         json.RawMessage(C.GoString(searchFilters.sort)),
+		Aggregations: json.RawMessage(C.GoString(searchFilters.aggregations)),
+		SearchAfter:  json.RawMessage(C.GoString(searchFilters.search_after)),
 	}
 }
 
@@ -190,31 +131,6 @@ func cToGoProfile(p *C.profile) *security.Profile {
 	return profile
 }
 
-func cToGoUserData(cdata *C.user_data) (*types.UserData, error) {
-	if cdata == nil {
-		return nil, nil
-	}
-
-	data := &types.UserData{}
-
-	if cdata.content != nil {
-		err := json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cdata.content))), data.Content)
-		if err != nil {
-			return nil, types.NewError(err.Error(), 400)
-		}
-	}
-
-	if cdata.profile_ids_length > 0 {
-		size := int(cdata.profile_ids_length)
-		carray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:size:size]
-		for i := 0; i < size; i++ {
-			data.ProfileIds = append(data.ProfileIds, C.GoString(carray[i]))
-		}
-	}
-
-	return data, nil
-}
-
 func cToGoUser(u *C.user) *security.User {
 	if u == nil {
 		return nil
@@ -263,19 +179,4 @@ func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 
 func cToGoKuzzleNotificationChannel(c *C.kuzzle_notification_listener) chan<- types.KuzzleNotification {
 	return make(chan<- types.KuzzleNotification)
-}
-
-func cToGoRoomOptions(ro *C.room_options) types.RoomOptions {
-	var volatiles map[string]interface{}
-
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(ro.volatiles))), &volatiles)
-
-	newOpt := types.NewRoomOptions()
-	newOpt.SetScope(C.GoString(ro.scope))
-	newOpt.SetState(C.GoString(ro.state))
-	newOpt.SetUsers(C.GoString(ro.user))
-	newOpt.SetVolatile(volatiles)
-	newOpt.SetSubscribeToSelf(bool(ro.subscribe_to_self))
-
-	return newOpt
 }

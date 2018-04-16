@@ -14,6 +14,8 @@
 
 package types
 
+import "encoding/json"
+
 type KuzzleRequest struct {
 	RequestId  string        `json:"requestId,omitempty"`
 	Controller string        `json:"controller,omitempty"`
@@ -68,7 +70,7 @@ type SubscribeQuery struct {
 	Body  interface{} `json:"body"`
 }
 
-type VolatileData map[string]interface{}
+type VolatileData json.RawMessage
 
 type UserData struct {
 	ProfileIds []string               `json:"profileIds"`
@@ -111,8 +113,8 @@ type MSSortedSet struct {
 }
 
 type SearchFilters struct {
-	Query        interface{}   `json:"query,omitempty"`
-	Sort         []interface{} `json:"sort,omitempty"`
-	Aggregations interface{}   `json:"aggregations,omitempty"`
-	SearchAfter  []interface{} `json:"search_after,omitempty"`
+	Query        json.RawMessage `json:"query,omitempty"`
+	Sort         json.RawMessage `json:"sort,omitempty"`
+	Aggregations json.RawMessage `json:"aggregations,omitempty"`
+	SearchAfter  json.RawMessage `json:"search_after,omitempty"`
 }

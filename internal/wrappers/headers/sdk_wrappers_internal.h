@@ -18,7 +18,6 @@
 typedef char *char_ptr;
 typedef policy *policy_ptr;
 typedef policy_restriction *policy_restriction_ptr;
-typedef json_object *json_object_ptr;
 typedef query_object *query_object_ptr;
 
 // used by memory_storage.geopos
@@ -32,7 +31,7 @@ static void kuzzle_notify(kuzzle_notification_listener f, notification_result* r
     f(res, data);
 }
 
-static void kuzzle_trigger_event(int event, kuzzle_event_listener f, json_object* res, void* data) {
+static void kuzzle_trigger_event(int event, kuzzle_event_listener f, char* res, void* data) {
     f(event, res, data);
 }
 

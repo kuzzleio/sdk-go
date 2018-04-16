@@ -16,6 +16,7 @@ package kuzzle
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
@@ -48,9 +49,17 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 
 	if options.Volatile() != nil {
 		query.Volatile = options.Volatile()
-		query.Volatile["sdkVersion"] = version
+
+		var mapped map[string]interface{}
+		json.Unmarshal(query.Volatile, &mapped)
+
+		mapped["sdkVersion"] = version
+
+		query.Volatile, _ = json.Marshal(mapped)
+
 	} else {
-		query.Volatile = types.VolatileData{"sdkVersion": version}
+		vol := fmt.Sprintf(`{"sdkVersion": "%s"}`, version)
+		query.Volatile = types.VolatileData(vol)
 	}
 
 	jsonRequest, _ := json.Marshal(query)
