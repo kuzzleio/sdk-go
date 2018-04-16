@@ -48,7 +48,7 @@ func cToGoStrings(arr **C.char, len C.size_t) []string {
 		return nil
 	}
 
-	tmpslice := (*[1 << 30]*C.char)(unsafe.Pointer(arr))[:len:len]
+	tmpslice := (*[1 << 27]*C.char)(unsafe.Pointer(arr))[:len:len]
 	goStrings := make([]string, len)
 	for i, s := range tmpslice {
 		goStrings[i] = C.GoString(s)
@@ -89,7 +89,7 @@ func cToGoPolicyRestriction(r *C.policy_restriction) *types.PolicyRestriction {
 		return restriction
 	}
 
-	slice := (*[1<<30 - 1]*C.char)(unsafe.Pointer(r.collections))[:r.collections_length:r.collections_length]
+	slice := (*[1<<28 - 1]*C.char)(unsafe.Pointer(r.collections))[:r.collections_length:r.collections_length]
 	for _, col := range slice {
 		restriction.Collections = append(restriction.Collections, C.GoString(col))
 	}
@@ -106,7 +106,7 @@ func cToGoPolicy(p *C.policy) *types.Policy {
 		return policy
 	}
 
-	slice := (*[1<<30 - 1]*C.policy_restriction)(unsafe.Pointer(p.restricted_to))[:p.restricted_to_length]
+	slice := (*[1<<28 - 1]*C.policy_restriction)(unsafe.Pointer(p.restricted_to))[:p.restricted_to_length]
 	for _, crestriction := range slice {
 		policy.RestrictedTo = append(policy.RestrictedTo, cToGoPolicyRestriction(crestriction))
 	}
@@ -123,7 +123,7 @@ func cToGoProfile(p *C.profile) *security.Profile {
 		return profile
 	}
 
-	slice := (*[1<<30 - 1]*C.policy)(unsafe.Pointer(p.policies))[:p.policies_length]
+	slice := (*[1<<28 - 1]*C.policy)(unsafe.Pointer(p.policies))[:p.policies_length]
 	for _, cpolicy := range slice {
 		profile.Policies = append(profile.Policies, cToGoPolicy(cpolicy))
 	}

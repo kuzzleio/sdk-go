@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker run --rm --privileged multiarch/qemu-user-static:register
+      - docker pull kuzzleio/cgo-cross:armv7
+  build:
+    commands:
+      - docker run --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/cgo-cross:armv7 &
+      - sleep 5
+      - docker exec build-machine /build.sh
+      - docker kill build-machine
+artifacts:
+  files:
+    - internal/wrappers/build/java/io/kuzzle/sdk/kuzzlesdk.jar
