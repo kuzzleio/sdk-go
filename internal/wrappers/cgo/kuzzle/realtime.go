@@ -76,7 +76,7 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.string_result {
 	c := make(chan types.KuzzleNotification)
 
-	roomId, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, cToGoRoomOptions(options))
+	roomId, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
 
 	go func() {
 		res := <-c
@@ -90,7 +90,7 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback C.kuzzle_notification_listener, data unsafe.Pointer) *C.void_result {
 	c := make(chan types.KuzzleNotification)
 
-	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), cToGoRoomOptions(options), c)
+	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), SetRoomOptions(options), c)
 
 	go func() {
 		res := <-c

@@ -75,7 +75,8 @@ func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notifi
 	result.id = C.CString(gNotifContent.Id)
 	result.meta = goToCMeta(gNotifContent.Meta)
 	result.count = C.int(gNotifContent.Count)
-	result.content, _ = goToCJson(gNotifContent)
+	marshalled, _ := json.Marshal(gNotifContent)
+	result.content = C.CString(string(marshalled))
 
 	return result
 }
@@ -89,7 +90,7 @@ func goToCNotificationResult(gNotif *types.KuzzleNotification) *C.notification_r
 		return result
 	}
 
-	result.volatiles, _ = goToCJson(gNotif.Volatile)
+	result.volatiles = C.CString(string(gNotif.Volatile))
 	result.request_id = C.CString(gNotif.RequestId)
 	result.result = goToCNotificationContent(gNotif.Result)
 	result.index = C.CString(gNotif.Index)
@@ -114,10 +115,10 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.request_id = C.CString(gRes.RequestId)
 
 	bufResult := C.CString(string(gRes.Result))
-	result.result = C.json_tokener_parse(bufResult)
+	result.result = bufResult
 	C.free(unsafe.Pointer(bufResult))
 
-	result.volatiles, _ = goToCJson(gRes.Volatile)
+	result.volatiles = C.CString(string(gRes.Volatile))
 	result.index = C.CString(gRes.Index)
 	result.collection = C.CString(gRes.Collection)
 	result.controller = C.CString(gRes.Controller)
@@ -359,10 +360,10 @@ func goToCBoolResult(goRes bool, err error) *C.bool_result {
 func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
 	result := (*C.search_filters)(C.calloc(1, C.sizeof_search_filters))
 
-	result.query, _ = goToCJson(filters.Query)
-	result.sort, _ = goToCJson(filters.Sort)
-	result.aggregations, _ = goToCJson(filters.Aggregations)
-	result.search_after, _ = goToCJson(filters.SearchAfter)
+	result.query = C.CString(string(filters.Query))
+	result.sort = C.CString(string(filters.Sort))
+	result.aggregations = C.CString(string(filters.Aggregations))
+	result.search_after = C.CString(string(filters.SearchAfter))
 
 	return result
 }
@@ -370,8 +371,8 @@ func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
 // Allocates memory
 func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	result := (*C.search_result)(C.calloc(1, C.sizeof_search_result))
-	result.collection, _ = goToCJson(goRes.Collection)
-	result.documents, _ = goToCJson(goRes.Documents)
+	result.collection = C.CString(string(goRes.Collection))
+	result.documents = C.CString(string(goRes.Documents))
 
 	result.fetched = C.uint(goRes.Fetched)
 	result.total = C.uint(goRes.Total)
@@ -389,7 +390,7 @@ func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	}
 
 	if len(goRes.Aggregations) > 0 {
-		result.aggregations, _ = goToCJson(goRes.Aggregations)
+		result.aggregations = C.CString(string(goRes.Aggregations))
 	}
 
 	return result
@@ -407,7 +408,8 @@ func goToCRole(k *C.kuzzle, role *security.Role, dest *C.role) *C.role {
 	crole.kuzzle = k
 
 	if role.Controllers != nil {
-		crole.controllers, _ = goToCJson(role.Controllers)
+		ctrls, _ := json.Marshal(role.Controllers)
+		crole.controllers = C.CString(string(ctrls))
 	}
 
 	return crole
@@ -418,8 +420,9 @@ func goToCSpecification(goSpec *types.Specification) *C.specification {
 	result := (*C.specification)(C.calloc(1, C.sizeof_specification))
 
 	result.strict = C.bool(goSpec.Strict)
-	result.fields, _ = goToCJson(goSpec.Fields)
-	result.validators, _ = goToCJson(goSpec.Validators)
+	flds, _ := json.Marshal(goSpec.Fields)
+	result.fields = C.CString(string(flds))
+	result.validators = C.CString(string(goSpec.Validators))
 	return result
 }
 
@@ -482,69 +485,6 @@ func goToCSpecificationSearchResult(goRes *types.SpecificationSearchResult, err 
 	return result
 }
 
-func goToCJson(data interface{}) (*C.json_object, error) {
-	r, err := json.Marshal(data)
-	if err != nil {
-		return nil, types.NewError(err.Error(), 400)
-	}
-
-	buffer := C.CString(string(r))
-	defer C.free(unsafe.Pointer(buffer))
-
-	tok := C.json_tokener_new()
-	defer C.json_tokener_free(tok)
-
-	j := C.json_tokener_parse_ex(tok, buffer, C.int(C.strlen(buffer)))
-	jerr := C.json_tokener_get_error(tok)
-	if jerr != C.json_tokener_success {
-		return nil, types.NewError(C.GoString(C.json_tokener_error_desc(jerr)), 400)
-	}
-
-	return j, nil
-}
-
-func goToCJsonResult(goRes interface{}, err error) *C.json_result {
-	result := (*C.json_result)(C.calloc(1, C.sizeof_json_result))
-
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	result.result, err = goToCJson(goRes)
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	return result
-}
-
-func goToCJsonArrayResult(goRes []interface{}, err error) *C.json_array_result {
-	result := (*C.json_array_result)(C.calloc(1, C.sizeof_json_array_result))
-
-	if err != nil {
-		Set_json_array_result_error(result, err)
-		return result
-	}
-
-	result.result_length = C.size_t(len(goRes))
-	if goRes != nil {
-		result.result = (**C.json_object)(C.calloc(result.result_length, C.sizeof_json_object_ptr))
-		cArray := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
-
-		for i, res := range goRes {
-			cArray[i], err = goToCJson(res)
-			if err != nil {
-				Set_json_array_result_error(result, err)
-				return result
-			}
-		}
-	}
-
-	return result
-}
-
 func goToCProfileResult(k *C.kuzzle, res *security.Profile, err error) *C.profile_result {
 	result := (*C.profile_result)(C.calloc(1, C.sizeof_profile_result))
 	if err != nil {
@@ -564,10 +504,11 @@ func goToCUserData(data *types.UserData) (*C.user_data, error) {
 	cdata := (*C.user_data)(C.calloc(1, C.sizeof_user_data))
 
 	if data.Content != nil {
-		jsonO, err := goToCJson(data.Content)
+		cnt, err := json.Marshal(data.Content)
 		if err != nil {
 			return nil, err
 		}
+		jsonO := C.CString(string(cnt))
 		cdata.content = jsonO
 	}
 
@@ -600,10 +541,12 @@ func goToCUser(k *C.kuzzle, user *security.User, dest *C.user) (*C.user, error) 
 	cuser.kuzzle = k
 
 	if user.Content != nil {
-		jsonO, err := goToCJson(user.Content)
+		cnt, err := json.Marshal(user.Content)
 		if err != nil {
 			return nil, err
 		}
+		jsonO := C.CString(string(cnt))
+
 		cuser.content = jsonO
 	}
 
@@ -779,10 +722,10 @@ func goToCCollectionListResult(collections []*types.CollectionsList, err error) 
 
 // Allocates memory
 func fillStatistics(src *types.Statistics, dest *C.statistics) {
-	dest.ongoing_requests, _ = goToCJson(src.OngoingRequests)
-	dest.completed_requests, _ = goToCJson(src.CompletedRequests)
-	dest.connections, _ = goToCJson(src.Connections)
-	dest.failed_requests, _ = goToCJson(src.FailedRequests)
+	dest.ongoing_requests = C.CString(string(src.OngoingRequests))
+	dest.completed_requests = C.CString(string(src.CompletedRequests))
+	dest.connections = C.CString(string(src.Connections))
+	dest.failed_requests = C.CString(string(src.FailedRequests))
 	dest.timestamp = C.ulonglong(src.Timestamp)
 }
 

@@ -50,7 +50,7 @@ namespace kuzzleio {
 
       char* connect();
       bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      json_object* createMyCredentials(const std::string& strategy, json_object* credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
+
       statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
@@ -61,8 +61,8 @@ namespace kuzzleio {
       Kuzzle* startQueuing();
       Kuzzle* stopQueuing();
       Kuzzle* flushQueue();
-      json_object* getVolatile();
-      Kuzzle* setVolatile(json_object* volatiles);
+      std::string getVolatile();
+      Kuzzle* setVolatile(const std::string& volatiles);
       std::map<int, EventListener*> getListeners();
 
       virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener);

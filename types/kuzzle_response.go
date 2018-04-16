@@ -49,7 +49,7 @@ type (
 	KuzzleNotification struct {
 		RequestId  string              `json:"requestId"`
 		Result     *NotificationResult `json:"result"`
-		Volatile   VolatileData        `json:"volatile"`
+		Volatile   json.RawMessage     `json:"volatile"`
 		Index      string              `json:"index"`
 		Collection string              `json:"collection"`
 		Controller string              `json:"controller"`
@@ -200,11 +200,11 @@ type (
 	}
 
 	Statistics struct {
-		CompletedRequests map[string]int `json:"completedRequests"`
-		Connections       map[string]int `json:"connections"`
-		FailedRequests    map[string]int `json:"failedRequests"`
-		OngoingRequests   map[string]int `json:"ongoingRequests"`
-		Timestamp         int            `json:"timestamp"`
+		CompletedRequests json.RawMessage `json:"completedRequests"`
+		Connections       json.RawMessage `json:"connections"`
+		FailedRequests    json.RawMessage `json:"failedRequests"`
+		OngoingRequests   json.RawMessage `json:"ongoingRequests"`
+		Timestamp         int             `json:"timestamp"`
 	}
 
 	LoginAttempt struct {

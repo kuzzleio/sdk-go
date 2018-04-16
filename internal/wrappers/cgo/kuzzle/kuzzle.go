@@ -30,6 +30,7 @@ import (
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // map which stores instances to keep references in case the gc passes
@@ -158,10 +159,10 @@ func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 		mquery, _ := json.Marshal(queryObject.Query)
 
 		buffer := C.CString(string(mquery))
-		queryObjects[idx].query = C.json_tokener_parse(buffer)
+		queryObjects[idx].query = C.CString(C.GoString(buffer))
 		C.free(unsafe.Pointer(buffer))
 
-		idx += 1
+		idx++
 	}
 
 	return result
@@ -197,14 +198,9 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	go func() {
 		res := <-c
 
-		var jsonRes *C.json_object
 		r, _ := json.Marshal(res)
 
-		buffer := C.CString(string(r))
-		jsonRes = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-
-		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+		C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
 	}()
 }
 
@@ -217,14 +213,9 @@ func kuzzle_once(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.P
 	go func() {
 		res := <-c
 
-		var jsonRes *C.json_object
 		r, _ := json.Marshal(res)
 
-		buffer := C.CString(string(r))
-		jsonRes = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-
-		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+		C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
 	}()
 }
 
@@ -354,14 +345,14 @@ func kuzzle_get_ssl_connection(k *C.kuzzle) C.bool {
 }
 
 //export kuzzle_get_volatile
-func kuzzle_get_volatile(k *C.kuzzle) *C.json_object {
-	r, _ := goToCJson((*kuzzle.Kuzzle)(k.instance).Volatile())
+func kuzzle_get_volatile(k *C.kuzzle) *C.char {
+	r := C.CString(string((*kuzzle.Kuzzle)(k.instance).Volatile()))
 	return r
 }
 
 //export kuzzle_set_volatile
-func kuzzle_set_volatile(k *C.kuzzle, v *C.json_object) {
-	(*kuzzle.Kuzzle)(k.instance).SetVolatile(JsonCConvert(v).(map[string]interface{}))
+func kuzzle_set_volatile(k *C.kuzzle, v *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).SetVolatile(types.VolatileData(C.GoString(v)))
 }
 
 func main() {

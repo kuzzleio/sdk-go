@@ -103,7 +103,7 @@ func kuzzle_security_destroy_user(u *C.user) {
 		C.free(unsafe.Pointer(u.id))
 	}
 	if u.content != nil {
-		C.json_object_put(u.content)
+		C.free(unsafe.Pointer(u.content))
 	}
 	if u.profile_ids != nil {
 		size := int(u.profile_ids_length)
@@ -121,17 +121,11 @@ func kuzzle_security_destroy_user(u *C.user) {
 // --- role
 
 //export kuzzle_security_new_role
-func kuzzle_security_new_role(k *C.kuzzle, id *C.char, c *C.controllers) *C.role {
+func kuzzle_security_new_role(k *C.kuzzle, id *C.char, c C.controllers) *C.role {
 	crole := (*C.role)(C.calloc(1, C.sizeof_role))
 	crole.id = id
-	crole.controllers = c
+	crole.controllers = C.CString(C.GoString(c))
 	crole.kuzzle = k
-
-	_, err := cToGoRole(crole)
-	if err != nil {
-		C.set_errno(C.ENOKEY)
-		return nil
-	}
 
 	return crole
 }
@@ -142,7 +136,7 @@ func kuzzle_security_destroy_role(r *C.role) {
 		return
 	}
 
-	C.json_object_put(r.controllers)
+	C.free(unsafe.Pointer(r.controllers))
 	C.free(unsafe.Pointer(r))
 }
 

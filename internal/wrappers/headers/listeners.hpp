@@ -27,7 +27,7 @@ namespace kuzzleio {
     class EventListener {
         public:
             virtual ~EventListener(){};
-            virtual void trigger(json_object*) const = 0;
+            virtual void trigger(char*) const = 0;
     };
 
     class SubscribeListener {
