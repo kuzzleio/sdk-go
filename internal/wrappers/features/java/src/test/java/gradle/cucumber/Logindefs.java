@@ -17,9 +17,7 @@ public class Logindefs {
         try {
             k.getIndex().create("index");
             k.getCollection().create("index", "collection");
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        } catch(Exception e) {}
     }
 
     @After
@@ -42,8 +40,6 @@ public class Logindefs {
 
     @Given("^I create a user \"([^\"]*)\" with password \"([^\"]*)\" with id \"([^\"]*)\"$")
     public void CreateUser(String user, String password, String id) {
-        k = new Kuzzle("localhost", null);
-
         String json = "{\n" +
                 "  \"content\": {\n" +
                 "    \"profileIds\": [\"default\"]" +
@@ -67,7 +63,7 @@ public class Logindefs {
 
     @When("^I try to create a document with id \"([^\"]*)\"$")
     public void CreateDocument(String id) {
-        k.getDocument().create("index", "collection", "{\"foo\":\"bar\"}");
+        k.getDocument().create("index", "collection", id, "{\"foo\":\"bar\"}");
     }
 
     /*

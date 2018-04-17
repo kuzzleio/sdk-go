@@ -16,7 +16,6 @@ package main
 
 /*
   #cgo CFLAGS: -std=c99 -I../../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include "kuzzlesdk.h"

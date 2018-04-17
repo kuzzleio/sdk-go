@@ -37,10 +37,6 @@ func (d *Document) Create(index string, collection string, _id string, body stri
 		return "", types.NewError("Document.Create: collection required", 400)
 	}
 
-	if _id == "" {
-		return "", types.NewError("Document.Create: id required", 400)
-	}
-
 	if body == "" {
 		return "", types.NewError("Document.Create: body required", 400)
 	}

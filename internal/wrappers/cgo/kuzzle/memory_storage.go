@@ -16,11 +16,9 @@ package main
 
 /*
   #cgo CFLAGS: -I../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include <string.h>
-  #include <json-c/json.h>
   #include "kuzzlesdk.h"
   #include "sdk_wrappers_internal.h"
 
@@ -150,13 +148,13 @@ func kuzzle_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.void_result {
 }
 
 //export kuzzle_ms_geoadd
-func kuzzle_ms_geoadd(k *C.kuzzle, key *C.char, points **C.json_object, plen C.size_t, options *C.query_options) *C.int_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(points))[:plen:plen]
+func kuzzle_ms_geoadd(k *C.kuzzle, key *C.char, points **C.point, plen C.size_t, options *C.query_options) *C.int_result {
+	wrapped := (*[1 << 20]*C.point)(unsafe.Pointer(points))[:plen:plen]
 	gopoints := make([]*types.GeoPoint, int(plen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, gopoints[i])
 	}
 
@@ -395,13 +393,13 @@ func kuzzle_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.size_t, o
 }
 
 //export kuzzle_ms_hmset
-func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.ms_hash_field, elen C.size_t, options *C.query_options) *C.void_result {
+	wrapped := (*[1 << 20]*C.ms_hash_field)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MsHashField, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -629,13 +627,13 @@ func kuzzle_ms_mget(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_
 }
 
 //export kuzzle_ms_mset
-func kuzzle_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_mset(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.void_result {
+	wrapped := (*[1 << 20]*C.ms_key_value)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -647,13 +645,13 @@ func kuzzle_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.size_t, options
 }
 
 //export kuzzle_ms_msetnx
-func kuzzle_ms_msetnx(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.bool_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_msetnx(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.bool_result {
+	wrapped := (*[1 << 20]*C.ms_key_value)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -1073,13 +1071,13 @@ func kuzzle_ms_type(k *C.kuzzle, key *C.char, options *C.query_options) *C.strin
 }
 
 //export kuzzle_ms_zadd
-func kuzzle_ms_zadd(k *C.kuzzle, key *C.char, elements **C.json_object, elen C.size_t, options *C.query_options) *C.int_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(elements))[:elen:elen]
+func kuzzle_ms_zadd(k *C.kuzzle, key *C.char, elements **C.ms_sorted_set, elen C.size_t, options *C.query_options) *C.int_result {
+	wrapped := (*[1 << 20]*C.ms_sorted_set)(unsafe.Pointer(elements))[:elen:elen]
 	goelements := make([]*types.MSSortedSet, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goelements[i])
 	}
 

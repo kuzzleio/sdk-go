@@ -52,6 +52,7 @@ namespace kuzzleio {
 
     std::string Document::create(const std::string& index, const std::string& collection, const std::string& id, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
         string_result *r = kuzzle_document_create(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(id.c_str()), const_cast<char*>(body.c_str()), options);
+        std::cout << r->error << std::endl;
         if (r->error != NULL)
             throwExceptionFromStatus(r);
 

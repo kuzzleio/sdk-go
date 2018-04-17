@@ -21,7 +21,6 @@ extern "C" {
 
   #include "kuzzle.h"
   #include "kuzzlesdk.h"
-  #include "swig.h"
 }
 
 #endif
