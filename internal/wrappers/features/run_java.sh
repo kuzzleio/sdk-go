@@ -3,4 +3,4 @@
 cd internal/wrappers/features/fixtures/
 ./run.sh
 cd ../java
-gradle cucumber
+taskset -c 1 gradle cucumber
