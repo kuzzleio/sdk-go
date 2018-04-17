@@ -3,6 +3,7 @@ go:
   - 1.9
 dist: trusty
 install:
+  - sudo apt-get install build-essential swig oracle-java8-installer g++
   - go get -t -v ./...
 script: 
   - bash ./test.sh
