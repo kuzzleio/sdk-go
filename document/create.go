@@ -28,7 +28,7 @@ import (
 //       If the same document already exists:
 //         - resolves with an error if set to "error".
 //         - replaces the existing document if set to "replace"
-func (d *Document) Create(index string, collection string, _id string, body json.RawMessage, options types.QueryOptions) (string, error) {
+func (d *Document) Create(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Create: index required", 400)
 	}
@@ -48,7 +48,7 @@ func (d *Document) Create(index string, collection string, _id string, body json
 		Collection: collection,
 		Controller: "document",
 		Action:     "create",
-		Id:         _id,
+		Id:         id,
 		Body:       body,
 	}
 

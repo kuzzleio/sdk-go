@@ -39,13 +39,6 @@ func TestCreateCollectionNull(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCreateIdNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-	_, err := d.Create("index", "collection", "", json.RawMessage(`{"foo":"bar"}`), nil)
-	assert.NotNil(t, err)
-}
-
 func TestCreateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
