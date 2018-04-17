@@ -49,6 +49,8 @@ func main() {
 
 ## <a name="tests"></a> Running Tests
 
+### Unit tests
+
 To run the tests you can simply execute the coverage.sh script
 ```sh
 ./coverage.sh
@@ -57,6 +59,12 @@ To run the tests you can simply execute the coverage.sh script
 You can also get html coverage by running
 ```sh
 ./coverage.sh --html
+```
+### e2e tests
+
+To run e2e tests ensure you have a kuzzle running and then run
+```sh
+./internal/wrappers/features/e2e.sh
 ```
 
 ## License
