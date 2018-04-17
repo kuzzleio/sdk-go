@@ -21,7 +21,7 @@ import (
 )
 
 // Validate validates data against existing validation rules.
-func (d *Document) Validate(index string, collection string, body string, options types.QueryOptions) (bool, error) {
+func (d *Document) Validate(index string, collection string, body json.RawMessage, options types.QueryOptions) (bool, error) {
 	if index == "" {
 		return false, types.NewError("Document.Validate: index required", 400)
 	}
@@ -30,7 +30,7 @@ func (d *Document) Validate(index string, collection string, body string, option
 		return false, types.NewError("Document.Validate: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return false, types.NewError("Document.Validate: body required", 400)
 	}
 

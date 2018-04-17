@@ -107,6 +107,11 @@ func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
 	return i
 }
 
+//export kuzzle_get_jwt
+func kuzzle_get_jwt(k *C.kuzzle) *C.char {
+	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
+}
+
 //export kuzzle_get_server_controller
 func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
 	s := (*C.server)(C.calloc(1, C.sizeof_server))

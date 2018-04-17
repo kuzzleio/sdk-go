@@ -11,8 +11,8 @@
 #include "server.hpp"
 #include "document.hpp"
 #include "realtime.hpp"
+#include "auth.hpp"
 #include <assert.h>
-#include <ffi.h>
 %}
 
 %define _Complex
@@ -29,3 +29,4 @@
 %include "server.hpp"
 %include "document.hpp"
 %include "realtime.hpp"
+%include "auth.hpp"

@@ -29,7 +29,7 @@ func TestReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("", "collection", "id1", "body", nil)
+	_, err := d.Replace("", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("index", "", "id1", "body", nil)
+	_, err := d.Replace("index", "", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestReplaceIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("index", "collection", "", "body", nil)
+	_, err := d.Replace("index", "collection", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestReplaceBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("index", "collection", "id1", "", nil)
+	_, err := d.Replace("index", "collection", "id1", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -66,7 +66,7 @@ func TestReplaceDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("index", "collection", "id1", "body", nil)
+	_, err := d.Replace("index", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -97,6 +97,6 @@ func TestReplaceDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Replace("index", "collection", id, "body", nil)
+	_, err := d.Replace("index", "collection", id, json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

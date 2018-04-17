@@ -3,8 +3,10 @@ package gradle.cucumber;
 import cucumber.api.java.Before;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.kuzzle.sdk.*;
+import org.junit.Assert;
 
 public class Logindefs {
     private Kuzzle k;
@@ -63,17 +65,16 @@ public class Logindefs {
 
     @When("^I try to create a document with id \"([^\"]*)\"$")
     public void CreateDocument(String id) {
-        k.getDocument().create("index", "collection", id, "{\"foo\":\"bar\"}");
+        try {
+            k.getDocument().create("index", "collection", id, "{\"foo\":\"bar\"}");
+        } catch(Exception e) {}
     }
-
-    /*
 
     @Then("^I check if the document with id \"([^\"]*)\"( does not)? exists$")
     public void GetDocument(String id, String does_not_exists) {
         boolean raised = false;
-        Collection c = new Collection(k, "collection", "index");
         try {
-            c.fetchDocument(id);
+            k.getDocument().get("index", "collection", id);
         } catch (Exception e) {
             if (does_not_exists == null) {
                 Assert.fail("Exception raised: " + e.toString());
@@ -88,50 +89,41 @@ public class Logindefs {
 
     @When("^I log in as \"([^\"]*)\":\"([^\"]*)\"$")
     public void Login(String user, String password) {
-        JsonObject query = new JsonObject()
-                .put("username", user)
-                .put("password", password);
-        String jwt = k.login("local", query, 1000000);
+        String jwt = k.getAuth().login("local", "{\"username\": \""+user+"\", \"password\":\""+password+"\" }");
         Assert.assertNotNull("Jwt should not be null after a right login", jwt);
     }
 
     @Then("^I check the JWT is( not)? null$")
     public void CheckJwt(String not) {
         if (not != null) {
-            Assert.assertNotNull(k.getJwt());
+            Assert.assertNotEquals("", k.getJwt());
         } else {
-            Assert.assertNull(k.getJwt());
+            Assert.assertEquals("", k.getJwt());
         }
     }
 
+
     @When("^I update my credentials with username \"([^\"]*)\" and \"([^\"]*)\" = \"([^\"]*)\"$")
     public void UpdateMyCredentials(String username, String key, String value) {
-        JsonObject credentials = new JsonObject()
-                .put("username", username)
-                .put(key, value);
         try {
-            k.updateMyCredentials("local", credentials);
+            k.getAuth().updateMyCredentials("local", "{\"username\": \""+username+"\", \""+key+"\":\""+value+"\"}");
         } catch(Exception e) {}
     }
 
     @Then("^I check my new credentials are( not)? valid with username \"([^\"]*)\", password \"([^\"]*)\" and \"([^\"]*)\" = \"([^\"]*)\"$")
     public void CheckMyCredentials(String not, String username, String password, String key, String value) {
-        JsonObject credentials = new JsonObject()
-                .put("username", username)
-                .put("password", password)
-                .put(key, value);
+        String credentials = "{\"username\": \""+username+"\", \"password\":\""+password+"\", \""+key+"\":\""+value+"\"}";
         if (not == null) {
-            Assert.assertTrue(k.validateMyCredentials("local", credentials));
+            Assert.assertTrue(k.getAuth().validateMyCredentials("local", credentials));
         } else {
             try {
-                Assert.assertFalse(k.validateMyCredentials("local", credentials));
-            } catch(UnauthorizedException e) {}
+                Assert.assertFalse(k.getAuth().validateMyCredentials("local", credentials));
+            } catch(Exception e) {}
         }
     }
 
     @Given("^I logout$")
     public void Logout() {
-        k.logout();
+        k.getAuth().logout();
     }
-    */
 }

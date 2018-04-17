@@ -29,7 +29,7 @@ func TestMCreateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("", "collection", "body", nil)
+	_, err := d.MCreate("", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestMCreateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("index", "", "body", nil)
+	_, err := d.MCreate("index", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestMCreateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("index", "collection", "", nil)
+	_, err := d.MCreate("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestMCreateDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("index", "collection", "body", nil)
+	_, err := d.MCreate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -110,6 +110,6 @@ func TestMCreateDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("index", "collection", "body", nil)
+	_, err := d.MCreate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

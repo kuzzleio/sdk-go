@@ -28,28 +28,28 @@ import (
 func TestCreateOrReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("", "collection", "id1", "body", nil)
+	_, err := d.CreateOrReplace("", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("index", "", "id1", "body", nil)
+	_, err := d.CreateOrReplace("index", "", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("index", "collection", "", "body", nil)
+	_, err := d.CreateOrReplace("index", "collection", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateOrReplaceBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("index", "collection", "id1", "", nil)
+	_, err := d.CreateOrReplace("index", "collection", "id1", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -61,7 +61,7 @@ func TestCreateOrReplaceDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("index", "collection", "id1", "body", nil)
+	_, err := d.CreateOrReplace("index", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -90,6 +90,6 @@ func TestCreateOrReplaceDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.CreateOrReplace("index", "collection", id, "body", nil)
+	_, err := d.CreateOrReplace("index", "collection", id, json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

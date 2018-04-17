@@ -21,7 +21,7 @@ import (
 )
 
 // Update updates a document in Kuzzle.
-func (d *Document) Update(index string, collection string, _id string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) Update(index string, collection string, _id string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Update: index required", 400)
 	}
@@ -34,7 +34,7 @@ func (d *Document) Update(index string, collection string, _id string, body stri
 		return "", types.NewError("Document.Update: id required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.Update: body required", 400)
 	}
 

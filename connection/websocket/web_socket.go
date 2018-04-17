@@ -354,6 +354,10 @@ func (ws *webSocket) listen() {
 			c.(chan<- *types.KuzzleResponse) <- &message
 			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(message.RequestId)
+		} else if c, found := ws.channelsResult.Load(message.RoomId); found {
+			c.(chan<- *types.KuzzleResponse) <- &message
+			close(c.(chan<- *types.KuzzleResponse))
+			ws.channelsResult.Delete(message.RequestId)
 		} else {
 			ws.EmitEvent(event.Discarded, &message)
 		}

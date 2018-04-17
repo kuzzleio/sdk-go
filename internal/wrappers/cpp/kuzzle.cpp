@@ -111,6 +111,10 @@ namespace kuzzleio {
     return std::string(kuzzle_get_volatile(_kuzzle));
   }
 
+  std::string Kuzzle::getJwt() {
+    return std::string(kuzzle_get_jwt(_kuzzle));
+  }
+
   void trigger_event_listener(int event, char* res, void* data) {
     ((Kuzzle*)data)->getListeners()[event]->trigger(res);
   }

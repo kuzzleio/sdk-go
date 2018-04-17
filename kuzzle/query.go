@@ -105,6 +105,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	}
 
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
+
 	if err != nil {
 		if responseChannel != nil {
 			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}

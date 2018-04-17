@@ -21,7 +21,7 @@ import (
 )
 
 // Search documents in the given Collection, using provided filters and option.
-func (d *Document) Search(index string, collection string, body string, options types.QueryOptions) (*types.SearchResult, error) {
+func (d *Document) Search(index string, collection string, body json.RawMessage, options types.QueryOptions) (*types.SearchResult, error) {
 	if index == "" {
 		return nil, types.NewError("Document.Search: index required", 400)
 	}
@@ -30,7 +30,7 @@ func (d *Document) Search(index string, collection string, body string, options 
 		return nil, types.NewError("Document.Search: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return nil, types.NewError("Document.Search: body required", 400)
 	}
 
