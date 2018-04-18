@@ -1,3 +1,3 @@
 #!/bin/bash
 
-internal/wrappers/features/run_java.sh
+internal/wrappers/features/run_$1.sh
