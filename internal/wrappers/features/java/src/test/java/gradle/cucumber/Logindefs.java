@@ -14,29 +14,10 @@ public class Logindefs {
     @Before
     public void before() {
         k = new Kuzzle("localhost", null);
-
-        // @todo do this with fixture
-        try {
-            k.getIndex().create("index");
-            k.getCollection().create("index", "collection");
-        } catch(Exception e) {}
     }
 
     @After
     public void after() {
-        //@todo do this with fixture
-        KuzzleRequest request = new KuzzleRequest();
-        request.setController("collection");
-        request.setAction("truncate");
-        request.setIndex("index");
-        request.setCollection("collection");
-        k.query(request);
-
-        request.setController("security");
-        request.setAction("deleteUser");
-        request.setId("useradmin-id");
-        k.query(request);
-
         k.disconnect();
     }
 
