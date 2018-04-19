@@ -37,13 +37,12 @@ namespace kuzzleio {
     this->_kuzzle = new kuzzle();
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
     
-    this->document = new Document(this, kuzzle_get_document_controller(this->_kuzzle));
+    this->document = new Document(this, kuzzle_get_document_controller(_kuzzle));
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
-    this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
-
-    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(this->_kuzzle));
+    this->collection = new Collection(this, kuzzle_get_collection_controller(_kuzzle));
+    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(_kuzzle));
   }
 
   Kuzzle::~Kuzzle() {
