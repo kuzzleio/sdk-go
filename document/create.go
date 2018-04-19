@@ -60,8 +60,11 @@ func (d *Document) Create(index string, collection string, id string, body json.
 		return "", res.Error
 	}
 
-	var created string
+	type response struct {
+		Created string `json:"_id"`
+	}
+	var created response
 	json.Unmarshal(res.Result, &created)
 
-	return created, nil
+	return created.Created, nil
 }

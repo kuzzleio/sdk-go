@@ -27,7 +27,7 @@ func registerRealtime(instance interface{}) {
 // unregister an instance from the instances map
 //export unregisterRealtime
 func unregisterRealtime(rt *C.realtime) {
-	delete(realtimeInstances, (*realtime.Realtime)(rt.instance))
+	delete(realtimeInstances, rt)
 }
 
 // Allocates memory
@@ -76,14 +76,18 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.string_result {
 	c := make(chan types.KuzzleNotification)
 
-	roomId, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
+	roomID, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
+
+	if err != nil {
+		goToCStringResult(&roomID, err)
+	}
 
 	go func() {
 		res := <-c
 		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
 	}()
 
-	return goToCStringResult(&roomId, err)
+	return goToCStringResult(&roomID, err)
 }
 
 //export kuzzle_realtime_join

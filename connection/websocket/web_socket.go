@@ -292,7 +292,6 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 
 	if !found {
 		subs = map[string]subscription{}
-		ws.subscriptions.Store(channel, subs)
 	}
 
 	subs.(map[string]subscription)[roomID] = subscription{
@@ -302,6 +301,8 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 		onReconnectChannel:  onReconnectChannel,
 		filters:             filters,
 	}
+
+	ws.subscriptions.Store(channel, subs)
 }
 
 func (ws *webSocket) UnregisterSub(roomID string) {

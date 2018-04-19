@@ -23,6 +23,7 @@ public class Logindefs {
 
     @Given("^I create a user \"([^\"]*)\" with password \"([^\"]*)\" with id \"([^\"]*)\"$")
     public void CreateUser(String user, String password, String id) {
+        /*
         String json = "{\n" +
                 "  \"content\": {\n" +
                 "    \"profileIds\": [\"default\"]" +
@@ -42,6 +43,7 @@ public class Logindefs {
         request.setId(id);
 
         k.query(request);
+        */
     }
 
     @When("^I try to create a document with id \"([^\"]*)\"$")

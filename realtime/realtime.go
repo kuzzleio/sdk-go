@@ -22,6 +22,8 @@ type Realtime struct {
 }
 
 // NewRealtime instanciates a new realtime controller
-func NewRealtime(k types.IKuzzle) *Realtime {
-	return &Realtime{k}
+func NewRealtime(kuzzle types.IKuzzle) *Realtime {
+	return &Realtime{
+		k: kuzzle,
+	}
 }

@@ -22,6 +22,8 @@
 %rename(RoomOptions) room_options;
 %rename(SearchFilters) search_filters;
 %rename(SearchResult) search_result;
+%rename(NotificationResult) notification_result;
+%rename(NotificationContent) notification_content;
 
 %ignore *::error;
 %ignore *::status;

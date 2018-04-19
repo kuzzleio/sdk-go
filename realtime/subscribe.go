@@ -50,6 +50,7 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 	go r.k.Query(query, opts, result)
 
 	res := <-result
+
 	if res.Error != nil {
 		return "", res.Error
 	}
