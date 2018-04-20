@@ -24,6 +24,7 @@ package main
 import "C"
 import (
 	"strconv"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -32,17 +33,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var serverInstances map[interface{}]bool
+var serverInstances sync.Map
 
 //register new instance of server
 func registerServer(instance interface{}) {
-	serverInstances[instance] = true
+	serverInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterServer
-func unregisterServer(d *C.server) {
-	delete(serverInstances, (*server.Server)(d.instance))
+func unregisterServer(s *C.server) {
+	serverInstances.Delete(s)
 }
 
 // Allocates memory
@@ -50,10 +51,6 @@ func unregisterServer(d *C.server) {
 func kuzzle_new_server(s *C.server, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	server := server.NewServer(kuz)
-
-	if serverInstances == nil {
-		serverInstances = make(map[interface{}]bool)
-	}
 
 	s.instance = unsafe.Pointer(server)
 	s.kuzzle = k

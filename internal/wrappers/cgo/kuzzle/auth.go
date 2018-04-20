@@ -25,6 +25,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/auth"
@@ -32,17 +33,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var authInstances map[interface{}]bool
+var authInstances sync.Map
 
 //register new instance of server
 func registerAuth(instance interface{}) {
-	authInstances[instance] = true
+	authInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterAuth
 func unregisterAuth(a *C.auth) {
-	delete(authInstances, (*auth.Auth)(a.instance))
+	authInstances.Delete(a)
 }
 
 // Allocates memory
@@ -50,10 +51,6 @@ func unregisterAuth(a *C.auth) {
 func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	auth := auth.NewAuth(kuz)
-
-	if authInstances == nil {
-		authInstances = make(map[interface{}]bool)
-	}
 
 	a.instance = unsafe.Pointer(auth)
 	a.kuzzle = k

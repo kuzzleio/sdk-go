@@ -23,6 +23,7 @@ package main
 */
 import "C"
 import (
+	"sync"
 	"unsafe"
 
 	indexPkg "github.com/kuzzleio/sdk-go/index"
@@ -30,17 +31,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var indexInstances map[interface{}]bool
+var indexInstances sync.Map
 
 //register new instance of index
 func registerIndex(instance interface{}) {
-	indexInstances[instance] = true
+	indexInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterIndex
 func unregisterIndex(i *C.kuzzle_index) {
-	delete(indexInstances, (*indexPkg.Index)(i.instance))
+	indexInstances.Delete(i)
 }
 
 // Allocates memory
@@ -48,10 +49,6 @@ func unregisterIndex(i *C.kuzzle_index) {
 func kuzzle_new_index(i *C.kuzzle_index, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	index := indexPkg.NewIndex(kuz)
-
-	if indexInstances == nil {
-		indexInstances = make(map[interface{}]bool)
-	}
 
 	i.instance = unsafe.Pointer(index)
 	i.kuzzle = k

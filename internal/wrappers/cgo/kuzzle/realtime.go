@@ -9,6 +9,7 @@ import "C"
 
 import (
 	"encoding/json"
+	"sync"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -17,17 +18,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var realtimeInstances map[interface{}]bool
+var realtimeInstances sync.Map
 
 // register new instance to the instances map
 func registerRealtime(instance interface{}) {
-	realtimeInstances[instance] = true
+	realtimeInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterRealtime
 func unregisterRealtime(rt *C.realtime) {
-	delete(realtimeInstances, rt)
+	realtimeInstances.Delete(rt)
 }
 
 // Allocates memory
@@ -35,10 +36,6 @@ func unregisterRealtime(rt *C.realtime) {
 func kuzzle_new_realtime(rt *C.realtime, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	gort := realtime.NewRealtime(kuz)
-
-	if realtimeInstances == nil {
-		realtimeInstances = make(map[interface{}]bool)
-	}
 
 	rt.instance = unsafe.Pointer(gort)
 	rt.kuzzle = k

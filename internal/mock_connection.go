@@ -84,7 +84,7 @@ func (c *MockedConnection) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (c *MockedConnection) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChan chan<- interface{}) {
+func (c *MockedConnection) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChan chan<- interface{}) {
 }
 
 func (c *MockedConnection) CancelSubs() {}

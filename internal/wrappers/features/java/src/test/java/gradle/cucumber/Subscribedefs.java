@@ -20,7 +20,6 @@ public class Subscribedefs {
         k.getRealtime().subscribe("index", "collection", "{}", new NotificationListener() {
             @Override
             public void onMessage(NotificationResult res) {
-                System.out.println("++++++ "+res.toString());
                 content = res.getResult();
             }
         }, opts);
@@ -29,7 +28,7 @@ public class Subscribedefs {
     @When("^I create a document in \"([^\"]*)\"$")
     public void i_create_a_document_in(String arg1) throws Exception {
         k.getDocument().create("index", "collection", "", "{}");
-        Thread.sleep(4000);
+        Thread.sleep(1000);
     }
 
     @Then("^I receive a notification$")

@@ -49,6 +49,8 @@ func (r *Realtime) Join(index, collection, roomID string, options types.RoomOpti
 		query.Scope = options.Scope()
 
 		opts.SetVolatile(options.Volatile())
+	} else {
+		options = types.NewRoomOptions()
 	}
 
 	go r.k.Query(query, opts, result)

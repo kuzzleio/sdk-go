@@ -105,7 +105,7 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 	res, err := nr.Subscribe("index", "collection", json.RawMessage("filters"), notifChan, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	assert.Equal(t, "42", res)
+	assert.Equal(t, "42", res.Room)
 }
 
 func TestRoomSubscribe(t *testing.T) {
@@ -125,7 +125,7 @@ func TestRoomSubscribe(t *testing.T) {
 	res, err := nr.Subscribe("index", "collection", json.RawMessage("filters"), notifChan, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	assert.Equal(t, "42", res)
+	assert.Equal(t, "42", res.Room)
 
 }
 

@@ -24,6 +24,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -34,29 +35,25 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var instances map[interface{}]bool
+var instances sync.Map
 
 // map which stores channel and function's pointers adresses for listeners
 var listeners_list map[uintptr]chan<- interface{}
 
 // register new instance to the instances map
 func registerKuzzle(instance interface{}) {
-	instances[instance] = true
+	instances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterKuzzle
 func unregisterKuzzle(k *C.kuzzle) {
-	delete(instances, (*kuzzle.Kuzzle)(k.instance))
+	instances.Delete(k)
 }
 
 //export kuzzle_new_kuzzle
 func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) {
 	var c connection.Connection
-
-	if instances == nil {
-		instances = make(map[interface{}]bool)
-	}
 
 	if listeners_list == nil {
 		listeners_list = make(map[uintptr]chan<- interface{})

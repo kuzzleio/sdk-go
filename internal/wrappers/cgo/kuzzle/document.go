@@ -22,6 +22,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/document"
@@ -29,27 +30,23 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var documentInstances map[interface{}]bool
+var documentInstances sync.Map
 
 // register new instance to the instances map
 func registerDocument(instance interface{}) {
-	documentInstances[instance] = true
+	documentInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterDocument
 func unregisterDocument(d *C.document) {
-	delete(documentInstances, (*document.Document)(d.instance))
+	documentInstances.Delete(d)
 }
 
 //export kuzzle_new_document
 func kuzzle_new_document(d *C.document, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	doc := document.NewDocument(kuz)
-
-	if documentInstances == nil {
-		documentInstances = make(map[interface{}]bool)
-	}
 
 	d.instance = unsafe.Pointer(doc)
 	d.kuzzle = k
