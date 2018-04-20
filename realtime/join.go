@@ -68,7 +68,7 @@ func (r *Realtime) Join(index, collection, roomID string, options types.RoomOpti
 
 	onReconnect := make(chan interface{})
 
-	r.k.RegisterSub(resSub.Channel, resSub.RoomID, nil, cb, onReconnect)
+	r.k.RegisterSub(resSub.Channel, resSub.RoomID, nil, options.SubscribeToSelf(), cb, onReconnect)
 
 	go func() {
 		<-onReconnect

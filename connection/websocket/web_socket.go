@@ -287,7 +287,7 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
 	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
@@ -300,6 +300,7 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 		notificationChannel: notifChan,
 		onReconnectChannel:  onReconnectChannel,
 		filters:             filters,
+		subscribeToSelf:     subscribeToSelf,
 	}
 
 	ws.subscriptions.Store(channel, subs)

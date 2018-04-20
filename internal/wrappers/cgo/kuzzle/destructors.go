@@ -346,6 +346,14 @@ func _free_user_right(st *C.user_right) {
 	}
 }
 
+//export kuzzle_free_subscribe_result
+func kuzzle_free_subscribe_result(st *C.subscribe_result) {
+	if st != nil {
+		C.free(unsafe.Pointer(st.room))
+		C.free(unsafe.Pointer(st.channel))
+	}
+}
+
 //export kuzzle_free_user_right
 func kuzzle_free_user_right(st *C.user_right) {
 	_free_user_right(st)

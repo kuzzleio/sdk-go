@@ -9,17 +9,7 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Logindefs {
-    private Kuzzle k;
-
-    @Before
-    public void before() {
-        k = new Kuzzle("localhost", null);
-    }
-
-    @After
-    public void after() {
-        k.disconnect();
-    }
+    private Kuzzle k = new Kuzzle("localhost");
 
     @Given("^I create a user \"([^\"]*)\" with password \"([^\"]*)\" with id \"([^\"]*)\"$")
     public void CreateUser(String user, String password, String id) {
@@ -84,7 +74,6 @@ public class Logindefs {
             Assert.assertEquals("", k.getJwt());
         }
     }
-
 
     @When("^I update my credentials with username \"([^\"]*)\" and \"([^\"]*)\" = \"([^\"]*)\"$")
     public void UpdateMyCredentials(String username, String key, String value) {

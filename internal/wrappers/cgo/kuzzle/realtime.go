@@ -73,13 +73,12 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 }
 
 //export kuzzle_realtime_subscribe
-func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.string_result {
+func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.subscribe_result {
 	c := make(chan types.KuzzleNotification)
-
-	roomID, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
+	subRes, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
 
 	if err != nil {
-		goToCStringResult(&roomID, err)
+		return goToCSubscribeResult(subRes, err)
 	}
 
 	go func() {
@@ -87,7 +86,7 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
 	}()
 
-	return goToCStringResult(&roomID, err)
+	return goToCSubscribeResult(subRes, err)
 }
 
 //export kuzzle_realtime_join

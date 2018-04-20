@@ -133,6 +133,14 @@ typedef struct {
   kuzzle* kuzzle;
 } server;
 
+typedef struct {
+  char *room;
+  char *channel;
+  int status;
+  char *error;
+  char *stack;
+} subscribe_result;
+
 //options passed to room constructor
 typedef struct {
     char *scope;

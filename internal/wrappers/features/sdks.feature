@@ -19,7 +19,6 @@ Feature: SDK's integration tests
     Then I check my new credentials are not valid with username "useradmin", password "testpwd" and "foo" = "barz"
     Then I check the JWT is null
 
-
   Scenario: Subscribe to a collection and receive notifications
     Given I subscribe to "collection"
     When I create a document in "collection"

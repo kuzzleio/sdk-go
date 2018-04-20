@@ -24,6 +24,7 @@
 %rename(SearchResult) search_result;
 %rename(NotificationResult) notification_result;
 %rename(NotificationContent) notification_content;
+%rename(SubscribeToSelf) subscribe_to_self;
 
 %ignore *::error;
 %ignore *::status;

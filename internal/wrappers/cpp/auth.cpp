@@ -15,7 +15,7 @@
 #include "auth.hpp"
 
 namespace kuzzleio {
-  Auth::Auth(Kuzzle* kuzzle) {
+  Auth::Auth(Kuzzle *kuzzle) {
       _auth = new auth();
       kuzzle_new_auth(_auth, kuzzle->_kuzzle);
   }
