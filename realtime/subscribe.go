@@ -47,6 +47,9 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 		opts.SetVolatile(options.Volatile())
 	} else {
 		options = types.NewRoomOptions()
+		query.Users = options.Users()
+		query.State = options.State()
+		query.Scope = options.Scope()
 	}
 
 	go r.k.Query(query, opts, result)

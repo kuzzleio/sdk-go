@@ -11,3 +11,9 @@ curl -X POST -H $CONTENT_TYPE $KUZZLE_HOST/index/_create
 
 # create collection
 curl -X PUT -H $CONTENT_TYPE $KUZZLE_HOST/index/collection
+
+# create geofence collection
+curl -X PUT -H $CONTENT_TYPE $KUZZLE_HOST/index/geofence
+
+#update mapping for geofence collection
+curl -X PUT -H $CONTENT_TYPE -d "`cat mapping.json`" $KUZZLE_HOST/index/geofence/_mapping

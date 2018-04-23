@@ -185,16 +185,20 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.EmitEvent(event.Connected, nil)
 	}
 
-	resChan := make(chan []byte)
+	// resChan := make(chan []byte)
+
+	ws.listenChan = make(chan []byte)
+
+	go ws.listen()
 
 	go func() {
 		for {
 			_, message, err := ws.ws.ReadMessage()
-
+			ws.listenChan <- message
 			// TODO: either send a Disconnected event on a proper disconnection,
 			// or a NetworkError one if the socket has been unexpectedly closed
 			if err != nil {
-				close(resChan)
+				close(ws.listenChan)
 				ws.ws.Close()
 				ws.state = state.Offline
 				if ws.autoQueue {
@@ -203,14 +207,9 @@ func (ws *webSocket) Connect() (bool, error) {
 				ws.EmitEvent(event.Disconnected, nil)
 				return
 			}
-			go func() {
-				resChan <- message
-			}()
 		}
 	}()
 
-	ws.listenChan = resChan
-	go ws.listen()
 	ws.ReplayQueue()
 
 	return ws.wasConnected, err
@@ -307,13 +306,16 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 }
 
 func (ws *webSocket) UnregisterSub(roomID string) {
-	s, ok := ws.subscriptions.Load(roomID)
-	if ok {
-		for _, sub := range s.(map[string]subscription) {
-			close(sub.onReconnectChannel)
+	ws.subscriptions.Range(func(k, v interface{}) bool {
+		for k, sub := range v.(map[string]subscription) {
+			if sub.roomID == roomID {
+				close(sub.onReconnectChannel)
+				close(sub.notificationChannel)
+				delete(v.(map[string]subscription), k)
+			}
 		}
-		ws.subscriptions.Delete(roomID)
-	}
+		return true
+	})
 }
 
 func (ws *webSocket) CancelSubs() {

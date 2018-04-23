@@ -65,7 +65,14 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	jsonRequest, _ := json.Marshal(query)
 
 	out := map[string]interface{}{}
-	json.Unmarshal(jsonRequest, &out)
+	err := json.Unmarshal(jsonRequest, &out)
+
+	if err != nil {
+		if responseChannel != nil {
+			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}
+		}
+		return
+	}
 
 	refresh := options.Refresh()
 	if refresh != "" {

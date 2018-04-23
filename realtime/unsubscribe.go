@@ -15,8 +15,6 @@
 package realtime
 
 import (
-	"encoding/json"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -30,7 +28,7 @@ func (r *Realtime) Unsubscribe(roomID string) error {
 		Controller: "realtime",
 		Action:     "unsubscribe",
 		Body: struct {
-			RoomID string `json:"roomID"`
+			RoomID string `json:"roomId"`
 		}{roomID},
 	}
 
@@ -44,10 +42,7 @@ func (r *Realtime) Unsubscribe(roomID string) error {
 		return res.Error
 	}
 
-	var oldRoomID string
-	json.Unmarshal(res.Result, &oldRoomID)
-
-	r.k.UnregisterSub(oldRoomID)
+	r.k.UnregisterSub(roomID)
 
 	return nil
 }

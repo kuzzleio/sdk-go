@@ -222,11 +222,15 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
 	(*kuzzle.Kuzzle)(k.instance).AddListener(int(e), c)
 	go func() {
-		res := <-c
+		for {
+			res, ok := <-c
+			if ok == false {
+				break
+			}
+			r, _ := json.Marshal(res)
 
-		r, _ := json.Marshal(res)
-
-		C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
+			C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
+		}
 	}()
 }
 

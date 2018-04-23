@@ -79,8 +79,13 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 	}
 
 	go func() {
-		res := <-c
-		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+		for {
+			res, ok := <-c
+			if ok == false {
+				break
+			}
+			C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+		}
 	}()
 
 	return goToCSubscribeResult(subRes, err)

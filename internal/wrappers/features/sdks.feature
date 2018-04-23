@@ -23,3 +23,18 @@ Feature: SDK's integration tests
     Given I subscribe to "collection"
     When I create a document in "collection"
     Then I receive a notification
+
+    When I create a document in "collection"
+    Then I receive a notification
+
+    Given I unsubscribe
+    When I create a document in "collection"
+    Then I do not receive a notification
+
+  Scenario: Subscribe to a geofence filter
+    Given I subscribe to "geofence" collection
+    When I create a document in "geofence" and inside my geofence
+    Then I receive a "in" notification
+
+    When I update this document to be outside my geofence
+    Then I receive a "out" notification
