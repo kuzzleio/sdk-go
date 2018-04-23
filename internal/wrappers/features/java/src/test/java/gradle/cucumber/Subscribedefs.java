@@ -7,7 +7,7 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Subscribedefs {
-    private Kuzzle k = new Kuzzle("localhost");
+    private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
     private String roomId;
     private NotificationContent content = null;
 

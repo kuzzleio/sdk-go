@@ -7,7 +7,7 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Geofencedefs {
-    private Kuzzle k = new Kuzzle("localhost");
+    private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
     private NotificationResult content = null;
     private String documentId;
 

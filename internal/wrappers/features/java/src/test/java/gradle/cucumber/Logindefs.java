@@ -7,7 +7,7 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Logindefs {
-    private Kuzzle k = new Kuzzle("localhost");
+    private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
 
     @Given("^I create a user \"([^\"]*)\" with password \"([^\"]*)\" with id \"([^\"]*)\"$")
     public void CreateUser(String user, String password, String id) {
