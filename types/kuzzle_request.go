@@ -29,7 +29,7 @@ type KuzzleRequest struct {
 	Scroll     string        `json:"scroll,omitempty"`
 	ScrollId   string        `json:"scrollId,omitempty"`
 	Strategy   string        `json:"strategy,omitempty"`
-	ExpiresIn  int           `json:"expiresIn"`
+	ExpiresIn  int           `json:"expiresIn,omitempty"`
 	Volatile   VolatileData  `json:"volatile"`
 	Scope      string        `json:"scope"`
 	State      string        `json:"state"`
