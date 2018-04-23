@@ -44,7 +44,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
+	_, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -62,7 +62,7 @@ func TestValidateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
+	res, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	assert.Equal(t, true, res)
@@ -73,7 +73,7 @@ func ExampleCollection_ValidateSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.ValidateSpecifications(json.RawMessage("body"), nil)
+	res, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

@@ -29,14 +29,14 @@ import (
 func TestUpdateSpecificationsIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.UpdateSpecifications("", "collection", json.RawMessage("body"), nil)
+	_, err := nc.UpdateSpecifications("", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateSpecificationsCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.UpdateSpecifications("index", "", json.RawMessage("body"), nil)
+	_, err := nc.UpdateSpecifications("index", "", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -56,7 +56,7 @@ func TestUpdateSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -69,7 +69,7 @@ func TestUpdateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.Nil(t, err)
 }
 
@@ -78,7 +78,7 @@ func ExampleCollection_UpdateSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage("body"), nil)
+	_, err := nc.UpdateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

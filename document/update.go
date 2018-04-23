@@ -22,6 +22,10 @@ import (
 
 // Update updates a document in Kuzzle.
 func (d *Document) Update(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (string, error) {
+	if id == "" {
+		return "", types.NewError("Document.update: id required", 400)
+	}
+
 	if index == "" {
 		return "", types.NewError("Document.Update: index required", 400)
 	}
