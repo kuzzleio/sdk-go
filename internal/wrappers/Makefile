@@ -70,6 +70,7 @@ java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
+	rm -r $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so build/java/libs
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	taskset -c 1 gradle sourcesJar javadocJar moveJar
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
