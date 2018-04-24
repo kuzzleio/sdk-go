@@ -6,4 +6,3 @@ kcore_wrap.c
 
 # build
 build/c
-build/java
