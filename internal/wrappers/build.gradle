@@ -1,0 +1,32 @@
+plugins {
+  id "java"
+  id "com.jfrog.bintray" version "1.7.3"
+}
+
+version = '1.0.0'
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    baseName = 'kuzzlesdk'
+    from('build/java')
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    baseName = 'kuzzlesdk'
+    from('build/java')    
+}
+
+task moveJar(type: Copy) {
+  from(file('build/libs'))
+  into('./build/java/libs')
+  doLast {
+        delete('build/libs')
+        delete('build/tmp')
+  }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
