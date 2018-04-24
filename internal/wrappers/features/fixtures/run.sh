@@ -4,16 +4,16 @@ CONTENT_TYPE="Content-Type: application/json"
 KUZZLE_HOST=http://localhost:7512
 
 # update rights for anonymous user
-curl -X PUT -H $CONTENT_TYPE -d "`cat rights.json`" $KUZZLE_HOST/roles/anonymous/_update
+curl -X PUT -H "$CONTENT_TYPE" -d "`cat internal/wrappers/features/fixtures/rights.json`" $KUZZLE_HOST/roles/anonymous/_update
 
 # create index
-curl -X POST -H $CONTENT_TYPE $KUZZLE_HOST/index/_create
+curl -X POST -H "$CONTENT_TYPE" $KUZZLE_HOST/index/_create
 
 # create collection
-curl -X PUT -H $CONTENT_TYPE $KUZZLE_HOST/index/collection
+curl -X PUT -H "$CONTENT_TYPE" $KUZZLE_HOST/index/collection
 
 # create geofence collection
-curl -X PUT -H $CONTENT_TYPE $KUZZLE_HOST/index/geofence
+curl -X PUT -H "$CONTENT_TYPE" $KUZZLE_HOST/index/geofence
 
 #update mapping for geofence collection
-curl -X PUT -H $CONTENT_TYPE -d "`cat mapping.json`" $KUZZLE_HOST/index/geofence/_mapping
+curl -X PUT -H "$CONTENT_TYPE" -d "`cat internal/wrappers/features/fixtures/mapping.json`" $KUZZLE_HOST/index/geofence/_mapping

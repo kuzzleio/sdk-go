@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker --version
+      - docker run --rm --privileged multiarch/qemu-user-static:register
+      - docker pull kuzzleio/sdk-cross:armv7
+      - sysctl -w vm.max_map_count=262144
+      - bash .codepipeline/start_kuzzle.sh
+  build:
+    commands:
+      - bash .codepipeline/codepipeline.sh armv7
+artifacts:
+  files:
+    - internal/wrappers/build/java/io/kuzzle/sdk/kuzzlesdk.jar
