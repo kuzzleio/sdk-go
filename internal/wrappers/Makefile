@@ -65,13 +65,13 @@ swig:
 makedir:
 	mkdir -p $(OUTDIR)
 
-java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
+java: OUTDIR = $(ROOTOUTDIR)/java/src/main/java/io/kuzzle/sdk
 java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	cd $(ROOTOUTDIR)/java && taskset -c 1 $(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar ./io/kuzzle/sdk/*.class
+	cd $(ROOTOUTDIR)/java && taskset-c 1 gradle jar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
@@ -99,7 +99,7 @@ cpp: makedir $(CPPSDK)
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build
+	rm -rf build/c build/java
 
 .PHONY: all java csharp python wrapper swig clean object core
 
