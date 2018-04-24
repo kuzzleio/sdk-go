@@ -71,7 +71,7 @@ java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	taskset -c 1 $(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
+	cd $(ROOTOUTDIR)/java && taskset -c 1 $(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar ./io/kuzzle/sdk/*.class
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp

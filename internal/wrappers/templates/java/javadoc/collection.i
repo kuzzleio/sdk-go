@@ -30,28 +30,6 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Collection::createDocument(Document* document, const std::string& id, query_options* options) "
-  /**
-   * Create a new document in kuzzle
-   *
-   * @param document the document
-   * @param id the document id
-   * @param options  Request options
-   * @return this
-   */
-  public";
-
-%javamethodmodifiers kuzzleio::Collection::createDocument(Document* document, const std::string& id) "
-  /**
-   * {@link #createDocument(Document document, String id, QueryOptions options)}
-   */
-  public";
-
-%javamethodmodifiers kuzzleio::Collection::createDocument(Document* document) "
-  /**
-   * {@link #createDocument(Document document, String id, QueryOptions options)}
-   */
-  public";
 
 %javamethodmodifiers kuzzleio::Collection::deleteDocument(const std::string& id, query_options* options) "
   /**
