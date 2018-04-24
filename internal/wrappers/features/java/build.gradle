@@ -22,6 +22,10 @@ task cucumber() {
     }
 }
 
+jar {
+  baseName = ''
+}
+
 dependencies {
     testCompile 'io.cucumber:cucumber-java:2.3.1'
     testCompile 'io.cucumber:cucumber-junit:2.3.1'
