@@ -22,26 +22,13 @@ allprojects {
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
-    from('build/java')
+    from sourceSets.main.allSource
 }
 
 javadoc.failOnError = false
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from('build/java')
-}
-
-jar {
-  from('build/java')
-}
-
-task moveJar(type: Copy) {
-  from(file('build/libs'))
-  into('./build/java/libs')
-  doLast {
-      delete('build/libs')
-      delete('build/tmp')
-  }
+    from javadoc.destinationDir
 }
 
 bintray {
