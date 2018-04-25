@@ -33,7 +33,7 @@ SWIG = swig
 all: java
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
@@ -50,7 +50,8 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
@@ -72,7 +73,8 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	cd build/java
+	mkdir -p build/java/src/main/resources
+	mv build/java/src/main/java/libkuzzle-wrapper-java.so build/java/src/main/resources
 	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 

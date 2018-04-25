@@ -91,6 +91,10 @@ publishing {
     }
 }
 
+dependencies {
+  compile fileTree(dir: 'src/main/java', include: ['*.so'])
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
