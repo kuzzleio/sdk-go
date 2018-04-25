@@ -71,7 +71,7 @@ java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
-	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+	#taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	cd build/java
 	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
