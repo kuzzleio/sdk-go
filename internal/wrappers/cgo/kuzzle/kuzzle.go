@@ -24,6 +24,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -34,29 +35,25 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var instances map[interface{}]bool
+var instances sync.Map
 
 // map which stores channel and function's pointers adresses for listeners
 var listeners_list map[uintptr]chan<- interface{}
 
 // register new instance to the instances map
 func registerKuzzle(instance interface{}) {
-	instances[instance] = true
+	instances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterKuzzle
 func unregisterKuzzle(k *C.kuzzle) {
-	delete(instances, (*kuzzle.Kuzzle)(k.instance))
+	instances.Delete(k)
 }
 
 //export kuzzle_new_kuzzle
 func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) {
 	var c connection.Connection
-
-	if instances == nil {
-		instances = make(map[interface{}]bool)
-	}
 
 	if listeners_list == nil {
 		listeners_list = make(map[uintptr]chan<- interface{})
@@ -82,32 +79,61 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 
 //export kuzzle_get_document_controller
 func kuzzle_get_document_controller(k *C.kuzzle) *C.document {
-	return (*C.document)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Document))
+	d := (*C.document)(C.calloc(1, C.sizeof_document))
+
+	d.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Document))
+	d.kuzzle = k
+	return d
 }
 
 //export kuzzle_get_auth_controller
 func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
-	return (*C.auth)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
+	a := (*C.auth)(C.calloc(1, C.sizeof_auth))
+
+	a.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
+	a.kuzzle = k
+	return a
 }
 
 //export kuzzle_get_index_controller
 func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
-	return (*C.kuzzle_index)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
+	i := (*C.kuzzle_index)(C.calloc(1, C.sizeof_kuzzle_index))
+
+	i.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
+	i.kuzzle = k
+	return i
+}
+
+//export kuzzle_get_jwt
+func kuzzle_get_jwt(k *C.kuzzle) *C.char {
+	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
 }
 
 //export kuzzle_get_server_controller
 func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
-	return (*C.server)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
+	s := (*C.server)(C.calloc(1, C.sizeof_server))
+
+	s.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
+	s.kuzzle = k
+	return s
 }
 
 //export kuzzle_get_collection_controller
 func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
-	return (*C.collection)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
+	c := (*C.collection)(C.calloc(1, C.sizeof_collection))
+
+	c.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
+	c.kuzzle = k
+	return c
 }
 
 //export kuzzle_get_realtime_controller
 func kuzzle_get_realtime_controller(k *C.kuzzle) *C.realtime {
-	return (*C.realtime)(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Realtime))
+	rt := (*C.realtime)(C.calloc(1, C.sizeof_realtime))
+
+	rt.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Realtime))
+	rt.kuzzle = k
+	return rt
 }
 
 // Allocates memory
@@ -196,11 +222,15 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
 	(*kuzzle.Kuzzle)(k.instance).AddListener(int(e), c)
 	go func() {
-		res := <-c
+		for {
+			res, ok := <-c
+			if ok == false {
+				break
+			}
+			r, _ := json.Marshal(res)
 
-		r, _ := json.Marshal(res)
-
-		C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
+			C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
+		}
 	}()
 }
 

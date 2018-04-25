@@ -31,14 +31,14 @@ import (
 func TestUpdateMappingIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("", "collection", json.RawMessage("body"), nil)
+	err := nc.UpdateMapping("", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestUpdateMappingCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "", json.RawMessage("body"), nil)
+	err := nc.UpdateMapping("index", "", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestUpdateMappingError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", json.RawMessage("body"), nil)
+	err := nc.UpdateMapping("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -71,7 +71,7 @@ func TestUpdateMapping(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", json.RawMessage("body"), nil)
+	err := nc.UpdateMapping("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.Nil(t, err)
 }
 
@@ -80,7 +80,7 @@ func ExampleCollection_UpdateMapping() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.UpdateMapping("index", "collection", json.RawMessage("body"), nil)
+	err := nc.UpdateMapping("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

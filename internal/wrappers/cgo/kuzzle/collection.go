@@ -22,6 +22,7 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/collection"
@@ -29,17 +30,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var collectionInstances map[interface{}]bool
+var collectionInstances sync.Map
 
 // register new instance to the instances map
 func registerCollection(instance interface{}) {
-	collectionInstances[instance] = true
+	collectionInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterCollection
-func unregisterCollection(d *C.collection) {
-	delete(collectionInstances, (*collection.Collection)(d.instance))
+func unregisterCollection(c *C.collection) {
+	collectionInstances.Delete(c)
 }
 
 // Allocates memory
@@ -47,10 +48,6 @@ func unregisterCollection(d *C.collection) {
 func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	col := collection.NewCollection(kuz)
-
-	if collectionInstances == nil {
-		collectionInstances = make(map[interface{}]bool)
-	}
 
 	c.instance = unsafe.Pointer(col)
 	c.kuzzle = k

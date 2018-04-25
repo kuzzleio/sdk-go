@@ -15,7 +15,7 @@
 #include "auth.hpp"
 
 namespace kuzzleio {
-  Auth::Auth(Kuzzle* kuzzle) {
+  Auth::Auth(Kuzzle *kuzzle) {
       _auth = new auth();
       kuzzle_new_auth(_auth, kuzzle->_kuzzle);
   }
@@ -54,7 +54,7 @@ namespace kuzzleio {
 
   void Auth::deleteMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_delete_my_credentials(_auth, const_cast<char*>(strategy.c_str()), options);
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
     delete(r);
   }

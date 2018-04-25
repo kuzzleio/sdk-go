@@ -33,7 +33,7 @@ namespace kuzzleio {
 
     void Collection::create(const std::string& index, const std::string& collection, query_options *options) Kuz_Throw_KuzzleException {
         void_result *r = kuzzle_collection_create(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r != NULL)
             throwExceptionFromStatus(r);
         kuzzle_free_void_result(r);
     }
@@ -60,7 +60,7 @@ namespace kuzzleio {
 
     void Collection::truncate(const std::string& index, const std::string& collection, query_options *options) Kuz_Throw_KuzzleException {
         void_result *r = kuzzle_collection_truncate(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r != NULL)
             throwExceptionFromStatus(r);
 
         kuzzle_free_void_result(r);
@@ -79,7 +79,7 @@ namespace kuzzleio {
 
     void Collection::updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
         void_result *r = kuzzle_collection_update_mapping(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
-        if (r->error != NULL)
+        if (r != NULL)
             throwExceptionFromStatus(r);
 
         kuzzle_free_void_result(r);
@@ -130,7 +130,7 @@ namespace kuzzleio {
 
     void Collection::deleteSpecifications(const std::string& index, const std::string& collection, query_options *options) Kuz_Throw_KuzzleException {
         void_result *r = kuzzle_collection_delete_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r != NULL)
             throwExceptionFromStatus(r);
 
         kuzzle_free_void_result(r);

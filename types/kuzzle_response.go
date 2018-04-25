@@ -37,6 +37,11 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
+	SubscribeResult struct {
+		Room    string `json:"roomId"`
+		Channel string `json:"channel"`
+	}
+
 	// NotificationResult contains
 	NotificationResult struct {
 		Id      string          `json:"_id"`
@@ -60,6 +65,7 @@ type (
 		User       string              `json:"user"`
 		Type       string              `json:"type"`
 		RoomId     string              `json:"room"`
+		Channel    string              `json:"channel"`
 		Timestamp  int                 `json:"timestamp"`
 		Status     int                 `json:"status"`
 		Error      *KuzzleError        `json:"error"`

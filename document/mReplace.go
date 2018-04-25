@@ -21,7 +21,7 @@ import (
 )
 
 // MReplace replaces multiple documents at once.
-func (d *Document) MReplace(index string, collection string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) MReplace(index string, collection string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.MReplace: index required", 400)
 	}
@@ -30,7 +30,7 @@ func (d *Document) MReplace(index string, collection string, body string, option
 		return "", types.NewError("Document.MReplace: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.MReplace: body required", 400)
 	}
 

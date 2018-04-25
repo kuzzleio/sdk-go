@@ -35,7 +35,7 @@ namespace kuzzleio {
 
   void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, NotificationListener* cb) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, call_subscribe_cb, this);
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
 
     _listener_instances[roomId] = cb;
@@ -53,25 +53,27 @@ namespace kuzzleio {
 
   void Realtime::publish(const std::string& index, const std::string collection, const std::string body) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_publish(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()));
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
     kuzzle_free_void_result(r);
   }
 
   std::string Realtime::subscribe(const std::string& index, const std::string collection, const std::string body, NotificationListener* cb, room_options* options) Kuz_Throw_KuzzleException {
-    string_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), call_subscribe_cb, this, options);
+    subscribe_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), &call_subscribe_cb, this, options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
-    std::string roomId = r->result;
+    
+    std::string roomId = r->room;
+    std::string channel = r->channel;
 
-    _listener_instances[roomId] = cb;
-    kuzzle_free_string_result(r);
+    _listener_instances[channel] = cb;
+    kuzzle_free_subscribe_result(r);
     return roomId;
   }
 
   void Realtime::unsubscribe(const std::string& roomId) Kuz_Throw_KuzzleException {
     void_result *r = kuzzle_realtime_unsubscribe(_realtime, const_cast<char*>(roomId.c_str()));
-    if (r->error != NULL)
+    if (r != NULL)
         throwExceptionFromStatus(r);
 
     _listener_instances[roomId] = NULL;

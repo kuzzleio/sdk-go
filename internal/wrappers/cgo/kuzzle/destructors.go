@@ -16,7 +16,6 @@ package main
 
 /*
   #cgo CFLAGS: -std=c99 -I../../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include "kuzzlesdk.h"
@@ -344,6 +343,14 @@ func _free_user_right(st *C.user_right) {
 		C.free(unsafe.Pointer(st.index))
 		C.free(unsafe.Pointer(st.collection))
 		C.free(unsafe.Pointer(st.value))
+	}
+}
+
+//export kuzzle_free_subscribe_result
+func kuzzle_free_subscribe_result(st *C.subscribe_result) {
+	if st != nil {
+		C.free(unsafe.Pointer(st.room))
+		C.free(unsafe.Pointer(st.channel))
 	}
 }
 

@@ -20,9 +20,6 @@
 #include "server.hpp"
 #include "collection.hpp"
 #include "document.hpp"
-#include "auth.hpp"
-#include "index.hpp"
-#include "server.hpp"
 #include "realtime.hpp"
 #include <iostream>
 #include <vector>
@@ -38,13 +35,14 @@ namespace kuzzleio {
 
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
-    this->document = new Document(this, kuzzle_get_document_controller(this->_kuzzle));
+    kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
+    
+    this->document = new Document(this, kuzzle_get_document_controller(_kuzzle));
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));
     this->server = new Server(this, kuzzle_get_server_controller(_kuzzle));
-    this->collection = new Collection(this, kuzzle_get_collection_controller(this->_kuzzle));
-    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(this->_kuzzle));
-    kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
+    this->collection = new Collection(this, kuzzle_get_collection_controller(_kuzzle));
+    this->realtime = new Realtime(this, kuzzle_get_realtime_controller(_kuzzle));
   }
 
   Kuzzle::~Kuzzle() {
@@ -110,6 +108,10 @@ namespace kuzzleio {
 
   std::string Kuzzle::getVolatile() {
     return std::string(kuzzle_get_volatile(_kuzzle));
+  }
+
+  std::string Kuzzle::getJwt() {
+    return std::string(kuzzle_get_jwt(_kuzzle));
   }
 
   void trigger_event_listener(int event, char* res, void* data) {

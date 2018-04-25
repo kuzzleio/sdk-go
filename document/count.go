@@ -25,7 +25,7 @@ import (
 // There is a small delay between documents creation and their existence in our advanced search layer,
 // usually a couple of seconds.
 // That means that a document that was just been created won’t be returned by this function
-func (d *Document) Count(index string, collection string, body string, options types.QueryOptions) (int, error) {
+func (d *Document) Count(index string, collection string, body json.RawMessage, options types.QueryOptions) (int, error) {
 	if index == "" {
 		return 0, types.NewError("Document.Count: index required", 400)
 	}
@@ -34,7 +34,7 @@ func (d *Document) Count(index string, collection string, body string, options t
 		return 0, types.NewError("Document.Count: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return 0, types.NewError("Document.Count: body required", 400)
 	}
 

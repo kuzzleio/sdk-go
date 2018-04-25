@@ -3,14 +3,7 @@ go:
   - 1.9
 dist: trusty
 install:
-  - git clone https://github.com/json-c/json-c.git
-  - cd json-c
   - sudo apt-get install build-essential swig oracle-java8-installer g++
-  - sh autogen.sh
-  - ./configure
-  - make
-  - sudo make install
-  - cd -
   - go get -t -v ./...
 script: 
   - bash ./test.sh

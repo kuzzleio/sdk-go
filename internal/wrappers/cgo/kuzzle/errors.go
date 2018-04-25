@@ -16,7 +16,6 @@ package main
 
 /*
   #cgo CFLAGS: -I../../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include "kuzzlesdk.h"
 */
@@ -53,6 +52,11 @@ func Set_kuzzle_response_error(s *C.kuzzle_response, err error) {
 
 // apply a types.KuzzleError on a statistics* C struct
 func Set_statistics_error(s *C.statistics_result, err error) {
+	setErr(&s.status, &s.error, &s.stack, err)
+}
+
+// apply a types.KuzzleError on a statistics* C struct
+func Set_subscribe_error(s *C.subscribe_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 

@@ -21,7 +21,7 @@ import (
 )
 
 // MCreate creates the provided documents.
-func (d *Document) MCreate(index string, collection string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) MCreate(index string, collection string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.MCreate: index required", 400)
 	}
@@ -30,7 +30,7 @@ func (d *Document) MCreate(index string, collection string, body string, options
 		return "", types.NewError("Document.MCreate: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.MCreate: body required", 400)
 	}
 

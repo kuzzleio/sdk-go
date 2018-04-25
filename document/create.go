@@ -28,7 +28,7 @@ import (
 //       If the same document already exists:
 //         - resolves with an error if set to "error".
 //         - replaces the existing document if set to "replace"
-func (d *Document) Create(index string, collection string, _id string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) Create(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Create: index required", 400)
 	}
@@ -37,11 +37,7 @@ func (d *Document) Create(index string, collection string, _id string, body stri
 		return "", types.NewError("Document.Create: collection required", 400)
 	}
 
-	if _id == "" {
-		return "", types.NewError("Document.Create: id required", 400)
-	}
-
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.Create: body required", 400)
 	}
 
@@ -52,7 +48,7 @@ func (d *Document) Create(index string, collection string, _id string, body stri
 		Collection: collection,
 		Controller: "document",
 		Action:     "create",
-		Id:         _id,
+		Id:         id,
 		Body:       body,
 	}
 
@@ -64,8 +60,11 @@ func (d *Document) Create(index string, collection string, _id string, body stri
 		return "", res.Error
 	}
 
-	var created string
+	type response struct {
+		Created string `json:"_id"`
+	}
+	var created response
 	json.Unmarshal(res.Result, &created)
 
-	return created, nil
+	return created.Created, nil
 }

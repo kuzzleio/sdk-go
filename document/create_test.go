@@ -28,28 +28,21 @@ import (
 func TestCreateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Create("", "collection", "id1", "body", nil)
+	_, err := d.Create("", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Create("index", "", "id1", "body", nil)
-	assert.NotNil(t, err)
-}
-
-func TestCreateIdNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-	_, err := d.Create("index", "collection", "", "body", nil)
+	_, err := d.Create("index", "", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Create("index", "collection", "id1", "", nil)
+	_, err := d.Create("index", "collection", "id1", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -61,7 +54,7 @@ func TestCreateDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Create("index", "collection", "id1", "body", nil)
+	_, err := d.Create("index", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -90,6 +83,6 @@ func TestCreateDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Create("index", "collection", id, "body", nil)
+	_, err := d.Create("index", "collection", id, json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

@@ -29,7 +29,7 @@ func TestSearchIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("", "collection", "body", nil)
+	_, err := d.Search("", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestSearchCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("index", "", "body", nil)
+	_, err := d.Search("index", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestSearchBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("index", "collection", "", nil)
+	_, err := d.Search("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestSearchDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("index", "collection", "body", nil)
+	_, err := d.Search("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -85,6 +85,6 @@ func TestSearchDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("index", "collection", "body", nil)
+	_, err := d.Search("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

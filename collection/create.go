@@ -40,5 +40,9 @@ func (dc *Collection) Create(index string, collection string, options types.Quer
 
 	res := <-ch
 
-	return res.Error
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
 }

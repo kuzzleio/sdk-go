@@ -118,7 +118,7 @@ typedef struct {
     char *scroll;
 } search_options;
 
-typedef struct {
+typedef struct auth {
   void *instance;
   kuzzle *kuzzle;
 } auth;
@@ -132,6 +132,14 @@ typedef struct {
   void *instance;
   kuzzle* kuzzle;
 } server;
+
+typedef struct {
+  char *room;
+  char *channel;
+  int status;
+  char *error;
+  char *stack;
+} subscribe_result;
 
 //options passed to room constructor
 typedef struct {
@@ -380,6 +388,31 @@ typedef struct geopos_result {
     char *error;
     char *stack;
 } geopos_result;
+
+// ms.geopoint
+typedef struct point {
+    float lat;
+    float lon;
+    char *name;
+} point;
+
+// ms.msHashField
+typedef struct ms_hash_field {
+  char *field;
+  char *value;
+} ms_hash_field;
+
+// ms.keyValue
+typedef struct ms_key_value {
+  char *key;
+  char *value;
+} ms_key_value;
+
+// ms.sortedSet
+typedef struct ms_sorted_set {
+  float score;
+  char *member;
+} ms_sorted_set;
 
 //check_token
 typedef struct token_validity {

@@ -21,7 +21,11 @@ import (
 )
 
 // Update updates a document in Kuzzle.
-func (d *Document) Update(index string, collection string, _id string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) Update(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (string, error) {
+	if id == "" {
+		return "", types.NewError("Document.update: id required", 400)
+	}
+
 	if index == "" {
 		return "", types.NewError("Document.Update: index required", 400)
 	}
@@ -30,23 +34,19 @@ func (d *Document) Update(index string, collection string, _id string, body stri
 		return "", types.NewError("Document.Update: collection required", 400)
 	}
 
-	if _id == "" {
-		return "", types.NewError("Document.Update: id required", 400)
-	}
-
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.Update: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
-		Collection: collection,
 		Index:      index,
+		Collection: collection,
 		Controller: "document",
 		Action:     "update",
+		Id:         id,
 		Body:       body,
-		Id:         _id,
 	}
 
 	go d.Kuzzle.Query(query, options, ch)
@@ -57,8 +57,11 @@ func (d *Document) Update(index string, collection string, _id string, body stri
 		return "", res.Error
 	}
 
-	var updated string
+	type response struct {
+		Updated string `json:"_id"`
+	}
+	var updated response
 	json.Unmarshal(res.Result, &updated)
 
-	return updated, nil
+	return updated.Updated, nil
 }

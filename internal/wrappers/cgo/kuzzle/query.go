@@ -21,6 +21,8 @@ package main
 */
 import "C"
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -70,7 +72,7 @@ func kuzzle_query(k *C.kuzzle, request *C.kuzzle_request, options *C.query_optio
 	}
 
 	if request.body != nil {
-		req.Body = request.body
+		req.Body = json.RawMessage(C.GoString(request.body))
 	}
 
 	if request.volatiles != nil {

@@ -173,6 +173,20 @@ func goToCStringResult(goRes *string, err error) *C.string_result {
 	return result
 }
 
+func goToCSubscribeResult(goRes *types.SubscribeResult, err error) *C.subscribe_result {
+	result := (*C.subscribe_result)(C.calloc(1, C.sizeof_subscribe_result))
+
+	if err != nil {
+		Set_subscribe_error(result, err)
+		return result
+	}
+
+	result.room = C.CString(goRes.Room)
+	result.channel = C.CString(goRes.Channel)
+
+	return result
+}
+
 func goToCStringArrayResult(goRes []string, err error) *C.string_array_result {
 	result := (*C.string_array_result)(C.calloc(1, C.sizeof_string_array_result))
 

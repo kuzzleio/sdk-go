@@ -7,7 +7,6 @@ This project contains a CGO wrapper to Kuzzle's [Go SDK](https://github.com/kuzz
 # Pre-requisites
 
 * [Go](https://golang.org/doc/install)
-* [JSON-C library](https://github.com/json-c/json-c#install-using-apt-eg-ubuntu-16042-lts)
 
 # Contributing
 

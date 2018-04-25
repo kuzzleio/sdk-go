@@ -9,6 +9,7 @@ import "C"
 
 import (
 	"encoding/json"
+	"sync"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/kuzzle"
@@ -17,17 +18,17 @@ import (
 )
 
 // map which stores instances to keep references in case the gc passes
-var realtimeInstances map[interface{}]bool
+var realtimeInstances sync.Map
 
 // register new instance to the instances map
 func registerRealtime(instance interface{}) {
-	realtimeInstances[instance] = true
+	realtimeInstances.Store(instance, true)
 }
 
 // unregister an instance from the instances map
 //export unregisterRealtime
 func unregisterRealtime(rt *C.realtime) {
-	delete(realtimeInstances, (*realtime.Realtime)(rt.instance))
+	realtimeInstances.Delete(rt)
 }
 
 // Allocates memory
@@ -35,10 +36,6 @@ func unregisterRealtime(rt *C.realtime) {
 func kuzzle_new_realtime(rt *C.realtime, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	gort := realtime.NewRealtime(kuz)
-
-	if realtimeInstances == nil {
-		realtimeInstances = make(map[interface{}]bool)
-	}
 
 	rt.instance = unsafe.Pointer(gort)
 	rt.kuzzle = k
@@ -73,17 +70,25 @@ func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result 
 }
 
 //export kuzzle_realtime_subscribe
-func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.string_result {
+func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, callback C.kuzzle_notification_listener, data unsafe.Pointer, options *C.room_options) *C.subscribe_result {
 	c := make(chan types.KuzzleNotification)
+	subRes, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
 
-	roomId, err := (*realtime.Realtime)(rt.instance).Subscribe(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), c, SetRoomOptions(options))
+	if err != nil {
+		return goToCSubscribeResult(subRes, err)
+	}
 
 	go func() {
-		res := <-c
-		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+		for {
+			res, ok := <-c
+			if ok == false {
+				break
+			}
+			C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
+		}
 	}()
 
-	return goToCStringResult(&roomId, err)
+	return goToCSubscribeResult(subRes, err)
 }
 
 //export kuzzle_realtime_join

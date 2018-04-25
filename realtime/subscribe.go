@@ -22,9 +22,9 @@ import (
 )
 
 // Subscribe permits to join a previously created subscription
-func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.KuzzleNotification, options types.RoomOptions) (string, error) {
+func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.KuzzleNotification, options types.RoomOptions) (*types.SubscribeResult, error) {
 	if (index == "" || collection == "") || (filters == nil || cb == nil) {
-		return "", types.NewError("Realtime.Subscribe: index, collection, filters and notificationChannel required", 400)
+		return nil, types.NewError("Realtime.Subscribe: index, collection, filters and notificationChannel required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -45,26 +45,28 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 		query.Scope = options.Scope()
 
 		opts.SetVolatile(options.Volatile())
+	} else {
+		options = types.NewRoomOptions()
+		query.Users = options.Users()
+		query.State = options.State()
+		query.Scope = options.Scope()
 	}
 
 	go r.k.Query(query, opts, result)
 
 	res := <-result
+
 	if res.Error != nil {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var resSub struct {
-		RequestID string `json:"requestId"`
-		RoomID    string `json:"roomId"`
-		Channel   string `json:"channel"`
-	}
+	var resSub types.SubscribeResult
 
 	json.Unmarshal(res.Result, &resSub)
 
 	onReconnect := make(chan interface{})
 
-	r.k.RegisterSub(resSub.Channel, resSub.RoomID, filters, cb, onReconnect)
+	r.k.RegisterSub(resSub.Channel, resSub.Room, filters, options.SubscribeToSelf(), cb, onReconnect)
 
 	go func() {
 		<-onReconnect
@@ -76,5 +78,5 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 
 	r.k.AddListener(event.Reconnected, onReconnect)
 
-	return resSub.RoomID, nil
+	return &resSub, nil
 }

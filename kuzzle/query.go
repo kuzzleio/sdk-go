@@ -40,7 +40,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	type body struct{}
 
 	if query.Body == nil {
-		query.Body = make(map[string]interface{})
+		query.Body = json.RawMessage("{}")
 	}
 
 	if options == nil {
@@ -63,8 +63,16 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	}
 
 	jsonRequest, _ := json.Marshal(query)
+
 	out := map[string]interface{}{}
-	json.Unmarshal(jsonRequest, &out)
+	err := json.Unmarshal(jsonRequest, &out)
+
+	if err != nil {
+		if responseChannel != nil {
+			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}
+		}
+		return
+	}
 
 	refresh := options.Refresh()
 	if refresh != "" {
@@ -89,6 +97,11 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		out["retryOnConflict"] = retryOnConflict
 	}
 
+	jwt := k.Jwt()
+	if jwt != "" {
+		out["jwt"] = jwt
+	}
+
 	finalRequest, err := json.Marshal(out)
 
 	if err != nil {
@@ -99,6 +112,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	}
 
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
+
 	if err != nil {
 		if responseChannel != nil {
 			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}

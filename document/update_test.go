@@ -29,7 +29,7 @@ func TestUpdateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("", "collection", "id1", "body", nil)
+	_, err := d.Update("", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestUpdateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("index", "", "id1", "body", nil)
+	_, err := d.Update("index", "", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestUpdateIdNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("index", "collection", "", "body", nil)
+	_, err := d.Update("index", "collection", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestUpdateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("index", "collection", "id1", "", nil)
+	_, err := d.Update("index", "collection", "id1", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -66,7 +66,7 @@ func TestUpdateDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("index", "collection", "id1", "body", nil)
+	_, err := d.Update("index", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -97,6 +97,6 @@ func TestUpdateDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Update("index", "collection", id, "body", nil)
+	_, err := d.Update("index", "collection", id, json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 }

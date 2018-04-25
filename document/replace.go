@@ -21,7 +21,7 @@ import (
 )
 
 // Replace replaces a document in Kuzzle.
-func (d *Document) Replace(index string, collection string, _id string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) Replace(index string, collection string, _id string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.Replace: index required", 400)
 	}
@@ -34,7 +34,7 @@ func (d *Document) Replace(index string, collection string, _id string, body str
 		return "", types.NewError("Document.Replace: id required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.Replace: body required", 400)
 	}
 

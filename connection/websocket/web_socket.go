@@ -185,16 +185,20 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.EmitEvent(event.Connected, nil)
 	}
 
-	resChan := make(chan []byte)
+	// resChan := make(chan []byte)
+
+	ws.listenChan = make(chan []byte)
+
+	go ws.listen()
 
 	go func() {
 		for {
 			_, message, err := ws.ws.ReadMessage()
-
+			ws.listenChan <- message
 			// TODO: either send a Disconnected event on a proper disconnection,
 			// or a NetworkError one if the socket has been unexpectedly closed
 			if err != nil {
-				close(resChan)
+				close(ws.listenChan)
 				ws.ws.Close()
 				ws.state = state.Offline
 				if ws.autoQueue {
@@ -203,14 +207,9 @@ func (ws *webSocket) Connect() (bool, error) {
 				ws.EmitEvent(event.Disconnected, nil)
 				return
 			}
-			go func() {
-				resChan <- message
-			}()
 		}
 	}()
 
-	ws.listenChan = resChan
-	go ws.listen()
 	ws.ReplayQueue()
 
 	return ws.wasConnected, err
@@ -287,12 +286,11 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
 	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
 		subs = map[string]subscription{}
-		ws.subscriptions.Store(channel, subs)
 	}
 
 	subs.(map[string]subscription)[roomID] = subscription{
@@ -301,17 +299,23 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 		notificationChannel: notifChan,
 		onReconnectChannel:  onReconnectChannel,
 		filters:             filters,
+		subscribeToSelf:     subscribeToSelf,
 	}
+
+	ws.subscriptions.Store(channel, subs)
 }
 
 func (ws *webSocket) UnregisterSub(roomID string) {
-	s, ok := ws.subscriptions.Load(roomID)
-	if ok {
-		for _, sub := range s.(map[string]subscription) {
-			close(sub.onReconnectChannel)
+	ws.subscriptions.Range(func(k, v interface{}) bool {
+		for k, sub := range v.(map[string]subscription) {
+			if sub.roomID == roomID {
+				close(sub.onReconnectChannel)
+				close(sub.notificationChannel)
+				delete(v.(map[string]subscription), k)
+			}
 		}
-		ws.subscriptions.Delete(roomID)
-	}
+		return true
+	})
 }
 
 func (ws *webSocket) CancelSubs() {
@@ -351,6 +355,10 @@ func (ws *webSocket) listen() {
 			}
 
 			// If this is a response to a query we simply broadcast the response to the corresponding channel
+			c.(chan<- *types.KuzzleResponse) <- &message
+			close(c.(chan<- *types.KuzzleResponse))
+			ws.channelsResult.Delete(message.RequestId)
+		} else if c, found := ws.channelsResult.Load(message.RoomId); found {
 			c.(chan<- *types.KuzzleResponse) <- &message
 			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(message.RequestId)

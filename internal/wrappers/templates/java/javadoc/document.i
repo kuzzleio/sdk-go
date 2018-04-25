@@ -31,6 +31,26 @@
    */
   public";
 
+
+%javamethodmodifiers kuzzleio::Document::create(const std::string& index, const std::string& collection, const std::string& id, const std::string& body="", query_options *options) "
+  /**
+   * Create a new document in kuzzle
+   *
+   * @param index the index where to create the document
+   * @param collection the collection where to create the document
+   * @param id the document id
+   * @param body the content of the document
+   * @param options  Request options
+   * @return document id
+   */
+  public";
+
+%javamethodmodifiers kuzzleio::Collection::create(const std::string& index, const std::string& collection, const std::string& id, const std::string& body="") "
+  /**
+   * {@link #create(String index, String collection, String id, String body, QueryOptions options)}
+   */
+  public";
+
 %javamethodmodifiers kuzzleio::Document::delete_(query_options *) "
   /**
    * Delete this document from Kuzzle

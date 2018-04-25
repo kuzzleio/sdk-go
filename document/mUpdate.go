@@ -21,7 +21,7 @@ import (
 )
 
 // MUpdate updates multiple documents at once
-func (d *Document) MUpdate(index string, collection string, body string, options types.QueryOptions) (string, error) {
+func (d *Document) MUpdate(index string, collection string, body json.RawMessage, options types.QueryOptions) (string, error) {
 	if index == "" {
 		return "", types.NewError("Document.MUpdate: index required", 400)
 	}
@@ -30,7 +30,7 @@ func (d *Document) MUpdate(index string, collection string, body string, options
 		return "", types.NewError("Document.MUpdate: collection required", 400)
 	}
 
-	if body == "" {
+	if body == nil {
 		return "", types.NewError("Document.MUpdate: body required", 400)
 	}
 

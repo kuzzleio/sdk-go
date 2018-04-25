@@ -28,21 +28,21 @@ import (
 func TestCountIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("", "collection", "body", nil)
+	_, err := d.Count("", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCountCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "", "body", nil)
+	_, err := d.Count("index", "", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
 func TestCountBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "collection", "", nil)
+	_, err := d.Count("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -54,7 +54,7 @@ func TestCountDocumentError(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Count("index", "collection", "body", nil)
+	_, err := d.Count("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
 }
@@ -75,7 +75,7 @@ func TestCountDocument(t *testing.T) {
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	res, err := d.Count("index", "collection", "body", nil)
+	res, err := d.Count("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, res)
 }
