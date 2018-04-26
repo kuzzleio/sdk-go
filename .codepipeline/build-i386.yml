@@ -9,6 +9,3 @@ phases:
   build:
     commands:
       - bash .codepipeline/codepipeline.sh i386
-artifacts:
-  files:
-    - internal/wrappers/build/java/io/kuzzle/sdk/kuzzlesdk.jar

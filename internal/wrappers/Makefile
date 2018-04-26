@@ -33,7 +33,7 @@ SWIG = swig
 all: java
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
@@ -50,7 +50,8 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
@@ -70,9 +71,12 @@ java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
-	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so $(ROOTOUTDIR)/java/libs
+	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	taskset -c 1 ./gradlew sourcesJar javadocJar moveJar
+	cd build/java
+	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
+	cd build/java && taskset -c 1 sh ./gradlew sourcesJar javadocJar jar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
@@ -100,7 +104,7 @@ cpp: makedir $(CPPSDK)
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/
+	rm -rf build/c build/java/src build/java/io build/java/build
 
 .PHONY: all java csharp python wrapper swig clean object core
 
