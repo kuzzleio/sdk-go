@@ -6,6 +6,7 @@ phases:
       - docker run --rm --privileged multiarch/qemu-user-static:register
       - docker pull kuzzleio/sdk-cross:armv7
       - sysctl -w vm.max_map_count=262144
+      - echo 1 > /proc/sys/vm/compact_memory
       - bash .codepipeline/start_kuzzle.sh
   build:
     commands:
