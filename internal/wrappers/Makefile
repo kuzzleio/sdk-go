@@ -66,7 +66,7 @@ swig:
 makedir:
 	mkdir -p $(OUTDIR)
 
-java: OUTDIR = $(ROOTOUTDIR)/java/src/main/java
+java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 java: LANGUAGE = java
 java: SWIGOPTS = -package io.kuzzle.sdk
@@ -75,6 +75,9 @@ java: core swig wrapper object posttask
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p build/java/src/main/resources
 	mv build/java/src/main/java/libkuzzle-wrapper-java.so build/java/src/main/resources
+	cd build/java
+	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	ln -s $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar jar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
