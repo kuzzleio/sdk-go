@@ -73,12 +73,11 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	mkdir -p build/java/src/main/resources
-	mv build/java/src/main/java/libkuzzle-wrapper-java.so build/java/src/main/resources
-	cd build/java
-	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
+	mv build/java/io/kuzzle/sdk/libkuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
+	mkdir -p $(ROOTOUTDIR)/src/main/java	
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
-	cd build/java && taskset -c 1 ./gradlew sourcesJar jar javadocJar && cd -
+	cd build/java && taskset -c 1 ./gradlew sourcesJar jarjavadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
