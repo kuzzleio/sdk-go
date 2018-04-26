@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master)](https://travis-ci.org/kuzzleio/sdk-go) [![codecov.io](http://codecov.io/github/kuzzleio/sdk-php/coverage.svg?branch=master)](http://codecov.io/github/kuzzleio/sdk-go?branch=master) [![GoDoc](https://godoc.org/github.com/kuzzleio/sdk-go?status.svg)](https://godoc.org/github.com/kuzzleio/sdk-go)
 
-Official Kuzzle GO SDK
+Official Kuzzle GO SDK with wrappers for C++ and JAVA SDK
 ======
 
 ## About Kuzzle
@@ -65,6 +65,40 @@ You can also get html coverage by running
 To run e2e tests ensure you have a kuzzle running and then run
 ```sh
 ./internal/wrappers/features/e2e.sh
+```
+
+## Wrappers
+
+### Dependencies
+
+Before generating the wrappers you will need to install:
+
+- [swig](www.swig.org)
+- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (don't forget to set your JAVA_HOME environment variable)
+
+### Generate
+
+## JAVA
+
+```sh
+make java
+```
+
+You will find the final jars files in `internal/wrappers/build/java/build/libs`
+
+## CP
+
+```sh
+make cpp
+```
+You will find the final .so file in `internal/wrappers/build/cpp`
+
+## All at once
+
+You can generate all sdk's at once by typing
+
+```sh
+make all
 ```
 
 ## License
