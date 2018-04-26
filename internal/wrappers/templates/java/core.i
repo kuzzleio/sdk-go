@@ -64,7 +64,9 @@
 %pragma(java) jniclasscode=%{
   static {
     try {
-        System.loadLibrary("kuzzle-wrapper-java");
+      java.nio.file.Path path = java.nio.file.FileSystems.getDefault().getPath("").toAbsolutePath();
+      
+      System.load(path.toString() + "/libs/libkuzzle-wrapper-java.so");
     } catch (UnsatisfiedLinkError e) {
       System.err.println("Native code library failed to load. \n" + e);
       System.exit(1);

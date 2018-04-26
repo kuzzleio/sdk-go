@@ -75,7 +75,7 @@ java: core swig wrapper object posttask
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p build/java/src/main/resources
 	mv build/java/src/main/java/libkuzzle-wrapper-java.so build/java/src/main/resources
-	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar && cd -
+	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar jar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
