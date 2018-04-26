@@ -77,7 +77,7 @@ java: core swig wrapper object posttask
 	mv build/java/src/main/java/libkuzzle-wrapper-java.so build/java/src/main/resources
 	cd build/java
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java
-	ln -s $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
+	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar jar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
