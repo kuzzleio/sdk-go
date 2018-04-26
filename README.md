@@ -101,8 +101,6 @@ You can generate all sdk's at once by typing
 make all
 ```
 
-You will be able to find the final 
-
 ## License
 
 [Apache 2](LICENSE.md)
