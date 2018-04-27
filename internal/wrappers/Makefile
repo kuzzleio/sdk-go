@@ -20,9 +20,12 @@ LIBS = -lkuzzlesdk
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
-CPPSRCS = 	kuzzle.cpp \
+CPPSRCS = kuzzle.cpp \
 					document.cpp \
 					collection.cpp \
+					realtime.cpp \
+					auth.cpp \
+					server.cpp \
 					kcore_wrap.cxx
 
 CPPSDK = $(CPPSRCS:.cpp=.o)
