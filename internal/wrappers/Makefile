@@ -23,7 +23,6 @@ OBJS = $(SRCS:.cxx=.o)
 CPPSRCS = 	kuzzle.cpp \
 					document.cpp \
 					collection.cpp \
-					room.cpp \
 					kcore_wrap.cxx
 
 CPPSDK = $(CPPSRCS:.cpp=.o)
@@ -99,6 +98,7 @@ python: core swig wrapper makedir
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: makedir $(CPPSDK)
+cpp: core
 		ar rvs $(OUTDIR)/libcpp.a $(OUTDIR)/*.o
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
