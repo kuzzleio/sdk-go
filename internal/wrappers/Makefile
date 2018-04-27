@@ -43,6 +43,7 @@ ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
 	mkdir -p $(GOTARGETDIR)
+	cd ../../ && go get ./... ; cd -
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
