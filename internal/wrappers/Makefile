@@ -105,7 +105,7 @@ cpp: makedir $(CPPSDK)
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build
+	rm -rf build/c build/java/src build/java/io build/java/build build/io
 
 .PHONY: all java csharp python wrapper swig clean object core
 
