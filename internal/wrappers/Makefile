@@ -28,7 +28,14 @@ CPPSRCS = kuzzle.cpp \
 					server.cpp \
 					kcore_wrap.cxx
 
-CPPSDK = $(CPPSRCS:.cpp=.o)
+CPP_SDK_SRCS = kuzzle.cpp \
+					document.cpp \
+					collection.cpp \
+					realtime.cpp \
+					auth.cpp \
+					server.cpp
+
+CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
@@ -101,12 +108,13 @@ python: core swig wrapper makedir
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: makedir $(CPPSDK)
+cpp: LANGUAGE = c++
 cpp: core
 		ar rvs $(OUTDIR)/libcpp.a $(OUTDIR)/*.o
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build
+	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h
 
 .PHONY: all java csharp python wrapper swig clean object core
 
