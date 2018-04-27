@@ -165,7 +165,7 @@ func Set_collection_entry_error(s *C.collection_entry_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
-func Set_void_result_error(s *C.void_result, err error) {
+func Set_error_result_error(s *C.error_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 

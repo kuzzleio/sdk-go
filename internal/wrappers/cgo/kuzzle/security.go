@@ -293,9 +293,9 @@ func kuzzle_security_delete_user(k *C.kuzzle, id *C.char, o *C.query_options) *C
 }
 
 //export kuzzle_security_delete_credentials
-func kuzzle_security_delete_credentials(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.void_result {
+func kuzzle_security_delete_credentials(k *C.kuzzle, strategy, id *C.char, o *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).Security.DeleteCredentials(C.GoString(strategy), C.GoString(id), SetQueryOptions(o))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_security_create_profile
@@ -387,9 +387,9 @@ func kuzzle_security_replace_user(k *C.kuzzle, id, content *C.char, o *C.query_o
 }
 
 //export kuzzle_security_update_credentials
-func kuzzle_security_update_credentials(k *C.kuzzle, strategy *C.char, id *C.char, body *C.char, o *C.query_options) *C.void_result {
+func kuzzle_security_update_credentials(k *C.kuzzle, strategy *C.char, id *C.char, body *C.char, o *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateCredentials(C.GoString(strategy), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(o))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_security_update_profile
@@ -409,10 +409,10 @@ func kuzzle_security_update_profile(k *C.kuzzle, id *C.char, body *C.char, o *C.
 }
 
 //export kuzzle_security_update_profile_mapping
-func kuzzle_security_update_profile_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
+func kuzzle_security_update_profile_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.error_result {
 	options := SetQueryOptions(o)
 	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateProfileMapping(json.RawMessage(C.GoString(body)), options)
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_security_update_role
@@ -432,10 +432,10 @@ func kuzzle_security_update_role(k *C.kuzzle, id *C.char, body *C.char, o *C.que
 }
 
 //export kuzzle_security_update_role_mapping
-func kuzzle_security_update_role_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
+func kuzzle_security_update_role_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.error_result {
 	options := SetQueryOptions(o)
 	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateRoleMapping(json.RawMessage(C.GoString(body)), options)
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_security_update_user
@@ -445,10 +445,10 @@ func kuzzle_security_update_user(k *C.kuzzle, id *C.char, body *C.char, o *C.que
 }
 
 //export kuzzle_security_update_user_mapping
-func kuzzle_security_update_user_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.void_result {
+func kuzzle_security_update_user_mapping(k *C.kuzzle, body *C.char, o *C.query_options) *C.error_result {
 	options := SetQueryOptions(o)
 	err := (*kuzzle.Kuzzle)(k.instance).Security.UpdateUserMapping(json.RawMessage(C.GoString(body)), options)
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_security_is_action_allowed

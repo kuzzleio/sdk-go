@@ -57,15 +57,15 @@ func kuzzle_new_index(i *C.kuzzle_index, k *C.kuzzle) {
 }
 
 //export kuzzle_index_create
-func kuzzle_index_create(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.void_result {
+func kuzzle_index_create(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.error_result {
 	err := (*indexPkg.Index)(i.instance).Create(C.GoString(index), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_index_delete
-func kuzzle_index_delete(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.void_result {
+func kuzzle_index_delete(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.error_result {
 	err := (*indexPkg.Index)(i.instance).Delete(C.GoString(index), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_index_mdelete
@@ -81,21 +81,21 @@ func kuzzle_index_exists(i *C.kuzzle_index, index *C.char, options *C.query_opti
 }
 
 //export kuzzle_index_refresh
-func kuzzle_index_refresh(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.void_result {
+func kuzzle_index_refresh(i *C.kuzzle_index, index *C.char, options *C.query_options) *C.error_result {
 	err := (*indexPkg.Index)(i.instance).Refresh(C.GoString(index), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_index_refresh_internal
-func kuzzle_index_refresh_internal(i *C.kuzzle_index, options *C.query_options) *C.void_result {
+func kuzzle_index_refresh_internal(i *C.kuzzle_index, options *C.query_options) *C.error_result {
 	err := (*indexPkg.Index)(i.instance).RefreshInternal(SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_index_set_auto_refresh
-func kuzzle_index_set_auto_refresh(i *C.kuzzle_index, index *C.char, autoRefresh C.bool, options *C.query_options) *C.void_result {
+func kuzzle_index_set_auto_refresh(i *C.kuzzle_index, index *C.char, autoRefresh C.bool, options *C.query_options) *C.error_result {
 	err := (*indexPkg.Index)(i.instance).SetAutoRefresh(C.GoString(index), bool(autoRefresh), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_index_get_auto_refresh

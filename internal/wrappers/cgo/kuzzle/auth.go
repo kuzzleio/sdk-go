@@ -96,12 +96,12 @@ func kuzzle_credentials_exist(a *C.auth, strategy *C.char, options *C.query_opti
 }
 
 //export kuzzle_delete_my_credentials
-func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.void_result {
+func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.error_result {
 	err := (*auth.Auth)(a.instance).DeleteMyCredentials(
 		C.GoString(strategy),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_get_current_user
