@@ -744,13 +744,13 @@ func fillStatistics(src *types.Statistics, dest *C.statistics) {
 }
 
 // Allocates memory
-func goToCVoidResult(err error) *C.void_result {
+func goToCErrorResult(err error) *C.error_result {
 	if err == nil {
 		return nil
 	}
 
-	result := (*C.void_result)(C.calloc(1, C.sizeof_void_result))
-	Set_void_result_error(result, err)
+	result := (*C.error_result)(C.calloc(1, C.sizeof_error_result))
+	Set_error_result_error(result, err)
 
 	return result
 }

@@ -58,15 +58,15 @@ func kuzzle_realtime_list(rt *C.realtime, index, collection *C.char) *C.string_r
 }
 
 //export kuzzle_realtime_publish
-func kuzzle_realtime_publish(rt *C.realtime, index, collection, body *C.char) *C.void_result {
+func kuzzle_realtime_publish(rt *C.realtime, index, collection, body *C.char) *C.error_result {
 	err := (*realtime.Realtime)(rt.instance).Publish(C.GoString(index), C.GoString(collection), C.GoString(body))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_realtime_unsubscribe
-func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.void_result {
+func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.error_result {
 	err := (*realtime.Realtime)(rt.instance).Unsubscribe(C.GoString(roomId))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_realtime_subscribe
@@ -92,7 +92,7 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 }
 
 //export kuzzle_realtime_join
-func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback C.kuzzle_notification_listener, data unsafe.Pointer) *C.void_result {
+func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback C.kuzzle_notification_listener, data unsafe.Pointer) *C.error_result {
 	c := make(chan types.KuzzleNotification)
 
 	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), SetRoomOptions(options), c)
@@ -102,7 +102,7 @@ func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, opt
 		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
 	}()
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_realtime_validate

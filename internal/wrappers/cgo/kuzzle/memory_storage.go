@@ -141,10 +141,10 @@ func kuzzle_ms_expireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.que
 }
 
 //export kuzzle_ms_flushdb
-func kuzzle_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.void_result {
+func kuzzle_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Flushdb(SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_geoadd
@@ -393,7 +393,7 @@ func kuzzle_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.size_t, o
 }
 
 //export kuzzle_ms_hmset
-func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.ms_hash_field, elen C.size_t, options *C.query_options) *C.void_result {
+func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.ms_hash_field, elen C.size_t, options *C.query_options) *C.error_result {
 	wrapped := (*[1 << 20]*C.ms_hash_field)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MsHashField, int(elen))
 
@@ -408,7 +408,7 @@ func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.ms_hash_field, elen C
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_hscan
@@ -586,25 +586,25 @@ func kuzzle_ms_lrem(k *C.kuzzle, key *C.char, count C.long, value *C.char, optio
 }
 
 //export kuzzle_ms_lset
-func kuzzle_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Lset(
 		C.GoString(key),
 		int(index),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_ltrim
-func kuzzle_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.void_result {
+func kuzzle_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Ltrim(
 		C.GoString(key),
 		int(start),
 		int(stop),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_mget
@@ -627,7 +627,7 @@ func kuzzle_ms_mget(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_
 }
 
 //export kuzzle_ms_mset
-func kuzzle_ms_mset(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.void_result {
+func kuzzle_ms_mset(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.error_result {
 	wrapped := (*[1 << 20]*C.ms_key_value)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
@@ -641,7 +641,7 @@ func kuzzle_ms_mset(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, option
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_msetnx
@@ -721,13 +721,13 @@ func kuzzle_ms_pfcount(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.que
 }
 
 //export kuzzle_ms_pfmerge
-func kuzzle_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.size_t, options *C.query_options) *C.void_result {
+func kuzzle_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.size_t, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfmerge(
 		C.GoString(key),
 		cToGoStrings(sources, slen),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_ping
@@ -739,14 +739,14 @@ func kuzzle_ms_ping(k *C.kuzzle, options *C.query_options) *C.string_result {
 }
 
 //export kuzzle_ms_psetex
-func kuzzle_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+func kuzzle_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Psetex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_pttl
@@ -767,13 +767,13 @@ func kuzzle_ms_randomkey(k *C.kuzzle, options *C.query_options) *C.string_result
 }
 
 //export kuzzle_ms_rename
-func kuzzle_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Rename(
 		C.GoString(key),
 		C.GoString(newkey),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_renamenx
@@ -878,24 +878,24 @@ func kuzzle_ms_sdiffstore(k *C.kuzzle, key *C.char, keys **C.char, klen C.size_t
 }
 
 //export kuzzle_ms_set
-func kuzzle_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Set(
 		C.GoString(key),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_setex
-func kuzzle_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+func kuzzle_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Setex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_setnx
