@@ -53,7 +53,7 @@ namespace kuzzleio {
   }
 
   void Auth::deleteMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
-    void_result *r = kuzzle_delete_my_credentials(_auth, const_cast<char*>(strategy.c_str()), options);
+    error_result *r = kuzzle_delete_my_credentials(_auth, const_cast<char*>(strategy.c_str()), options);
     if (r != NULL)
         throwExceptionFromStatus(r);
     delete(r);

@@ -34,17 +34,17 @@ namespace kuzzleio {
     }
 
     void Index::create(const std::string& index, query_options *options) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_index_create(_index, const_cast<char*>(index.c_str()), options);
+        error_result *r = kuzzle_index_create(_index, const_cast<char*>(index.c_str()), options);
         if (r != NULL)
             throwExceptionFromStatus(r);
-        kuzzle_free_void_result(r);
+        kuzzle_free_error_result(r);
     }
 
     void Index::delete_(const std::string& index, query_options *options) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_index_delete(_index, const_cast<char*>(index.c_str()), options);
+        error_result *r = kuzzle_index_delete(_index, const_cast<char*>(index.c_str()), options);
         if (r != NULL)
             throwExceptionFromStatus(r);
-        kuzzle_free_void_result(r);
+        kuzzle_free_error_result(r);
     }
 
     std::vector<std::string> Index::mDelete(const std::vector<std::string>& indexes, query_options *options) Kuz_Throw_KuzzleException {
@@ -78,24 +78,24 @@ namespace kuzzleio {
     }
 
     void Index::refresh(const std::string& index, query_options *options) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_index_refresh(_index, const_cast<char*>(index.c_str()), options);
+        error_result *r = kuzzle_index_refresh(_index, const_cast<char*>(index.c_str()), options);
         if (r != NULL)
             throwExceptionFromStatus(r);
-        kuzzle_free_void_result(r);
+        kuzzle_free_error_result(r);
     }
 
     void Index::refreshInternal(query_options *options) Kuz_Throw_KuzzleException {
-        void_result *r = kuzzle_index_refresh_internal(_index, options);
+        error_result *r = kuzzle_index_refresh_internal(_index, options);
         if (r != NULL)
             throwExceptionFromStatus(r);
-        kuzzle_free_void_result(r);
+        kuzzle_free_error_result(r);
     }
 
     void Index::setAutoRefresh(const std::string& index, bool autoRefresh, query_options *options) Kuz_Throw_KuzzleException {
-      void_result *r = kuzzle_index_set_auto_refresh(_index, const_cast<char*>(index.c_str()), autoRefresh, options);
+      error_result *r = kuzzle_index_set_auto_refresh(_index, const_cast<char*>(index.c_str()), autoRefresh, options);
       if (r != NULL)
           throwExceptionFromStatus(r);
-        kuzzle_free_void_result(r);
+        kuzzle_free_error_result(r);
     }
 
     bool Index::getAutoRefresh(const std::string& index, query_options *options) Kuz_Throw_KuzzleException {

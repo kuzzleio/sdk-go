@@ -43,6 +43,7 @@ ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
 	mkdir -p $(GOTARGETDIR)
+	cd ../../ && go get ./... ; cd -
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
@@ -105,7 +106,7 @@ cpp: makedir $(CPPSDK)
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build
+	rm -rf build/c build/java/src build/java/io build/java/build build/io
 
 .PHONY: all java csharp python wrapper swig clean object core
 

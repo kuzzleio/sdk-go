@@ -7,17 +7,10 @@ phases:
       - sysctl -w vm.max_map_count=262144
   build:
     commands:
-      - docker run -a stdout -a stderr --net host --rm --privileged \
-          --name build-machine \
-          --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go \
-          kuzzleio/sdk-cross:amd64 /build.sh
+      - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
   post_build:
     commands:
+      - if [[ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]]; then exit 1; fi;
       - bash .codepipeline/start_kuzzle.sh
-      - docker run -a stdout -a stderr --privileged --rm \
-          --network codepipeline_default \
-          --link kuzzle \
-          --name test-machine \
-          --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go \
-          kuzzleio/sdk-cross:amd64 /test.sh
+      - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
       - docker kill codepipeline_elasticsearch_1 codepipeline_redis_1 kuzzle
