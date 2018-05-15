@@ -14,7 +14,7 @@ task cucumber() {
     dependsOn assemble, compileTestJava
     doLast {
         javaexec {
-            jvmArgs = ["-Djava.library.path=../../build/java/io/kuzzle/sdk"]
+            jvmArgs = ["-Djava.library.path=../../build/io/kuzzle/sdk/resources"]
             main = "cucumber.api.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output + files('../../build/java')
             args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', '../']

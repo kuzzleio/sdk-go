@@ -5,4 +5,4 @@
 kcore_wrap.c
 
 # build
-build/c build/java/build build/java/src
+build/c build/java/build build/java/src build/java/io
