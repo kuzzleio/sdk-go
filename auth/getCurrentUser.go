@@ -16,6 +16,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
@@ -33,6 +34,8 @@ func (a *Auth) GetCurrentUser() (*security.User, error) {
 	go a.kuzzle.Query(query, nil, result)
 
 	res := <-result
+
+	fmt.Printf("GO: %s\n", res)
 
 	if res.Error != nil {
 		return nil, res.Error

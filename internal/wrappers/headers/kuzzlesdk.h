@@ -49,52 +49,52 @@ typedef void (*kuzzle_event_listener)(int, char*, void*);
 
 //define a request
 typedef struct {
-    char *request_id;
-    char *controller;
-    char *action;
-    char *index;
-    char *collection;
-    char *body;
-    char *id;
+    const char *request_id;
+    const char *controller;
+    const char *action;
+    const char *index;
+    const char *collection;
+    const char *body;
+    const char *id;
     long from;
     long size;
-    char *scroll;
-    char *scroll_id;
-    char *strategy;
+    const char *scroll;
+    const char *scroll_id;
+    const char *strategy;
     unsigned long long expires_in;
-    char *volatiles;
-    char *scope;
-    char *state;
-    char *user;
-    long start;
+    const char *volatiles;
+    const char *scope;
+    const char *state;
+    const char *user;
+    const long start;
     long stop;
     long end;
     unsigned char bit;
-    char *member;
-    char *member1;
-    char *member2;
+    const char *member;
+    const char *member1;
+    const char *member2;
     char **members;
     size_t members_length;
     double lon;
     double lat;
     double distance;
-    char *unit;
-    char *options;
-    char **keys;
+    const char *unit;
+    const char *options;
+    const char **keys;
     size_t keys_length;
     long cursor;
     long offset;
-    char *field;
-    char **fields;
+    const char *field;
+    const char **fields;
     size_t fields_length;
-    char *subcommand;
-    char *pattern;
+    const char *subcommand;
+    const char *pattern;
     long idx;
-    char *min;
-    char *max;
-    char *limit;
+    const char *min;
+    const char *max;
+    const char *limit;
     unsigned long count;
-    char *match;
+    const char *match;
 } kuzzle_request;
 
 typedef offline_queue* (*kuzzle_offline_queue_loader)(void);
@@ -182,6 +182,21 @@ typedef struct {
 
 enum Mode {AUTO, MANUAL};
 //options passed to the Kuzzle() fct
+
+#define KUZZLE_OPTIONS_DEFAULT { \
+    .queue_ttl = 120000, \
+    .queue_max_size = 500, \
+    .offline_mode = 0,  \
+    .auto_queue = false,  \
+    .auto_reconnect = true,  \
+    .auto_replay = false, \
+    .auto_resubscribe = true, \
+    .reconnection_delay = 1000, \
+    .replay_interval = 10, \
+    .connect = AUTO, \
+    .refresh = NULL, \
+    .default_index = NULL  \
+}
 typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
@@ -427,7 +442,7 @@ typedef struct token_validity {
 /* === Generic response structures === */
 
 // raw Kuzzle response
-typedef struct kuzzle_response {
+typedef struct {
     char *request_id;
     char *result;
     char *volatiles;

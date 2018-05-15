@@ -26,6 +26,7 @@ CPPSRCS = kuzzle.cpp \
 					realtime.cpp \
 					auth.cpp \
 					server.cpp \
+					index.cpp \
 					kcore_wrap.cxx
 
 CPP_SDK_SRCS = kuzzle.cpp \
@@ -33,7 +34,8 @@ CPP_SDK_SRCS = kuzzle.cpp \
 					collection.cpp \
 					realtime.cpp \
 					auth.cpp \
-					server.cpp
+					server.cpp \
+					index.cpp
 
 CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
