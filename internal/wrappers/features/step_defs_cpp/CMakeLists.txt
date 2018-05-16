@@ -1,6 +1,35 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(KuzzleSKDTests)
 
+
+include(ExternalProject)
+
+ExternalProject_Add(
+    ext_cucumber-cpp
+    PREFIX cucumber-cpp
+    GIT_REPOSITORY https://github.com/cucumber/cucumber-cpp
+    INSTALL_COMMAND ""
+    CMAKE_CACHE_ARGS
+      -DCUKE_DISABLE_QT:BOOL=ON 
+      -DCUKE_ENABLE_EXAMPLES:BOOL=OFF 
+      -DCUKE_DISABLE_GTEST:BOOL=ON
+      -DCUKE_DISABLE_UNIT_TESTS:BOOL=ON
+      -DCUKE_DISABLE_E2E_TESTS:BOOL=ON
+)
+
+# Library
+ExternalProject_Get_Property(ext_cucumber-cpp binary_dir)
+set(CUCUMBER_CPP_LIBRARY_PATH ${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src/libcucumber-cpp.a)
+set(CUCUMBER_CPP_LIBRARY cucumber-cpp)
+
+
+ExternalProject_Get_property(ext_cucumber-cpp SOURCE_DIR)
+set(CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
+
+message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
+message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
+
+
 add_subdirectory(3rdparty/json_spirit)
 
 #
@@ -36,12 +65,30 @@ set(CUKE_EXTRA_LIBRARIES ${CUKE_EXTRA_LIBRARIES} ${Boost_THREAD_LIBRARY} ${Boost
 
 
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
-    link_directories("/home/etrousset/test/test_cucumber-cpp/cucumber-cpp/build/src")
-    link_directories("/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/cpp")
-    include_directories("/home/etrousset/test/test_cucumber-cpp/cucumber-cpp/include")
-    include_directories("/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers")
-    include_directories("/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/c")
     add_executable(KuzzleSDKStepDefs kuzzle-sdk-steps kuzzle_utils)
-    target_link_libraries(KuzzleSDKStepDefs cpp cucumber-cpp  json_spirit ${CUKE_EXTRA_LIBRARIES} ${CUKE_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+    add_library(cucumber-cpp STATIC IMPORTED) # or STATIC instead of SHARED
+    set_target_properties(cucumber-cpp PROPERTIES
+    IMPORTED_LOCATION ${CUCUMBER_CPP_LIBRARY_PATH}
+    INTERFACE_INCLUDE_DIRECTORIES  ${CUCUMBER_CPP_INCLUDE_PATH}
+    )
+
+    add_library(kuzzlesdk STATIC IMPORTED) # or STATIC instead of SHARED
+    set_target_properties(kuzzlesdk PROPERTIES
+    IMPORTED_LOCATION "/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/c/libkuzzlesdk.a" 
+    INTERFACE_INCLUDE_DIRECTORIES
+        "/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/c"
+    )
+
+    add_library(cpp STATIC IMPORTED) # or STATIC instead of SHARED
+    set_target_properties(cpp PROPERTIES
+    IMPORTED_LOCATION "/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/cpp/libcpp.a" 
+    INTERFACE_INCLUDE_DIRECTORIES
+        "/home/etrousset/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers"
+    )
+
+
+
+    target_link_libraries(KuzzleSDKStepDefs cpp kuzzlesdk  pthread cucumber-cpp  json_spirit ${CUKE_EXTRA_LIBRARIES} ${CUKE_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
 endif()
 

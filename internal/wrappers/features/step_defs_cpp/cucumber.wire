@@ -1,2 +1,4 @@
-host: localhost
+host: local--host
 port: 3902
+timeout:
+  invoke: 4
