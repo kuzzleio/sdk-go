@@ -15,19 +15,20 @@ using boost::property_tree::ptree;
 using boost::property_tree::read_json;
 using boost::property_tree::write_json;
 
-using std::string;
-using std::cout;
-using std::endl;
 using kuzzleio::Kuzzle;
 using kuzzleio::KuzzleException;
+using std::cout;
+using std::endl;
+using std::string;
 
+using json_spirit::Array;
 using json_spirit::Object;
 using json_spirit::Pair;
 using json_spirit::Value;
-using json_spirit::Array;
 
 std::string get_login_creds(const std::string &username,
-                            const std::string &password) {
+                            const std::string &password)
+{
   // Write json.
   ptree pt;
   pt.put("username", username);
@@ -38,7 +39,8 @@ std::string get_login_creds(const std::string &username,
 }
 
 string get_createUser_body(const std::string &username,
-                           const std::string &password) {
+                           const std::string &password)
+{
   // Write json.
 
   Object body;
@@ -66,23 +68,34 @@ string get_createUser_body(const std::string &username,
   return buf.str();
 }
 
-bool kuzzle_user_exists(Kuzzle *kuzzle, const string &user_id) {
+bool kuzzle_user_exists(Kuzzle *kuzzle, const string &user_id)
+{
   bool user_exists = false;
-  try {
+  try
+  {
     kuzzle_request req = {0};
     req.controller = "security";
     req.action = "getUser";
     req.id = user_id.c_str();
     kuzzle->query(&req);
     user_exists = true;
-  } catch (KuzzleException e) {
+  }
+  catch (kuzzleio::NotFoundException e)
+  {
+    user_exists = false;
+  }
+  catch (KuzzleException e)
+  {
     K_LOG_W(e.getMessage().c_str());
   }
   return user_exists;
 }
 
-void kuzzle_user_delete(Kuzzle *kuzzle, const string &user_id) {
-  try {
+void kuzzle_user_delete(Kuzzle *kuzzle, const string &user_id)
+{
+  K_LOG_D("Deleting user with ID: '%s'", user_id.c_str());
+  try
+  {
     kuzzle_request req = {0};
     req.controller = "security";
     req.action = "deleteUser";
@@ -90,18 +103,23 @@ void kuzzle_user_delete(Kuzzle *kuzzle, const string &user_id) {
 
     query_options options = {0};
     options.refresh = (char *)"wait_for";
+    options.volatiles = (char *)"{}";
     kuzzle->query(
-        &req /*, &options*/); // TODO: test if we can delete with options
+        &req, &options); // TODO: test if we can delete with options
 
     K_LOG_D("Deleted user \"%s\"", user_id.c_str());
-  } catch (KuzzleException e) {
+  }
+  catch (KuzzleException e)
+  {
     K_LOG_E("Failed to delete user \"%s\"", user_id.c_str());
   }
 }
 
 void kuzzle_credentials_delete(Kuzzle *kuzzle, const string &strategy,
-                               const string &user_id) {
-  try {
+                               const string &user_id)
+{
+  try
+  {
     kuzzle_request req = {0};
     req.controller = "security";
     req.action = "deleteCredentials";
@@ -112,7 +130,9 @@ void kuzzle_credentials_delete(Kuzzle *kuzzle, const string &strategy,
 
     K_LOG_D("Deleted '%s' credentials for userId '%s'", strategy.c_str(),
             user_id.c_str());
-  } catch (KuzzleException e) {
+  }
+  catch (KuzzleException e)
+  {
     K_LOG_E("Failed to delete '%s' credentials for userId '%s'",
             strategy.c_str(), user_id.c_str());
     K_LOG_E(e.getMessage().c_str());
@@ -120,7 +140,8 @@ void kuzzle_credentials_delete(Kuzzle *kuzzle, const string &strategy,
 }
 
 void kuzzle_user_create(Kuzzle *kuzzle, const string &user_id,
-                        const string &username, const string &password) {
+                        const string &username, const string &password)
+{
 
   kuzzle_request req = {0};
   req.controller = "security";
@@ -130,33 +151,45 @@ void kuzzle_user_create(Kuzzle *kuzzle, const string &user_id,
   string body = get_createUser_body(username, password);
   req.body = body.c_str();
 
-  if (kuzzle_user_exists(kuzzle, user_id.c_str())) {
+ // if (kuzzle_user_exists(kuzzle, user_id.c_str()))
+  {
     K_LOG_W("An user with id: '%s' already exists, deleteting it...",
             user_id.c_str());
     kuzzle_credentials_delete(kuzzle, "local", user_id);
     kuzzle_user_delete(kuzzle, user_id);
   }
 
+    // kuzzle_credentials_delete(kuzzle, "local", user_id);
+
   K_LOG_D("Creating user with id: '%s' and 'local' creds: %s:%s",
           user_id.c_str(), username.c_str(), password.c_str());
   K_LOG_D("Req body: %s", req.body);
-  try {
+  try
+  {
     kuzzle_response *resp = kuzzle->query(&req);
     K_LOG_D("createUser ended with status: %d", resp->status);
-  } catch (KuzzleException e) {
+  }
+  catch (KuzzleException e)
+  {
     K_LOG_E("Status (%d): %s", e.status, e.getMessage().c_str());
+    if (kuzzle_user_exists(kuzzle, user_id.c_str())) {
+      K_LOG_W("But user seems to exist anyway?????");
+    }
   }
 }
 
-void kuz_log_sep() {
+void kuz_log_sep()
+{
   cout << "\x1b(0\x6c\x1b(B";
-  for (int i = 0; i < 79; i++) {
+  for (int i = 0; i < 79; i++)
+  {
     cout << "\x1b(0\x71\x1b(B";
   }
   cout << endl;
 }
 
-void kuz_log_e(const char *filename, int linenumber, const char *fmt...) {
+void kuz_log_e(const char *filename, int linenumber, const char *fmt...)
+{
   va_list args;
   va_start(args, fmt);
 
@@ -168,7 +201,8 @@ void kuz_log_e(const char *filename, int linenumber, const char *fmt...) {
   va_end(args);
 }
 
-void kuz_log_w(const char *filename, int linenumber, const char *fmt...) {
+void kuz_log_w(const char *filename, int linenumber, const char *fmt...)
+{
   va_list args;
   va_start(args, fmt);
   cout << "\x1b(0\x78\x1b(B" << TXT_COLOR_YELLOW << "W:";
@@ -179,7 +213,8 @@ void kuz_log_w(const char *filename, int linenumber, const char *fmt...) {
   va_end(args);
 }
 
-void kuz_log_d(const char *filename, int linenumber, const char *fmt...) {
+void kuz_log_d(const char *filename, int linenumber, const char *fmt...)
+{
   va_list args;
   va_start(args, fmt);
 
@@ -191,7 +226,8 @@ void kuz_log_d(const char *filename, int linenumber, const char *fmt...) {
   va_end(args);
 }
 
-void kuz_log_i(const char *filename, int linenumber, const char *fmt...) {
+void kuz_log_i(const char *filename, int linenumber, const char *fmt...)
+{
   va_list args;
   va_start(args, fmt);
 

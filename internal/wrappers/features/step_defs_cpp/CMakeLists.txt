@@ -5,8 +5,7 @@ project(KuzzleSKDTests)
 include(ExternalProject)
 
 ExternalProject_Add(
-    ext_cucumber_cpp
-    PREFIX cucumber-cpp
+    project_cucumber_cpp
     GIT_REPOSITORY https://github.com/cucumber/cucumber-cpp
     INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS
@@ -18,22 +17,23 @@ ExternalProject_Add(
 )
 
 # Library
-ExternalProject_Get_Property(ext_cucumber_cpp binary_dir)
+ExternalProject_Get_Property(project_cucumber_cpp binary_dir)
 set(CUCUMBER_CPP_LIBRARY_PATH ${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src/libcucumber-cpp.a)
 set(CUCUMBER_CPP_LIBRARY cucumber-cpp)
 
 
-ExternalProject_Get_property(ext_cucumber_cpp SOURCE_DIR)
+ExternalProject_Get_property(project_cucumber_cpp SOURCE_DIR)
 set(CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
 
 message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
 message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
 
 add_library(cucumber-cpp STATIC IMPORTED) # or STATIC instead of SHARED
-add_dependencies(cucumber-cpp ext_cucumber_cpp)
+add_dependencies(cucumber-cpp project_cucumber_cpp)
 set_target_properties(cucumber-cpp PROPERTIES
     IMPORTED_LOCATION ${CUCUMBER_CPP_LIBRARY_PATH}
     INTERFACE_INCLUDE_DIRECTORIES  ${CUCUMBER_CPP_INCLUDE_PATH}
+    DEPENDS project_cucumber_cpp
 )
 
 #
@@ -83,7 +83,7 @@ set(CUKE_EXTRA_LIBRARIES ${CUKE_EXTRA_LIBRARIES} ${Boost_THREAD_LIBRARY} ${Boost
 
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     add_executable(KuzzleSDKStepDefs kuzzle-sdk-steps kuzzle_utils)
-    add_dependencies(KuzzleSDKStepDefs ext_cucumber_cpp)
+    add_dependencies(KuzzleSDKStepDefs project_cucumber_cpp)
 
 
     add_library(kuzzlesdk STATIC IMPORTED) # or STATIC instead of SHARED

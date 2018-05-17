@@ -1,7 +1,6 @@
 # SDK's integration tests
 #========================
 
-
 Feature: Create document with ids
 
   Scenario: Do not allow creating a document with an _id that already exist in the same collection
