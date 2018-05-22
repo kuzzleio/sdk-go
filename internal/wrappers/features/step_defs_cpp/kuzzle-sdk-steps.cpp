@@ -293,6 +293,7 @@ WHEN("^I get my user info$")
     K_LOG_E(e.getMessage().c_str());
   }
 
+  K_LOG_D("current user = 0x%p", ctx->currentUser);
   K_LOG_D("Current user content: %s", ctx->currentUser->content);
 
   BOOST_CHECK_MESSAGE(ctx->currentUser != NULL,
