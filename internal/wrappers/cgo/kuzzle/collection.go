@@ -56,15 +56,15 @@ func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 }
 
 //export kuzzle_collection_create
-func kuzzle_collection_create(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.void_result {
+func kuzzle_collection_create(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.error_result {
 	err := (*collection.Collection)(c.instance).Create(C.GoString(index), C.GoString(col), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_collection_truncate
-func kuzzle_collection_truncate(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.void_result {
+func kuzzle_collection_truncate(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.error_result {
 	err := (*collection.Collection)(c.instance).Truncate(C.GoString(index), C.GoString(col), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_collection_exists
@@ -92,18 +92,18 @@ func kuzzle_collection_get_mapping(c *C.collection, index *C.char, col *C.char, 
 }
 
 //export kuzzle_collection_update_mapping
-func kuzzle_collection_update_mapping(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.void_result {
+func kuzzle_collection_update_mapping(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.error_result {
 	newBody, _ := json.Marshal(body)
 	err := (*collection.Collection)(c.instance).UpdateMapping(C.GoString(index), C.GoString(col), newBody, SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 // Specifications
 
 //export kuzzle_collection_delete_specifications
-func kuzzle_collection_delete_specifications(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.void_result {
+func kuzzle_collection_delete_specifications(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.error_result {
 	err := (*collection.Collection)(c.instance).DeleteSpecifications(C.GoString(index), C.GoString(col), SetQueryOptions(options))
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_collection_get_specifications

@@ -44,7 +44,7 @@ SWIG = swig
 all: java
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
@@ -54,6 +54,7 @@ ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
 	mkdir -p $(GOTARGETDIR)
+	cd ../../ && go get ./... ; cd -
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
@@ -61,7 +62,8 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
@@ -83,10 +85,11 @@ java: SWIGOPTS = -package io.kuzzle.sdk
 java: core swig wrapper object posttask
 	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	cd build/java
-	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
+	mv build/java/io/kuzzle/sdk/libkuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
+	mkdir -p $(ROOTOUTDIR)/java/src/main/java	
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
-	cd build/java && taskset -c 1 ./gradlew sourcesJar javadocJar jar && cd -
+	cd build/java && taskset -c 1 sh gradlew sourcesJar jar javadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
@@ -117,6 +120,7 @@ cpp: core
 
 clean:
 	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h
+	rm -rf build/io
 
 .PHONY: all java csharp python wrapper swig clean object core
 

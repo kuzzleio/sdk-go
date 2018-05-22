@@ -185,8 +185,6 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.EmitEvent(event.Connected, nil)
 	}
 
-	// resChan := make(chan []byte)
-
 	ws.listenChan = make(chan []byte)
 
 	go ws.listen()

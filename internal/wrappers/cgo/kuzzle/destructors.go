@@ -351,6 +351,7 @@ func kuzzle_free_subscribe_result(st *C.subscribe_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.room))
 		C.free(unsafe.Pointer(st.channel))
+		C.free(unsafe.Pointer(st))
 	}
 }
 
@@ -721,8 +722,8 @@ func kuzzle_free_mapping_result(st *C.mapping_result) {
 	}
 }
 
-//export kuzzle_free_void_result
-func kuzzle_free_void_result(st *C.void_result) {
+//export kuzzle_free_error_result
+func kuzzle_free_error_result(st *C.error_result) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))

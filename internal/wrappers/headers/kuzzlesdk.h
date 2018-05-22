@@ -458,11 +458,11 @@ typedef struct {
 } kuzzle_response;
 
 //any void result
-typedef struct void_result {
+typedef struct error_result {
     int status;
     char *error;
     char *stack;
-} void_result;
+} error_result;
 
 //any json result
 typedef struct json_result {
