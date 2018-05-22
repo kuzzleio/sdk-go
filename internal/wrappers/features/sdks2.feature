@@ -41,7 +41,7 @@ Feature: Create document with ids
     And I log in as 'my-user-name':'my-user-pwd'
     And I update my user custom data with the pair <fieldname> : <fieldvalue>
     When I get my user info
-    Then the response '_source' field contains the pair <fieldname>: <fieldname>
+    Then the response '_source' field contains the pair <fieldname>: <fieldvalue>
     And is a <type>
     Examples:
       | fieldname | fieldvalue      | type   |
