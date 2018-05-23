@@ -56,7 +56,7 @@ func (d *Document) Create(index string, collection string, id string, body json.
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

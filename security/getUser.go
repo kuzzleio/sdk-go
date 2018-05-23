@@ -36,7 +36,7 @@ func (s *Security) GetUser(id string, options types.QueryOptions) (*User, error)
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

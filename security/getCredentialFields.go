@@ -37,7 +37,7 @@ func (s *Security) GetCredentialFields(strategy string, options types.QueryOptio
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

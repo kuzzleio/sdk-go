@@ -41,7 +41,7 @@ func (ms *Ms) Pfadd(key string, elements []string, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

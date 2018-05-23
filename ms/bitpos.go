@@ -44,7 +44,7 @@ func (ms *Ms) Bitpos(key string, bit int, options types.QueryOptions) (int, erro
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

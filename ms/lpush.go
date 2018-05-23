@@ -44,7 +44,7 @@ func (ms *Ms) Lpush(key string, values []string, options types.QueryOptions) (in
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

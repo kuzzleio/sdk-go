@@ -39,7 +39,7 @@ func (ms *Ms) Zlexcount(key string, min string, max string, options types.QueryO
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

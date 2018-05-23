@@ -37,7 +37,7 @@ func (s *Security) CreateUser(body json.RawMessage, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

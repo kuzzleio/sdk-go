@@ -40,7 +40,7 @@ func (ms *Ms) Hincrbyfloat(key string, field string, value float64, options type
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

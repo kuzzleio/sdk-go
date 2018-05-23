@@ -38,7 +38,7 @@ func (a *Auth) UpdateSelf(data json.RawMessage, options types.QueryOptions) (*se
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

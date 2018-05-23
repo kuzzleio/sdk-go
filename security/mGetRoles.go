@@ -39,7 +39,7 @@ func (s *Security) MGetRoles(ids []string, options types.QueryOptions) ([]*Role,
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

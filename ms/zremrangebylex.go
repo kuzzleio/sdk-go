@@ -43,7 +43,7 @@ func (ms *Ms) Zremrangebylex(key string, min string, max string, options types.Q
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

@@ -48,7 +48,7 @@ func (s *Server) GetStats(startTime *time.Time, stopTime *time.Time, options typ
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

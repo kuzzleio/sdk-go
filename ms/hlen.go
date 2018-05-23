@@ -33,7 +33,7 @@ func (ms *Ms) Hlen(key string, options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return -1, res.Error
 	}
 	var returnedResult int

@@ -42,7 +42,7 @@ func (r *Realtime) Count(index, collection, roomID string) (int, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return -1, res.Error
 	}
 

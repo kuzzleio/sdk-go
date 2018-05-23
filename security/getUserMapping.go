@@ -32,7 +32,7 @@ func (s *Security) GetUserMapping(options types.QueryOptions) (json.RawMessage, 
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

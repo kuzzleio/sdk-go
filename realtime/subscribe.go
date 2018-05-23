@@ -56,7 +56,7 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

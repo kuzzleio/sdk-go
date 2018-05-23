@@ -36,7 +36,7 @@ func (r *Realtime) Publish(index string, collection string, body string) error {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

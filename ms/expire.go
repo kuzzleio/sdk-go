@@ -38,7 +38,7 @@ func (ms *Ms) Expire(key string, seconds int, options types.QueryOptions) (bool,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

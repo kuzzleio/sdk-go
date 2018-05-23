@@ -37,7 +37,7 @@ func (ms *Ms) Geoadd(key string, points []*types.GeoPoint, options types.QueryOp
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

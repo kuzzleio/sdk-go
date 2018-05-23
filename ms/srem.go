@@ -42,7 +42,7 @@ func (ms *Ms) Srem(key string, valuesToRemove []string, options types.QueryOptio
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

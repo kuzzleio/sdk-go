@@ -68,7 +68,7 @@ type (
 		Channel    string              `json:"channel"`
 		Timestamp  int                 `json:"timestamp"`
 		Status     int                 `json:"status"`
-		Error      *KuzzleError        `json:"error"`
+		Error      KuzzleError         `json:"error"`
 	}
 
 	// KuzzleResponse is a response to a KuzzleRequest
@@ -83,7 +83,7 @@ type (
 		RoomId     string          `json:"room"`
 		Channel    string          `json:"channel"`
 		Status     int             `json:"status"`
-		Error      *KuzzleError    `json:"error"`
+		Error      KuzzleError     `json:"error"`
 	}
 
 	SpecificationField struct {
@@ -263,7 +263,7 @@ type (
 	}
 )
 
-func (e *KuzzleError) Error() string {
+func (e KuzzleError) Error() string {
 	msg := e.Message
 
 	if len(e.Stack) > 0 {
@@ -278,8 +278,8 @@ func (e *KuzzleError) Error() string {
 }
 
 // NewError instanciates a new KuzzleError
-func NewError(msg string, status ...int) *KuzzleError {
-	err := &KuzzleError{Message: msg}
+func NewError(msg string, status ...int) KuzzleError {
+	err := KuzzleError{Message: msg}
 
 	if len(status) == 1 {
 		err.Status = status[0]

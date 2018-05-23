@@ -37,7 +37,7 @@ func (s *Security) GetProfileRights(id string, options types.QueryOptions) (json
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 
