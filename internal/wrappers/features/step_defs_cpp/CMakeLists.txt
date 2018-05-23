@@ -8,6 +8,7 @@ ExternalProject_Add(
     project_cucumber_cpp
     GIT_REPOSITORY https://github.com/cucumber/cucumber-cpp
     INSTALL_COMMAND ""
+
     CMAKE_CACHE_ARGS
       -DCUKE_DISABLE_QT:BOOL=ON 
       -DCUKE_ENABLE_EXAMPLES:BOOL=OFF 
@@ -19,20 +20,25 @@ ExternalProject_Add(
 # Library
 ExternalProject_Get_Property(project_cucumber_cpp binary_dir)
 set(CUCUMBER_CPP_LIBRARY_PATH ${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src/libcucumber-cpp.a)
+list( APPEND CUCUMBER_CPP_INCLUDE_PATH "${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src")
 set(CUCUMBER_CPP_LIBRARY cucumber-cpp)
 
 
 ExternalProject_Get_property(project_cucumber_cpp SOURCE_DIR)
-set(CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
+list(APPEND CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
 
 message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
 message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
+
+list(APPEND LIB_INCLUDE_DIRS "dir1")
+list(APPEND LIB_INCLUDE_DIRS "dir2")
 
 add_library(cucumber-cpp STATIC IMPORTED) # or STATIC instead of SHARED
 add_dependencies(cucumber-cpp project_cucumber_cpp)
 set_target_properties(cucumber-cpp PROPERTIES
     IMPORTED_LOCATION ${CUCUMBER_CPP_LIBRARY_PATH}
-    INTERFACE_INCLUDE_DIRECTORIES  ${CUCUMBER_CPP_INCLUDE_PATH}
+    INTERFACE_INCLUDE_DIRECTORIES  
+        "${CUCUMBER_CPP_INCLUDE_PATH}"
     DEPENDS project_cucumber_cpp
 )
 
