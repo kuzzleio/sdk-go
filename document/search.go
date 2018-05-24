@@ -48,7 +48,7 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -174,7 +174,7 @@ func Set_room_result_error(s *C.room_result, err error) {
 }
 
 func setErr(status *C.int, error **C.char, stack **C.char, err error) {
-	kuzzleError := err.(*types.KuzzleError)
+	kuzzleError := err.(types.KuzzleError)
 	*status = C.int(kuzzleError.Status)
 	*error = C.CString(kuzzleError.Message)
 

@@ -39,5 +39,9 @@ func (ms *Ms) Ltrim(key string, start int, stop int, options types.QueryOptions)
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+
+	return nil
 }

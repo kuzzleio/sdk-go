@@ -53,7 +53,7 @@ func (d *Document) MGet(index string, collection string, ids []string, includeTr
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

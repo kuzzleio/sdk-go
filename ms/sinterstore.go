@@ -44,7 +44,7 @@ func (ms *Ms) Sinterstore(destination string, keys []string, options types.Query
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

@@ -33,7 +33,7 @@ func (s *Server) AdminExists(options types.QueryOptions) (bool, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

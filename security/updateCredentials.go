@@ -39,7 +39,7 @@ func (s *Security) UpdateCredentials(strategy string, kuid string, body json.Raw
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

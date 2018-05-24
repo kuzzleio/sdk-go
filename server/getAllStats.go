@@ -33,7 +33,7 @@ func (s *Server) GetAllStats(options types.QueryOptions) (json.RawMessage, error
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	return res.Result, nil

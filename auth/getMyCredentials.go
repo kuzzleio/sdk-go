@@ -37,9 +37,8 @@ func (a *Auth) GetMyCredentials(strategy string, options types.QueryOptions) (js
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
-
 	return res.Result, nil
 }

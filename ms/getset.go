@@ -37,7 +37,7 @@ func (ms *Ms) Getset(key string, value string, options types.QueryOptions) (*str
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult *string

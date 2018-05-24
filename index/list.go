@@ -34,7 +34,7 @@ func (i *Index) List(options types.QueryOptions) ([]string, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

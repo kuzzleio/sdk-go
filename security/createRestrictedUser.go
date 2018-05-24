@@ -41,7 +41,7 @@ func (s *Security) CreateRestrictedUser(body json.RawMessage, options types.Quer
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

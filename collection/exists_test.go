@@ -50,7 +50,7 @@ func TestExistsError(t *testing.T) {
 	nc := collection.NewCollection(k)
 	_, err := nc.Exists("index", "collection", nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestExists(t *testing.T) {

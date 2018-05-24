@@ -48,7 +48,7 @@ func (d *Document) Delete(index string, collection string, _id string, options t
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

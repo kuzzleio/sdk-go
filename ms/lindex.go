@@ -34,7 +34,7 @@ func (ms *Ms) Lindex(key string, index int, options types.QueryOptions) (*string
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult *string

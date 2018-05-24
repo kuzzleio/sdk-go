@@ -36,5 +36,8 @@ func (ms *Ms) Rename(key string, newkey string, options types.QueryOptions) erro
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

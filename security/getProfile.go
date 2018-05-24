@@ -37,7 +37,7 @@ func (s *Security) GetProfile(id string, options types.QueryOptions) (*Profile, 
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

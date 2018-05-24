@@ -38,7 +38,7 @@ func (dc *Collection) DeleteSpecifications(index string, collection string, opti
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

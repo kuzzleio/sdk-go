@@ -348,7 +348,7 @@ func (ws *webSocket) listen() {
 			}
 
 		} else if c, found := ws.channelsResult.Load(message.RequestId); found {
-			if message.Error != nil && message.Error.Message == "Token expired" {
+			if message.Error.Error() != "" && message.Error.Message == "Token expired" {
 				ws.EmitEvent(event.TokenExpired, nil)
 			}
 

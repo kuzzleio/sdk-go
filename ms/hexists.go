@@ -34,7 +34,7 @@ func (ms *Ms) Hexists(key string, field string, options types.QueryOptions) (boo
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

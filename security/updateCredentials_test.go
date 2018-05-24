@@ -33,7 +33,7 @@ func TestUpdateCredentialsQueryError(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "updateCredentials", request.Action)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -44,7 +44,7 @@ func TestUpdateCredentialsQueryError(t *testing.T) {
 func TestUpdateCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "unit test error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -55,7 +55,7 @@ func TestUpdateCredentialsEmptyStrategy(t *testing.T) {
 func TestUpdateCredentialsEmptyKuid(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "unit test error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

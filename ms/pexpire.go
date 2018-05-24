@@ -38,7 +38,7 @@ func (ms *Ms) Pexpire(key string, ttl int, options types.QueryOptions) (bool, er
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

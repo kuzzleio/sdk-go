@@ -38,7 +38,7 @@ func (a *Auth) UpdateMyCredentials(strategy string, credentials json.RawMessage,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -39,7 +39,7 @@ func (s *Security) MDeleteCredentials(ids []string, options types.QueryOptions) 
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

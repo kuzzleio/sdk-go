@@ -56,7 +56,7 @@ func TestGetDocumentError(t *testing.T) {
 	d := document.NewDocument(k)
 	_, err := d.Get("index", "collection", "id1", nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestGetDocument(t *testing.T) {

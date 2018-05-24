@@ -38,7 +38,7 @@ func (i *Index) MDelete(indexes []string, options types.QueryOptions) ([]string,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -38,7 +38,7 @@ func (dc *Collection) ValidateSpecifications(body json.RawMessage, options types
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

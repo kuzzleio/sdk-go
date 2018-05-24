@@ -37,7 +37,7 @@ func (s *Security) GetCredentials(strategy, id string, options types.QueryOption
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -50,7 +50,7 @@ func TestDeleteSpecificationsError(t *testing.T) {
 	nc := collection.NewCollection(k)
 	err := nc.DeleteSpecifications("index", "collection", nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestDeleteSpecifications(t *testing.T) {

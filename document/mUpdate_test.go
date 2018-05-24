@@ -60,7 +60,7 @@ func TestMUpdateDocumentError(t *testing.T) {
 
 	_, err := d.MUpdate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestMUpdateDocument(t *testing.T) {
