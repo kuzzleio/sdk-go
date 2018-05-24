@@ -56,7 +56,7 @@ func TestCountDocumentError(t *testing.T) {
 	d := document.NewDocument(k)
 	_, err := d.Count("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestCountDocument(t *testing.T) {

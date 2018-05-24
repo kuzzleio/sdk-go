@@ -39,5 +39,9 @@ func (a *Auth) DeleteMyCredentials(strategy string, options types.QueryOptions) 
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+
+	return nil
 }

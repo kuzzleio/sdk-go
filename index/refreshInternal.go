@@ -33,6 +33,5 @@ func (i *Index) RefreshInternal(options types.QueryOptions) error {
 	if res.Error.Error() != "" {
 		return res.Error
 	}
-
 	return nil
 }

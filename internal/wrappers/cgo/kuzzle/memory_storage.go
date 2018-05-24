@@ -197,7 +197,7 @@ func kuzzle_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t,
 		SetQueryOptions(options))
 
 	if err != nil {
-		kuzzleError := err.(*types.KuzzleError)
+		kuzzleError := err.(types.KuzzleError)
 		result.status = C.int(kuzzleError.Status)
 		result.error = C.CString(kuzzleError.Message)
 

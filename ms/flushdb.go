@@ -30,5 +30,9 @@ func (ms *Ms) Flushdb(options types.QueryOptions) error {
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+
+	return nil
 }

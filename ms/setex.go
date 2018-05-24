@@ -39,5 +39,8 @@ func (ms *Ms) Setex(key string, value interface{}, ttl int, options types.QueryO
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

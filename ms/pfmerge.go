@@ -41,5 +41,8 @@ func (ms *Ms) Pfmerge(key string, sources []string, options types.QueryOptions) 
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }
