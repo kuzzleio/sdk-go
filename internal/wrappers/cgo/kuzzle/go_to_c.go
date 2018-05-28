@@ -559,9 +559,8 @@ func goToCUser(k *C.kuzzle, user *security.User, dest *C.user) (*C.user, error) 
 		if err != nil {
 			return nil, err
 		}
-		jsonO := C.CString(string(cnt))
 
-		cuser.content = jsonO
+		cuser.content = C.CString(string(cnt))
 	}
 
 	if user.ProfileIds != nil {

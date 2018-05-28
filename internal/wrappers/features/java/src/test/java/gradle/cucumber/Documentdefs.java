@@ -6,8 +6,8 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.kuzzle.sdk.BadRequestException;
 import io.kuzzle.sdk.Kuzzle;
-import io.kuzzle.sdk.KuzzleException;
 import org.junit.Assert;
+import org.junit.Before;
 
 public class Documentdefs {
     private Kuzzle k;
@@ -25,7 +25,7 @@ public class Documentdefs {
 
     @Given("^Kuzzle Server is running$")
     public void kuzzle_Server_is_running() throws Exception {
-        k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
+        k = KuzzleSingleton.getInstance();
     }
 
     @Given("^there is an index \'([^\"]*)\'$")
