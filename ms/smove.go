@@ -39,7 +39,7 @@ func (ms *Ms) Smove(key string, destination string, member string, options types
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

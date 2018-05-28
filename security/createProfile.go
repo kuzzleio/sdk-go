@@ -38,7 +38,7 @@ func (s *Security) CreateProfile(id string, body json.RawMessage, options types.
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

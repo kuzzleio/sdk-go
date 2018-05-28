@@ -42,7 +42,7 @@ func (s *Security) CreateFirstAdmin(body json.RawMessage, options types.QueryOpt
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

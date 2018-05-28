@@ -41,7 +41,7 @@ func (ms *Ms) Zrangebylex(key string, min string, max string, options types.Quer
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

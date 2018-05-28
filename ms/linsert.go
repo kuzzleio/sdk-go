@@ -44,7 +44,7 @@ func (ms *Ms) Linsert(key string, position string, pivot string, value string, o
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return -1, res.Error
 	}
 	var returnedResult int

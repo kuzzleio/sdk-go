@@ -48,7 +48,7 @@ func (d *Document) DeleteByQuery(index string, collection string, body string, o
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

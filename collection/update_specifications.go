@@ -47,7 +47,7 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, body
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

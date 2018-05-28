@@ -43,7 +43,7 @@ func (dc *Collection) Exists(index string, collection string, options types.Quer
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

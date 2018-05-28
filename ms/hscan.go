@@ -50,7 +50,7 @@ func (ms *Ms) Hscan(key string, cursor int, options types.QueryOptions) (*HscanR
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

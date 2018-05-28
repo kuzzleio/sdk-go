@@ -42,7 +42,7 @@ func (ms *Ms) Zrem(key string, members []string, options types.QueryOptions) (in
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

@@ -48,7 +48,7 @@ func (d *Document) MUpdate(index string, collection string, body json.RawMessage
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

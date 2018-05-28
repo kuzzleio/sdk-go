@@ -48,7 +48,7 @@ func (d *Document) MCreate(index string, collection string, body json.RawMessage
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

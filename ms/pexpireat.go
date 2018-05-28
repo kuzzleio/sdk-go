@@ -39,7 +39,7 @@ func (ms *Ms) Pexpireat(key string, timestamp int, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

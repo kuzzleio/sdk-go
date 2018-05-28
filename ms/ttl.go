@@ -37,7 +37,7 @@ func (ms *Ms) Ttl(key string, options types.QueryOptions) (int, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

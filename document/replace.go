@@ -53,7 +53,7 @@ func (d *Document) Replace(index string, collection string, _id string, body jso
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

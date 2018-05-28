@@ -30,7 +30,7 @@ import (
 func TestRefreshInternalQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -68,7 +68,7 @@ func ExampleIndex_RefreshInternal() {
 	k, _ := kuzzle.NewKuzzle(conn, nil)
 	i := index.NewIndex(k)
 	err := i.RefreshInternal(nil)
-	if err != nil {
+	if err.Error() != "" {
 		fmt.Println(err.Error())
 		return
 	}

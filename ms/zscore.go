@@ -35,7 +35,7 @@ func (ms *Ms) Zscore(key string, member string, options types.QueryOptions) (flo
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

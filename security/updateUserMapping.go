@@ -36,7 +36,7 @@ func (s *Security) UpdateUserMapping(body json.RawMessage, options types.QueryOp
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

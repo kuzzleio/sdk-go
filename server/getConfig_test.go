@@ -33,7 +33,7 @@ func TestGetConfigQueryError(t *testing.T) {
 			assert.Equal(t, "server", request.Controller)
 			assert.Equal(t, "getConfig", request.Action)
 
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

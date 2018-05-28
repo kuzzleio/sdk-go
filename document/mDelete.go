@@ -48,7 +48,7 @@ func (d *Document) MDelete(index string, collection string, ids []string, option
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

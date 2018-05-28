@@ -37,7 +37,7 @@ func (ms *Ms) Sinter(keys []string, options types.QueryOptions) ([]string, error
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult []string

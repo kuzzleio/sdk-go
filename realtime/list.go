@@ -39,7 +39,7 @@ func (r *Realtime) List(index string, collection string) (json.RawMessage, error
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

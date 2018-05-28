@@ -37,7 +37,7 @@ func (ms *Ms) Georadiusbymember(key string, member string, distance float64, uni
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

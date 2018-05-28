@@ -38,7 +38,7 @@ func (ms *Ms) Setnx(key string, value interface{}, options types.QueryOptions) (
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

@@ -36,7 +36,7 @@ func (a *Auth) CredentialsExist(strategy string, options types.QueryOptions) (bo
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

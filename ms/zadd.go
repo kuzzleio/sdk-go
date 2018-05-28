@@ -59,7 +59,7 @@ func (ms *Ms) Zadd(key string, elements []*types.MSSortedSet, options types.Quer
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

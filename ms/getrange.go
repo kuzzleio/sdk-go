@@ -35,7 +35,7 @@ func (ms *Ms) Getrange(key string, start int, end int, options types.QueryOption
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 	var returnedResult string

@@ -38,7 +38,7 @@ func (ms *Ms) Bitop(key string, operation string, keys []string, options types.Q
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

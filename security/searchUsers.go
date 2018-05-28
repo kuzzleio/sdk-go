@@ -43,7 +43,7 @@ func (s *Security) SearchUsers(body json.RawMessage, options types.QueryOptions)
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

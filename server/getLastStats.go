@@ -33,7 +33,7 @@ func (s *Server) GetLastStats(options types.QueryOptions) (json.RawMessage, erro
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

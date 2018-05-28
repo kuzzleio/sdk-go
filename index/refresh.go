@@ -35,5 +35,8 @@ func (i *Index) Refresh(index string, options types.QueryOptions) error {
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

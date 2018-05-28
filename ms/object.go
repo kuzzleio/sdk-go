@@ -37,7 +37,7 @@ func (ms *Ms) Object(key string, subcommand string, options types.QueryOptions) 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult *string

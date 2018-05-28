@@ -35,7 +35,7 @@ func (a *Auth) ValidateMyCredentials(strategy string, credentials json.RawMessag
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

@@ -37,7 +37,7 @@ func (s *Security) UpdateProfile(id string, body json.RawMessage, options types.
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

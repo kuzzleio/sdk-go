@@ -41,7 +41,7 @@ func TestCredentialsExistQueryError(t *testing.T) {
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "credentialsExist", request.Action)
 
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

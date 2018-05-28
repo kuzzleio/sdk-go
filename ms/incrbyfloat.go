@@ -40,7 +40,7 @@ func (ms *Ms) Incrbyfloat(key string, value float64, options types.QueryOptions)
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

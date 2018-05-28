@@ -46,7 +46,7 @@ func (ms *Ms) Srandmember(key string, options types.QueryOptions) ([]string, err
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

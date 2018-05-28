@@ -42,7 +42,7 @@ func (ms *Ms) Zremrangebyrank(key string, min int, max int, options types.QueryO
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

@@ -30,9 +30,8 @@ func (i *Index) RefreshInternal(options types.QueryOptions) error {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
-
 	return nil
 }
