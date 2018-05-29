@@ -39,19 +39,19 @@ Feature: Create document with ids
     And there is an user with id 'my-user-id'
     And the user has 'local' credentials with name 'my-user-name' and password 'my-user-pwd'
     And I log in as 'my-user-name':'my-user-pwd'
-    And I update my user custom data with the pair <fieldname> : <fieldvalue>
+    And I update my user custom data with the pair <fieldname>:<fieldvalue>
     When I get my user info
-    Then the response '_source' field contains the pair <fieldname>: <fieldvalue>
+    Then the response 'content' field contains the pair <fieldname>:<fieldvalue>
     And is a <type>
     Examples:
       | fieldname | fieldvalue      | type   |
-      | my_data1  | "mystringvalue" | string |
-      | my_data2  | 1234            | number |
-      | my_data2  | -1234           | number |
-      | my_data2  | 1.234           | number |
-      | my_data2  | -1.234          | number |
-      | my_data1  | true            | bool   |
-      | my_data1  | false           | bool   |
+      | my_data   | 1.234           | number |
+      | my_data   | -1.234          | number |
+      | my_data   | "mystringvalue" | string |
+      | my_data   | 1234            | number |
+      | my_data   | -1234           | number |
+      | my_data   | true            | bool   |
+      | my_data   | false           | bool   |
 
 
   Scenario: Login out shall revoke the JWT

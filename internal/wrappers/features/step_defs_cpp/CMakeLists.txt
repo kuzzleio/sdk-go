@@ -30,9 +30,6 @@ list(APPEND CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
 message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
 message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
 
-list(APPEND LIB_INCLUDE_DIRS "dir1")
-list(APPEND LIB_INCLUDE_DIRS "dir2")
-
 add_library(cucumber-cpp STATIC IMPORTED) # or STATIC instead of SHARED
 add_dependencies(cucumber-cpp project_cucumber_cpp)
 set_target_properties(cucumber-cpp PROPERTIES
@@ -88,6 +85,8 @@ set(CUKE_EXTRA_LIBRARIES ${CUKE_EXTRA_LIBRARIES} ${Boost_THREAD_LIBRARY} ${Boost
 
 
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
+    set (CMAKE_CXX_STANDARD 11)
+
     add_executable(KuzzleSDKStepDefs kuzzle-sdk-steps kuzzle_utils)
     add_dependencies(KuzzleSDKStepDefs project_cucumber_cpp)
 
@@ -105,5 +104,7 @@ if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     )
 
     target_link_libraries(KuzzleSDKStepDefs cpp kuzzlesdk  pthread cucumber-cpp  json_spirit ${CUKE_EXTRA_LIBRARIES} ${CUKE_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
+else()
+    message(FATAL_ERROR)
 endif()
 
