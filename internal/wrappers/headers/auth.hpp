@@ -19,6 +19,9 @@
 #include "core.hpp"
 
 namespace kuzzleio {
+
+  class Kuzzle;
+
   class Auth {
     auth *_auth;
     Auth();

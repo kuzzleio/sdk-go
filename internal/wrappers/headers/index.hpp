@@ -14,11 +14,13 @@
 
 #ifndef _KUZZLE_INDEX_HPP
 #define _KUZZLE_INDEX_HPP
-
+#include <stdlib.h>
+#include <vector>
 #include "exceptions.hpp"
 #include "core.hpp"
 
 namespace kuzzleio {
+  class Kuzzle;
   class Index {
     kuzzle_index *_index;
     Index();

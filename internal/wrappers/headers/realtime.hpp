@@ -3,6 +3,7 @@
 
 #include "exceptions.hpp"
 #include "core.hpp"
+#include "listeners.hpp"
 #include <map>
 
 namespace kuzzleio {

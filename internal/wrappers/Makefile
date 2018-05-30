@@ -20,13 +20,24 @@ LIBS = -lkuzzlesdk
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
-CPPSRCS = 	kuzzle.cpp \
+CPPSRCS = kuzzle.cpp \
 					document.cpp \
 					collection.cpp \
-					room.cpp \
+					realtime.cpp \
+					auth.cpp \
+					server.cpp \
+					index.cpp \
 					kcore_wrap.cxx
 
-CPPSDK = $(CPPSRCS:.cpp=.o)
+CPP_SDK_SRCS = kuzzle.cpp \
+					document.cpp \
+					collection.cpp \
+					realtime.cpp \
+					auth.cpp \
+					server.cpp \
+					index.cpp
+
+CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
@@ -52,7 +63,7 @@ wrapper: $(OBJS)
 
 object:
 	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
-	strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
+	#strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
 
 posttask:
 	cp -p $(GOTARGET) $(OUTDIR)
@@ -94,19 +105,22 @@ python: LANGUAGE = python
 python: SWIGOPTS = -py3
 python: CC = g++
 python: CFLAGS = -fPIC
-python: core swig wrapper makedir
+python: core swig wrapper object posttask makedir
 	cp $(ROOT_DIR)templates/$(LANGUAGE)/*.py $(OUTDIR)
 	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
 	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
-	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
+	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk  -b $(OUTDIR) -t $(OUTDIR)/tmp
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: makedir $(CPPSDK)
+cpp: LANGUAGE = c++
+cpp: core
 		ar rvs $(OUTDIR)/libcpp.a $(OUTDIR)/*.o
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build build/io
+	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h
+	rm -rf build/io
 
 .PHONY: all java csharp python wrapper swig clean object core
 

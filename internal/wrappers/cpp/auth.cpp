@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "kuzzle.hpp"
 #include "auth.hpp"
 
 namespace kuzzleio {
@@ -64,9 +65,9 @@ namespace kuzzleio {
     if (r->error != NULL)
         throwExceptionFromStatus(r);
 
-    user *ret = r->result;
+    user *u = r->result;
     kuzzle_free_user_result(r);
-    return ret;
+    return u;
   }
 
   std::string Auth::getMyCredentials(const std::string& strategy, query_options *options) Kuz_Throw_KuzzleException {
