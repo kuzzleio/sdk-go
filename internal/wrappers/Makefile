@@ -62,7 +62,7 @@ endif
 wrapper: $(OBJS)
 
 object:
-	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 	#strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
 
 posttask:
