@@ -75,6 +75,7 @@ Before generating the wrappers you will need to install:
 
 - [swig](www.swig.org)
 - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (don't forget to set your JAVA_HOME environment variable)
+- [Python] You will need to install python-dev to compile the python SDK
 
 ### Generate
 
