@@ -6,4 +6,4 @@ from kcore import Kuzzle
 kuzzle = Kuzzle("localhost")
 
 print(kuzzle)
-print(kuzzle.now())
+print(kuzzleserver.now())
