@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(KuzzleSKDTests)
 
-
 include(ExternalProject)
+
+#
+# Cucumber CPP
+#
 
 ExternalProject_Add(
     project_cucumber_cpp
@@ -29,6 +32,8 @@ list(APPEND CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
 
 message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
 message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
+
+# Workaround to avoid CMake to discard include path that doesn't exist yet
 file(MAKE_DIRECTORY ${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src)
 file(MAKE_DIRECTORY ${SOURCE_DIR}/include)
 
@@ -93,13 +98,13 @@ if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     add_dependencies(KuzzleSDKStepDefs project_cucumber_cpp)
 
 
-    add_library(kuzzlesdk STATIC IMPORTED) # or STATIC instead of SHARED
+    add_library(kuzzlesdk SHARED IMPORTED) # or STATIC instead of SHARED
     set_target_properties(kuzzlesdk PROPERTIES
     IMPORTED_LOCATION "${KUZZLE_SDK_ROOT}/build/c/libkuzzlesdk.a" 
     INTERFACE_INCLUDE_DIRECTORIES "${KUZZLE_SDK_ROOT}/build/c"
     )
 
-    add_library(cpp STATIC IMPORTED) # or STATIC instead of SHARED
+    add_library(cpp SHARED IMPORTED) # or STATIC instead of SHARED
     set_target_properties(cpp PROPERTIES
     IMPORTED_LOCATION  "${KUZZLE_SDK_ROOT}/build/cpp/libcpp.a"
     INTERFACE_INCLUDE_DIRECTORIES "${KUZZLE_SDK_ROOT}/headers"

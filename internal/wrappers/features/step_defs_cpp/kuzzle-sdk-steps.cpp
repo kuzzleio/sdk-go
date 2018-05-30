@@ -277,18 +277,22 @@ WHEN("^I log in as '([\\w\\-]+)':'([\\w\\-]+)'$")
   ctx->jwt = jwt;
 }
 
-THEN("^the JWT is valid$")
+THEN("^the retrieved JWT is valid$")
 {
   ScenarioScope<KuzzleCtx> ctx;
   token_validity*          v = ctx->kuzzle->auth->checkToken(ctx->jwt);
   BOOST_CHECK(v->valid);
 }
 
-THEN("^the JWT is invalid$")
+THEN("^the retrieved JWT is invalid$")
 {
   ScenarioScope<KuzzleCtx> ctx;
   token_validity*          v = ctx->kuzzle->auth->checkToken(ctx->jwt);
   BOOST_CHECK(!v->valid);
+}
+WHEN("^I logout$") {
+    ScenarioScope<KuzzleCtx> ctx;
+    ctx->kuzzle->auth->logout();
 }
 
 WHEN("^I get my user info$")
@@ -306,13 +310,3 @@ WHEN("^I get my user info$")
 
   BOOST_CHECK_MESSAGE(ctx->currentUser != NULL, "Failed to retrieve current user");
 }
-
-GIVEN("^I login using 'local' authentication, with <user-name> and password "
-      "<user-pwd> as credentials$")
-{
-  pending();
-}
-
-GIVEN("^the retrieved JWT is valid$") { pending(); }
-
-THEN("^The JWT is no more valid$") { pending(); }
