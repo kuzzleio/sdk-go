@@ -94,6 +94,12 @@ make cpp
 ```
 You will find the final .so file in `internal/wrappers/build/cpp`
 
+## Python
+```sh
+make python
+```
+You will find the final .so file in `internal/wrappers/build/python`
+
 ## All at once
 
 You can generate all sdk's at once by typing
