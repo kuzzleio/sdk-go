@@ -28,7 +28,7 @@ namespace kuzzleio {
 
     Collection::~Collection() {
         unregisterCollection(_collection);
-        kuzzle_free_collection(_collection);
+        delete(_collection);
     }
 
     void Collection::create(const std::string& index, const std::string& collection, query_options *options) Kuz_Throw_KuzzleException {

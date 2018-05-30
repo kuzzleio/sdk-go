@@ -28,7 +28,7 @@ namespace kuzzleio {
 
     Document::~Document() {
         unregisterDocument(_document);
-        kuzzle_free_document(_document);
+        delete(_document);
     }
 
     int Document::count_(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {

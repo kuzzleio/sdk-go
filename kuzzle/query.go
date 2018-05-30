@@ -50,7 +50,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	if options.Volatile() != nil {
 		query.Volatile = options.Volatile()
 
-		var mapped map[string]interface{}
+		mapped := make(map[string]interface{})
 		json.Unmarshal(query.Volatile, &mapped)
 
 		mapped["sdkVersion"] = version
