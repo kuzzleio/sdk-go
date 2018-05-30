@@ -47,7 +47,7 @@ kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
-	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
+	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
 core:
 ifeq ($(wildcard $(GOCC)),)
