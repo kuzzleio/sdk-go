@@ -14,9 +14,9 @@ kuzzle_module = Extension('_kcore',
                            )
 
 setup (name = 'kcore',
-       version = '0.1',
-       author      = "SWIG Docs",
-       description = """Simple swig example from docs""",
+       version = '1.0',
+       author      = "Kuzzle",
+       description = """Kuzzle sdk""",
        ext_modules = [kuzzle_module],
        py_modules = ["kcore"],
        )
