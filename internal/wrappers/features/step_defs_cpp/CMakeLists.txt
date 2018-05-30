@@ -29,6 +29,8 @@ list(APPEND CUCUMBER_CPP_INCLUDE_PATH "${SOURCE_DIR}/include")
 
 message("cucumber-cpp: include path  = ${CUCUMBER_CPP_INCLUDE_PATH}")
 message("cucumber-cpp: library parh = ${CUCUMBER_CPP_LIBRARY_PATH}")
+file(MAKE_DIRECTORY ${binary_dir}/${CMAKE_FIND_SOURCE_PREFIXES}/src)
+file(MAKE_DIRECTORY ${SOURCE_DIR}/include)
 
 add_library(cucumber-cpp STATIC IMPORTED) # or STATIC instead of SHARED
 add_dependencies(cucumber-cpp project_cucumber_cpp)
