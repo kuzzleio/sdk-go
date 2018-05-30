@@ -37,7 +37,7 @@ func (ms *Ms) Renamenx(key string, newkey string, options types.QueryOptions) (b
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

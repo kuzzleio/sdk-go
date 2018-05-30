@@ -40,7 +40,7 @@ func (dc *Collection) Truncate(index string, collection string, options types.Qu
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

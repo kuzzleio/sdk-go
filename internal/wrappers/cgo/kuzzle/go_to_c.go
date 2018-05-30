@@ -85,7 +85,7 @@ func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notifi
 func goToCNotificationResult(gNotif *types.KuzzleNotification) *C.notification_result {
 	result := (*C.notification_result)(C.calloc(1, C.sizeof_notification_result))
 
-	if gNotif.Error != nil {
+	if gNotif.Error.Error() != "" {
 		Set_notification_result_error(result, gNotif.Error)
 		return result
 	}
@@ -127,7 +127,7 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.channel = C.CString(gRes.Channel)
 	result.status = C.int(gRes.Status)
 
-	if gRes.Error != nil {
+	if gRes.Error.Error() != "" {
 		// The error might be a partial error
 		Set_kuzzle_response_error(result, gRes.Error)
 	}

@@ -37,7 +37,7 @@ func (s *Security) DeleteProfile(id string, options types.QueryOptions) (string,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

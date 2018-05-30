@@ -37,7 +37,7 @@ func TestListError(t *testing.T) {
 	i := index.NewIndex(k)
 	_, err := i.List(nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestList(t *testing.T) {

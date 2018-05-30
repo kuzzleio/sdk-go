@@ -37,7 +37,7 @@ func TestRefreshNull(t *testing.T) {
 func TestRefreshQueryError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -77,7 +77,7 @@ func ExampleIndex_Refresh() {
 	i := index.NewIndex(k)
 	i.Create("index", nil)
 	err := i.Refresh("index", nil)
-	if err != nil {
+	if err.Error() != "" {
 		fmt.Println(err.Error())
 		return
 	}

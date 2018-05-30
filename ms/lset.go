@@ -38,5 +38,8 @@ func (ms *Ms) Lset(key string, index int, value string, options types.QueryOptio
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

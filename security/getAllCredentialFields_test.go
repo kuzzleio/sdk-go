@@ -33,7 +33,7 @@ func TestGetAllCredentialFieldsError(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "getAllCredentialFields", request.Action)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

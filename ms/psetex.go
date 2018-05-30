@@ -38,5 +38,8 @@ func (ms *Ms) Psetex(key string, value string, ttl int, options types.QueryOptio
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

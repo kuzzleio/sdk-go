@@ -32,7 +32,7 @@ func (a *Auth) GetStrategies(options types.QueryOptions) ([]string, error) {
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

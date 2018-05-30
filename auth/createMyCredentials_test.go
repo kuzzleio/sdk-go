@@ -33,7 +33,7 @@ func TestCreateMyCredentialsQueryError(t *testing.T) {
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "createMyCredentials", request.Action)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -44,7 +44,7 @@ func TestCreateMyCredentialsQueryError(t *testing.T) {
 func TestCreateMyCredentialsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "unit test error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

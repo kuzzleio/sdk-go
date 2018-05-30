@@ -37,7 +37,7 @@ func (s *Security) DeleteRole(id string, options types.QueryOptions) (string, er
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

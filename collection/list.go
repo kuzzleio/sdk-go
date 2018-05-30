@@ -38,7 +38,7 @@ func (dc *Collection) List(index string, options types.QueryOptions) (json.RawMe
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

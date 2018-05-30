@@ -40,7 +40,7 @@ func (r *Realtime) Validate(index string, collection string, body string) (bool,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

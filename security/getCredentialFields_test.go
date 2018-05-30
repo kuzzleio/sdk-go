@@ -29,7 +29,7 @@ import (
 func TestGetCredentialFieldsEmptyStrategy(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "unit test error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "Unit test error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
@@ -45,7 +45,7 @@ func TestGetCredentialFieldsError(t *testing.T) {
 			assert.Equal(t, "security", request.Controller)
 			assert.Equal(t, "getCredentialFields", request.Action)
 			assert.Equal(t, "local", request.Strategy)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)

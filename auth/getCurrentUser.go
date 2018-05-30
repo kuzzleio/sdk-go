@@ -34,7 +34,7 @@ func (a *Auth) GetCurrentUser() (*security.User, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

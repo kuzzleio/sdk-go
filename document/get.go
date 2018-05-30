@@ -48,7 +48,7 @@ func (d *Document) Get(index string, collection string, _id string, options type
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

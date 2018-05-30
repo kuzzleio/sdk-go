@@ -48,7 +48,7 @@ func (a *Auth) CheckToken(token string) (*TokenValidity, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -7,6 +7,7 @@ This project contains a CGO wrapper to Kuzzle's [Go SDK](https://github.com/kuzz
 # Pre-requisites
 
 * [Go](https://golang.org/doc/install)
+* G++ 6.x
 
 # Contributing
 

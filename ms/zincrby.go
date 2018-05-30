@@ -40,7 +40,7 @@ func (ms *Ms) Zincrby(key string, member string, increment float64, options type
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

@@ -41,5 +41,8 @@ func (ms *Ms) Hmset(key string, entries []*types.MsHashField, options types.Quer
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

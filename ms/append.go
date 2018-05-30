@@ -37,7 +37,7 @@ func (ms *Ms) Append(key string, value string, options types.QueryOptions) (int,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

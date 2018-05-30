@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 package auth_test
 
 import (
@@ -42,7 +41,7 @@ func TestCheckTokenQueryError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	_, err := k.Auth.CheckToken("token")
 	assert.NotNil(t, err)
-	assert.Equal(t, 123, err.(*types.KuzzleError).Status)
+	assert.Equal(t, 123, err.(types.KuzzleError).Status)
 }
 
 func TestCheckToken(t *testing.T) {
