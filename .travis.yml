@@ -3,8 +3,7 @@ go:
   - 1.9
 dist: trusty
 install:
-  - apt-cache search g++
-  - sudo apt-get install -y build-essential swig oracle-java8-installer g++-6 python3-dev
+  - sudo apt-get install -y build-essential swig oracle-java8-installer g++ python3-dev
   - go get -t -v ./...
 script: 
   - bash ./test.sh
