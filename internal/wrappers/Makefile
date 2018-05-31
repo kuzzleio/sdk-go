@@ -38,7 +38,7 @@ CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: python java
+all: python java cshqrp
 
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
@@ -66,9 +66,21 @@ endif
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
 
+core_csharp:
+ifeq ($(wildcard $(GOCC)),)
+	$(error "Unable to find go compiler")
+endif
+	mkdir -p $(GOTARGETDIR)
+	cd ../../ && go get ./... ; cd -
+	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
+	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
+	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
+
 wrapper_java: $(OBJS)
 
 wrapper_python: $(OBJS)
+
+wrapper_csharp: $(OBJS)
 
 java_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-java.so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
@@ -77,6 +89,10 @@ java_object:
 python_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-python.so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
 	strip $(OUTDIR)/libkuzzle-wrapper-python.so
+
+csharp_object:
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-csharp.so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS)
+	strip $(OUTDIR)/libkuzzle-wrapper-csharp.so
 
 swig:
 	mkdir -p $(OUTDIR)
@@ -89,6 +105,10 @@ swig_java:
 swig_python:
 	mkdir -p $(OUTDIR)
 	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
+
+swig_csharp:
+	mkdir -p $(OUTDIR)
+	$(SWIG) -Wall -c++ -csharp -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
 
 
 makedir:
@@ -109,11 +129,9 @@ java: makedir core_java swig_java wrapper_java java_object
 	cp -p $(GOTARGETSO) $(OUTDIR)
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
-csharp: LANGUAGE = csharp
-csharp: SWIGOPTS = -dllimport kuzzlesdk $(OBJS)
-csharp: core swig wrapper object posttask makedir
-	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
-	rm -f $(OUTDIR)/*.cs
+csharp: makedir core_csharp swig_csharp wrapper_csharp csharp_object
+	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.dll
+	#rm -f $(OUTDIR)/*.cs
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
@@ -135,7 +153,7 @@ cpp: core
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h
+	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h build/csharp build/python
 	rm -rf build/io
 
 .PHONY: all java csharp python wrapper swig clean object core

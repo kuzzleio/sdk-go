@@ -704,25 +704,6 @@ func kuzzle_free_specification_search_result(st *C.specification_search_result) 
 	}
 }
 
-//export kuzzle_free_mapping
-func kuzzle_free_mapping(st *C.mapping) {
-	if st != nil {
-		C.free(unsafe.Pointer(st.mapping))
-		kuzzle_free_collection(st.collection)
-		C.free(unsafe.Pointer(st))
-	}
-}
-
-//export kuzzle_free_mapping_result
-func kuzzle_free_mapping_result(st *C.mapping_result) {
-	if st != nil {
-		kuzzle_free_mapping(st.result)
-		C.free(unsafe.Pointer(st.error))
-		C.free(unsafe.Pointer(st.stack))
-		C.free(unsafe.Pointer(st))
-	}
-}
-
 //export kuzzle_free_error_result
 func kuzzle_free_error_result(st *C.error_result) {
 	if st != nil {
