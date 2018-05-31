@@ -101,6 +101,13 @@ make python
 ```
 You will find the final .so file in `internal/wrappers/build/python`
 
+## CSHARP
+
+```sh
+make csharp
+```
+You will find the final .dll file in `internal/wrappers/build/csharp`
+
 ## All at once
 
 You can generate all sdk's at once by typing

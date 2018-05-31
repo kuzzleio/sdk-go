@@ -38,7 +38,7 @@ CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: python java cshqrp
+all: python java csharp
 
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
@@ -131,7 +131,7 @@ java: makedir core_java swig_java wrapper_java java_object
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: makedir core_csharp swig_csharp wrapper_csharp csharp_object
 	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.dll
-	#rm -f $(OUTDIR)/*.cs
+	rm -f $(OUTDIR)/*.cs
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
