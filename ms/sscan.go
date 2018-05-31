@@ -44,7 +44,7 @@ func (ms *Ms) Sscan(key string, cursor int, options types.QueryOptions) (*types.
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

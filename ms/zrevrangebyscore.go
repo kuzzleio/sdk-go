@@ -38,7 +38,7 @@ func (ms *Ms) Zrevrangebyscore(key string, min float64, max float64, options typ
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

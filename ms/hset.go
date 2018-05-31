@@ -40,7 +40,7 @@ func (ms *Ms) Hset(key string, field string, value string, options types.QueryOp
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

@@ -56,5 +56,8 @@ func (ms *Ms) Set(key string, value interface{}, options types.QueryOptions) err
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

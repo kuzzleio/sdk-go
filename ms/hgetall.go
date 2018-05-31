@@ -33,7 +33,7 @@ func (ms *Ms) Hgetall(key string, options types.QueryOptions) (map[string]string
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	returnedResult := map[string]string{}

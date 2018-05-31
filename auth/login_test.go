@@ -41,7 +41,7 @@ func TestLoginError(t *testing.T) {
 
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "login", request.Action)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 		MockEmitEvent: func(e int, arg interface{}) {
 			assert.Equal(t, event.LoginAttempt, e)

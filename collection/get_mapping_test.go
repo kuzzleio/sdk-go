@@ -51,7 +51,7 @@ func TestGetMappingError(t *testing.T) {
 	nc := collection.NewCollection(k)
 	_, err := nc.GetMapping("index", "collection", nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestGetMapping(t *testing.T) {

@@ -56,7 +56,7 @@ func TestCreateDocumentError(t *testing.T) {
 	d := document.NewDocument(k)
 	_, err := d.Create("index", "collection", "id1", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestCreateDocument(t *testing.T) {

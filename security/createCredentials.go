@@ -39,7 +39,7 @@ func (s *Security) CreateCredentials(strategy, id string, body json.RawMessage, 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -37,7 +37,7 @@ func (ms *Ms) Zrevrange(key string, start int, stop int, options types.QueryOpti
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

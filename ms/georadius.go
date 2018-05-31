@@ -115,7 +115,7 @@ func (ms *Ms) Georadius(key string, lon float64, lat float64, distance float64, 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -36,7 +36,7 @@ func (s *Security) DeleteCredentials(strategy, id string, options types.QueryOpt
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

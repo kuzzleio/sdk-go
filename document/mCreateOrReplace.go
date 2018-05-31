@@ -48,7 +48,7 @@ func (d *Document) MCreateOrReplace(index string, collection string, body json.R
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

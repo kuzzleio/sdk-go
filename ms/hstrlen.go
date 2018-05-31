@@ -34,7 +34,7 @@ func (ms *Ms) Hstrlen(key string, field string, options types.QueryOptions) (int
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return -1, res.Error
 	}
 

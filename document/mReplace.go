@@ -48,7 +48,7 @@ func (d *Document) MReplace(index string, collection string, body json.RawMessag
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return "", res.Error
 	}
 

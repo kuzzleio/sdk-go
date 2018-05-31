@@ -40,5 +40,8 @@ func (ms *Ms) Mset(entries []*types.MSKeyValue, options types.QueryOptions) erro
 
 	res := <-result
 
-	return res.Error
+	if res.Error.Error() != "" {
+		return res.Error
+	}
+	return nil
 }

@@ -38,7 +38,7 @@ func (ms *Ms) Rpoplpush(source string, destination string, options types.QueryOp
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult string

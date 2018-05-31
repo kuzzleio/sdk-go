@@ -67,7 +67,7 @@ func TestMDeleteDocumentError(t *testing.T) {
 	ids = append(ids, "id1")
 	_, err := d.MDelete("index", "collection", ids, nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestMDeleteDocument(t *testing.T) {

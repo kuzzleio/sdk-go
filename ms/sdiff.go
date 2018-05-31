@@ -38,7 +38,7 @@ func (ms *Ms) Sdiff(key string, sets []string, options types.QueryOptions) ([]st
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult []string
