@@ -3,7 +3,7 @@ go:
   - 1.9
 dist: trusty
 install:
-  - sudo apt-get install -y build-essential swig oracle-java8-installer g++ python3-dev
+  - sudo apt-get install -y build-essential swig oracle-java8-installer g++ python3-dev mono-mcs
   - go get -t -v ./...
 script: 
   - bash ./test.sh
