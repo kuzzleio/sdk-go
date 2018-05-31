@@ -20,14 +20,8 @@ LIBS = -lkuzzlesdk
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
-CPPSRCS = kuzzle.cpp \
-					document.cpp \
-					collection.cpp \
-					realtime.cpp \
-					auth.cpp \
-					server.cpp \
-					index.cpp \
-					kcore_wrap.cxx
+JAVAINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+PYTHONINCLUDE = -I$(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/python
 
 CPP_SDK_SRCS = kuzzle.cpp \
 					document.cpp \
@@ -37,19 +31,22 @@ CPP_SDK_SRCS = kuzzle.cpp \
 					server.cpp \
 					index.cpp
 
+CPPSRCS = $(CPP_SDK_SRCS) \
+					kcore_wrap.cxx
+
 CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: java python
+all: python java
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
-core:
+core_java:
 ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
@@ -59,57 +56,80 @@ endif
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
 
-wrapper: $(OBJS)
+core_python:
+ifeq ($(wildcard $(GOCC)),)
+	$(error "Unable to find go compiler")
+endif
+	mkdir -p $(GOTARGETDIR)
+	cd ../../ && go get ./... ; cd -
+	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
+	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
+	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
 
-object:
-	$(CPP) -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
-	#strip $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so
+wrapper_java: $(OBJS)
 
-posttask:
-	cp -p $(GOTARGET) $(OUTDIR)
-	cp -p $(GOTARGETSO) $(OUTDIR)
-	#rm -f $(OUTDIR)/kcore_wrap.o
-	#rm -f kcore_wrap.cxx
+wrapper_python: $(OBJS)
+
+java_object:
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-java.so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/libkuzzle-wrapper-java.so
+
+python_object:
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-python.so $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
+	strip $(OUTDIR)/libkuzzle-wrapper-python.so
 
 swig:
 	mkdir -p $(OUTDIR)
 	$(SWIG) -Wall -c++ -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
+swig_java:
+	mkdir -p $(OUTDIR)
+	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/java/core.i
+
+swig_python:
+	mkdir -p $(OUTDIR)
+	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
+
+
 makedir:
 	mkdir -p $(OUTDIR)
 
+java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
-java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-java: LANGUAGE = java
-java: SWIGOPTS = -package io.kuzzle.sdk
-java: core swig wrapper object posttask
-	rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
+java: makedir core_java swig_java wrapper_java java_object
+	#rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
 	mv build/java/io/kuzzle/sdk/libkuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java	
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && taskset -c 1 sh gradlew sourcesJar jar javadocJar && cd -
-	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	cp -p $(GOTARGET) $(OUTDIR)
+	cp -p $(GOTARGETSO) $(OUTDIR)
+	rm -f kcore_wrap.o
+	rm -f kcore_wrap.cxx
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp
-csharp: SWIGOPTS = -dllimport kuzzlesdk
+csharp: SWIGOPTS = -dllimport kuzzlesdk $(OBJS)
 csharp: core swig wrapper object posttask makedir
 	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
 	rm -f $(OUTDIR)/*.cs
 
+python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
-python: LANGINCLUDE = -I$(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/$(LANGUAGE)
-python: LANGUAGE = python
-python: SWIGOPTS = -py3
 python: CC = g++
 python: CFLAGS = -fPIC
-python: core swig wrapper object posttask makedir
-	cp $(ROOT_DIR)templates/$(LANGUAGE)/*.py $(OUTDIR)
+python: makedir core_python swig_python wrapper_python python_object
+	cp $(ROOT_DIR)templates/python/*.py $(OUTDIR)
 	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
 	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
-	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk  -b $(OUTDIR) -t $(OUTDIR)/tmp
+	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/python -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk  -b $(OUTDIR) -t $(OUTDIR)/tmp
+	cp -p $(GOTARGET) $(OUTDIR)
+	cp -p $(GOTARGETSO) $(OUTDIR)
+	rm -f kcore_wrap.o
+	rm -f kcore_wrap.cxx
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: makedir $(CPPSDK)
