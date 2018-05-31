@@ -3,7 +3,7 @@ ROOTOUTDIR = $(ROOT_DIR)build
 GOROOT ?= /usr/local/go
 GOCC = $(GOROOT)/bin/go
 JAVA_HOME ?= /usr/local
-PYTHON_INCLUDE_DIR ?= /usr/include/python3.5
+PYTHON_INCLUDE_DIR ?= `pkg-config --cflags python3`
 GOFLAGS = -buildmode=c-archive
 GOSRC = ./cgo/kuzzle/
 GOTARGETDIR = $(ROOTOUTDIR)/c
@@ -21,7 +21,7 @@ SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
 JAVAINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-PYTHONINCLUDE = -I$(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/python
+PYTHONINCLUDE = $(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/python
 
 CPP_SDK_SRCS = kuzzle.cpp \
 					document.cpp \
