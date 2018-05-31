@@ -130,8 +130,8 @@ java: makedir core_java swig_java wrapper_java java_object
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: makedir core_csharp swig_csharp wrapper_csharp csharp_object
-	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.dll
-	#rm -f $(OUTDIR)/*.cs
+	mcs -t:library $(OUTDIR)/*.cs -namespace io.kuzzle.sdk -out:$(OUTDIR)/libkuzzle-csharp.dll
+	rm -f $(OUTDIR)/*.cs
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
