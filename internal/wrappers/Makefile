@@ -108,7 +108,7 @@ swig_python:
 
 swig_csharp:
 	mkdir -p $(OUTDIR)
-	$(SWIG) -Wall -c++ -csharp -namespace io.kuzzle.sdk -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
+	$(SWIG) -Wall -c++ -csharp -namespace Kuzzleio -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
 
 
 makedir:
@@ -130,7 +130,7 @@ java: makedir core_java swig_java wrapper_java java_object
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: makedir core_csharp swig_csharp wrapper_csharp csharp_object
-	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.dll
+	mcs -t:library $(OUTDIR)/*.cs -sdk:2 -out:$(OUTDIR)/libkuzzle-csharp.dll
 	rm -f $(OUTDIR)/*.cs
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
