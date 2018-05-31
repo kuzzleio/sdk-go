@@ -50,7 +50,7 @@ namespace kuzzleio {
     std::vector<std::string> Index::mDelete(const std::vector<std::string>& indexes, query_options *options) Kuz_Throw_KuzzleException {
         char **indexesArray = new char *[indexes.size()];
         int i = 0;
-        for (auto const& index : indexes) {
+        for (std::string index : indexes) {
           indexesArray[i] = const_cast<char*>(index.c_str());
           i++;
         }
