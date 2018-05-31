@@ -107,8 +107,6 @@ java: makedir core_java swig_java wrapper_java java_object
 	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 	cp -p $(GOTARGET) $(OUTDIR)
 	cp -p $(GOTARGETSO) $(OUTDIR)
-	rm -f kcore_wrap.o
-	rm -f kcore_wrap.cxx
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
 csharp: LANGUAGE = csharp
@@ -128,8 +126,6 @@ python: makedir core_python swig_python wrapper_python python_object
 	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/python -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk  -b $(OUTDIR) -t $(OUTDIR)/tmp
 	cp -p $(GOTARGET) $(OUTDIR)
 	cp -p $(GOTARGETSO) $(OUTDIR)
-	rm -f kcore_wrap.o
-	rm -f kcore_wrap.cxx
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: makedir $(CPPSDK)
