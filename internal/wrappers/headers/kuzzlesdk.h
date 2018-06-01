@@ -66,7 +66,7 @@ typedef struct {
     const char *scope;
     const char *state;
     const char *user;
-    const long start;
+    long start;
     long stop;
     long end;
     unsigned char bit;
