@@ -170,10 +170,8 @@ func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.ch
 
 //export kuzzle_update_self
 func kuzzle_update_self(a *C.auth, data *C.char, options *C.query_options) *C.user_result {
-	marshed, _ := json.Marshal(C.GoString(data))
-
 	res, err := (*auth.Auth)(a.instance).UpdateSelf(
-		marshed,
+		json.RawMessage(C.GoString(data)),
 		SetQueryOptions(options))
 
 	return goToCUserResult(a.kuzzle, res, err)
