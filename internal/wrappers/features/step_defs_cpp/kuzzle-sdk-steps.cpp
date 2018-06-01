@@ -11,6 +11,8 @@
 
 #include "kuzzle_utils.h"
 
+#include "json_spirit/json_spirit.h"
+
 using cucumber::ScenarioScope;
 
 using namespace kuzzleio;
@@ -18,9 +20,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
-struct KuzzleCtx
-{
-  Kuzzle *kuzzle = NULL;
+struct KuzzleCtx {
+  Kuzzle* kuzzle = NULL;
   options kuzzle_options;
 
   string user_id;
@@ -28,18 +29,15 @@ struct KuzzleCtx
   string collection;
   string jwt;
 
-  user *currentUser = NULL;
+  user*                   currentUser        = NULL;
+  json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   bool success;
 };
 
 BEFORE() { kuz_log_sep(); }
 
-GIVEN("^I create a user 'useradmin' with password 'testpwd' with id "
-      "'useradmin-id'$")
-{
-  pending();
-}
+GIVEN("^I create a user 'useradmin' with password 'testpwd' with id 'useradmin-id'$") { pending(); }
 
 WHEN("^I try to create a document with id '(my-document)'$")
 {
@@ -47,18 +45,14 @@ WHEN("^I try to create a document with id '(my-document)'$")
 
   ScenarioScope<KuzzleCtx> ctx;
 
-  try
-  {
-    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id,
-                                  "{\"a\":\"document\"}");
-  }
-  catch (KuzzleException e)
-  {
+  try {
+    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
+  } catch (KuzzleException e) {
     BOOST_FAIL(e.getMessage());
   }
 }
 
-GIVEN("^I update my user custom data with the pair ([\\w]+) : (.+)$")
+GIVEN("^I update my user custom data with the pair ([\\w]+):(.+)$")
 {
   REGEX_PARAM(std::string, fieldname);
   REGEX_PARAM(std::string, fieldvalue);
@@ -69,34 +63,93 @@ GIVEN("^I update my user custom data with the pair ([\\w]+) : (.+)$")
 
   K_LOG_D("Updating user data with : %s", data.c_str());
 
-  try
-  {
-    K_LOG_D("a");
+  try {
     ctx->kuzzle->auth->updateSelf(data);
-    K_LOG_D("b");
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
     K_LOG_E(e.getMessage().c_str());
   }
-  K_LOG_D("c");
+}
+
+THEN("^the response 'content' field contains the pair ([\\w]+):(.+)$")
+{
+  K_LOG_I("Checking user content field");
+  REGEX_PARAM(std::string, fieldname);
+  REGEX_PARAM(std::string, expected_fieldvalue);
+
+  ScenarioScope<KuzzleCtx> ctx;
+
+  json_spirit::Value userContentValue;
+  std::string        userContent = ctx->currentUser->content;
+  json_spirit::read(userContent, userContentValue);
+
+  json_spirit::write_formatted(userContentValue);
+
+  json_spirit::Value fieldvalue = json_spirit::find_value(userContentValue.get_obj(), fieldname);
+  switch (fieldvalue.type()) {
+    case json_spirit::str_type: {
+      std::string s = fieldvalue.get_str();
+      K_LOG_D("Field value: \"%s\" of type string", s.c_str());
+      BOOST_CHECK("\"" + s + "\"" == expected_fieldvalue);
+      break;
+    }
+    case json_spirit::bool_type: {
+      auto   b = fieldvalue.get_bool();
+      string s = b ? "true" : "false";
+      K_LOG_D("Field value: \"%s\" of type bool", b ? "true" : "false");
+      BOOST_CHECK(s == expected_fieldvalue);
+      break;
+    }
+    case json_spirit::int_type: {
+      auto i = fieldvalue.get_int();
+      K_LOG_D("Field value: %d of type int", i);
+      string s = std::to_string(i);
+      BOOST_CHECK(s == expected_fieldvalue);
+      break;
+    }
+    case json_spirit::real_type: {
+      float f = fieldvalue.get_real();
+      K_LOG_D("Field value: %f of type real", f);
+      float e = std::stof(expected_fieldvalue);
+      K_LOG_D("Expected value: %f", e);
+      BOOST_CHECK(f == std::stof(expected_fieldvalue));
+      break;
+    }
+      // TODO: Add obj test case...
+  }
+
+  ctx->customUserDataType = fieldvalue.type();
+}
+
+THEN("^is a string$")
+{
+  ScenarioScope<KuzzleCtx> ctx;
+  BOOST_CHECK(ctx->customUserDataType == json_spirit::str_type);
+}
+
+THEN("^is a number$")
+{
+  ScenarioScope<KuzzleCtx> ctx;
+  BOOST_CHECK(ctx->customUserDataType == json_spirit::int_type || ctx->customUserDataType == json_spirit::real_type);
+}
+
+THEN("^is a bool$")
+{
+  ScenarioScope<KuzzleCtx> ctx;
+  BOOST_CHECK(ctx->customUserDataType == json_spirit::bool_type);
 }
 
 GIVEN("^Kuzzle Server is running$")
 {
   K_LOG_I("Connecting to Kuzzle on 'localhost:7512'");
   ScenarioScope<KuzzleCtx> ctx;
-  ctx->kuzzle_options = KUZZLE_OPTIONS_DEFAULT;
+  ctx->kuzzle_options         = KUZZLE_OPTIONS_DEFAULT;
   ctx->kuzzle_options.connect = MANUAL;
-  try
-  {
+  try {
     ctx->kuzzle = new Kuzzle("localhost", &ctx->kuzzle_options);
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
     K_LOG_E(e.getMessage().c_str());
   }
-  char *error = ctx->kuzzle->connect();
+  char* error = ctx->kuzzle->connect();
   BOOST_CHECK(error == NULL);
 }
 
@@ -106,21 +159,15 @@ GIVEN("^there is an index '(test-index)'$")
   ScenarioScope<KuzzleCtx> ctx;
   ctx->index = index_name;
 
-  if (!ctx->kuzzle->index->exists(index_name))
-  {
+  if (!ctx->kuzzle->index->exists(index_name)) {
     K_LOG_D("Creating index: %s", index_name.c_str());
-    try
-    {
+    try {
       ctx->kuzzle->index->create(index_name);
-    }
-    catch (KuzzleException e)
-    {
+    } catch (KuzzleException e) {
       K_LOG_E(e.getMessage().c_str());
       BOOST_FAIL(e.getMessage());
     }
-  }
-  else
-  {
+  } else {
     K_LOG_D("Using existing index: %s", index_name.c_str());
   }
 }
@@ -132,12 +179,9 @@ GIVEN("^it has a collection '(test-collection)'$")
   ctx->collection = collection_name;
 
   K_LOG_D("Creating collection: %s", collection_name.c_str());
-  try
-  {
+  try {
     ctx->kuzzle->collection->create(ctx->index, ctx->collection);
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
     K_LOG_E(e.getMessage().c_str());
     BOOST_FAIL(e.getMessage());
   }
@@ -149,13 +193,9 @@ GIVEN("^the collection has a document with id '(my-document-id)'$")
 
   ScenarioScope<KuzzleCtx> ctx;
 
-  try
-  {
-    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id,
-                                  "{\"a\":\"document\"}");
-  }
-  catch (KuzzleException e)
-  {
+  try {
+    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
+  } catch (KuzzleException e) {
     e.getMessage();
   }
 }
@@ -166,12 +206,9 @@ GIVEN("^the collection doesn't have a document with id '(my-document-id)'$")
 
   ScenarioScope<KuzzleCtx> ctx;
 
-  try
-  {
+  try {
     ctx->kuzzle->document->delete_(ctx->index, ctx->collection, document_id);
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
   }
 }
 
@@ -181,13 +218,9 @@ WHEN("^I try to create a new document with id 'my-document-id'$")
 
   ScenarioScope<KuzzleCtx> ctx;
   ctx->success = true;
-  try
-  {
-    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id,
-                                  "{\"a\":\"document\"}");
-  }
-  catch (KuzzleException e)
-  {
+  try {
+    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
+  } catch (KuzzleException e) {
     ctx->success = true;
   }
 }
@@ -234,78 +267,46 @@ WHEN("^I log in as '([\\w\\-]+)':'([\\w\\-]+)'$")
   ScenarioScope<KuzzleCtx> ctx;
 
   string jwt;
-  try
-  {
-    jwt =
-        ctx->kuzzle->auth->login("local", get_login_creds(username, password));
+  try {
+    jwt = ctx->kuzzle->auth->login("local", get_login_creds(username, password));
     K_LOG_D("Logged in as '%s'", username.c_str());
     K_LOG_D("JWT is: %s", jwt.c_str());
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
     K_LOG_W(e.getMessage().c_str());
   }
   ctx->jwt = jwt;
 }
 
-THEN("^the JWT is valid$")
+THEN("^the retrieved JWT is valid$")
 {
   ScenarioScope<KuzzleCtx> ctx;
-  token_validity *v = ctx->kuzzle->auth->checkToken(ctx->jwt);
+  token_validity*          v = ctx->kuzzle->auth->checkToken(ctx->jwt);
   BOOST_CHECK(v->valid);
 }
 
-THEN("^the JWT is invalid$")
+THEN("^the retrieved JWT is invalid$")
 {
   ScenarioScope<KuzzleCtx> ctx;
-  token_validity *v = ctx->kuzzle->auth->checkToken(ctx->jwt);
+  token_validity*          v = ctx->kuzzle->auth->checkToken(ctx->jwt);
   BOOST_CHECK(!v->valid);
 }
-
-GIVEN("^I update my user custom data \\(updateSelf\\) with "
-      "'\\{\\\\\"foo\\\\\": \\\\\"bar\\\\\"\\}'$")
-{
-  pending();
+WHEN("^I logout$") {
+    ScenarioScope<KuzzleCtx> ctx;
+    ctx->kuzzle->auth->logout();
 }
 
 WHEN("^I get my user info$")
 {
   ScenarioScope<KuzzleCtx> ctx;
 
-  sleep(5);
-
-  try
-  {
+  try {
     ctx->currentUser = ctx->kuzzle->auth->getCurrentUser();
-  }
-  catch (KuzzleException e)
-  {
-    K_LOG_E(e.getMessage().c_str());
-  }
-
-  try
-  {
-    K_LOG_D("========= getMyCredentials ============");
-    K_LOG_D(ctx->kuzzle->auth->getMyCredentials("local").c_str());
-  }
-  catch (KuzzleException e)
-  {
+  } catch (KuzzleException e) {
     K_LOG_E(e.getMessage().c_str());
   }
 
   K_LOG_D("current user = 0x%p", ctx->currentUser);
   K_LOG_D("Current user content: %s", ctx->currentUser->content);
 
-  BOOST_CHECK_MESSAGE(ctx->currentUser != NULL,
-                      "Failed to retrieve current user");
+  BOOST_CHECK_MESSAGE(ctx->currentUser != NULL, "Failed to retrieve current user");
 }
-
-GIVEN("^I login using 'local' authentication, with <user-name> and password "
-      "<user-pwd> as credentials$")
-{
-  pending();
-}
-
-GIVEN("^the retrieved JWT is valid$") { pending(); }
-
-THEN("^The JWT is no more valid$") { pending(); }
