@@ -255,9 +255,11 @@ func kuzzle_free_collection(st *C.collection) {
 
 //export kuzzle_free_document
 func kuzzle_free_document(st *C.document) {
-	C.free(unsafe.Pointer(st.instance))
-	C.free(unsafe.Pointer(st.kuzzle))
-	C.free(unsafe.Pointer(st))
+	if st != nil {
+		C.free(unsafe.Pointer(st.instance))
+		C.free(unsafe.Pointer(st.kuzzle))
+		C.free(unsafe.Pointer(st))
+	}
 }
 
 //export kuzzle_free_notification_content

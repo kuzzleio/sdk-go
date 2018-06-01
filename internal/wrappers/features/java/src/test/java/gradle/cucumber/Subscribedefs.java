@@ -10,12 +10,21 @@ public class Subscribedefs {
     private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
     private String roomId;
     private NotificationContent content = null;
+    private World world;
 
-    @Given("^I subscribe to \"([^\"]*)\"$")
+    @Given("^I subscribe to \'([^\"]*)\'$")
     public void i_subscribe_to(String collection) throws Exception {
-        k.getAuth().login("local", "{\"username\": \""+"useradmin"+"\", \"password\":\""+"testpwd"+"\" }", 40000);
+        roomId = k.getRealtime().subscribe(world.index, collection, "{}", new NotificationListener() {
+            @Override
+            public void onMessage(NotificationResult res) {
+                content = res.getResult();
+            }
+        });
+    }
 
-        roomId = k.getRealtime().subscribe("index", collection, "{}", new NotificationListener() {
+    @Given("^I subscribe to \'([^\"]*)\' with filter \'(.*)\'$")
+    public void i_subscribe_with_filter(String collection, String filter) throws Exception {
+        roomId = k.getRealtime().subscribe(world.index, collection, filter, new NotificationListener() {
             @Override
             public void onMessage(NotificationResult res) {
                 content = res.getResult();
@@ -25,12 +34,13 @@ public class Subscribedefs {
 
     @When("^I create a document in \"([^\"]*)\"$")
     public void i_create_a_document_in(String collection) throws Exception {
-        k.getDocument().create("index", collection, "", "{}");
+        k.getDocument().create(world.index, collection, "", "{}");
         Thread.sleep(1000);
     }
 
     @Then("^I( do not)? receive a notification$")
     public void i_receive_a_notification(String dont) throws Exception {
+        Thread.sleep(1000);
         if (dont == null) {
             Assert.assertNotNull(content);
             Assert.assertNotNull(content.getContent());
@@ -40,9 +50,28 @@ public class Subscribedefs {
         Assert.assertNull(content);
     }
 
+    @Given("^I received a notification$")
+    public void i_received_a_notification() throws Exception {
+        Thread.sleep(1000);
+        Assert.assertNotNull(content);
+        Assert.assertNotNull(content.getContent());
+        content = null;
+    }
+
     @Given("^I unsubscribe")
     public void i_unsubscribe() throws Exception {
         k.getRealtime().unsubscribe(roomId);
+    }
+
+    @When("^I delete the document with id \'([^\"]*)\'$")
+    public void i_delete_the_document_with_id(String id) throws Exception {
+        k.getDocument().delete_(world.index, world.collection, id);
+        Thread.sleep(1000);
+    }
+
+    @When("^I publish a document$")
+    public void i_publish_a_document() throws Exception {
+        k.getRealtime().publish(world.index, world.collection, "{}");
     }
 
 }

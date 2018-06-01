@@ -64,6 +64,7 @@ namespace kuzzleio {
     user_result *r = kuzzle_get_current_user(_auth);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
+
     user *u = r->result;
     kuzzle_free_user_result(r);
     return u;

@@ -49,11 +49,8 @@ namespace kuzzleio {
       virtual ~Kuzzle();
 
       char* connect();
-      bool createIndex(const std::string& index, query_options* options=NULL) Kuz_Throw_KuzzleException;
 
-      statistics* getAllStatistics(query_options* options=NULL) Kuz_Throw_KuzzleException;
       std::string getJwt();
-      statistics* getStatistics(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
       void disconnect();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
       Kuzzle* replayQueue();
