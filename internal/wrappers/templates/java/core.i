@@ -67,7 +67,7 @@
       System.loadLibrary("kuzzle-wrapper-java");
     } catch (UnsatisfiedLinkError e) {
       try {
-        java.io.InputStream inputStream = kcoreJNI.class.getResourceAsStream("/libkuzzle-wrapper-java.so");
+        java.io.InputStream inputStream = kuzzlesdk.class.getResourceAsStream("/libkuzzle-wrapper-java.so");
         java.nio.file.Path path = java.nio.file.FileSystems.getDefault().getPath("").toAbsolutePath();
         String sharedObject = path.toString() + "/libs/libkuzzle-wrapper-java.so";
 
