@@ -6,7 +6,7 @@ Feature: Create document with ids
     And it has a collection 'test-collection'
     And the collection has a document with id 'my-document-id'
     When I try to create a new document with id 'my-document-id'
-    Then I get an error with message 'document alread exists'
+    Then I get an error with message 'Document already exists'
 
   Scenario: Allow creating a document with an _id when the _id isn't used yet
     Given Kuzzle Server is running
