@@ -127,7 +127,11 @@ cpp: core
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
 
 clean:
-	rm -rf build/c build/java/src build/java/io build/java/build kcore_wrap.cxx kcore_wrap.h
+	rm -rf build/c
+	rm -rf build/java/src build/java/io build/java/build
+	rm -rf build/python
+	rm -rf build/cpp
+	rm -rf kcore_wrap.cxx kcore_wrap.h kcore_wrap.o
 	rm -rf build/io
 
 .PHONY: all java csharp python wrapper swig clean object core
