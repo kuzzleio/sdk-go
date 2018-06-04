@@ -63,9 +63,20 @@ You can also get html coverage by running
 ```
 ### e2e tests
 
-To run e2e tests ensure you have a kuzzle running and then run
+#### JAVA
+
 ```sh
-./internal/wrappers/features/e2e.sh
+cd internal/wrappers/features/java
+gradle cucumber
+```
+
+#### C++
+
+```sh
+cd internal/wrappers
+./build_cpp_tests.sh̀
+./_build_cpp_tests/KuzzleSDKStepDefs &
+cucumber features/*.features
 ```
 
 ## Wrappers
@@ -89,7 +100,7 @@ make java
 
 You will find the final jars files in `internal/wrappers/build/java/build/libs`
 
-## CP
+## CPP
 
 ```sh
 make cpp
