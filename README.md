@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master)](https://travis-ci.org/kuzzleio/sdk-go) [![codecov.io](http://codecov.io/github/kuzzleio/sdk-php/coverage.svg?branch=master)](http://codecov.io/github/kuzzleio/sdk-go?branch=master) [![GoDoc](https://godoc.org/github.com/kuzzleio/sdk-go?status.svg)](https://godoc.org/github.com/kuzzleio/sdk-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kuzzleio/sdk-go)](https://goreportcard.com/report/github.com/kuzzleio/sdk-go)
 
 Official Kuzzle GO SDK with wrappers for C++ and JAVA SDK
 ======
@@ -76,6 +77,7 @@ Before generating the wrappers you will need to install:
 - You will need a g++ compatible C++11
 - [swig](www.swig.org)
 - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (don't forget to set your JAVA_HOME environment variable)
+- Python You will need to install python-dev to compile the python SDK
 
 ### Generate
 
@@ -93,6 +95,12 @@ You will find the final jars files in `internal/wrappers/build/java/build/libs`
 make cpp
 ```
 You will find the final .so file in `internal/wrappers/build/cpp`
+
+## Python
+```sh
+make python
+```
+You will find the final .so file in `internal/wrappers/build/python`
 
 ## All at once
 

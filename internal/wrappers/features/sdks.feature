@@ -55,25 +55,48 @@ Feature: Create document with ids
     When I logout
     Then the JWT is invalid
 
+  #Feature: Realtime subscription
 
+  Scenario: Receive notifications when a document is created
+    Given Kuzzle Server is running
+    And there is an index 'test-index'
+    And it has a collection 'test-collection'
+    And I subscribe to 'test-collection'
+    When I create a document in "test-collection"
+    Then I receive a notification
 
-# Feature: Realtime subscribtion
-#
-# Scenario: Receive notifications when a document is created
-# Given I subscribe to "collection"
-# When I create a document in "collection"
-# Then I receive a notification
-#
-# Scenario: Receive notifications when a document is deleted
-# Scenario: Receive notifications when a document is updated
-# Scenario: Receive notifications when a document is published
-# When I create a document in "collection"
-# Then I receive a notification
+  Scenario: Receive notifications when a document is updated
+    Given Kuzzle Server is running
+    And there is an index 'test-index'
+    And it has a collection 'test-collection'
+    And the collection has a document with id 'my-document-id'
+    And I subscribe to 'test-collection' with filter '{"equals": {"foo": "barz"}}'
+    When I update the document with id 'my-document-id' and content 'foo' = 'barz'
+    Then I receive a notification
 
-# Scenario: Stop recieving notification when I unsubscribe
-# Given I unsubscribe
-# When I create a document in "collection"
-# Then I do not receive a notification
+  Scenario: Receive notifications when a document is deleted
+    Given Kuzzle Server is running
+    And there is an index 'test-index'
+    And it has a collection 'test-collection'
+    And the collection has a document with id 'my-document-id'
+    And I subscribe to 'test-collection'
+    When I delete the document with id 'my-document-id'
+    Then I receive a notification
+
+  Scenario: Receive notifications when a document is published
+    Given Kuzzle Server is running
+    And I subscribe to 'test-collection'
+    When I publish a document
+    Then I receive a notification
+
+  Scenario: Stop receiving notification when I unsubscribe
+    Given Kuzzle Server is running
+    And I subscribe to 'test-collection'
+    And the collection has a document with id 'my-document-id'
+    And I received a notification
+    And I unsubscribe from 'test-collection'
+    When I publish a document
+    Then I do not receive a notification
 
 # Feature: Geofencing subscriptions
 

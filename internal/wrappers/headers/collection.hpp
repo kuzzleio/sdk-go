@@ -18,9 +18,10 @@
 #include <iostream>
 #include <list>
 #include "core.hpp"
+#include "exceptions.hpp"
 
 namespace kuzzleio {
-
+    class Kuzzle;
     class Collection {
         collection* _collection;
         Collection();
