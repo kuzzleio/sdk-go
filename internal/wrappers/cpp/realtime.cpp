@@ -30,7 +30,12 @@ namespace kuzzleio {
   }
 
   void call_subscribe_cb(notification_result* res, void* data) {
-      ((Realtime*)data)->getListener(res->room_id)->onMessage(res);
+    if (data) {
+      NotificationListener *listener = ((Realtime*)data)->getListener(res->room_id);
+      if (listener) {
+        listener->onMessage(res);
+      }
+    }
   }
 
   void Realtime::join(const std::string& index, const std::string collection, const std::string roomId, room_options* options, NotificationListener* cb) Kuz_Throw_KuzzleException {

@@ -21,17 +21,17 @@ import (
 )
 
 // Get retrieves a Document using its provided unique id.
-func (d *Document) Get(index string, collection string, _id string, options types.QueryOptions) (string, error) {
+func (d *Document) Get(index string, collection string, _id string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.Get: index required", 400)
+		return nil, types.NewError("Document.Get: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.Get: collection required", 400)
+		return nil, types.NewError("Document.Get: collection required", 400)
 	}
 
 	if _id == "" {
-		return "", types.NewError("Document.Get: id required", 400)
+		return nil, types.NewError("Document.Get: id required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -49,11 +49,8 @@ func (d *Document) Get(index string, collection string, _id string, options type
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var doc string
-	json.Unmarshal(res.Result, &doc)
-
-	return doc, nil
+	return res.Result, nil
 }
