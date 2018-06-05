@@ -73,6 +73,9 @@ kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
 core_java:
+ifeq ($(wildcard $(GOCC)),)
+	$(error "Unable to find go compiler")
+endif
 	cd ..$(PATHSEP)..$(PATHSEP) && go get .$(PATHSEP)... $(CMDSEP) cd internal$(PATHSEP)wrappers
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
@@ -125,9 +128,11 @@ makedir:
 ifeq ($(OS),Windows_NT)
 	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
 	@if not exist $(ROOT_DIR_CLEAN) mkdir $(ROOT_DIR_CLEAN)
+	@if not exist $(GOTARGETDIR) mkdir $(GOTARGETDIR)	
 else
 	mkdir -p $(ROOT_DIR_CLEAN)
 	mkdir -p $(OUTDIR)
+	mkdir -p $(GOTARGETDIR)
 endif
 
 
