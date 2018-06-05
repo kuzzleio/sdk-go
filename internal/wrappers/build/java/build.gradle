@@ -1,0 +1,101 @@
+buildscript {
+  repositories {
+        jcenter()
+   }
+}
+
+plugins {
+  id "com.jfrog.bintray" version "1.7.3"
+}
+
+group = 'io.kuzzle'
+version = '1.0.0'
+
+allprojects {
+	repositories {
+		jcenter()
+	}
+	apply plugin: 'maven-publish'
+	apply plugin: 'java'
+  apply plugin: 'java-library'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['MyPublication']
+
+    pkg {
+        repo = 'maven'
+        name = 'kuzzle-sdk-' + System.getenv('ARCH')
+        userOrg = 'kuzzle'
+        licenses = ['Apache-2.0']
+        desc = 'Kuzzle JAVA SDK'
+        vcsUrl = 'https://github.com/kuzzleio/sdk-go.git'
+        websiteUrl = 'https://kuzzle.io'
+        issueTrackerUrl = 'https://github.com/kuzzleio/sdk-go/issues'
+        publicDownloadNumbers = true
+        publish = true
+    }
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "kuzzle"
+            name "kuzzle"
+            email "support@kuzzle.io"
+        }
+    }
+    
+    scm {
+       url "https://github.com/kuzzleio/sdk-go"
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'io.kuzzle'
+            artifactId 'kuzzle-sdk-' + System.getenv('ARCH')
+            version version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Kuzzle JAVA SDK')
+                root.appendNode('name', 'kuzzle-sdk')
+                root.appendNode('url', 'https://github.com/kuzzleio/sdk-go')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+dependencies {
+  compile fileTree(dir: 'src/main/java', include: ['*.so'])
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
