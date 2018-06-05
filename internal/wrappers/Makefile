@@ -115,30 +115,32 @@ swig:
 	$(SWIG) -Wall -c++ -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
 swig_java:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
+else
+	mkdir -p $(OUTDIR)
+endif
 	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/java/core.i
 
 swig_python:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
+else
+	mkdir -p $(OUTDIR)
+endif
 	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
 
 swig_csharp:
-	$(SWIG) -Wall -c++ -csharp -namespace Kuzzleio -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
-
-
-makedir:
 ifeq ($(OS),Windows_NT)
-	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
-	@if not exist $(ROOT_DIR_CLEAN) mkdir $(ROOT_DIR_CLEAN)
-	@if not exist $(GOTARGETDIR) mkdir $(GOTARGETDIR)	
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
 else
-	mkdir -p $(ROOT_DIR_CLEAN)
 	mkdir -p $(OUTDIR)
-	mkdir -p $(GOTARGETDIR)
 endif
-
+	$(SWIG) -Wall -c++ -csharp -namespace Kuzzleio -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
 
 java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
-java: makedir core_java swig_java wrapper_java java_object
+java: core_java swig_java wrapper_java java_object
 #rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
@@ -151,7 +153,7 @@ java: makedir core_java swig_java wrapper_java java_object
 	cp -p $(GOTARGETSO) $(OUTDIR)
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
-csharp: makedir core_csharp swig_csharp wrapper_csharp csharp_object
+csharp: core_csharp swig_csharp wrapper_csharp csharp_object
 	mcs -t:library $(OUTDIR)/*.cs -sdk:2 -out:$(OUTDIR)/$(LIB_PREFIX)kuzzle-csharp$(DYNLIB)
 ifeq ($(OS),Windows_NT)
 	$(RM) "$(subst /,\,$(OUTDIR))$(PATHSEP)*.cs"
@@ -163,7 +165,7 @@ python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
 python: CC = g++
 python: CFLAGS = -fPIC
-python: makedir core_python swig_python wrapper_python python_object
+python: core_python swig_python wrapper_python python_object
 	cp $(ROOT_DIR)templates/python/*.py $(OUTDIR)
 	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
 	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
@@ -179,11 +181,26 @@ cpp: core
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
 
 clean:
-	$(RM) kcore_wrap.cxx
-	$(RM) kcore_wrap.h 
-	$(RRM) build$(PATHSEP)c build$(PATHSEP)java$(PATHSEP)src build$(PATHSEP)java$(PATHSEP)io build$(PATHSEP)java$(PATHSEP)build build$(PATHSEP)csharp build$(PATHSEP)python
-	$(RRM) build$(PATHSEP)java
-
+ifeq ($(OS),Windows_NT)
+	if exist kcore_wrap.cxx $(RM) kcore_wrap.cxx
+	if exist kcore_wrap.h $(RM) kcore_wrap.h 
+	if exist kcore_wrap.o $(RM) kcore_wrap.o 
+	if exist build$(PATHSEP)c $(RRM) build$(PATHSEP)c 
+	if exist build$(PATHSEP)java$(PATHSEP)src  $(RRM) build$(PATHSEP)java$(PATHSEP)src 
+	if exist build$(PATHSEP)java$(PATHSEP)io $(RRM) build$(PATHSEP)java$(PATHSEP)io 
+	if exist build$(PATHSEP)java$(PATHSEP)build $(RRM) build$(PATHSEP)java$(PATHSEP)build 
+	if exist build$(PATHSEP)python $(RRM) build$(PATHSEP)python
+	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp 
+	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io 
+else
+	$(RRM) build/c
+	$(RRM) build/java/src build/java/io build/java/build
+	$(RRM) build/python
+	$(RRM) build/csharp
+	$(RRM) build/cpp
+	$(RRM) kcore_wrap.cxx kcore_wrap.h kcore_wrap.o
+	$(RRM) build/io
+endif
 .PHONY: all java csharp python wrapper swig clean object core
 
 
