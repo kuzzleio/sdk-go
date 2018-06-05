@@ -27,6 +27,13 @@
 %rename(SubscribeToSelf) subscribe_to_self;
 %rename(Mapping, match="class") mapping;
 
+%rename(_auth, match="class") auth;
+%rename(_kuzzle, match="class) kuzzle;
+%rename(_realtime, match="class) realtime;
+%rename(_collection, match="class) collection;
+%rename(_document, match="class) document;
+%rename(_server, match="class) server;
+
 %ignore *::error;
 %ignore *::status;
 %ignore *::stack;
