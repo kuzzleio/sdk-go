@@ -1,7 +1,7 @@
-ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+ROOT_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 ifeq ($(OS),Windows_NT)
-	STATICLIB := .lib
-	DYNLIB := .dll
+	STATICLIB = .lib
+	DYNLIB = .dll
 	GOROOT ?= C:/Go
 	GOCC ?= $(GOROOT)bin\go
 	SEP = \\
@@ -12,8 +12,8 @@ ifeq ($(OS),Windows_NT)
 	ROOT_DIR_CLEAN = $(subst /,\,$(ROOT_DIR))
 	LIB_PREFIX = 
 else
-	STATICLIB := .a
-	DYNLIB := .so
+	STATICLIB = .a
+	DYNLIB = .so
 	GOROOT ?= /usr/local/go
 	GOCC ?= $(GOROOT)/bin/go
 	SEP = /
@@ -24,7 +24,6 @@ else
 	ROOT_DIR_CLEAN = $(ROOT_DIR)
 	LIB_PREFIX = lib
 endif
-
 
 PATHSEP = $(strip $(SEP))
 ROOTOUTDIR = $(ROOT_DIR)build
@@ -73,8 +72,10 @@ kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
 core_java:
+ifneq ($(OS),Windows_NT)
 ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
+endif
 endif
 	cd ..$(PATHSEP)..$(PATHSEP) && go get .$(PATHSEP)... $(CMDSEP) cd internal$(PATHSEP)wrappers
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
@@ -132,7 +133,7 @@ endif
 
 swig_csharp:
 ifeq ($(OS),Windows_NT)
-	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
+	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
 else
 	mkdir -p $(OUTDIR)
 endif
