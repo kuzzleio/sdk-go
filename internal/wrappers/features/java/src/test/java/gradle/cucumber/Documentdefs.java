@@ -166,11 +166,21 @@ public class Documentdefs {
     @When("^I search a document with id \'([^\"]*)\'$")
     public void i_search_a_document_with_id(String id) throws Exception {
         this.errorMessage = null;
+
         try {
-            String document = k.getDocument().search(world.index, world.collection, id, "{\"foo\": \"barz\"}");
-            this.document = id;
+            QueryOptions options = new QueryOptions();
+            options.setSize(42);
+            this.documents = k.getDocument().search(world.index, world.collection, "{\"query\": {\"bool\": {\"should\":[{\"match\":{\"_id\": \""+id+"\"}}]}}}");
         } catch (BadRequestException e) {
             this.errorMessage = e.getMessage();
         }
+    }
+
+    @Then("^the document is successfully found$")
+    public void the_document_is_successfully_found() throws Exception {
+        Assert.assertNotNull(this.documents);
+        Assert.assertNotNull(this.documents.getDocuments());
+        //System.out.println("########### " + this.documents.getDocuments());
+        //Assert.assertEquals("foo", this.documents.getDocuments());
     }
 }

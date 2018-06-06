@@ -55,10 +55,18 @@ Feature: Document management
     When I update a document with id 'update-my-document-id'
     Then the document is successfully updated
 
-  Scenario: Search a document by id
+  Scenario: Search a document by id and find it
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'test-collection'
     And the collection has a document with id 'search-my-document-id'
     When I search a document with id 'search-my-document-id'
     Then the document is successfully found
+
+  Scenario: Search a document by id and don't find it
+    Given Kuzzle Server is running
+    And there is an index 'test-index'
+    And it has a collection 'test-collection'
+    And the collection has a document with id 'search-my-document-id'
+    When I search a document with id 'fake-id'
+    Then the document is not found
