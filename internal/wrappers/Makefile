@@ -96,7 +96,7 @@ java: makedir core_java swig_java wrapper_java java_object
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java	
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && taskset -c 1 sh gradlew sourcesJar jar javadocJar && cd -
-	rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 	cp -p $(GOTARGET) $(OUTDIR)
 	cp -p $(GOTARGETSO) $(OUTDIR)
 

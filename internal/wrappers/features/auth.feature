@@ -18,27 +18,19 @@ Feature: User management
     And there is an user with id 'my-user-id'
     And the user has 'local' credentials with name 'my-user-name' and password 'my-user-pwd'
     And I log in as 'my-user-name':'my-user-pwd'
-    And I update my user custom data with the pair <fieldname> : <fieldvalue>
+    And I update my user custom data with the pair <field-name>:<field-value>
     When I get my user info
-    Then the response '_source' field contains the pair <fieldname>: <fieldvalue>
-    And is a <type>
+    Then the response '_source' field contains the pair <field-name>:<field-value>
     Examples:
-      | fieldname | fieldvalue      | type   |
-      | my_data1  | "mystringvalue" | string |
-      | my_data2  | 1234            | number |
-      | my_data2  | -1234           | number |
-      | my_data2  | 1.234           | number |
-      | my_data2  | -1.234          | number |
-      | my_data1  | true            | bool   |
-      | my_data1  | false           | bool   |
+      | field-name | field-value |
+      | 'my_data' | 'mystringvalue' |
 
 
   Scenario: Login out shall revoke the JWT
     Given Kuzzle Server is running
     And there is an user with id 'my-user-id'
     And the user has 'local' credentials with name 'my-user-name' and password 'my-user-pwd'
-    And I login using 'local' authentication, with <user-name> and password <user-pwd> as credentials
-    And the retrieved JWT is valid
+    And I log in as 'my-user-name':'my-user-pwd'
+    And the JWT is valid
     When I logout
-    Then the JWT is no more valid
-
+    Then the JWT is invalid
