@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e 
 CONTENT_TYPE="Content-Type: application/json"
 
 KUZZLE_HOST=http://localhost:7512
