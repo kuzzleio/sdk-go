@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CONTENT_TYPE="Content-Type: application/json"
+
 KUZZLE_HOST=http://localhost:7512
 
 # update rights for anonymous user

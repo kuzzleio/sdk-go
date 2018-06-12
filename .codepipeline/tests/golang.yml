@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - cp -fr ./* /go/src/github.com/kuzzleio/sdk-go/
-      - cd /go/src/github.com/kuzzleio/sdk-go && echo $PWD
+      - cd /go/src/github.com/kuzzleio/sdk-go
       - go get ./...
   build:
     commands:
