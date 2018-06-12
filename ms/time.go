@@ -31,7 +31,7 @@ func (ms *Ms) Time(options types.QueryOptions) ([]int, error) {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 	var returnedResult []int

@@ -39,7 +39,7 @@ func (s *Security) MDeleteRoles(ids []string, options types.QueryOptions) ([]str
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -45,7 +45,7 @@ func (ms *Ms) Sdiffstore(key string, sets []string, destination string, options 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

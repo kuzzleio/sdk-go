@@ -29,7 +29,7 @@ func TestPublishIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Publish("", "collection", "body")
+	err := nr.Publish("", "collection", json.RawMessage(`{"body": "foo"}`))
 
 	assert.NotNil(t, err)
 }
@@ -38,7 +38,7 @@ func TestPublishCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Publish("index", "", "body")
+	err := nr.Publish("index", "", json.RawMessage(`{"body": "foo"}`))
 
 	assert.NotNil(t, err)
 }
@@ -47,7 +47,7 @@ func TestPublishBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Publish("index", "collection", "")
+	err := nr.Publish("index", "collection", nil)
 
 	assert.NotNil(t, err)
 }
@@ -61,7 +61,7 @@ func TestPublishError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Publish("index", "collection", "body")
+	err := nr.Publish("index", "collection", json.RawMessage(`{"body": "foo"}`))
 	assert.NotNil(t, err)
 }
 
@@ -87,6 +87,6 @@ func TestPublish(t *testing.T) {
 
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Publish("index", "collection", "body")
+	err := nr.Publish("index", "collection", json.RawMessage(`{"body": "foo"}`))
 	assert.Nil(t, err)
 }

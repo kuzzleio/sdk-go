@@ -16,9 +16,11 @@
 #define _EVENT_EMITTER_HPP_
 
 #include "kuzzle.hpp"
-#include "listeners.hpp"
 
 namespace kuzzleio {
+
+  class EventListener;
+
   class KuzzleEventEmitter {
     public:
       virtual KuzzleEventEmitter* addListener(Event e, EventListener* listener) = 0;

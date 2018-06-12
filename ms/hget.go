@@ -34,7 +34,7 @@ func (ms *Ms) Hget(key string, field string, options types.QueryOptions) (*strin
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

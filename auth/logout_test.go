@@ -34,7 +34,7 @@ func TestLogoutError(t *testing.T) {
 
 			assert.Equal(t, "auth", request.Controller)
 			assert.Equal(t, "logout", request.Action)
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "error"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
 

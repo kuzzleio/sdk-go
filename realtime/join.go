@@ -56,7 +56,7 @@ func (r *Realtime) Join(index, collection, roomID string, options types.RoomOpti
 	go r.k.Query(query, opts, result)
 
 	res := <-result
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

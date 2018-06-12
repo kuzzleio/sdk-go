@@ -38,7 +38,7 @@ func (s *Security) CreateOrReplaceRole(id string, body json.RawMessage, options 
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

@@ -34,7 +34,7 @@ func (ms *Ms) Zrank(key string, member string, options types.QueryOptions) (int,
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 

@@ -39,7 +39,7 @@ func (ms *Ms) Hincrby(key string, field string, value int, options types.QueryOp
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

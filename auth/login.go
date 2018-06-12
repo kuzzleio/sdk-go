@@ -58,7 +58,7 @@ func (a *Auth) Login(strategy string, credentials json.RawMessage, expiresIn *in
 
 	json.Unmarshal(res.Result, &token)
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		a.kuzzle.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: false, Error: res.Error})
 		return "", res.Error
 	}

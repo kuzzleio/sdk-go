@@ -42,7 +42,7 @@ func (dc *Collection) GetMapping(index string, collection string, options types.
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

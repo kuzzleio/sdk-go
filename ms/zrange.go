@@ -41,7 +41,7 @@ func (ms *Ms) Zrange(key string, start int, stop int, options types.QueryOptions
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

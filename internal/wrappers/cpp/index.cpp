@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "kuzzle.hpp"
 #include "index.hpp"
 #include <string>
-#include <vector>
 
 namespace kuzzleio {
 
@@ -49,10 +49,8 @@ namespace kuzzleio {
 
     std::vector<std::string> Index::mDelete(const std::vector<std::string>& indexes, query_options *options) Kuz_Throw_KuzzleException {
         char **indexesArray = new char *[indexes.size()];
-        int i = 0;
-        for (auto const& index : indexes) {
-          indexesArray[i] = const_cast<char*>(index.c_str());
-          i++;
+        for (int i = 0; i < indexes.size(); i++) {
+          indexesArray[i] = const_cast<char*>(indexes[i].c_str());
         }
         string_array_result *r = kuzzle_index_mdelete(_index, indexesArray, indexes.size(), options);
 

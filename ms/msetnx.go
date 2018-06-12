@@ -41,7 +41,7 @@ func (ms *Ms) Msetnx(entries []*types.MSKeyValue, options types.QueryOptions) (b
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 	var returnedResult int

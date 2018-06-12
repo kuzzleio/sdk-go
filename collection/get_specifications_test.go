@@ -51,7 +51,7 @@ func TestGetSpecificationsError(t *testing.T) {
 	nc := collection.NewCollection(k)
 	_, err := nc.GetSpecifications("index", "collection", nil)
 	assert.NotNil(t, err)
-	assert.Equal(t, "Unit test error", err.(*types.KuzzleError).Message)
+	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
 func TestGetSpecifications(t *testing.T) {

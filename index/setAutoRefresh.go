@@ -37,7 +37,7 @@ func (i *Index) SetAutoRefresh(index string, autoRefresh bool, options types.Que
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

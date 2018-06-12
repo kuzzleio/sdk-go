@@ -59,7 +59,7 @@ func kuzzle_realtime_list(rt *C.realtime, index, collection *C.char) *C.string_r
 
 //export kuzzle_realtime_publish
 func kuzzle_realtime_publish(rt *C.realtime, index, collection, body *C.char) *C.error_result {
-	err := (*realtime.Realtime)(rt.instance).Publish(C.GoString(index), C.GoString(collection), C.GoString(body))
+	err := (*realtime.Realtime)(rt.instance).Publish(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)))
 	return goToCErrorResult(err)
 }
 

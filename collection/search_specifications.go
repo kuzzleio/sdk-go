@@ -33,7 +33,7 @@ func (dc *Collection) SearchSpecifications(options types.QueryOptions) (*types.S
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

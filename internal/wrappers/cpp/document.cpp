@@ -28,7 +28,7 @@ namespace kuzzleio {
 
     Document::~Document() {
         unregisterDocument(_document);
-        kuzzle_free_document(_document);
+        delete(_document);
     }
 
     int Document::count_(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
@@ -166,9 +166,8 @@ namespace kuzzleio {
 
     std::vector<std::string> Document::mDelete(const std::string& index, const std::string& collection, const std::vector<std::string>& ids, query_options *options) Kuz_Throw_KuzzleException {
         char **idsArray = new char *[ids.size()];
-        int i = 0;
-        for (auto const& id : ids) {
-          idsArray[i] = const_cast<char*>(id.c_str());
+        for (int i = 0; i < ids.size(); i++) {
+          idsArray[i] = const_cast<char*>(ids[i].c_str());
           i++;
         }
 
@@ -187,9 +186,8 @@ namespace kuzzleio {
 
     std::string Document::mGet(const std::string& index, const std::string& collection, const std::vector<std::string>& ids, bool includeTrash, query_options *options) Kuz_Throw_KuzzleException {
         char **idsArray = new char *[ids.size()];
-        int i = 0;
-        for (auto const& id : ids) {
-          idsArray[i] = const_cast<char*>(id.c_str());
+        for (int i = 0; i < ids.size(); i++) {
+          idsArray[i] = const_cast<char*>(ids[i].c_str());
           i++;
         }
 

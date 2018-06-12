@@ -39,7 +39,7 @@ func (s *Security) ValidateCredentials(strategy string, kuid string, body json.R
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return false, res.Error
 	}
 

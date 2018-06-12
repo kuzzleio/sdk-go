@@ -36,7 +36,7 @@ func (s *Security) GetRole(id string, options types.QueryOptions) (*Role, error)
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

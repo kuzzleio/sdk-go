@@ -38,7 +38,7 @@ func (ms *Ms) Decrby(key string, value int, options types.QueryOptions) (int, er
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return 0, res.Error
 	}
 	var returnedResult int

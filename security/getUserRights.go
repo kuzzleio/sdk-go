@@ -37,7 +37,7 @@ func (s *Security) GetUserRights(id string, options types.QueryOptions) (json.Ra
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

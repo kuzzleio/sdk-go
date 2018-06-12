@@ -14,11 +14,15 @@
 
 package realtime
 
-import "github.com/kuzzleio/sdk-go/types"
+import (
+	"encoding/json"
+
+	"github.com/kuzzleio/sdk-go/types"
+)
 
 // Publish sends a real-time message to Kuzzle
-func (r *Realtime) Publish(index string, collection string, body string) error {
-	if (index == "" || collection == "") || body == "" {
+func (r *Realtime) Publish(index string, collection string, body json.RawMessage) error {
+	if (index == "" || collection == "") || body == nil {
 		return types.NewError("Realtime.Publish: index, collection and body required", 400)
 	}
 
@@ -36,7 +40,7 @@ func (r *Realtime) Publish(index string, collection string, body string) error {
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return res.Error
 	}
 

@@ -32,7 +32,7 @@ func (s *Security) GetAllCredentialFields(options types.QueryOptions) (json.RawM
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

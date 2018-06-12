@@ -42,7 +42,7 @@ func (dc *Collection) GetSpecifications(index string, collection string, options
 
 	res := <-ch
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return nil, res.Error
 	}
 

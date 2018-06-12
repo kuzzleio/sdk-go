@@ -76,7 +76,7 @@ func TestSubscribeQueryError(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "ah!"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "ah!"}}
 		},
 	}
 	k, _ = kuzzle.NewKuzzle(c, nil)
@@ -134,7 +134,7 @@ func TestRoomSubscribeNotConnected(t *testing.T) {
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Error: &types.KuzzleError{Message: "Not Connected"}}
+			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "Not Connected"}}
 		},
 	}
 

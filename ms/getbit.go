@@ -34,7 +34,7 @@ func (ms *Ms) Getbit(key string, offset int, options types.QueryOptions) (int, e
 
 	res := <-result
 
-	if res.Error != nil {
+	if res.Error.Error() != "" {
 		return -1, res.Error
 	}
 
