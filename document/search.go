@@ -52,8 +52,7 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 		return nil, res.Error
 	}
 
-	sr := &types.SearchResult{}
-	json.Unmarshal(res.Result, &sr)
+	sr := types.NewSearchResult(collection, body, options, res)
 
 	return sr, nil
 }

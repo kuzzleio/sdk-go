@@ -21,8 +21,8 @@ import (
 var realtimeInstances sync.Map
 
 // register new instance to the instances map
-func registerRealtime(instance interface{}) {
-	realtimeInstances.Store(instance, true)
+func registerRealtime(instance interface{}, ptr unsafe.Pointer) {
+	realtimeInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -37,10 +37,11 @@ func kuzzle_new_realtime(rt *C.realtime, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	gort := realtime.NewRealtime(kuz)
 
-	rt.instance = unsafe.Pointer(gort)
+	ptr := unsafe.Pointer(gort)
+	rt.instance = ptr
 	rt.kuzzle = k
 
-	registerRealtime(rt)
+	registerRealtime(rt, ptr)
 }
 
 //export kuzzle_realtime_count

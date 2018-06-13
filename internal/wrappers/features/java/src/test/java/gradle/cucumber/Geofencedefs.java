@@ -1,5 +1,6 @@
 package gradle.cucumber;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -7,9 +8,14 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Geofencedefs {
-    private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
+    private Kuzzle k;
     private NotificationResult content = null;
     private String documentId;
+
+    @Before
+    public void before() {
+        k = KuzzleSingleton.getInstance();
+    }
 
     @Given("^I subscribe to \"([^\"]*)\" collection$")
     public void i_subscribe_to_collection(String collection) throws Exception {

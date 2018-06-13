@@ -36,8 +36,8 @@ import (
 var serverInstances sync.Map
 
 //register new instance of server
-func registerServer(instance interface{}) {
-	serverInstances.Store(instance, true)
+func registerServer(instance interface{}, ptr unsafe.Pointer) {
+	serverInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -52,10 +52,11 @@ func kuzzle_new_server(s *C.server, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	server := server.NewServer(kuz)
 
-	s.instance = unsafe.Pointer(server)
+	ptr := unsafe.Pointer(server)
+	s.instance = ptr
 	s.kuzzle = k
 
-	registerServer(s)
+	registerServer(s, ptr)
 }
 
 //export kuzzle_admin_exists

@@ -539,13 +539,6 @@ typedef struct string_array_result {
 } string_array_result;
 
 typedef struct {
-    char* query;
-    char* sort;
-    char* aggregations;
-    char* search_after;
-} search_filters;
-
-typedef struct {
     profile *hits;
     size_t hits_length;
     unsigned total;
@@ -605,7 +598,7 @@ typedef struct search_result {
     unsigned fetched;
     unsigned total;
     char *aggregations;
-    search_filters *filters;
+    char *filters;
     query_options *options;
     char *collection;
     int status;

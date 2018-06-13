@@ -70,12 +70,12 @@ func TestCountDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			return &types.KuzzleResponse{Result: []byte(`1`)}
+			return &types.KuzzleResponse{Result: json.RawMessage("{\"count\":42}")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 	res, err := d.Count("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
-	assert.Equal(t, 1, res)
+	assert.Equal(t, 42, res)
 }

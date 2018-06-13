@@ -1,5 +1,7 @@
 package gradle.cucumber;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -7,10 +9,22 @@ import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
 public class Subscribedefs {
-    private Kuzzle k = new Kuzzle((System.getenv().get("KUZZLE_HOST") != null) ? (System.getenv().get("KUZZLE_HOST")) : "localhost");
+    private Kuzzle k;
     private String roomId;
     private NotificationContent content = null;
     private World world;
+
+    @Before
+    public void before() {
+        k = KuzzleSingleton.getInstance();
+    }
+
+    @After
+    public void after() {
+        if (roomId != null) {
+            k.getRealtime().unsubscribe(roomId);
+        }
+    }
 
     @Given("^I subscribe to \'([^\"]*)\'$")
     public void i_subscribe_to(String collection) throws Exception {
@@ -24,6 +38,7 @@ public class Subscribedefs {
 
     @Given("^I subscribe to \'([^\"]*)\' with filter \'(.*)\'$")
     public void i_subscribe_with_filter(String collection, String filter) throws Exception {
+        content = null;
         roomId = k.getRealtime().subscribe(world.index, collection, filter, new NotificationListener() {
             @Override
             public void onMessage(NotificationResult res) {
