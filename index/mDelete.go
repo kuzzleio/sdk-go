@@ -29,10 +29,14 @@ func (i *Index) MDelete(indexes []string, options types.QueryOptions) ([]string,
 
 	result := make(chan *types.KuzzleResponse)
 
+	type body struct {
+		Indexes []string `json:"indexes"`
+	}
+
 	query := &types.KuzzleRequest{
 		Controller: "index",
 		Action:     "mDelete",
-		Body:       indexes,
+		Body:       &body{indexes},
 	}
 	go i.kuzzle.Query(query, options, result)
 
