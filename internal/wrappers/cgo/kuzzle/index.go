@@ -34,8 +34,8 @@ import (
 var indexInstances sync.Map
 
 //register new instance of index
-func registerIndex(instance interface{}) {
-	indexInstances.Store(instance, true)
+func registerIndex(instance interface{}, ptr unsafe.Pointer) {
+	indexInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -50,10 +50,11 @@ func kuzzle_new_index(i *C.kuzzle_index, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	index := indexPkg.NewIndex(kuz)
 
-	i.instance = unsafe.Pointer(index)
+	ptr := unsafe.Pointer(index)
+	i.instance = ptr
 	i.kuzzle = k
 
-	registerIndex(i)
+	registerIndex(i, ptr)
 }
 
 //export kuzzle_index_create

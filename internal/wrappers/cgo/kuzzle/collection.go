@@ -33,8 +33,8 @@ import (
 var collectionInstances sync.Map
 
 // register new instance to the instances map
-func registerCollection(instance interface{}) {
-	collectionInstances.Store(instance, true)
+func registerCollection(instance interface{}, ptr unsafe.Pointer) {
+	collectionInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -49,10 +49,11 @@ func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	col := collection.NewCollection(kuz)
 
-	c.instance = unsafe.Pointer(col)
+	ptr := unsafe.Pointer(col)
+	c.instance = ptr
 	c.kuzzle = k
 
-	registerCollection(c)
+	registerCollection(c, ptr)
 }
 
 //export kuzzle_collection_create

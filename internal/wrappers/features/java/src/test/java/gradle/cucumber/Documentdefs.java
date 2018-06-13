@@ -1,6 +1,6 @@
 package gradle.cucumber;
 
-import cucumber.api.java.After;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -15,6 +15,10 @@ public class Documentdefs {
     private World world;
     private String documentId;
     private SearchResult documents;
+    private int nbDocuments;
+    private boolean partialException = false;
+    private boolean documentExists = false;
+    private String jsonDocuments;
 
     class Source {
         JsonObject _source;
@@ -113,7 +117,9 @@ public class Documentdefs {
         QueryOptions options = new QueryOptions();
         options.setRefresh("wait_for");
 
-        k.getDocument().delete_(world.index, world.collection, id, options);
+        try {
+            k.getDocument().delete_(world.index, world.collection, id, options);
+        } catch (KuzzleException e) {}
     }
 
     @When("^I replace a document with id \'([^\"]*)\'$")
@@ -180,7 +186,187 @@ public class Documentdefs {
     public void the_document_is_successfully_found() throws Exception {
         Assert.assertNotNull(this.documents);
         Assert.assertNotNull(this.documents.getDocuments());
-        //System.out.println("########### " + this.documents.getDocuments());
-        //Assert.assertEquals("foo", this.documents.getDocuments());
+        Assert.assertNotEquals("[]", this.documents.getDocuments());
+    }
+
+    @Then("^the document is not found$")
+    public void the_document_is_not_found() throws Exception {
+        Assert.assertNotNull(this.documents.getDocuments());
+        Assert.assertEquals("[]", this.documents.getDocuments());
+    }
+
+    @When("^I count how many documents there is in the collection$")
+    public void i_count_how_many_documents_there_is_in_the_collection() throws Exception {
+        nbDocuments = k.getDocument().count_(world.index, world.collection, "{}");
+    }
+
+    @Then("^I shall receive (\\d+)$")
+    public void i_shall_receive(int nbDocuments) throws Exception {
+        Assert.assertEquals(nbDocuments, this.nbDocuments);
+        this.nbDocuments = 0;
+    }
+
+    @When("^I delete the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_delete_the_documents(String doc1, String doc2) throws Exception {
+        QueryOptions o = new QueryOptions();
+        o.setRefresh("wait_for");
+
+        StringVector v = new StringVector();
+        v.add(doc1);
+        v.add(doc2);
+        try {
+            k.getDocument().mDelete(world.index, world.collection, v, o);
+            this.partialException = false;
+        } catch (PartialException e) {
+            this.partialException = true;
+        }
+    }
+
+    @Then("^the collection must be empty$")
+    public void the_collection_must_be_empty() {
+        Assert.assertEquals(0, k.getDocument().count_(world.index, world.collection, "{}"));
+    }
+
+    @And("^I get a partial error$")
+    public void i_get_a_partial_error() {
+        Assert.assertTrue(this.partialException);
+        this.partialException = false;
+    }
+
+    @When("^I create the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_create_the_documents(String doc1, String doc2) throws Exception {
+        QueryOptions o = new QueryOptions();
+        o.setRefresh("wait_for");
+
+        String docs = "{\"documents\":[{\"_id\":\""+doc1+"\", \"body\":{}}, {\"_id\":\""+doc2+"\", \"body\":{}}]}";
+        try {
+            k.getDocument().mCreate(world.index, world.collection, docs, o);
+            this.partialException = false;
+        } catch (PartialException e) {
+            this.partialException = true;
+        }
+    }
+
+    @Then("^I should have no partial error$")
+    public void i_should_have_no_partial_error() {
+        Assert.assertFalse(this.partialException);
+    }
+
+    @When("^I replace the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_replace_the_documents(String doc1, String doc2) throws Exception {
+        QueryOptions o = new QueryOptions();
+        o.setRefresh("wait_for");
+
+        String docs = "{\"documents\":[{\"_id\":\""+doc1+"\", \"body\":{\"foo\":\"barz\"}}, {\"_id\":\""+doc2+"\", \"body\":{\"foo\":\"barz\"}}]}";
+        try {
+            k.getDocument().mReplace(world.index, world.collection, docs, o);
+            this.partialException = false;
+        } catch (PartialException e) {
+            this.partialException = true;
+        }
+    }
+
+    @Then("^the document \'([^\"]*)\' should be replaced")
+    public void the_documents_should_be_replaced(String id1) throws Exception {
+        String doc = k.getDocument().get(world.index, world.collection, id1);
+        Assert.assertNull(this.errorMessage);
+
+        Gson gson = new Gson();
+        Source s = gson.fromJson(doc, Source.class);
+        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+    }
+
+    @When("^I update the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_update_the_documents(String doc1, String doc2) throws Exception {
+        QueryOptions o = new QueryOptions();
+        o.setRefresh("wait_for");
+
+        String docs = "{\"documents\":[{\"_id\":\""+doc1+"\", \"body\":{\"foo\":\"barz\"}}, {\"_id\":\""+doc2+"\", \"body\":{\"foo\":\"barz\"}}]}";
+        try {
+            k.getDocument().mUpdate(world.index, world.collection, docs, o);
+            this.partialException = false;
+        } catch (PartialException e) {
+            this.partialException = true;
+        } catch (KuzzleException e) {
+            this.errorMessage = e.getMessage();
+        }
+    }
+
+    @Then("^the document \'([^\"]*)\' should be updated")
+    public void the_documents_should_be_updated(String id1) throws Exception {
+        Assert.assertNull(this.errorMessage);
+        String doc = k.getDocument().get(world.index, world.collection, id1);
+        Assert.assertNull(this.errorMessage);
+
+        Gson gson = new Gson();
+        Source s = gson.fromJson(doc, Source.class);
+        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+    }
+
+    @When("^I createOrReplace the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_createOrReplace_the_documents(String doc1, String doc2) throws Exception {
+        QueryOptions o = new QueryOptions();
+        o.setRefresh("wait_for");
+
+        String docs = "{\"documents\":[{\"_id\":\""+doc1+"\", \"body\":{\"foo\":\"barz\"}}, {\"_id\":\""+doc2+"\", \"body\":{\"foo\":\"barz\"}}]}";
+        try {
+            k.getDocument().mCreateOrReplace(world.index, world.collection, docs, o);
+            this.partialException = false;
+        } catch (PartialException e) {
+            this.partialException = true;
+        } catch (KuzzleException e) {
+            this.errorMessage = e.getMessage();
+        }
+    }
+
+    @Then("^the document \'([^\"]*)\' should be created")
+    public void the_documents_should_be_created(String id1) throws Exception {
+        Assert.assertNull(this.errorMessage);
+        String doc = k.getDocument().get(world.index, world.collection, id1);
+        Assert.assertNull(this.errorMessage);
+
+        Gson gson = new Gson();
+        Source s = gson.fromJson(doc, Source.class);
+        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+    }
+
+    @When("^I check if \'([^\"]*)\' exists$")
+    public void i_createOrReplace_the_documents(String doc) throws Exception {
+        this.documentExists = false;
+        try {
+            this.documentExists = k.getDocument().exists(world.index, world.collection, doc);
+        } catch (KuzzleException e) {
+            this.errorMessage = e.getMessage();
+        }
+    }
+
+    @Then("^the document should exists$")
+    public void the_document_should_exists() throws Exception {
+        Assert.assertNull(this.errorMessage);
+        Assert.assertTrue(this.documentExists);
+    }
+
+    @Then("^the document should not exists$")
+    public void the_document_should_not_exists() throws Exception {
+        Assert.assertNull(this.errorMessage);
+        Assert.assertFalse(this.documentExists);
+    }
+
+    @When("^I get document \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_get_document_mget_my_document_id_and_mget_my_document_id(String id1, String id2) throws Exception {
+        try {
+            StringVector v = new StringVector();
+            v.add(id1);
+            v.add(id2);
+            jsonDocuments = k.getDocument().mGet(world.index, world.collection, v, false);
+        } catch (KuzzleException e) {
+            this.errorMessage = e.getMessage();
+        }
+    }
+
+    @Then("^the documents should be retrieved$")
+    public void the_documents_should_be_retrieved() throws Exception {
+        Assert.assertNull(this.errorMessage);
+        Assert.assertNotNull(this.jsonDocuments);
     }
 }

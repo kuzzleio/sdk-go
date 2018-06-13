@@ -51,8 +51,6 @@ func NewSearchResult(collection string, filters json.RawMessage, options QueryOp
 		Options:      NewQueryOptions(),
 	}
 
-	sr.Options.SetScrollId(parsed.ScrollID)
-
 	if options != nil {
 		sr.Options.SetFrom(options.From())
 		sr.Options.SetSize(options.Size())

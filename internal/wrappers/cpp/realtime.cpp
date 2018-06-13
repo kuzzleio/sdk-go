@@ -26,7 +26,7 @@ namespace kuzzleio {
   }
 
   NotificationListener* Realtime::getListener(const std::string& roomId) {
-      return _listener_instances[roomId];
+    return _listener_instances[roomId];
   }
 
   void call_subscribe_cb(notification_result* res, void* data) {
@@ -67,7 +67,7 @@ namespace kuzzleio {
     subscribe_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), &call_subscribe_cb, this, options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
-    
+
     std::string roomId = r->room;
     std::string channel = r->channel;
 
