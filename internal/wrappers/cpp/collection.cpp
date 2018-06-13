@@ -23,7 +23,7 @@ namespace kuzzleio {
 
     Collection::Collection(Kuzzle* kuzzle, collection *collection) {
         _collection = collection;
-        kuzzle_new_collection(_collection, kuzzle->_kuzzle);
+        kuzzle_new_collection(collection, kuzzle->_kuzzle);
     }
 
     Collection::~Collection() {

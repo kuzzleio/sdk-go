@@ -36,8 +36,8 @@ import (
 var authInstances sync.Map
 
 //register new instance of server
-func registerAuth(instance interface{}) {
-	authInstances.Store(instance, true)
+func registerAuth(instance interface{}, ptr unsafe.Pointer) {
+	authInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -52,10 +52,11 @@ func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	auth := auth.NewAuth(kuz)
 
-	a.instance = unsafe.Pointer(auth)
+	ptr := unsafe.Pointer(auth)
+	a.instance = ptr
 	a.kuzzle = k
 
-	registerAuth(a)
+	registerAuth(a, ptr)
 }
 
 //export kuzzle_check_token

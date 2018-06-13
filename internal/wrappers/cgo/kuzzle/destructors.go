@@ -544,17 +544,6 @@ func kuzzle_free_string_array_result(st *C.string_array_result) {
 	}
 }
 
-//export kuzzle_free_search_filters
-func kuzzle_free_search_filters(st *C.search_filters) {
-	if st != nil {
-		C.free(unsafe.Pointer(st.query))
-		C.free(unsafe.Pointer(st.sort))
-		C.free(unsafe.Pointer(st.aggregations))
-		C.free(unsafe.Pointer(st.search_after))
-		C.free(unsafe.Pointer(st))
-	}
-}
-
 //export kuzzle_free_profile_search
 func kuzzle_free_profile_search(st *C.profile_search) {
 	if st != nil {
@@ -649,7 +638,7 @@ func kuzzle_free_search_result(st *C.search_result) {
 	if st != nil {
 		kuzzle_free_query_options(st.options)
 		C.free(unsafe.Pointer(st.aggregations))
-		kuzzle_free_search_filters(st.filters)
+		C.free(unsafe.Pointer(st.filters))
 
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))

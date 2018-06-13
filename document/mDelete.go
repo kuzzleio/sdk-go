@@ -36,12 +36,16 @@ func (d *Document) MDelete(index string, collection string, ids []string, option
 
 	ch := make(chan *types.KuzzleResponse)
 
+	type body struct {
+		Ids []string `json:"ids"`
+	}
+
 	query := &types.KuzzleRequest{
 		Index:      index,
 		Collection: collection,
 		Controller: "document",
 		Action:     "mDelete",
-		Body:       ids,
+		Body:       &body{ids},
 	}
 
 	go d.Kuzzle.Query(query, options, ch)

@@ -1,6 +1,5 @@
 package gradle.cucumber;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -21,7 +20,9 @@ public class UserManagementdefs {
 
     @After
     public void after() {
-        k.getAuth().logout();
+        if (k != null && (k.getJwt() == null || !k.getJwt().equals(""))) {
+            k.getAuth().logout();
+        }
     }
 
     @Given("^there is an user with id \'([^\"]*)\'$")

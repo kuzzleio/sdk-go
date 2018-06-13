@@ -25,7 +25,7 @@ namespace kuzzleio {
 
     Index::Index(Kuzzle* kuzzle, kuzzle_index *index) {
       _index = index;
-      kuzzle_new_index(_index, kuzzle->_kuzzle);
+      kuzzle_new_index(index, kuzzle->_kuzzle);
     }
 
     Index::~Index() {
