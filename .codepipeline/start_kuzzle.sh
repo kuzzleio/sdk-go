@@ -9,6 +9,3 @@ while ! $KUZZLE_CHECK_CONNECTIVITY_CMD &> /dev/null
   do
     sleep 2
   done
-
-# Apply globale fixtures
-sh internal/wrappers/features/fixtures/run.sh
