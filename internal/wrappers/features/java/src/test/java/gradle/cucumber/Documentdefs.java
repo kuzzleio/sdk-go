@@ -109,7 +109,7 @@ public class Documentdefs {
 
         Gson gson = new Gson();
         Source s = gson.fromJson(doc, Source.class);
-        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+        Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
     @Given("^the collection doesn't have a document with id \'([^\"]*)\'$")
@@ -166,7 +166,7 @@ public class Documentdefs {
 
         Gson gson = new Gson();
         Source s = gson.fromJson(doc, Source.class);
-        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+        Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
     @When("^I search a document with id \'([^\"]*)\'$")
@@ -273,7 +273,7 @@ public class Documentdefs {
 
         Gson gson = new Gson();
         Source s = gson.fromJson(doc, Source.class);
-        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+        Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
     @When("^I update the documents \'([^\"]*)\' and \'([^\"]*)\'$")
@@ -300,7 +300,7 @@ public class Documentdefs {
 
         Gson gson = new Gson();
         Source s = gson.fromJson(doc, Source.class);
-        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+        Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
     @When("^I createOrReplace the documents \'([^\"]*)\' and \'([^\"]*)\'$")
@@ -327,7 +327,7 @@ public class Documentdefs {
 
         Gson gson = new Gson();
         Source s = gson.fromJson(doc, Source.class);
-        Assert.assertEquals("{\"foo\":\"barz\"}", s._source.toString());
+        Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
     @When("^I check if \'([^\"]*)\' exists$")
