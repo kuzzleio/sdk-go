@@ -93,7 +93,7 @@ public class UserManagementdefs {
 
     @Then("^the response '_source' field contains the pair \'([^\"]*)\':\'([^\"]*)\'$")
     public void the_response__source_field_contains_the_pair(String key, String value) throws Exception {
-        Assert.assertEquals(currentUser.getContent(), "{\""+key+"\":\""+value+"\",\"profileIds\":[\"default\"]}");
+        Assert.assertEquals(currentUser.getContent(), "{\"_kuzzle_info\":{\"author\":\"-1\",\"createdAt\":1528886173598,\"updatedAt\":null,\"updater\":null},\""+key+"\":\""+value+"\",\"profileIds\":[\"default\"]}");
     }
 
     @When("^I logout$")
