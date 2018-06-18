@@ -87,7 +87,7 @@ Feature: Document management
     And it has a collection 'delete-test-collection'
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
-    When I delete the documents 'mdelete-my-document-id' and 'mdelete-my-document-id2'    
+    When I delete the documents ['mdelete-my-document-id', 'mdelete-my-document-id2']
     And I count how many documents there is in the collection
     Then I shall receive 0
 
@@ -97,7 +97,7 @@ Feature: Document management
     And it has a collection 'mdelete-test-collection'
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
-    When I delete the documents 'mdelete-my-document-id' and 'mdelete-my-document-unknown'
+    When I delete the documents ['mdelete-my-document-id', 'mdelete-my-document-unknown']
     Then I count how many documents there is in the collection
     And I shall receive 1
     And I get a partial error
@@ -108,7 +108,7 @@ Feature: Document management
     And it has a collection 'mcreate-test-collection'
     And the collection doesn't have a document with id 'mcreate-my-document-id'
     And the collection doesn't have a document with id 'mcreate-my-document-id2'    
-    When I create the documents 'mcreate-my-document-id' and 'mcreate-my-document-id2'
+    When I create the documents ['mcreate-my-document-id', 'mcreate-my-document-id2']
     And I count how many documents there is in the collection
     Then I should have no partial error
     And I shall receive 2
@@ -117,7 +117,7 @@ Feature: Document management
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'mcreate-test-collection'
-    When I create the documents 'mcreate-my-document-id' and 'mcreate-my-document-id2'
+    When I create the documents ['mcreate-my-document-id', 'mcreate-my-document-id2']
     And I count how many documents there is in the collection
     Then I shall receive 2
     And I get a partial error
@@ -128,7 +128,7 @@ Feature: Document management
     And it has a collection 'mreplace-test-collection'
     And the collection has a document with id 'mreplace-my-document-id'
     And the collection has a document with id 'mreplace-my-document-id2'
-    When I replace the documents 'mreplace-my-document-id' and 'mreplace-my-document-id2'
+    When I replace the documents ['mreplace-my-document-id', 'mreplace-my-document-id2']
     Then I should have no partial error
     And the document 'mreplace-my-document-id' should be replaced
     And the document 'mreplace-my-document-id2' should be replaced
@@ -139,7 +139,7 @@ Feature: Document management
     And it has a collection 'mreplace-test-collection'
     And the collection has a document with id 'mreplace-my-document-id'
     And the collection has a document with id 'mreplace-my-document-id2'
-    When I replace the documents 'unknown' and 'mreplace-my-document-id2'
+    When I replace the documents ['unknown', 'mreplace-my-document-id2']
     And the document 'mreplace-my-document-id2' should be replaced
     And I get a partial error
 
@@ -149,7 +149,7 @@ Feature: Document management
     And it has a collection 'mreplace-test-collection'
     And the collection has a document with id 'mreplace-my-document-id'
     And the collection has a document with id 'mreplace-my-document-id2'
-    When I update the documents 'mreplace-my-document-id' and 'mreplace-my-document-id2'
+    When I update the documents ['mreplace-my-document-id', 'mreplace-my-document-id2']
     Then I should have no partial error
     And the document 'mreplace-my-document-id' should be replaced
     And the document 'mreplace-my-document-id2' should be replaced
@@ -160,7 +160,7 @@ Feature: Document management
     And it has a collection 'mupdate-test-collection'
     And the collection has a document with id 'mupdate-my-document-id'
     And the collection has a document with id 'mupdate-my-document-id2'
-    When I update the documents 'unknown' and 'mupdate-my-document-id2'
+    When I update the documents ['unknown', 'mupdate-my-document-id2']
     And the document 'mupdate-my-document-id2' should be updated
     And I get a partial error
 
@@ -168,7 +168,7 @@ Feature: Document management
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'mcreateorreplace-test-collection'
-    When I createOrReplace the documents 'mcreateorreplace-my-document-id' and 'mcreateorreplace-my-document-id2'
+    When I createOrReplace the documents ['mcreateorreplace-my-document-id', 'mcreateorreplace-my-document-id2']
     Then I should have no partial error
     And the document 'mcreateorreplace-my-document-id' should be created
     And the document 'mcreateorreplace-my-document-id2' should be created
@@ -179,7 +179,7 @@ Feature: Document management
     And it has a collection 'mcreateorreplace-test-collection'
     And the collection has a document with id 'mcreateorreplace-my-document-id'
     And the collection has a document with id 'mcreateorreplace-my-document-id2'
-    When I createOrReplace the documents 'mcreateorreplace-my-document-id' and 'mcreateorreplace-my-document-id2'
+    When I createOrReplace the documents ['mcreateorreplace-my-document-id', 'mcreateorreplace-my-document-id2']
     Then I should have no partial error
     And the document 'mcreateorreplace-my-document-id' should be replaced
     And the document 'mcreateorreplace-my-document-id2' should be replaced
@@ -206,5 +206,5 @@ Feature: Document management
     And it has a collection 'mget-test-collection'
     And the collection has a document with id 'mget-my-document-id'
     And the collection has a document with id 'mget-my-document-id2'    
-    When I get document 'mget-my-document-id' and 'mget-my-document-id2'
+    When I get document ['mget-my-document-id', 'mget-my-document-id2']
     Then the documents should be retrieved
