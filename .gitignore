@@ -7,3 +7,5 @@ main.go
 test.go
 _build*/
 build/
+kcore_wrap.cxx
+kcore_wrap.h
