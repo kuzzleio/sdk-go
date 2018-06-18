@@ -1,3 +1,6 @@
+#ifndef _KUZZLE_UTIL_HPP_
+#define _KUZZLE_UTIL_HPP_
+
 #include <stdarg.h>
 #include <stdio.h>
 #define TXT_COLOR_RESET "\e[0m"
@@ -45,3 +48,5 @@ std::string get_login_creds(const std::string &username,
 void kuzzle_user_create(kuzzleio::Kuzzle *kuzzle, const std::string &user_id,
                         const std::string &username,
                         const std::string &password);
+
+#endif

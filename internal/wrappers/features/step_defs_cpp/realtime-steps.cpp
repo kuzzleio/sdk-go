@@ -1,13 +1,19 @@
 #include "steps.hpp"
 
-GIVEN("^I subscribe to 'test-collection'$") {
-  REGEX_PARAM(std::string, collection_id);
+// Anonymous namespace to handle a compile error
+// see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
+namespace {
 
-  ScenarioScope<KuzzleCtx> ctx;
+  GIVEN("^I subscribe to 'test-collection'$") {
+    REGEX_PARAM(std::string, collection_id);
 
-  try {
-    ctx->kuzzle->realtime->subscribe(ctx->index, ctx->collection, "{}", NULL, NULL);
-  } catch (KuzzleException e) {
-    BOOST_FAIL(e.getMessage());
+    ScenarioScope<KuzzleCtx> ctx;
+
+    try {
+      ctx->kuzzle->realtime->subscribe(ctx->index, ctx->collection, "{}", NULL);
+    } catch (KuzzleException e) {
+      BOOST_FAIL(e.getMessage());
+    }
   }
+
 }
