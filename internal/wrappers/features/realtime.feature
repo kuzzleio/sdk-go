@@ -34,9 +34,8 @@ Feature: Realtime subscription
 
   Scenario: Stop receiving notification when I unsubscribe
     Given Kuzzle Server is running
+    And the collection has a document with id 'my-document-id'    
     And I subscribe to 'test-collection'
-    And the collection has a document with id 'my-document-id'
-    And I received a notification
     And I unsubscribe from 'test-collection'
     When I publish a document
     Then I do not receive a notification

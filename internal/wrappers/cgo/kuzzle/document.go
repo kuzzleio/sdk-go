@@ -33,8 +33,8 @@ import (
 var documentInstances sync.Map
 
 // register new instance to the instances map
-func registerDocument(instance interface{}) {
-	documentInstances.Store(instance, true)
+func registerDocument(instance interface{}, ptr unsafe.Pointer) {
+	documentInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -48,9 +48,10 @@ func kuzzle_new_document(d *C.document, k *C.kuzzle) {
 	kuz := (*kuzzle.Kuzzle)(k.instance)
 	doc := document.NewDocument(kuz)
 
-	d.instance = unsafe.Pointer(doc)
+	ptr := unsafe.Pointer(doc)
+	d.instance = ptr
 	d.kuzzle = k
-	registerDocument(doc)
+	registerDocument(doc, ptr)
 }
 
 //export kuzzle_document_count
@@ -92,7 +93,8 @@ func kuzzle_document_delete_by_query(d *C.document, index *C.char, collection *C
 //export kuzzle_document_get
 func kuzzle_document_get(d *C.document, index *C.char, collection *C.char, id *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).Get(C.GoString(index), C.GoString(collection), C.GoString(id), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_replace

@@ -30,18 +30,6 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func cToGoSearchFilters(searchFilters *C.search_filters) *types.SearchFilters {
-	if searchFilters == nil {
-		return nil
-	}
-	return &types.SearchFilters{
-		Query:        json.RawMessage(C.GoString(searchFilters.query)),
-		Sort:         json.RawMessage(C.GoString(searchFilters.sort)),
-		Aggregations: json.RawMessage(C.GoString(searchFilters.aggregations)),
-		SearchAfter:  json.RawMessage(C.GoString(searchFilters.search_after)),
-	}
-}
-
 // convert a C char** to a go array of string
 func cToGoStrings(arr **C.char, len C.size_t) []string {
 	if len == 0 {
@@ -49,9 +37,10 @@ func cToGoStrings(arr **C.char, len C.size_t) []string {
 	}
 
 	tmpslice := (*[1 << 27]*C.char)(unsafe.Pointer(arr))[:len:len]
-	goStrings := make([]string, len)
-	for i, s := range tmpslice {
-		goStrings[i] = C.GoString(s)
+	goStrings := make([]string, 0, len)
+
+	for _, s := range tmpslice {
+		goStrings = append(goStrings, C.GoString(s))
 	}
 
 	return goStrings
@@ -159,21 +148,19 @@ func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 	opts.SetFrom(int(s.options.from))
 	opts.SetScrollId(C.GoString(s.options.scroll_id))
 
-	var collections json.RawMessage
 	c, _ := json.Marshal(s.collection)
-	collections = c
 
 	var documents json.RawMessage
 	d, _ := json.Marshal(s.documents)
 	documents = d
 
 	return &types.SearchResult{
-		Collection: collections,
+		Collection: string(c),
 		Documents:  documents,
 		Total:      int(s.total),
 		Fetched:    int(s.fetched),
 		Options:    opts,
-		Filters:    cToGoSearchFilters(s.filters),
+		Filters:    json.RawMessage(C.GoString(s.filters)),
 	}
 }
 

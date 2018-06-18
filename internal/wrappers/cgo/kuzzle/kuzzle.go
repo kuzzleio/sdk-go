@@ -41,8 +41,8 @@ var instances sync.Map
 var listeners_list map[uintptr]chan<- interface{}
 
 // register new instance to the instances map
-func registerKuzzle(instance interface{}) {
-	instances.Store(instance, true)
+func registerKuzzle(instance interface{}, ptr unsafe.Pointer) {
+	instances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
@@ -71,10 +71,11 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 		panic(err.Error())
 	}
 
-	registerKuzzle(inst)
-
-	k.instance = unsafe.Pointer(inst)
+	ptr := unsafe.Pointer(inst)
+	k.instance = ptr
 	k.loader = nil
+
+	registerKuzzle(inst, ptr)
 }
 
 //export kuzzle_get_document_controller

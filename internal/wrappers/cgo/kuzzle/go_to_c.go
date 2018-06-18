@@ -371,20 +371,15 @@ func goToCBoolResult(goRes bool, err error) *C.bool_result {
 	return result
 }
 
-func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
-	result := (*C.search_filters)(C.calloc(1, C.sizeof_search_filters))
-
-	result.query = C.CString(string(filters.Query))
-	result.sort = C.CString(string(filters.Sort))
-	result.aggregations = C.CString(string(filters.Aggregations))
-	result.search_after = C.CString(string(filters.SearchAfter))
-
-	return result
-}
-
 // Allocates memory
 func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	result := (*C.search_result)(C.calloc(1, C.sizeof_search_result))
+
+	if err != nil {
+		Set_search_result_error(result, err)
+		return result
+	}
+
 	result.collection = C.CString(string(goRes.Collection))
 	result.documents = C.CString(string(goRes.Documents))
 
@@ -392,15 +387,17 @@ func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	result.total = C.uint(goRes.Total)
 
 	if goRes.Filters != nil {
-		result.filters = goToCSearchFilters(goRes.Filters)
+		result.filters = C.CString(string(goRes.Filters))
 	}
 
 	result.options = (*C.query_options)(C.calloc(1, C.sizeof_query_options))
-	result.options.from = C.long(goRes.Options.From())
-	result.options.size = C.long(goRes.Options.Size())
+	if goRes.Options != nil {
+		result.options.from = C.long(goRes.Options.From())
+		result.options.size = C.long(goRes.Options.Size())
 
-	if goRes.Options.ScrollId() != "" {
-		result.options.scroll_id = C.CString(goRes.Options.ScrollId())
+		if goRes.Options.ScrollId() != "" {
+			result.options.scroll_id = C.CString(goRes.Options.ScrollId())
+		}
 	}
 
 	if len(goRes.Aggregations) > 0 {
