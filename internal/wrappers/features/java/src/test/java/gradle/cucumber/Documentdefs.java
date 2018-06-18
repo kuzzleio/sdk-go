@@ -197,15 +197,20 @@ public class Documentdefs {
         Assert.assertEquals("[]", this.documents.getDocuments());
     }
 
-    @When("^I count how many documents there is in the collection$")
-    public void i_count_how_many_documents_there_is_in_the_collection() throws Exception {
-        nbDocuments = k.getDocument().count_(world.index, world.collection, "{}");
-    }
-
     @Then("^I shall receive (\\d+)$")
     public void i_shall_receive(int nbDocuments) throws Exception {
         Assert.assertEquals(nbDocuments, this.nbDocuments);
         this.nbDocuments = 0;
+    }
+
+    @Then("^I must have (\\d+) documents in the collection$")
+    public void i_must_have_documents_in_the_collection(int nb) {
+        Assert.assertEquals(nb, k.getDocument().count_(world.index, world.collection, "{}"));
+    }
+
+    @When("^I count how many documents there is in the collection$")
+    public void i_count_how_many_documents_there_is_in_the_collection() throws Exception {
+        nbDocuments = k.getDocument().count_(world.index, world.collection, "{}");
     }
 
     @When("^I delete the documents \\[\'(.*)\', \'(.*)\'\\]$")
