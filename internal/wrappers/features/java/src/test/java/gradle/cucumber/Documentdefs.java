@@ -208,16 +208,18 @@ public class Documentdefs {
         this.nbDocuments = 0;
     }
 
-    @When("^I delete the documents \\[([\"]*)\\]$")
-    public void i_delete_the_documents(List<String> docs) throws Exception {
+    @When("^I delete the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_delete_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
 
-        System.out.println(docs.get(0));
-        System.out.println(docs.get(1));
+        //System.out.println(docs.get(0));
+        //System.out.println(docs.get(1));
         StringVector v = new StringVector();
-        v.add(docs.get(0));
-        v.add(docs.get(1));
+        //v.add(docs.get(0));
+        //v.add(docs.get(1));
+        v.add(doc1);
+        v.add(doc2);
         try {
             k.getDocument().mDelete(world.index, world.collection, v, o);
             this.partialException = false;
