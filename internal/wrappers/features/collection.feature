@@ -19,7 +19,8 @@ Feature: Collection management
     And it has a collection 'test-collection1'
     And it has a collection 'test-collection2'
     When I list the collections
-    Then I should have 2 collections
+    Then the result contains 2 hits
+    And the content should not be null
 
   Scenario: Truncate a collection
     Given Kuzzle Server is running
@@ -28,7 +29,7 @@ Feature: Collection management
     And the collection has a document with id 'my-document-id'
     And the collection has a document with id 'my-document-id2'
     When I truncate the collection
-    Then it should be empty
+    Then the collection shall be empty
 
   Scenario: Create a collection with a custom mapping
     Given Kuzzle Server is running

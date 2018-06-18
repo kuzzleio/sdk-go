@@ -4,6 +4,9 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import gherkin.deps.com.google.gson.Gson;
+import gherkin.deps.com.google.gson.JsonArray;
+import gherkin.deps.com.google.gson.JsonObject;
 import io.kuzzle.sdk.Kuzzle;
 import io.kuzzle.sdk.NotFoundException;
 import io.kuzzle.sdk.QueryOptions;
@@ -50,8 +53,21 @@ public class Collectiondefs {
         listCollections = k.getCollection().list(world.index);
     }
 
-    @Then("^I should have 2 collections$")
-    public void i_should_have_collections() throws Exception {
+    class Col {
+        JsonArray collections;
+    }
+
+    @Then("^the result contains (\\d+) hits$")
+    public void the_result_contains_hits(int nb) throws Exception {
+        Gson gson = new Gson();
+        Col c = gson.fromJson(listCollections, Collectiondefs.Col.class);
+
+        Assert.assertEquals(nb, c.collections.size());
+
+    }
+
+    @Then("^the content should not be null$")
+    public void i() {
         Assert.assertNotNull(this.listCollections);
         Assert.assertEquals("{\"type\":\"all\",\"collections\":[{\"name\":\"test-collection1\",\"type\":\"stored\"},{\"name\":\"test-collection2\",\"type\":\"stored\"}],\"from\":0,\"size\":10}", this.listCollections);
     }
@@ -64,7 +80,7 @@ public class Collectiondefs {
         k.getCollection().truncate(world.index, world.collection, o);
     }
 
-    @Then("^it should be empty$")
+    @Then("^the collection shall be empty$")
     public void it_should_be_empty() throws Exception {
         SearchResult res = k.getDocument().search(world.index, world.collection, "{}");
         Assert.assertEquals("[]", res.getDocuments());
