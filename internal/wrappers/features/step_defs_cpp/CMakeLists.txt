@@ -94,7 +94,8 @@ set(CUKE_EXTRA_LIBRARIES ${CUKE_EXTRA_LIBRARIES} ${Boost_THREAD_LIBRARY} ${Boost
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     set (CMAKE_CXX_STANDARD 11)
 
-    add_executable(KuzzleSDKStepDefs kuzzle-sdk-steps kuzzle_utils)
+    FILE(GLOB SRCFILES *.cpp)
+    add_executable(KuzzleSDKStepDefs ${SRCFILES})
     add_dependencies(KuzzleSDKStepDefs project_cucumber_cpp)
 
 
