@@ -30,6 +30,6 @@ Feature: User management
     And there is an user with id 'my-user-id'
     And the user has 'local' credentials with name 'my-user-name' and password 'my-user-pwd'
     And I log in as 'my-user-name':'my-user-pwd'
-    Then the JWT is valid
+    And the JWT is valid
     When I logout
     Then the JWT is invalid
