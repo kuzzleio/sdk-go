@@ -9,6 +9,8 @@ import gherkin.deps.com.google.gson.JsonObject;
 import io.kuzzle.sdk.*;
 import org.junit.Assert;
 
+import java.util.List;
+
 public class Documentdefs {
     private Kuzzle k;
     private String errorMessage;
@@ -206,7 +208,7 @@ public class Documentdefs {
         this.nbDocuments = 0;
     }
 
-    @When("^I delete the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I delete the documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_delete_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
@@ -233,7 +235,7 @@ public class Documentdefs {
         this.partialException = false;
     }
 
-    @When("^I create the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I create the documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_create_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
@@ -252,7 +254,7 @@ public class Documentdefs {
         Assert.assertFalse(this.partialException);
     }
 
-    @When("^I replace the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I replace the documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_replace_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
@@ -276,7 +278,7 @@ public class Documentdefs {
         Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
-    @When("^I update the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I update the documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_update_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
@@ -303,7 +305,7 @@ public class Documentdefs {
         Assert.assertEquals("\"barz\"", s._source.get("foo").toString());
     }
 
-    @When("^I createOrReplace the documents \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I createOrReplace the documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_createOrReplace_the_documents(String doc1, String doc2) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
@@ -352,7 +354,7 @@ public class Documentdefs {
         Assert.assertFalse(this.documentExists);
     }
 
-    @When("^I get document \'([^\"]*)\' and \'([^\"]*)\'$")
+    @When("^I get document \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_get_document_mget_my_document_id_and_mget_my_document_id(String id1, String id2) throws Exception {
         try {
             StringVector v = new StringVector();
