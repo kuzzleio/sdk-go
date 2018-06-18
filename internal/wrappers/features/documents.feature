@@ -88,8 +88,7 @@ Feature: Document management
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
     When I delete the documents ['mdelete-my-document-id', 'mdelete-my-document-id2']
-    And I count how many documents there is in the collection
-    Then I shall receive 0
+    Then I must have 0 documents in the collection
 
   Scenario: Delete multiple documents with partial error
     Given Kuzzle Server is running
@@ -98,8 +97,7 @@ Feature: Document management
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
     When I delete the documents ['mdelete-my-document-id', 'mdelete-my-document-unknown']
-    Then I count how many documents there is in the collection
-    And I shall receive 1
+    Then I must have 1 documents in the collection
     And I get a partial error
 
   Scenario: Create multiple documents with no error
@@ -109,17 +107,15 @@ Feature: Document management
     And the collection doesn't have a document with id 'mcreate-my-document-id'
     And the collection doesn't have a document with id 'mcreate-my-document-id2'    
     When I create the documents ['mcreate-my-document-id', 'mcreate-my-document-id2']
-    And I count how many documents there is in the collection
-    Then I should have no partial error
-    And I shall receive 2
+    Then I must have 2 documents in the collection
+    And I should have no partial error
 
   Scenario: Create multiple documents with partial error
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'mcreate-test-collection'
     When I create the documents ['mcreate-my-document-id', 'mcreate-my-document-id2']
-    And I count how many documents there is in the collection
-    Then I shall receive 2
+    Then I must have 2 documents in the collection
     And I get a partial error
 
   Scenario: Replace multiple documents with no error
