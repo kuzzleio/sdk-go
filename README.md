@@ -78,8 +78,8 @@ gradle cucumber
 make cpp
 cd internal/wrappers
 ./build_cpp_tests.sh̀
-./_build_cpp_tests/KuzzleSDKStepDefs &
-cucumber features/*.feature
+./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
+cucumber
 ```
 
 
