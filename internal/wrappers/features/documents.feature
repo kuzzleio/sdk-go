@@ -87,7 +87,7 @@ Feature: Document management
     And it has a collection 'delete-test-collection'
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
-    When I delete the documents 'mdelete-my-document-id' and 'mdelete-my-document-id2'
+    When I delete the documents ["mdelete-my-document-id", "mdelete-my-document-id2"]
     And I count how many documents there is in the collection
     Then I shall receive 0
 
@@ -97,7 +97,7 @@ Feature: Document management
     And it has a collection 'mdelete-test-collection'
     And the collection has a document with id 'mdelete-my-document-id'
     And the collection has a document with id 'mdelete-my-document-id2'
-    When I delete the documents 'mdelete-my-document-id' and 'mdelete-my-document-id42'
+    When I delete the documents ["mdelete-my-document-id", "mdelete-my-document-id2"]
     Then I count how many documents there is in the collection
     And I shall receive 1
     And I get a partial error
