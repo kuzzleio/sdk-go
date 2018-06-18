@@ -353,13 +353,13 @@ public class Documentdefs {
         Assert.assertTrue(this.documentExists);
     }
 
-    @Then("^the document should not exists$")
+    @Then("^the document should not exist$")
     public void the_document_should_not_exists() throws Exception {
         Assert.assertNull(this.errorMessage);
         Assert.assertFalse(this.documentExists);
     }
 
-    @When("^I get document \\[\'(.*)\', \'(.*)\'\\]$")
+    @When("^I get documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_get_document_mget_my_document_id_and_mget_my_document_id(String id1, String id2) throws Exception {
         try {
             StringVector v = new StringVector();
