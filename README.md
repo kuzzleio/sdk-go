@@ -113,6 +113,23 @@ make python
 ```
 You will find the final .so file in `internal/wrappers/build/python`
 
+## CSHARP
+
+### Build on Windows
+
+#### Prerequisites
+- Visual Studio 2017
+- Windows SDK
+- Go - https://golang.org/doc/install
+- Mono (x64) - https://www.mono-project.com/download/stable/
+- Make (GNU - Windows) - http://gnuwin32.sourceforge.net/packages/make.htm
+- MinGW (x64 - Posix) - https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/
+
+#### Compiling Csharp
+- Add Go/Mono/Make/MinGW intallation directory to PATH
+- Run Visual Studio developper command line tool
+- Execute `make csharp`
+
 ## All at once
 
 You can generate all sdk's at once by typing

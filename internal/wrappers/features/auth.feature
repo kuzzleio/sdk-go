@@ -25,7 +25,6 @@ Feature: User management
       | field-name | field-value |
       | 'my_data' | 'mystringvalue' |
 
-
   Scenario: Login out shall revoke the JWT
     Given Kuzzle Server is running
     And there is an user with id 'my-user-id'
