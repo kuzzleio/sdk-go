@@ -36,7 +36,7 @@ CPPSRCS = $(CPP_SDK_SRCS) \
 
 CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
-SWIG = $(shell which swig)
+SWIG = swig
 
 all: python java
 
@@ -80,7 +80,6 @@ swig_java:
 
 swig_python:
 	mkdir -p $(OUTDIR)
-	echo $(SWIG)
 	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
 
 

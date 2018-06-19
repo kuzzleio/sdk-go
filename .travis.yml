@@ -1,11 +1,15 @@
+sudo: true
 language: go
 go:
   - 1.9
 dist: trusty
+services:
+  - docker
 install:
   - sudo apt-get install -y build-essential swig3.0 oracle-java8-installer g++ python3-dev
   - go get -t -v ./...
 script: 
-  - bash ./test.sh
+  - ./test.sh
+  - docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
 after_success:
   - cd .cover && bash <(curl -s https://codecov.io/bash)
