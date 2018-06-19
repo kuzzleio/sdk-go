@@ -175,7 +175,6 @@ python: core_python swig_python wrapper_python python_object
 	cp -p $(GOTARGETSO) $(OUTDIR)
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
-cpp: makedir $(CPPSDK)
 cpp: LANGUAGE = c++
 cpp: core
 		ar rvs $(OUTDIR)/libcpp$(STATICLIB) $(OUTDIR)/*.o
