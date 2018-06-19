@@ -26,6 +26,8 @@
 %rename(NotificationContent) notification_content;
 %rename(SubscribeToSelf) subscribe_to_self;
 
+%rename(delete) delete_;
+
 %ignore *::error;
 %ignore *::status;
 %ignore *::stack;
