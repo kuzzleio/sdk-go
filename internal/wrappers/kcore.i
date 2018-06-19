@@ -1,6 +1,6 @@
 /* File : kcore.i */
 
-%module(directors="1") kcore
+%module(directors="1") kuzzlesdk
 %{
 #include "listeners.hpp"
 #include "exceptions.hpp"

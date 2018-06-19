@@ -641,18 +641,6 @@ typedef struct specification_search_result {
     char *stack;
 } specification_search_result;
 
-typedef struct {
-    char *mapping;
-    collection *collection;
-} mapping;
-
-typedef struct mapping_result {
-    mapping *result;
-    int status;
-    char *error;
-    char *stack;
-} mapping_result;
-
 typedef struct  {
     bool persisted;
     char* name;
