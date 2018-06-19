@@ -80,6 +80,8 @@ swig_java:
 
 swig_python:
 	mkdir -p $(OUTDIR)
+	echo $(SWIG)
+	which swig
 	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
 
 
