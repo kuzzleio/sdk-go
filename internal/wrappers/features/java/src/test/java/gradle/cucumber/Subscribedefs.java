@@ -80,7 +80,7 @@ public class Subscribedefs {
 
     @When("^I delete the document with id \'([^\"]*)\'$")
     public void i_delete_the_document_with_id(String id) throws Exception {
-        k.getDocument().delete_(world.index, world.collection, id);
+        k.getDocument().delete(world.index, world.collection, id);
         Thread.sleep(1000);
     }
 
