@@ -36,7 +36,7 @@ CPPSRCS = $(CPP_SDK_SRCS) \
 
 CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
-SWIG = $(which swig)
+SWIG = $(shell which swig)
 
 all: python java
 
