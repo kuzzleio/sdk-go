@@ -90,6 +90,8 @@ core_python: core_java
 
 core_csharp: core_java
 
+core_cpp: core_java
+
 wrapper_java: $(OBJS)
 
 wrapper_python: $(OBJS)
@@ -139,6 +141,13 @@ else
 endif
 	$(SWIG) -Wall -c++ -csharp -namespace Kuzzleio -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
 
+makedir:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
+else
+	mkdir -p $(OUTDIR)
+endif
+
 java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: core_java swig_java wrapper_java java_object
@@ -175,9 +184,8 @@ python: core_python swig_python wrapper_python python_object
 	cp -p $(GOTARGETSO) $(OUTDIR)
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
-cpp: makedir $(CPPSDK)
 cpp: LANGUAGE = c++
-cpp: core
+cpp: makedir core_cpp $(CPPSDK)
 		ar rvs $(OUTDIR)/libcpp$(STATICLIB) $(OUTDIR)/*.o
 		g++ -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
 
