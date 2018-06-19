@@ -17,7 +17,15 @@ namespace {
   }
 
   WHEN("^I create a document in \"test-collection\"$") {
-      pending();
+    REGEX_PARAM(std::string, collection_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    try {
+      ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}");
+    } catch (KuzzleException e) {
+      BOOST_FAIL(e.getMessage());
+    }
   }
 
 
