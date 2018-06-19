@@ -27,7 +27,7 @@ public class Indexdefs {
             QueryOptions o = new QueryOptions();
             o.setRefresh("wait_for");
 
-            k.getIndex().delete_(index, o);
+            k.getIndex().delete(index, o);
         } catch (KuzzleException e) {}
     }
 
@@ -75,8 +75,8 @@ public class Indexdefs {
         k.getIndex().mDelete(v, o);
     }
 
-    @Then("^indexes \'([^\"]*)\' and \'([^\"]*)\' doesn't exist$")
-    public void indexes_test_index_and_test_index_doesn_t_exist(String index1, String index2) throws Exception {
+    @Then("^indexes \'([^\"]*)\' and \'([^\"]*)\' don't exist$")
+    public void indexes_test_index_and_test_index_don_t_exist(String index1, String index2) throws Exception {
         Assert.assertFalse(k.getIndex().exists(index1));
         Assert.assertFalse(k.getIndex().exists(index2));
     }
