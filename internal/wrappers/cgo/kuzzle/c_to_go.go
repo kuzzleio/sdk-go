@@ -37,7 +37,7 @@ func cToGoStrings(arr **C.char, len C.size_t) []string {
 	}
 
 	tmpslice := (*[1 << 27]*C.char)(unsafe.Pointer(arr))[:len:len]
-	goStrings := make([]string, 0)
+	goStrings := make([]string, 0, len)
 
 	for _, s := range tmpslice {
 		goStrings = append(goStrings, C.GoString(s))

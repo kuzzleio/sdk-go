@@ -118,9 +118,7 @@ func kuzzle_document_validate(d *C.document, index *C.char, collection *C.char, 
 //export kuzzle_document_search
 func kuzzle_document_search(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.search_result {
 	res, err := (*document.Document)(d.instance).Search(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	r := goToCSearchResult(res, err)
-
-	return r
+	return goToCSearchResult(res, err)
 }
 
 //export kuzzle_document_mcreate

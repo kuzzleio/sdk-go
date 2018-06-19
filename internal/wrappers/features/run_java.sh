@@ -1,4 +1,5 @@
 #!/bin/bash
-
+set -e
 cd internal/wrappers/features/java
-taskset -c 1 gradle cucumber
+gradle cucumber
+cd -

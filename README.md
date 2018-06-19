@@ -75,8 +75,8 @@ gradle cucumber
 ```sh
 cd internal/wrappers
 ./build_cpp_tests.sh̀
-./_build_cpp_tests/KuzzleSDKStepDefs &
-cucumber features/*.features
+./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
+cucumber
 ```
 
 ## Wrappers
@@ -136,6 +136,34 @@ You can generate all sdk's at once by typing
 
 ```sh
 make all
+```
+
+## Generate wrappers and launch e2e tests using Docker
+
+You can use Docker to simplify wrappers generation and testing
+
+### Build
+
+In project root, use:
+
+```bash
+$ docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
+```
+
+This command will build all wrappers using our Docker Image
+
+### Testing
+
+E2E tests need a running Kuzzle instance so run the script:
+
+```bash
+$ sh .codepipeline/start_kuzzle.sh
+```
+
+Now run tests using Docker:
+
+```bash
+$ docker run --rm -it --network codepipeline_default --link kuzzle --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
 ```
 
 ## License
