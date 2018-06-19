@@ -41,7 +41,7 @@ public class Indexdefs {
         world.index = index;
     }
 
-    @Then("^the index should exists$")
+    @Then("^the index should exist$")
     public void the_index_should_exists() throws Exception {
             Assert.assertTrue(k.getIndex().exists(world.index));
     }
