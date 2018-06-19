@@ -1,6 +1,6 @@
 #include "steps.hpp"
 
-// Anonymous namespace to handle a compile error
+// Anonymous namespace to handle a linker error
 // see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
 namespace {
   BEFORE() { kuz_log_sep(); }
