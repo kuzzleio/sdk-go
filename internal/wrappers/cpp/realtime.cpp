@@ -30,6 +30,7 @@ namespace kuzzleio {
   }
 
   void call_subscribe_cb(notification_result* res, void* data) {
+    
     if (data) {
       NotificationListener *listener = ((Realtime*)data)->getListener(res->room_id);
       if (listener) {

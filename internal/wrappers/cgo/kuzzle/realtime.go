@@ -9,7 +9,6 @@ import "C"
 
 import (
 	"encoding/json"
-	"fmt"
 	"sync"
 	"unsafe"
 
@@ -86,7 +85,6 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 			if ok == false {
 				break
 			}
-			fmt.Printf("###### ok\n")
 			C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
 		}
 	}()
