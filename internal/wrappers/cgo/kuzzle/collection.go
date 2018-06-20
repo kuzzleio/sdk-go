@@ -77,9 +77,8 @@ func kuzzle_collection_exists(c *C.collection, index *C.char, col *C.char, optio
 //export kuzzle_collection_list
 func kuzzle_collection_list(c *C.collection, index *C.char, options *C.query_options) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).List(C.GoString(index), SetQueryOptions(options))
-	var stringResult string
-	json.Unmarshal(res, &stringResult)
-	return goToCStringResult(&stringResult, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 // Mapping
@@ -87,15 +86,13 @@ func kuzzle_collection_list(c *C.collection, index *C.char, options *C.query_opt
 //export kuzzle_collection_get_mapping
 func kuzzle_collection_get_mapping(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.string_result {
 	res, err := (*collection.Collection)(c.instance).GetMapping(C.GoString(index), C.GoString(col), SetQueryOptions(options))
-	var stringResult string
-	stringResult = string(res)
-	return goToCStringResult(&stringResult, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_collection_update_mapping
 func kuzzle_collection_update_mapping(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.error_result {
-	newBody, _ := json.Marshal(body)
-	err := (*collection.Collection)(c.instance).UpdateMapping(C.GoString(index), C.GoString(col), newBody, SetQueryOptions(options))
+	err := (*collection.Collection)(c.instance).UpdateMapping(C.GoString(index), C.GoString(col), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
 	return goToCErrorResult(err)
 }
 
@@ -123,8 +120,7 @@ func kuzzle_collection_search_specifications(c *C.collection, options *C.query_o
 
 //export kuzzle_collection_update_specifications
 func kuzzle_collection_update_specifications(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.string_result {
-	newBody, _ := json.Marshal(body)
-	res, err := (*collection.Collection)(c.instance).UpdateSpecifications(C.GoString(index), C.GoString(col), newBody, SetQueryOptions(options))
+	res, err := (*collection.Collection)(c.instance).UpdateSpecifications(C.GoString(index), C.GoString(col), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
 	var stringResult string
 	stringResult = string(res)
 	return goToCStringResult(&stringResult, err)
@@ -132,7 +128,6 @@ func kuzzle_collection_update_specifications(c *C.collection, index *C.char, col
 
 //export kuzzle_collection_validate_specifications
 func kuzzle_collection_validate_specifications(c *C.collection, body *C.char, options *C.query_options) *C.bool_result {
-	newBody, _ := json.Marshal(body)
-	res, err := (*collection.Collection)(c.instance).ValidateSpecifications(newBody, SetQueryOptions(options))
+	res, err := (*collection.Collection)(c.instance).ValidateSpecifications(json.RawMessage(C.GoString(body)), SetQueryOptions(options))
 	return goToCBoolResult(res, err)
 }
