@@ -46,7 +46,7 @@ class CustomNotificationListener : public NotificationListener {
     virtual void onMessage(notification_result *res) const {
       ScenarioScope<KuzzleCtx> ctx;
 
-      cout << "####### " << endl;
+      std::cerr << "####### " << endl;
       ctx->notif_result = res;
     }
 };

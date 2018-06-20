@@ -38,7 +38,7 @@ namespace {
     }
   }
 
-  THEN("^the response 'content' field contains the pair ([\\w]+):(.+)$")
+  THEN("^the response 'content' field contains the pair c:(.+)$")
   {
     K_LOG_I("Checking user content field");
     REGEX_PARAM(std::string, fieldname);

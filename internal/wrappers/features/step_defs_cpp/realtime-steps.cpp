@@ -4,9 +4,7 @@
 // see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
 namespace {
 
-  GIVEN("^I subscribe to 'test-collection'$") {
-    REGEX_PARAM(std::string, collection_id);
-
+  GIVEN("^I subscribe to (.*)$") {
     ScenarioScope<KuzzleCtx> ctx;
 
     CustomNotificationListener listener;
@@ -18,14 +16,16 @@ namespace {
     }
   }
 
-  WHEN("^I create a document in \"test-collection\"$") {
+  WHEN("^I create a document in (.*)$") {
     REGEX_PARAM(std::string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
+    query_options options = {0};
+    options.refresh = (char *)"wait_for";
+
     try {
-      ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}");
-      usleep(60000);
+      ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}", &options);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -33,7 +33,7 @@ namespace {
 
   THEN("^I receive a notification$") {
     ScenarioScope<KuzzleCtx> ctx;
-
+    usleep(60000);
     BOOST_CHECK(ctx->notif_result != NULL);
   }
 }
