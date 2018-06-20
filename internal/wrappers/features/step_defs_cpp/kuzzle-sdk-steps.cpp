@@ -1,4 +1,40 @@
-#include "steps.hpp"
+#include <boost/test/unit_test.hpp>
+#define EXPECT_EQ BOOST_CHECK_EQUAL
+#include <cucumber-cpp/autodetect.hpp>
+#include <iostream>
+#include <cstdlib>
+
+#include "auth.hpp"
+#include "collection.hpp"
+#include "document.hpp"
+#include "index.hpp"
+#include "kuzzle.hpp"
+
+#include "kuzzle_utils.h"
+
+#include "json_spirit/json_spirit.h"
+
+using cucumber::ScenarioScope;
+
+using namespace kuzzleio;
+using std::cout;
+using std::endl;
+using std::string;
+
+struct KuzzleCtx {
+  Kuzzle* kuzzle = NULL;
+  options kuzzle_options;
+
+  string user_id;
+  string index;
+  string collection;
+  string jwt;
+
+  user*                   currentUser        = NULL;
+  json_spirit::Value_type customUserDataType = json_spirit::null_type;
+
+  bool success;
+};
 
 BEFORE() { kuz_log_sep(); }
 
@@ -109,8 +145,14 @@ GIVEN("^Kuzzle Server is running$")
   ScenarioScope<KuzzleCtx> ctx;
   ctx->kuzzle_options         = KUZZLE_OPTIONS_DEFAULT;
   ctx->kuzzle_options.connect = MANUAL;
+  std::string hostname = "localhost";
+
+  if (std::getenv("KUZZLE_HOST") != NULL) {
+    hostname = std::getenv("KUZZLE_HOST");
+  }
+
   try {
-    ctx->kuzzle = new Kuzzle("localhost", &ctx->kuzzle_options);
+    ctx->kuzzle = new Kuzzle(hostname, &ctx->kuzzle_options);
   } catch (KuzzleException e) {
     K_LOG_E(e.getMessage().c_str());
   }
