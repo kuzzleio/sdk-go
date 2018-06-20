@@ -4,9 +4,9 @@ Feature: Index controller
     Given Kuzzle Server is running
     And there is no index called 'test-index'
     When I create an index called 'test-index'
-    Then the index should exists
+    Then the index should exist
 
-  Scenario: Create should return an error when the index already exists
+  Scenario: Create should return an error when the index already exist
     Given Kuzzle Server is running
     And there is an index 'test-index'
     When I create an index called 'test-index'
@@ -16,4 +16,4 @@ Feature: Index controller
     Given Kuzzle Server is running
     And there is the indexes 'test-index' and 'test-index2'
     When I delete the indexes 'test-index' and 'test-index2'
-    Then indexes 'test-index' and 'test-index2' doesn't exist
+    Then indexes 'test-index' and 'test-index2' don't exist

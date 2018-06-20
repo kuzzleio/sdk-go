@@ -120,7 +120,7 @@ public class Documentdefs {
         options.setRefresh("wait_for");
 
         try {
-            k.getDocument().delete_(world.index, world.collection, id, options);
+            k.getDocument().delete(world.index, world.collection, id, options);
         } catch (KuzzleException e) {}
     }
 
@@ -139,7 +139,7 @@ public class Documentdefs {
     public void i_delete_a_document_with_id(String id) throws Exception {
         this.errorMessage = null;
         try {
-            k.getDocument().delete_(world.index, world.collection, id);
+            k.getDocument().delete(world.index, world.collection, id);
         } catch (KuzzleException e) {
             this.errorMessage = e.getMessage();
         }
@@ -353,13 +353,13 @@ public class Documentdefs {
         Assert.assertTrue(this.documentExists);
     }
 
-    @Then("^the document should not exists$")
+    @Then("^the document should not exist$")
     public void the_document_should_not_exists() throws Exception {
         Assert.assertNull(this.errorMessage);
         Assert.assertFalse(this.documentExists);
     }
 
-    @When("^I get document \\[\'(.*)\', \'(.*)\'\\]$")
+    @When("^I get documents \\[\'(.*)\', \'(.*)\'\\]$")
     public void i_get_document_mget_my_document_id_and_mget_my_document_id(String id1, String id2) throws Exception {
         try {
             StringVector v = new StringVector();

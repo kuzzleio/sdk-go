@@ -45,7 +45,6 @@ linter_check .
 linter_check ./internal/wrappers
 generate_cover_data
 show_cover_report func
-make_wrappers
 case "$1" in
 "")
     ;;

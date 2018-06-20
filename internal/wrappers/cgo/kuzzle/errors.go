@@ -95,11 +95,6 @@ func Set_search_result_error(s *C.search_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
-// apply a types.KuzzleError on a search_result* C struct
-func Set_mapping_result_error(s *C.mapping_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
 // apply a types.KuzzleError on a all_statistics_result* C struct
 func Set_all_statistics_error(s *C.all_statistics_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)

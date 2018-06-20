@@ -6,7 +6,6 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.deps.com.google.gson.JsonArray;
-import gherkin.deps.com.google.gson.JsonObject;
 import io.kuzzle.sdk.Kuzzle;
 import io.kuzzle.sdk.NotFoundException;
 import io.kuzzle.sdk.QueryOptions;
@@ -33,24 +32,24 @@ public class Collectiondefs {
         world.collection = collection;
     }
 
-    @Then("^the collection should exists$")
-    public void the_collection_should_exists() throws Exception {
-        Assert.assertTrue(k.getCollection().exists(world.index, world.collection));
+    @Then("^the collection \'([^\"]*)\' should exists$")
+    public void the_collection_should_exists(String collection) throws Exception {
+        Assert.assertTrue(k.getCollection().exists(world.index, collection));
     }
 
-    @When("^I check if the collection exists$")
-    public void i_check_if_the_collection_exists() throws Exception {
-        exists = k.getCollection().exists(world.index, world.collection);
+    @When("^I check if the collection \'([^\"]*)\' exists$")
+    public void i_check_if_the_collection_exists(String collection) throws Exception {
+        exists = k.getCollection().exists(world.index, collection);
     }
 
-    @Then("^it should exists$")
+    @Then("^the collection should exist$")
     public void it_should_exists() throws Exception {
         Assert.assertTrue(exists);
     }
 
-    @When("^I list the collections$")
-    public void i_list_the_collections() throws Exception {
-        listCollections = k.getCollection().list(world.index);
+    @When("^I list the collections of \'([^\"]*)\'$")
+    public void i_list_the_collections(String index) throws Exception {
+        listCollections = k.getCollection().list(index);
     }
 
     class Col {
@@ -72,23 +71,23 @@ public class Collectiondefs {
         Assert.assertEquals("{\"type\":\"all\",\"collections\":[{\"name\":\"test-collection1\",\"type\":\"stored\"},{\"name\":\"test-collection2\",\"type\":\"stored\"}],\"from\":0,\"size\":10}", this.listCollections);
     }
 
-    @When("^I truncate the collection$")
-    public void i_truncate_the_collection() throws Exception {
+    @When("^I truncate the collection \'([^\"]*)\'$")
+    public void i_truncate_the_collection(String collection) throws Exception {
         QueryOptions o = new QueryOptions();
         o.setRefresh("wait_for");
 
-        k.getCollection().truncate(world.index, world.collection, o);
+        k.getCollection().truncate(world.index, collection, o);
     }
 
-    @Then("^the collection shall be empty$")
-    public void it_should_be_empty() throws Exception {
-        SearchResult res = k.getDocument().search(world.index, world.collection, "{}");
+    @Then("^the collection \'([^\"]*)\' shall be empty$")
+    public void it_should_be_empty(String collection) throws Exception {
+        SearchResult res = k.getDocument().search(world.index, collection, "{}");
         Assert.assertEquals("[]", res.getDocuments());
     }
 
-    @When("^I update the mapping$")
-    public void i_update_the_mapping() throws Exception {
-        k.getCollection().updateMapping(world.index, world.collection, "{" +
+    @When("^I update the mapping of collection \'([^\"]*)\'$")
+    public void i_update_the_mapping(String collection) throws Exception {
+        k.getCollection().updateMapping(world.index, collection, "{" +
                 "\"properties\": {" +
                 "    \"foo\": {" +
                 "      \"type\": \"string\"" +
@@ -97,25 +96,25 @@ public class Collectiondefs {
                 "}");
     }
 
-    @Then("^the mapping should be updated$")
-    public void the_mapping_should_be_updated() throws Exception {
-        String mapping = k.getCollection().getMapping(world.index, world.collection);
+    @Then("^the mapping of \'([^\"]*)\' should be updated$")
+    public void the_mapping_should_be_updated(String collection) throws Exception {
+        String mapping = k.getCollection().getMapping(world.index, collection);
         Assert.assertEquals("{\"test-index\":{\"mappings\":{\"test-collection\":{\"properties\":{\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}", mapping);
     }
 
-    @When("^I update the specifications$")
-    public void i_update_the_specifications() throws Exception {
-        k.getCollection().updateSpecifications(world.index, world.collection, "{\""+world.index+"\":{\""+world.collection+"\":{\"strict\":true}}}");
+    @When("^I update the specifications of the collection \'([^\"]*)\'$")
+    public void i_update_the_specifications(String collection) throws Exception {
+        k.getCollection().updateSpecifications(world.index, world.collection, "{\"" + world.index + "\":{\""+ collection +"\":{\"strict\":true}}}");
     }
 
-    @Then("^they should be updated$")
-    public void they_should_be_updated() throws Exception {
-        Assert.assertEquals("{\"validation\":{\"strict\":true},\"index\":\"test-index\",\"collection\":\"test-collection\"}", k.getCollection().getSpecifications(world.index, world.collection));
+    @Then("^the specifications of \'([^\"]*)\' should be updated$")
+    public void the_specifications_of_collection_should_be_updated(String collection) throws Exception {
+        Assert.assertEquals("{\"validation\":{\"strict\":true},\"index\":\"test-index\",\"collection\":\"test-collection\"}", k.getCollection().getSpecifications(world.index, collection));
     }
 
-    @When("^I validate the specifications$")
-    public void i_validate_the_specifications() throws Exception {
-        this.validateSpecs = k.getCollection().validateSpecifications("{\""+world.index+"\":{\""+world.collection+"\":{\"strict\":true}}}");
+    @When("^I validate the specifications of \'([^\"]*)\'$")
+    public void i_validate_the_specifications(String collection) throws Exception {
+        this.validateSpecs = k.getCollection().validateSpecifications("{\""+world.index+"\":{\""+collection+"\":{\"strict\":true}}}");
     }
 
     @Then("^they should be validated$")
@@ -128,16 +127,16 @@ public class Collectiondefs {
         k.getCollection().updateSpecifications(world.index, world.collection, "{\""+world.index+"\":{\""+world.collection+"\":{\"strict\":true}}}");
     }
 
-    @When("^I delete the specifications$")
-    public void i_delete_the_specifications() throws Exception {
-        k.getCollection().deleteSpecifications(world.index, world.collection);
+    @When("^I delete the specifications of \'([^\"]*)\'$")
+    public void i_delete_the_specifications(String collection) throws Exception {
+        k.getCollection().deleteSpecifications(world.index, collection);
     }
 
-    @Then("^the specifications must not exist$")
-    public void the_specifications_must_not_exist() throws Exception {
+    @Then("^the specifications of \'([^\"]*)\' must not exist$")
+    public void the_specifications_must_not_exist(String collection) throws Exception {
         boolean notFound = false;
         try {
-            k.getCollection().getSpecifications(world.index, world.collection);
+            k.getCollection().getSpecifications(world.index, collection);
         } catch (NotFoundException e) {
             notFound = true;
         }

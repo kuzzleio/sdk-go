@@ -157,7 +157,7 @@ Feature: Document management
     And the collection has a document with id 'mupdate-my-document-id'
     And the collection has a document with id 'mupdate-my-document-id2'
     When I update the documents ['unknown', 'mupdate-my-document-id2']
-    And the document 'mupdate-my-document-id2' should be updated
+    Then the document 'mupdate-my-document-id2' should be updated
     And I get a partial error
 
   Scenario: CreateOrReplace (create) multiple documents with no error
@@ -194,7 +194,7 @@ Feature: Document management
     And it has a collection 'exist-test-collection'
     And the collection has a document with id 'exist-my-document-id'
     When I check if 'exist-my-document-unknown' exists
-    Then the document should not exists
+    Then the document should not exist
 
   Scenario: Get multiple document
     Given Kuzzle Server is running
@@ -202,5 +202,5 @@ Feature: Document management
     And it has a collection 'mget-test-collection'
     And the collection has a document with id 'mget-my-document-id'
     And the collection has a document with id 'mget-my-document-id2'    
-    When I get document ['mget-my-document-id', 'mget-my-document-id2']
+    When I get documents ['mget-my-document-id', 'mget-my-document-id2']
     Then the documents should be retrieved
