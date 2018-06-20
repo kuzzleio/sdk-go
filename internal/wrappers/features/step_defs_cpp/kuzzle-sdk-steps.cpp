@@ -287,3 +287,47 @@ namespace {
   }
 
 }
+
+GIVEN("^there is the indexes \'([^\"]*)\' and \'([^\"]*)\'$")
+{
+  REGEX_PARAM(std::string, index_name1);
+  REGEX_PARAM(std::string, index_name2);
+  ScenarioScope<KuzzleCtx> ctx;
+
+  try {
+    ctx->kuzzle->index->create(index_name1);
+    ctx->kuzzle->index->create(index_name2);
+  } catch(KuzzleException e) {
+    K_LOG_E(e.getMessage().c_str());
+  }
+}
+
+WHEN("^I delete the indexes \'([^\"]*)\' and \'([^\"]*)\'$")
+{
+  REGEX_PARAM(std::string, index_name1);
+  REGEX_PARAM(std::string, index_name2);
+  ScenarioScope<KuzzleCtx> ctx;
+
+  std::vector<std::string> v;
+
+  v.push_back(index_name1);
+  v.push_back(index_name2);
+
+  try {
+    ctx->kuzzle->index->mDelete(v);
+  } catch(KuzzleException e) {
+    K_LOG_E(e.getMessage().c_str());
+  }
+}
+
+THEN("^indexes \'([^\"]*)\' and \'([^\"]*)\' don't exist$")
+{
+  REGEX_PARAM(std::string, index_name1);
+  REGEX_PARAM(std::string, index_name2);
+  ScenarioScope<KuzzleCtx> ctx;
+
+  BOOST_CHECK(
+    !ctx->kuzzle->index->exists(index_name1) &&
+    !ctx->kuzzle->index->exists(index_name2)
+  );
+}
