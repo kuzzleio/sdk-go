@@ -9,8 +9,10 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
+    CustomNotificationListener listener;
+
     try {
-      ctx->kuzzle->realtime->subscribe(ctx->index, ctx->collection, "{}", NULL);
+      ctx->kuzzle->realtime->subscribe(ctx->index, ctx->collection, "{}", &listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -23,10 +25,15 @@ namespace {
 
     try {
       ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}");
+      usleep(60000);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
   }
 
+  THEN("^I receive a notification$") {
+    ScenarioScope<KuzzleCtx> ctx;
 
+    BOOST_CHECK(ctx->notif_result != NULL);
+  }
 }

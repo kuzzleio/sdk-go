@@ -37,6 +37,18 @@ struct KuzzleCtx {
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   bool success;
+
+  notification_result *notif_result = NULL;
+};
+
+class CustomNotificationListener : public NotificationListener {
+  public:
+    virtual void onMessage(notification_result *res) const {
+      ScenarioScope<KuzzleCtx> ctx;
+
+      cout << "####### " << endl;
+      ctx->notif_result = res;
+    }
 };
 
 #endif
