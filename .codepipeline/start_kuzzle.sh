@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 # Download and launch custom Kuzzle stack
-KUZZLE_CHECK_CONNECTIVITY_CMD="curl -o /dev/null http://localhost:7512"
 
 docker-compose -f .codepipeline/docker-compose.yml up -d
 
-while ! $KUZZLE_CHECK_CONNECTIVITY_CMD &> /dev/null
-  do
-    sleep 2
-  done
+printf 'Waiting for Kuzzle stack to be up and running'
+
+until $(curl --output /dev/null --silent --head --fail http://localhost:7512); do
+  printf '.'
+  sleep 5
+done

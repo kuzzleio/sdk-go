@@ -10,7 +10,7 @@ ifeq ($(OS),Windows_NT)
 	MV = rename
 	CMDSEP = &
 	ROOT_DIR_CLEAN = $(subst /,\,$(ROOT_DIR))
-	LIB_PREFIX = 
+	LIB_PREFIX =
 else
 	STATICLIB = .a
 	DYNLIB = .so
@@ -119,7 +119,7 @@ swig:
 
 swig_java:
 ifeq ($(OS),Windows_NT)
-	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
 else
 	mkdir -p $(OUTDIR)
 endif
@@ -127,7 +127,7 @@ endif
 
 swig_python:
 ifeq ($(OS),Windows_NT)
-	@if not exist $(OUTDIR) mkdir $(OUTDIR)	
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
 else
 	mkdir -p $(OUTDIR)
 endif
@@ -155,7 +155,7 @@ java: core_java swig_java wrapper_java java_object
 	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
 	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
-	mkdir -p $(ROOTOUTDIR)/java/src/main/java	
+	mkdir -p $(ROOTOUTDIR)/java/src/main/java
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && taskset -c 1 sh gradlew sourcesJar jar javadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
@@ -192,15 +192,15 @@ cpp: makedir core_cpp $(CPPSDK)
 clean:
 ifeq ($(OS),Windows_NT)
 	if exist kcore_wrap.cxx $(RM) kcore_wrap.cxx
-	if exist kcore_wrap.h $(RM) kcore_wrap.h 
-	if exist kcore_wrap.o $(RM) kcore_wrap.o 
-	if exist build$(PATHSEP)c $(RRM) build$(PATHSEP)c 
-	if exist build$(PATHSEP)java$(PATHSEP)src  $(RRM) build$(PATHSEP)java$(PATHSEP)src 
-	if exist build$(PATHSEP)java$(PATHSEP)io $(RRM) build$(PATHSEP)java$(PATHSEP)io 
-	if exist build$(PATHSEP)java$(PATHSEP)build $(RRM) build$(PATHSEP)java$(PATHSEP)build 
+	if exist kcore_wrap.h $(RM) kcore_wrap.h
+	if exist kcore_wrap.o $(RM) kcore_wrap.o
+	if exist build$(PATHSEP)c $(RRM) build$(PATHSEP)c
+	if exist build$(PATHSEP)java$(PATHSEP)src  $(RRM) build$(PATHSEP)java$(PATHSEP)src
+	if exist build$(PATHSEP)java$(PATHSEP)io $(RRM) build$(PATHSEP)java$(PATHSEP)io
+	if exist build$(PATHSEP)java$(PATHSEP)build $(RRM) build$(PATHSEP)java$(PATHSEP)build
 	if exist build$(PATHSEP)python $(RRM) build$(PATHSEP)python
-	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp 
-	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io 
+	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp
+	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io
 else
 	$(RRM) build/c
 	$(RRM) build/java/src build/java/io build/java/build
