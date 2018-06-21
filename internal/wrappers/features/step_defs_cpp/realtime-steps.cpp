@@ -37,10 +37,11 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
     sleep(1);
     BOOST_CHECK(ctx->notif_result != NULL);
-    ctx->notif_result = NULL;
     ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
     delete ctx->listener;
     delete ctx->notif_result;
+    ctx->notif_result = NULL;
+    ctx->listener = NULL;
   }
 
   GIVEN("^I subscribe to \'([^\"]*)\' with \'(.*)\' as filter$") {
