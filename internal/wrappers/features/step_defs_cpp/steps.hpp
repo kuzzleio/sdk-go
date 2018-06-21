@@ -33,6 +33,8 @@ struct KuzzleCtx {
   string collection;
   string jwt;
 
+  string room_id;
+
   user*                   currentUser        = NULL;
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
@@ -46,7 +48,6 @@ class CustomNotificationListener : public NotificationListener {
     virtual void onMessage(notification_result *res) const {
       ScenarioScope<KuzzleCtx> ctx;
 
-      std::cerr << "####### " << endl;
       ctx->notif_result = res;
     }
 };

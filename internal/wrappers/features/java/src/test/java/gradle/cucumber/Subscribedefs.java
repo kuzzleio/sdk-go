@@ -26,7 +26,7 @@ public class Subscribedefs {
         }
     }
 
-    @Given("^I subscribe to \'([^\"]*)\'$")
+    @Given("^I subscribe to \'(.*)\'$")
     public void i_subscribe_to(String collection) throws Exception {
         roomId = k.getRealtime().subscribe(world.index, collection, "{}", new NotificationListener() {
             @Override
@@ -36,7 +36,7 @@ public class Subscribedefs {
         });
     }
 
-    @Given("^I subscribe to \'([^\"]*)\' with filter \'(.*)\'$")
+    @Given("^I subscribe to \'(.*)\' with \'(.*)\' as filter$")
     public void i_subscribe_with_filter(String collection, String filter) throws Exception {
         content = null;
         roomId = k.getRealtime().subscribe(world.index, collection, filter, new NotificationListener() {

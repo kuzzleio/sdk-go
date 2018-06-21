@@ -30,7 +30,6 @@ namespace kuzzleio {
   }
 
   void call_subscribe_cb(notification_result* res, void* data) {
-    
     if (data) {
       NotificationListener *listener = ((Realtime*)data)->getListener(res->room_id);
       if (listener) {
@@ -93,5 +92,5 @@ namespace kuzzleio {
     bool ret = r->result;
     kuzzle_free_bool_result(r);
     return ret;
-}
+  }
 }
