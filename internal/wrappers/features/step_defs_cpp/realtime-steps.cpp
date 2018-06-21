@@ -18,7 +18,7 @@ namespace {
     }
   }
 
-  WHEN("^I create a document in ([^\"]*)$") {
+  WHEN("^I create a document in \'([^\"]*)\'$") {
     REGEX_PARAM(std::string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;

@@ -47,7 +47,7 @@ public class Subscribedefs {
         });
     }
 
-    @When("^I create a document in \"([^\"]*)\"$")
+    @When("^I create a document in \'([^\"]*)\'$")
     public void i_create_a_document_in(String collection) throws Exception {
         k.getDocument().create(world.index, collection, "", "{}");
         Thread.sleep(1000);
