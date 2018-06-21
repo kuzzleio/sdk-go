@@ -37,6 +37,7 @@ struct KuzzleCtx {
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   bool success;
+  int hits;
 };
 
 #endif

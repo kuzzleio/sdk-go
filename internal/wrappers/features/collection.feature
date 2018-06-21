@@ -22,40 +22,40 @@ Feature: Collection management
     Then the result contains 2 hits
     And the content should not be null
 
-  Scenario: Truncate a collection
-    Given Kuzzle Server is running
-    And there is an index 'test-index'
-    And it has a collection 'test-collection'
-    And the collection has a document with id 'my-document-id'
-    And the collection has a document with id 'my-document-id2'
-    When I truncate the collection 'test-collection'
-    Then the collection 'test-collection' shall be empty
-
-  Scenario: Create a collection with a custom mapping
-    Given Kuzzle Server is running
-    And there is an index 'test-index'
-    And it has a collection 'test-collection'
-    When I update the mapping of collection 'test-collection'
-    Then the mapping of 'test-collection' should be updated
-
-  Scenario: Update specifications
-    Given Kuzzle Server is running
-    And there is an index 'test-index'
-    And it has a collection 'test-collection'
-    When I update the specifications of the collection 'test-collection'
-    Then the specifications of 'test-collection' should be updated
-
-  Scenario: Validate specifications
-    Given Kuzzle Server is running
-    And there is an index 'test-index'
-    And it has a collection 'test-collection'
-    When I validate the specifications of 'test-collection'
-    Then the specifications of 'test-collection' should be updated
-
-  Scenario: Delete specifications
-    Given Kuzzle Server is running
-    And there is an index 'test-index'
-    And it has a collection 'test-collection'
-    And has specifications
-    When I delete the specifications of 'test-collection'
-    Then the specifications of 'test-collection' must not exist
+  # Scenario: Truncate a collection
+  #   Given Kuzzle Server is running
+  #   And there is an index 'test-index'
+  #   And it has a collection 'test-collection'
+  #   And the collection has a document with id 'my-document-id'
+  #   And the collection has a document with id 'my-document-id2'
+  #   When I truncate the collection 'test-collection'
+  #   Then the collection 'test-collection' shall be empty
+  #
+  # Scenario: Create a collection with a custom mapping
+  #   Given Kuzzle Server is running
+  #   And there is an index 'test-index'
+  #   And it has a collection 'test-collection'
+  #   When I update the mapping of collection 'test-collection'
+  #   Then the mapping of 'test-collection' should be updated
+  #
+  # Scenario: Update specifications
+  #   Given Kuzzle Server is running
+  #   And there is an index 'test-index'
+  #   And it has a collection 'test-collection'
+  #   When I update the specifications of the collection 'test-collection'
+  #   Then the specifications of 'test-collection' should be updated
+  #
+  # Scenario: Validate specifications
+  #   Given Kuzzle Server is running
+  #   And there is an index 'test-index'
+  #   And it has a collection 'test-collection'
+  #   When I validate the specifications of 'test-collection'
+  #   Then the specifications of 'test-collection' should be updated
+  #
+  # Scenario: Delete specifications
+  #   Given Kuzzle Server is running
+  #   And there is an index 'test-index'
+  #   And it has a collection 'test-collection'
+  #   And has specifications
+  #   When I delete the specifications of 'test-collection'
+  #   Then the specifications of 'test-collection' must not exist

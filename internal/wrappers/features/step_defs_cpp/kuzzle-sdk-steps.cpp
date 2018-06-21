@@ -125,7 +125,7 @@ GIVEN("^Kuzzle Server is running$")
   BOOST_CHECK(error == NULL);
 }
 
-GIVEN("^there is an index '(test-index)'$")
+GIVEN("^there is an index \'([^\"]*)\'$")
 {
   REGEX_PARAM(std::string, index_name);
   ScenarioScope<KuzzleCtx> ctx;
@@ -144,20 +144,6 @@ GIVEN("^there is an index '(test-index)'$")
   }
 }
 
-GIVEN("^it has a collection '(test-collection)'$")
-{
-  REGEX_PARAM(std::string, collection_name);
-  ScenarioScope<KuzzleCtx> ctx;
-  ctx->collection = collection_name;
-
-  K_LOG_D("Creating collection: %s", collection_name.c_str());
-  try {
-    ctx->kuzzle->collection->create(ctx->index, ctx->collection);
-  } catch (KuzzleException e) {
-    K_LOG_E(e.getMessage().c_str());
-    BOOST_FAIL(e.getMessage());
-  }
-}
 
 GIVEN("^the collection has a document with id '(my-document-id)'$")
 {
