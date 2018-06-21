@@ -113,8 +113,14 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
     ctx->kuzzle_options         = KUZZLE_OPTIONS_DEFAULT;
     ctx->kuzzle_options.connect = MANUAL;
+    std::string hostname = "localhost";
+
+    if (std::getenv("KUZZLE_HOST") != NULL) {
+      hostname = std::getenv("KUZZLE_HOST");
+    }
+
     try {
-      ctx->kuzzle = new Kuzzle("localhost", &ctx->kuzzle_options);
+      ctx->kuzzle = new Kuzzle(hostname, &ctx->kuzzle_options);
     } catch (KuzzleException e) {
       K_LOG_E(e.getMessage().c_str());
     }
