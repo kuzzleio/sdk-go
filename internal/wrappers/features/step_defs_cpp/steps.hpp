@@ -24,6 +24,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
+class CustomNotificationListener;
+
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
   options kuzzle_options;
@@ -33,10 +35,24 @@ struct KuzzleCtx {
   string collection;
   string jwt;
 
+  string room_id;
+
   user*                   currentUser        = NULL;
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   bool success;
+
+  notification_result *notif_result = NULL;
+  CustomNotificationListener *listener;
+};
+
+class CustomNotificationListener : public NotificationListener {
+  public:
+    virtual void onMessage(notification_result *res) const {
+      ScenarioScope<KuzzleCtx> ctx;
+
+      ctx->notif_result = res;
+    }
 };
 
 #endif

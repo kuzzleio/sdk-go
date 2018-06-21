@@ -92,5 +92,5 @@ namespace kuzzleio {
     bool ret = r->result;
     kuzzle_free_bool_result(r);
     return ret;
-}
+  }
 }
