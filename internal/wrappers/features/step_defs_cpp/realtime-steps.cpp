@@ -9,10 +9,10 @@ namespace {
    
     ScenarioScope<KuzzleCtx> ctx;
 
-    CustomNotificationListener *listener = new CustomNotificationListener();
+    ctx->listener = new CustomNotificationListener();
 
     try {
-      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", listener);
+      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", ctx->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -39,6 +39,8 @@ namespace {
     BOOST_CHECK(ctx->notif_result != NULL);
     ctx->notif_result = NULL;
     ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
+    delete ctx->listener;
+    delete ctx->notif_result;
   }
 
   GIVEN("^I subscribe to \'([^\"]*)\' with \'(.*)\' as filter$") {
@@ -47,10 +49,10 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    CustomNotificationListener *listener = new CustomNotificationListener();
+    ctx->listener = new CustomNotificationListener();
 
     try {
-      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, listener);
+      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, ctx->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -98,6 +100,7 @@ namespace {
     try {
       ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
       ctx->notif_result = NULL;
+      delete ctx->listener;
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }

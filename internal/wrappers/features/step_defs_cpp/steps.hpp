@@ -24,6 +24,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
+class CustomNotificationListener;
+
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
   options kuzzle_options;
@@ -41,6 +43,7 @@ struct KuzzleCtx {
   bool success;
 
   notification_result *notif_result = NULL;
+  CustomNotificationListener *listener;
 };
 
 class CustomNotificationListener : public NotificationListener {
