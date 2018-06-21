@@ -34,17 +34,13 @@ linter_check() {
     fi
 }
 
-make_wrappers() {
-		cd "${dir}/internal/wrappers"
-		make all
-}
-
 cd "$dir"
 
 linter_check .
 linter_check ./internal/wrappers
 generate_cover_data
 show_cover_report func
+
 case "$1" in
 "")
     ;;

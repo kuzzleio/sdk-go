@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "steps.hpp"
 
 // Anonymous namespace to handle a linker error
