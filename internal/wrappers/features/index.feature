@@ -14,6 +14,6 @@ Feature: Index controller
 
   Scenario: Delete multiple indexes
     Given Kuzzle Server is running
-    And there is the indexes 'test-index' and 'test-index2'
-    When I delete the indexes 'test-index' and 'test-index2'
-    Then indexes 'test-index' and 'test-index2' don't exist
+    And there is the indexes 'test-index1' and 'test-index2'
+    When I delete the indexes 'test-index1' and 'test-index2'
+    Then indexes 'test-index1' and 'test-index2' don't exist

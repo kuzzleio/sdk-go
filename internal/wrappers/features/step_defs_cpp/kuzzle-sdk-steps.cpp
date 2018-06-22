@@ -128,25 +128,6 @@ namespace {
     BOOST_CHECK(error == NULL);
   }
 
-  GIVEN("^there is an index '(test-index)'$")
-  {
-    REGEX_PARAM(std::string, index_name);
-    ScenarioScope<KuzzleCtx> ctx;
-    ctx->index = index_name;
-
-    if (!ctx->kuzzle->index->exists(index_name)) {
-      K_LOG_D("Creating index: %s", index_name.c_str());
-      try {
-        ctx->kuzzle->index->create(index_name);
-      } catch (KuzzleException e) {
-        K_LOG_E(e.getMessage().c_str());
-        BOOST_FAIL(e.getMessage());
-      }
-    } else {
-      K_LOG_D("Using existing index: %s", index_name.c_str());
-    }
-  }
-
   GIVEN("^it has a collection '(test-collection)'$")
   {
     REGEX_PARAM(std::string, collection_name);
@@ -201,6 +182,12 @@ namespace {
   }
 
   THEN("^I get an error with message 'document alread exists'$")
+  {
+    ScenarioScope<KuzzleCtx> ctx;
+    BOOST_CHECK(ctx->success == false);
+  }
+
+  THEN("^I get an error$")
   {
     ScenarioScope<KuzzleCtx> ctx;
     BOOST_CHECK(ctx->success == false);
