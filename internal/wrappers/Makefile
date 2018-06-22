@@ -152,12 +152,12 @@ java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: core_java swig_java wrapper_java java_object
 #rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
-	taskset -c 1 $(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
 	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
-	cd build/java && taskset -c 1 sh gradlew sourcesJar jar javadocJar && cd -
+	cd build/java && sh gradlew sourcesJar jar javadocJar && cd -
 	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 	cp -p $(GOTARGET) $(OUTDIR)
 	cp -p $(GOTARGETSO) $(OUTDIR)
