@@ -71,7 +71,7 @@ namespace {
     json_spirit::read(ctx->content, collectionsList);
     json_spirit::Value field_value = json_spirit::find_value(collectionsList.get_obj(), "collections");
 
-    ctx->hits = field_value.get_array().size();     
+    ctx->hits = field_value.get_array().size();
   }
 
   GIVEN("^the collection has a document with id \'([^\"]*)\'$")
@@ -83,7 +83,7 @@ namespace {
     query_options options = {0};
     options.refresh = (char*)"wait_for";
 
-    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
+    ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}", &options);
   }
 
   WHEN("^I truncate the collection \'([^\"]*)\'$")
@@ -106,6 +106,7 @@ namespace {
 
     search_result *result = ctx->kuzzle->document->search(ctx->index, collection_id, "{}");
 
+    std::cout << result->total << std::endl;
     BOOST_CHECK(result->total == 0);
 
     kuzzle_free_search_result(result);

@@ -9,7 +9,7 @@ This project contains a CGO wrapper to Kuzzle's [Go SDK](https://github.com/kuzz
 * [Go](https://golang.org/doc/install)
 * G++ 6.x
 
-# C++ SDK
+## C++ SDK
 
 You can use Docker to run the C++ functional test :
  - Build SDK : `docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh`
@@ -17,8 +17,8 @@ You can use Docker to run the C++ functional test :
  - Build and run features : `docker run --rm -it --network codepipeline_default --link kuzzle -e KUZZLE_HOST=kuzzle --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go  kuzzleio/sdk-cross:amd64 sh internal/wrappers/features/run_cpp.sh`
 `
 
-Set the environment variable `FEATURE_FILE` inside container to run the features of a specific file.
-
+You can specify a single feature file to be run by passing it as argument to the `run_***.sh` script.  
+Run only the collection features : `docker run --rm -it --network codepipeline_default --link kuzzle -e KUZZLE_HOST=kuzzle --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go  kuzzleio/sdk-cross:amd64 sh internal/wrappers/features/run_cpp.sh collection.feature`
 
 # Contributing
 
