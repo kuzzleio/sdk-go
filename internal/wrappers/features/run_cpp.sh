@@ -6,9 +6,9 @@ cd internal/wrappers
 FEATURE_FILE=$1
 
 if [ ! -z "$KUZZLE_HOST" ]; then
-  ./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
-else
   ./_build_cpp_tests/KuzzleSDKStepDefs &
+else
+  ./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
 fi
 
 if [ ! -z "$FEATURE_FILE" ]; then

@@ -234,7 +234,7 @@ public class Documentdefs {
         Assert.assertEquals(0, k.getDocument().count_(world.index, world.collection, "{}"));
     }
 
-    @And("^I get a partial error$")
+    @And("^I should have a partial error$")
     public void i_get_a_partial_error() {
         Assert.assertTrue(this.partialException);
         this.partialException = false;
