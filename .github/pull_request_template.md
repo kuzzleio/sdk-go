@@ -1,5 +1,5 @@
 <!--
-  This template is not mandatory.
+  This template is optional.
   It simply serves to provide a guide to allow a better review of pull requests.
 -->
 
@@ -10,8 +10,8 @@
 -->
 
 
-## What does this PR do ?
-<!-- Please fulfill this section -->
+## What does this PR do?
+<!-- Please fill this section -->
 
 <!--
   Please include a summary of the change and which issue is fixed.

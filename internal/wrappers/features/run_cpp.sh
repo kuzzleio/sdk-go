@@ -2,6 +2,19 @@
 set -e
 cd internal/wrappers
 ./build_cpp_tests.sh
-./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
-cucumber
+
+FEATURE_FILE=$1
+
+if [ ! -z "$KUZZLE_HOST" ]; then
+  ./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
+else
+  ./_build_cpp_tests/KuzzleSDKStepDefs &
+fi
+
+if [ ! -z "$FEATURE_FILE" ]; then
+  cucumber features/$FEATURE_FILE
+else
+  cucumber
+fi
+
 cd -

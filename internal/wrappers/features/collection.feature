@@ -50,7 +50,7 @@ Feature: Collection management
     And there is an index 'test-index'
     And it has a collection 'test-collection'
     When I validate the specifications of 'test-collection'
-    Then the specifications of 'test-collection' should be updated
+    Then they should be validated
 
   Scenario: Delete specifications
     Given Kuzzle Server is running

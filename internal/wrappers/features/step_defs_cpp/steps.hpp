@@ -41,6 +41,8 @@ struct KuzzleCtx {
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   bool success;
+  int hits;
+  string content;
 
   notification_result *notif_result = NULL;
   CustomNotificationListener *listener;

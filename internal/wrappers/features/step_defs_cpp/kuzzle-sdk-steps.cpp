@@ -128,34 +128,6 @@ namespace {
     BOOST_CHECK(error == NULL);
   }
 
-  GIVEN("^it has a collection '(test-collection)'$")
-  {
-    REGEX_PARAM(std::string, collection_name);
-    ScenarioScope<KuzzleCtx> ctx;
-    ctx->collection = collection_name;
-
-    K_LOG_D("Creating collection: %s", collection_name.c_str());
-    try {
-      ctx->kuzzle->collection->create(ctx->index, ctx->collection);
-    } catch (KuzzleException e) {
-      K_LOG_E(e.getMessage().c_str());
-      BOOST_FAIL(e.getMessage());
-    }
-  }
-
-  GIVEN("^the collection has a document with id '(my-document-id)'$")
-  {
-    REGEX_PARAM(std::string, document_id);
-
-    ScenarioScope<KuzzleCtx> ctx;
-
-    try {
-      ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
-    } catch (KuzzleException e) {
-      e.getMessage();
-    }
-  }
-
   GIVEN("^the collection doesn't have a document with id '(my-document-id)'$")
   {
     REGEX_PARAM(std::string, document_id);
@@ -271,6 +243,24 @@ namespace {
     K_LOG_D("Current user content: %s", ctx->currentUser->content);
 
     BOOST_CHECK_MESSAGE(ctx->currentUser != NULL, "Failed to retrieve current user");
+  }
+
+  THEN("^the result contains (\\d+) hits$")
+  {
+    REGEX_PARAM(unsigned int, hits);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    BOOST_CHECK(hits == ctx->hits);
+
+    ctx->hits = -1;
+  }
+
+  THEN("^the content should not be null$")
+  {
+    ScenarioScope<KuzzleCtx> ctx;
+
+    BOOST_CHECK(ctx->content != "");
   }
 
 }
