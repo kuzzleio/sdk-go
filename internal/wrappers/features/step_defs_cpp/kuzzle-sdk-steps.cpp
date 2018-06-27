@@ -210,7 +210,8 @@ namespace {
     BOOST_CHECK(ctx->content != "");
   }
 
-  THEN("^I should have (a|no) partial error$") {
+  THEN("^I (should have|get) (a|no) partial error$") {
+    REGEX_PARAM(string, unused);
     REGEX_PARAM(string, error_presence);
 
     ScenarioScope<KuzzleCtx> ctx;
