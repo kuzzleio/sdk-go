@@ -102,8 +102,8 @@ void kuzzle_user_delete(Kuzzle *kuzzle, const string &user_id)
     req.id = user_id.c_str();
 
     query_options options = {0};
-    options.refresh = (char *)"wait_for";
-    options.volatiles = (char *)"{}";
+    options.refresh = const_cast<char*>("wait_for");
+    options.volatiles = const_cast<char*>("{}");
     kuzzle->query(
         &req, &options); // TODO: test if we can delete with options
 

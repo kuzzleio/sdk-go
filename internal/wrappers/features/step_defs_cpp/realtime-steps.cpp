@@ -6,7 +6,7 @@ namespace {
 
   GIVEN("^I subscribe to \'(.*)\'$") {
     REGEX_PARAM(std::string, collection_id);
-   
+
     ScenarioScope<KuzzleCtx> ctx;
 
     ctx->listener = new CustomNotificationListener();
@@ -24,7 +24,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     query_options options = {0};
-    options.refresh = (char *)"wait_for";
+    options.refresh = const_cast<char*>("wait_for");
 
     try {
       ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}", &options);
@@ -63,9 +63,9 @@ namespace {
     REGEX_PARAM(std::string, document_id);
     REGEX_PARAM(std::string, key);
     REGEX_PARAM(std::string, value);
-    
+
     ScenarioScope<KuzzleCtx> ctx;
-    
+
     try {
       ctx->kuzzle->document->update(ctx->index, ctx->collection, document_id, "{\""+key+"\":\""+value+"\"}");
     } catch (KuzzleException e) {
@@ -91,11 +91,11 @@ namespace {
     try {
       ctx->kuzzle->realtime->publish(ctx->index, ctx->collection, "{}");
     } catch (KuzzleException e) {
-      BOOST_FAIL(e.getMessage());      
-    }   
+      BOOST_FAIL(e.getMessage());
+    }
   }
 
-  GIVEN("^I unsubscribe$") {    
+  GIVEN("^I unsubscribe$") {
     ScenarioScope<KuzzleCtx> ctx;
 
     try {
@@ -109,7 +109,7 @@ namespace {
 
   THEN("^I do not receive a notification$") {
     ScenarioScope<KuzzleCtx> ctx;
-    
+
     BOOST_CHECK(ctx->notif_result == NULL);
   }
 }

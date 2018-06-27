@@ -11,8 +11,8 @@ This project contains a CGO wrapper to Kuzzle's [Go SDK](https://github.com/kuzz
 
 ## C++ SDK
 
-You can use Docker to run the C++ functional test :
- - Build SDK : `docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh`
+You can use Docker to run the C++ functional tests:
+ - Build the SDK : `docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh`
  - Run a Kuzzle stack : `sh .codepipeline/start_kuzzle.sh`
  - Build and run features : `docker run --rm -it --network codepipeline_default --link kuzzle -e KUZZLE_HOST=kuzzle --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go  kuzzleio/sdk-cross:amd64 sh internal/wrappers/features/run_cpp.sh`
 `

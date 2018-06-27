@@ -81,7 +81,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     query_options options = {0};
-    options.refresh = (char*)"wait_for";
+    options.refresh = const_cast<char*>("wait_for");
 
     ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}", &options);
   }
@@ -93,7 +93,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     query_options options = {0};
-    options.refresh = (char*)"wait_for";
+    options.refresh = const_cast<char*>("wait_for");
 
     ctx->kuzzle->collection->truncate(ctx->index, collection_id, &options);
   }
@@ -106,7 +106,6 @@ namespace {
 
     search_result *result = ctx->kuzzle->document->search(ctx->index, collection_id, "{}");
 
-    std::cout << result->total << std::endl;
     BOOST_CHECK(result->total == 0);
 
     kuzzle_free_search_result(result);
