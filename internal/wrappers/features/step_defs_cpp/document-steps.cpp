@@ -10,7 +10,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}", &options);
       ctx->success = 1;
@@ -49,7 +49,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       ctx->kuzzle->document->delete_(ctx->index, ctx->collection, document_id, &options);
     } catch (KuzzleException e) {
@@ -65,7 +65,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       ctx->kuzzle->document->createOrReplace(ctx->index, ctx->collection, document_id, "{\"a\":\"replaced document\"}", &options);
       ctx->document_id = document_id;
@@ -95,7 +95,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       ctx->kuzzle->document->replace(ctx->index, ctx->collection, document_id, "{\"a\":\"replaced document\"}", &options);
       ctx->document_id = document_id;
@@ -122,7 +122,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       ctx->kuzzle->document->update(ctx->index, ctx->collection, document_id, "{\"a\":\"updated document\"}", &options);
       ctx->document_id = document_id;
@@ -196,7 +196,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       std::vector<string> document_ids;
       document_ids.push_back(document1_id);
@@ -235,7 +235,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       string documents = "{\"documents\":[{\"_id\":\"" + document1_id + "\", \"body\":{}}, {\"_id\":\"" + document2_id + "\", \"body\":{}}]}";
       ctx->kuzzle->document->mCreate(ctx->index, ctx->collection, documents, &options);
@@ -258,7 +258,7 @@ namespace {
 
     try {
       query_options options = {0};
-      options.refresh = (char*)"wait_for";
+      options.refresh = const_cast<char*>("wait_for");
 
       string documents = "{\"documents\":[{\"_id\":\"" + document1_id + "\", \"body\":{\"a\":\"replaced document\"}}, {\"_id\":\"" + document2_id + "\", \"body\":{\"a\":\"replaced document\"}}]}";
       ctx->kuzzle->document->mReplace(ctx->index, ctx->collection, documents, &options);
@@ -283,5 +283,121 @@ namespace {
     BOOST_CHECK(document.find("replaced document") != std::string::npos);
   }
 
+  WHEN("^I update the documents \\[\'(.*)\', \'(.*)\'\\]$")
+  {
+    REGEX_PARAM(std::string, document1_id);
+    REGEX_PARAM(std::string, document2_id);
 
+    ScenarioScope<KuzzleCtx> ctx;
+
+    try {
+      query_options options = {0};
+      options.refresh = const_cast<char*>("wait_for");
+
+      string documents = "{\"documents\":[{\"_id\":\"" + document1_id + "\", \"body\":{\"a\":\"replaced document\"}}, {\"_id\":\"" + document2_id + "\", \"body\":{\"a\":\"replaced document\"}}]}";
+      ctx->kuzzle->document->mUpdate(ctx->index, ctx->collection, documents, &options);
+      ctx->success = 1;
+      ctx->partial_exception = 0;
+    } catch (PartialException e) {
+      ctx->partial_exception = 1;
+      ctx->success = 0;
+    } catch (KuzzleException e) {
+      BOOST_FAIL(e.getMessage());
+    }
+  }
+
+  THEN("^the document \'([^\"]*)\' should be updated$")
+  {
+    REGEX_PARAM(std::string, document_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    string document = ctx->kuzzle->document->get(ctx->index, ctx->collection, document_id);
+
+    BOOST_CHECK(document.find("replaced document") != std::string::npos);
+  }
+
+  WHEN("^I createOrReplace the documents \\[\'(.*)\', \'(.*)\'\\]$")
+  {
+    REGEX_PARAM(std::string, document1_id);
+    REGEX_PARAM(std::string, document2_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    try {
+      query_options options = {0};
+      options.refresh = const_cast<char*>("wait_for");
+
+      string documents = "{\"documents\":[{\"_id\":\"" + document1_id + "\", \"body\":{\"a\":\"replaced document\"}}, {\"_id\":\"" + document2_id + "\", \"body\":{\"a\":\"replaced document\"}}]}";
+      ctx->kuzzle->document->mCreateOrReplace(ctx->index, ctx->collection, documents, &options);
+      ctx->success = 1;
+      ctx->partial_exception = 0;
+    } catch (PartialException e) {
+      ctx->partial_exception = 1;
+      ctx->success = 0;
+    } catch (KuzzleException e) {
+      BOOST_FAIL(e.getMessage());
+    }
+  }
+
+  THEN("^the document \'([^\"]*)\' should be created$")
+  {
+    REGEX_PARAM(std::string, document_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    string document = ctx->kuzzle->document->get(ctx->index, ctx->collection, document_id);
+
+    BOOST_CHECK(document.find("replaced document") != std::string::npos);
+  }
+
+  WHEN("^I check if \'([^\"]*)\' exists$")
+  {
+    REGEX_PARAM(std::string, document_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    ctx->success = ctx->kuzzle->document->exists(ctx->index, ctx->collection, document_id) ? 1 : 0;
+  }
+
+  THEN("^the document should (not )?exists$")
+  {
+    REGEX_PARAM(std::string, existence);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    if (existence == "not ")
+      BOOST_CHECK(ctx->success == 0);
+    else
+      BOOST_CHECK(ctx->success == 1);
+
+    ctx->success = -1;
+  }
+
+  WHEN("^I get documents \\[\'(.*)\', \'(.*)\'\\]$")
+  {
+    REGEX_PARAM(std::string, document1_id);
+    REGEX_PARAM(std::string, document2_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    try {
+      std::vector<string> document_ids;
+      document_ids.push_back(document1_id);
+      document_ids.push_back(document2_id);
+
+      ctx->content = ctx->kuzzle->document->mGet(ctx->index, ctx->collection, document_ids, false);
+      ctx->success = 1;
+    } catch (KuzzleException e) {
+      ctx->success = 0;
+    }
+  }
+
+  THEN("^the documents should be retrieved$")
+  {
+    ScenarioScope<KuzzleCtx> ctx;
+
+    BOOST_CHECK(ctx->success == 1);
+    BOOST_CHECK(ctx->content != "");
+  }
 }

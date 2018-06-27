@@ -353,7 +353,7 @@ public class Documentdefs {
         Assert.assertTrue(this.documentExists);
     }
 
-    @Then("^the document should not exist$")
+    @Then("^the document should not exists$")
     public void the_document_should_not_exists() throws Exception {
         Assert.assertNull(this.errorMessage);
         Assert.assertFalse(this.documentExists);
@@ -366,6 +366,9 @@ public class Documentdefs {
             v.add(id1);
             v.add(id2);
             jsonDocuments = k.getDocument().mGet(world.index, world.collection, v, false);
+            System.out.println("Helli");
+            System.out.println(jsonDocuments);
+            System.out.println("Hello");
         } catch (KuzzleException e) {
             this.errorMessage = e.getMessage();
         }
