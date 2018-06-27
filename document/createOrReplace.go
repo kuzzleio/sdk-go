@@ -28,21 +28,21 @@ import (
 //       If the same document already exists:
 //         - resolves with an error if set to "error".
 //         - replaces the existing document if set to "replace"
-func (d *Document) CreateOrReplace(index string, collection string, _id string, body json.RawMessage, options types.QueryOptions) (string, error) {
+func (d *Document) CreateOrReplace(index string, collection string, _id string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.CreateOrReplace: index required", 400)
+		return nil, types.NewError("Document.CreateOrReplace: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.CreateOrReplace: collection required", 400)
+		return nil, types.NewError("Document.CreateOrReplace: collection required", 400)
 	}
 
 	if _id == "" {
-		return "", types.NewError("Document.CreateOrReplace: id required", 400)
+		return nil, types.NewError("Document.CreateOrReplace: id required", 400)
 	}
 
 	if body == nil {
-		return "", types.NewError("Document.CreateOrReplace: body required", 400)
+		return nil, types.NewError("Document.CreateOrReplace: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -61,11 +61,8 @@ func (d *Document) CreateOrReplace(index string, collection string, _id string, 
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var created string
-	json.Unmarshal(res.Result, &created)
-
-	return created, nil
+	return res.Result, nil
 }
