@@ -142,7 +142,8 @@ func kuzzle_document_mdelete(d *C.document, index *C.char, collection *C.char, i
 //export kuzzle_document_mget
 func kuzzle_document_mget(d *C.document, index *C.char, collection *C.char, ids **C.char, l C.size_t, includeTrash C.bool, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).MGet(C.GoString(index), C.GoString(collection), cToGoStrings(ids, l), bool(includeTrash), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_mreplace
