@@ -24,7 +24,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     query_options options = {0};
-    options.refresh = (char *)"wait_for";
+    options.refresh = const_cast<char*>("wait_for");
 
     try {
       ctx->kuzzle->document->create(ctx->index, ctx->collection, "", "{\"foo\":\"bar\"}", &options);
