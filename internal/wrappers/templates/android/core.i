@@ -1,16 +1,11 @@
-%include "common.i"
+%include "../java/common.i"
 
-%include "exceptions.i"
+%include "../java/exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
 %include "../../kcore.i"
 
 %include "std_vector.i"
-
-%include "javadoc/kuzzle.i"
-%include "javadoc/document.i"
-%include "javadoc/room.i"
-%include "javadoc/collection.i"
 
 %template(StringVector) std::vector<std::string>;
 

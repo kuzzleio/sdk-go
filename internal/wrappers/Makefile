@@ -63,7 +63,7 @@ CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: python java csharp
+all: python java csharp android
 
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
@@ -125,6 +125,14 @@ else
 endif
 	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/java/core.i
 
+swig_android:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/android/core.i
+
 swig_python:
 ifeq ($(OS),Windows_NT)
 	@if not exist $(OUTDIR) mkdir $(OUTDIR)
@@ -170,6 +178,11 @@ ifeq ($(OS),Windows_NT)
 else
 	$(RM) $(OUTDIR)$(PATHSEP)*.cs
 endif
+
+android: LANGINCLUDE = $(JAVAINCLUDE)
+android: OUTDIR = $(ROOTOUTDIR)/android/io/kuzzle/sdk
+android: core_java swig_android wrapper_java java_object
+	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
