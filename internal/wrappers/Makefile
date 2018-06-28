@@ -102,6 +102,10 @@ java_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB)
 
+android_object:
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/arm8/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/../../../../jniLibs/arm8/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
+
 python_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB)
@@ -179,10 +183,13 @@ else
 	$(RM) $(OUTDIR)$(PATHSEP)*.cs
 endif
 
+makeabifolder:
+	mkdir -p $(OUTDIR)/../../../../jniLibs/arm8/
+
 android: LANGINCLUDE = $(JAVAINCLUDE)
-android: OUTDIR = $(ROOTOUTDIR)/android/io/kuzzle/sdk
-android: core_java swig_android wrapper_java java_object
-	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
+android: makeabifolder core_java swig_android wrapper_java android_object
+	cd build/android && gradle build && cd -
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
@@ -214,6 +221,10 @@ ifeq ($(OS),Windows_NT)
 	if exist build$(PATHSEP)python $(RRM) build$(PATHSEP)python
 	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp
 	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs
+	if exist build$(PATHSEP)android$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)build
 else
 	$(RRM) build/c
 	$(RRM) build/java/src build/java/io build/java/build
@@ -222,6 +233,10 @@ else
 	$(RRM) build/cpp
 	$(RRM) kcore_wrap.cxx kcore_wrap.h kcore_wrap.o
 	$(RRM) build/io
+	$(RRM) build/android/app/build
+	$(RRM) build/android/app/src/main/java
+	$(RRM) build/android/app/src/main/jniLibs/
+	$(RRM) build/android/build
 endif
 .PHONY: all java csharp python wrapper swig clean object core
 

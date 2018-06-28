@@ -1,0 +1,153 @@
+apply plugin: 'com.android.application'
+
+version = "4.0"
+
+configurations {
+    javadocDeps
+}
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "io.kuzzle.sdk"
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName version
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'src/main/java', include: ['*.so'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+}
+
+repositories {
+    jcenter()
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'kuzzle-sdk-android'
+
+    publishedGroupId = 'io.kuzzle'
+    libraryName = 'kuzzle-sdk-android'
+    artifact = 'sdk-android'
+
+    libraryDescription = 'Kuzzle Android SDK aar'
+
+    siteUrl = 'https://github.com/kuzzleio/sdk-go'
+    gitUrl = 'https://github.com/kuzzleio/sdk-go.git'
+    githubRepository= 'kuzzleio/sdk-go'
+
+    libraryVersion = version
+
+    developerId = 'kblondel'
+    developerName = 'Kevin Blondel'
+    developerEmail = 'kblondel@kaliop.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+// from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/installv1.gradle'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = publishedGroupId                               // Maven Group ID for the artifact
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name licenseName
+                        url licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+// from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/bintrayv1.gradle'
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.javadocDeps + configurations.compile
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// Bintray
+bintray {
+    user = System.getenv("bintray_user")
+    key = System.getenv("bintray_apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        issueTrackerUrl = siteUrl+'/issues'
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        githubRepo = githubRepository //Optional Github repository
+        githubReleaseNotesFile = 'README.md' //Optional Github readme file
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
+    }
+}

@@ -5,4 +5,33 @@
 kcore_wrap.c
 
 # build
-build/c build/java/build build/java/src build/java/io
+build/c
+build/java/build
+build/java/src
+build/java/io
+build/android/app/build
+build/android/app/src/main/java/
+build/android/app/src/main/jniLibs/
+build/android/build/
+build/android/.gradle/
+build/io/
+build/java/.gradle/
+
+# features
+features/docker-compose.yml
+features/features.iml
+features/java/.classpath
+features/java/.gradle/
+features/java/.project
+features/java/.settings/
+features/java/bin/
+features/java/build/
+features/.gradle/
+features/java/java.iml
+features/java/libs/
+
+wrappers.iml
+.classpath
+.gradle/
+.project
+.settings/
