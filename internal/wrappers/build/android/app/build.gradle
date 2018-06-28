@@ -123,6 +123,19 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+task jar(type: Jar) {
+    from 'build/intermediates/classes/release/'
+    archiveName 'kuzzle-sdk.jar'
+}
+
 artifacts {
     archives javadocJar
     archives sourcesJar
