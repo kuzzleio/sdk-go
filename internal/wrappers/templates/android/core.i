@@ -16,15 +16,15 @@
 %pragma(java) jniclasscode=%{
   static {
     try {
-      System.loadLibrary("kuzzle-wrapper-java");
+      System.loadLibrary("kuzzle-wrapper-android");
     } catch (UnsatisfiedLinkError e) {
       try {
-        java.io.InputStream inputStream = kuzzlesdk.class.getResourceAsStream("/libkuzzle-wrapper-java.so");
+        java.io.InputStream inputStream = kuzzlesdk.class.getResourceAsStream("/jniLibs/libkuzzle-wrapper-android.so");
         java.nio.file.Path path = java.nio.file.FileSystems.getDefault().getPath("").toAbsolutePath();
-        String sharedObject = path.toString() + "/libs/libkuzzle-wrapper-java.so";
+        String sharedObject = path.toString() + "/jniLibs/libkuzzle-wrapper-android.so";
 
         try {
-          java.io.File folder = new java.io.File(path.toString() + "/libs/");
+          java.io.File folder = new java.io.File(path.toString() + "/jniLibs/");
           folder.mkdir();
         } catch(Exception ee) {}
 
@@ -37,7 +37,7 @@
           outputStream.write(bytes, 0, read);
         }
 
-        System.load(path.toString() + "/libs/libkuzzle-wrapper-java.so");
+        System.load(path.toString() + "/jniLibs/libkuzzle-wrapper-android.so");
       } catch (Exception ex) {
         System.err.println("Native code library failed to load. \n");
         ex.printStackTrace();

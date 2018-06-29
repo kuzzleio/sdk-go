@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 version = "4.0"
 
@@ -9,12 +9,17 @@ configurations {
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "io.kuzzle.sdk"
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
         versionName version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    sourceSets {
+      main {
+          java {
+              srcDir 'src/main/java'
+          }
+      }
     }
     buildTypes {
         release {
@@ -28,9 +33,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'src/main/java', include: ['*.so'])
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-annotations:21.0.1'
 }
 
 repositories {
@@ -108,38 +112,30 @@ install {
 // from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/bintrayv1.gradle'
 apply plugin: 'com.jfrog.bintray'
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
+// task sourcesJar(type: Jar) {
+//     classifier = 'sources'
+//     from android.sourceSets.main.java.srcDirs
+// }
 
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.javadocDeps + configurations.compile
-}
+// task javadoc(type: Javadoc) {
+//     source = android.sourceSets.main.java.srcDirs
+//     classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.javadocDeps + configurations.compile
+// }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
+// task javadocJar(type: Jar, dependsOn: javadoc) {
+//     classifier = 'javadoc'
+//     from javadoc.destinationDir
+// }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-    }
-}
+// task jar(type: Jar) {
+//     from('build/intermediates/classes/release/')
+//     archiveName 'kuzzle-sdk.jar'
+// }
 
-task jar(type: Jar) {
-    from 'build/intermediates/classes/release/'
-    archiveName 'kuzzle-sdk.jar'
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+// artifacts {
+//     archives javadocJar
+//     archives sourcesJar
+// }
 
 // Bintray
 bintray {
