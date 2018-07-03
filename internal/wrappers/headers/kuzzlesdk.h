@@ -251,7 +251,7 @@ typedef struct {
     kuzzle *kuzzle;
 } role;
 
-//kuzzle user
+// kuzzle user
 typedef struct {
     char *id;
     char *content;

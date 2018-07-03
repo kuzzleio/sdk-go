@@ -103,8 +103,8 @@ java_object:
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB)
 
 android_object:
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/armeabi/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
-	strip $(OUTDIR)/../../../../jniLibs/armeabi/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
 
 python_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
@@ -184,7 +184,7 @@ else
 endif
 
 makeabifolder:
-	mkdir -p $(OUTDIR)/../../../../jniLibs/armeabi
+	mkdir -p $(OUTDIR)/../../../../jniLibs/armeabi-v7a
 
 android: LANGINCLUDE = $(JAVAINCLUDE)
 android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
