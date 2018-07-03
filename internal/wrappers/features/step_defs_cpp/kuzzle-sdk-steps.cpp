@@ -119,8 +119,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->success == 0);
-
-    ctx->success = -1;
   }
 
   GIVEN("^there is an user with id '([\\w\\-]+)'$")
@@ -199,8 +197,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(hits == ctx->hits);
-
-    ctx->hits = -1;
   }
 
   THEN("^the content should not be null$")
@@ -220,7 +216,5 @@ namespace {
       BOOST_CHECK(ctx->partial_exception == 0);
     else
       BOOST_CHECK(ctx->partial_exception == 1);
-
-    ctx->partial_exception = -1;
   }
 }

@@ -39,8 +39,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->success == 1);
-
-    ctx->success = -1;
   }
 
   GIVEN("^it has a collection \'([^\"]*)\'$")
@@ -175,8 +173,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->success == 1);
-
-    ctx->success = -1;
   }
 
   GIVEN("^has specifications$")

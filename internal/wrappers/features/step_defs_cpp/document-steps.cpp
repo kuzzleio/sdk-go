@@ -27,9 +27,6 @@ namespace {
 
     BOOST_CHECK(ctx->success == 0);
     BOOST_CHECK(ctx->error_message == error_message);
-
-    ctx->error_message = "";
-    ctx->success = -1;
   }
 
   THEN("^the document is successfully created$")
@@ -37,8 +34,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->success == 1);
-
-    ctx->success = -1;
   }
 
   GIVEN("^the collection doesn't have a document with id \'([^\"]*)\'$")
@@ -83,8 +78,6 @@ namespace {
 
     BOOST_CHECK(ctx->success == 1);
     BOOST_CHECK(document.find("replaced document") != std::string::npos);
-
-    ctx->success = -1;
   }
 
   WHEN("^I replace a document with id \'([^\"]*)\'$")
@@ -110,8 +103,6 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->success == 1);
-
-    ctx->success = -1;
   }
 
   WHEN("^I update a document with id \'([^\"]*)\'$")
@@ -140,8 +131,6 @@ namespace {
 
     BOOST_CHECK(ctx->success == 1);
     BOOST_CHECK(document.find("updated document") != std::string::npos);
-
-    ctx->success = -1;
   }
 
   WHEN("^I search a document with id \'([^\"]*)\'$")
@@ -172,7 +161,6 @@ namespace {
     else
       BOOST_CHECK(ctx->documents->total == 0);
 
-    ctx->success = -1;
     kuzzle_free_search_result(ctx->documents);
   }
 
@@ -370,8 +358,6 @@ namespace {
       BOOST_CHECK(ctx->success == 0);
     else
       BOOST_CHECK(ctx->success == 1);
-
-    ctx->success = -1;
   }
 
   WHEN("^I get documents \\[\'(.*)\', \'(.*)\'\\]$")
