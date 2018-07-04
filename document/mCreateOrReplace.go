@@ -21,17 +21,17 @@ import (
 )
 
 // MCreateOrReplace creates or replaces the provided documents.
-func (d *Document) MCreateOrReplace(index string, collection string, body json.RawMessage, options types.QueryOptions) (string, error) {
+func (d *Document) MCreateOrReplace(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.MCreateOrReplace: index required", 400)
+		return nil, types.NewError("Document.MCreateOrReplace: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.MCreateOrReplace: collection required", 400)
+		return nil, types.NewError("Document.MCreateOrReplace: collection required", 400)
 	}
 
 	if body == nil {
-		return "", types.NewError("Document.MCreateOrReplace: body required", 400)
+		return nil, types.NewError("Document.MCreateOrReplace: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -49,11 +49,14 @@ func (d *Document) MCreateOrReplace(index string, collection string, body json.R
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var mCreated string
-	json.Unmarshal(res.Result, &mCreated)
+	type r struct {
+		Hits json.RawMessage `json:"hits"`
+	}
+	var docs r
+	json.Unmarshal(res.Result, &docs)
 
-	return mCreated, nil
+	return docs.Hits, nil
 }

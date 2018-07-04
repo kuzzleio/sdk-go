@@ -28,17 +28,17 @@ import (
 //       If the same document already exists:
 //         - resolves with an error if set to "error".
 //         - replaces the existing document if set to "replace"
-func (d *Document) Create(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (string, error) {
+func (d *Document) Create(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.Create: index required", 400)
+		return nil, types.NewError("Document.Create: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.Create: collection required", 400)
+		return nil, types.NewError("Document.Create: collection required", 400)
 	}
 
 	if body == nil {
-		return "", types.NewError("Document.Create: body required", 400)
+		return nil, types.NewError("Document.Create: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -57,14 +57,8 @@ func (d *Document) Create(index string, collection string, id string, body json.
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	type response struct {
-		Created string `json:"_id"`
-	}
-	var created response
-	json.Unmarshal(res.Result, &created)
-
-	return created.Created, nil
+	return res.Result, nil
 }

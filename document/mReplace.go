@@ -21,17 +21,17 @@ import (
 )
 
 // MReplace replaces multiple documents at once.
-func (d *Document) MReplace(index string, collection string, body json.RawMessage, options types.QueryOptions) (string, error) {
+func (d *Document) MReplace(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.MReplace: index required", 400)
+		return nil, types.NewError("Document.MReplace: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.MReplace: collection required", 400)
+		return nil, types.NewError("Document.MReplace: collection required", 400)
 	}
 
 	if body == nil {
-		return "", types.NewError("Document.MReplace: body required", 400)
+		return nil, types.NewError("Document.MReplace: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -49,11 +49,14 @@ func (d *Document) MReplace(index string, collection string, body json.RawMessag
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var mReplaced string
-	json.Unmarshal(res.Result, &mReplaced)
+	type r struct {
+		Hits json.RawMessage `json:"hits"`
+	}
+	var docs r
+	json.Unmarshal(res.Result, &docs)
 
-	return mReplaced, nil
+	return docs.Hits, nil
 }
