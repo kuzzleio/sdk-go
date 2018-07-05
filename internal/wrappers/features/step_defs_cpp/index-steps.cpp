@@ -103,4 +103,23 @@ namespace {
       !ctx->kuzzle->index->exists(index_name2)
     );
   }
+
+  WHEN("^I list indexes$")
+  {
+    ScenarioScope<KuzzleCtx> ctx;
+
+    ctx->string_array = ctx->kuzzle->index->list();
+  }
+
+  THEN("^I get \'([^\"]*)\' and \'([^\"]*)\'$")
+  {
+    REGEX_PARAM(std::string, index_name1);
+    REGEX_PARAM(std::string, index_name2);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    BOOST_CHECK(std::find(ctx->string_array.begin(), ctx->string_array.end(), index_name1) != ctx->string_array.end());
+    BOOST_CHECK(std::find(ctx->string_array.begin(), ctx->string_array.end(), index_name2) != ctx->string_array.end());
+  }
+
 }
