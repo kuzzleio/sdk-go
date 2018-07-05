@@ -78,8 +78,8 @@ func kuzzle_security_destroy_profile(p *C.profile) {
 // --- user
 
 //export kuzzle_security_new_user
-func kuzzle_security_new_user(k *C.kuzzle, id *C.char, d *C.user_data) *C.user {
-	cuser := (*C.user)(C.calloc(1, C.sizeof_user))
+func kuzzle_security_new_user(k *C.kuzzle, id *C.char, d *C.user_data) *C.kuzzle_user {
+	cuser := (*C.kuzzle_user)(C.calloc(1, C.sizeof_kuzzle_user))
 
 	cuser.id = id
 	cuser.kuzzle = k
@@ -94,7 +94,7 @@ func kuzzle_security_new_user(k *C.kuzzle, id *C.char, d *C.user_data) *C.user {
 }
 
 //export kuzzle_security_destroy_user
-func kuzzle_security_destroy_user(u *C.user) {
+func kuzzle_security_destroy_user(u *C.kuzzle_user) {
 	if u == nil {
 		return
 	}

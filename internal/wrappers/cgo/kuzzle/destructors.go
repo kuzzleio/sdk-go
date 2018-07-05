@@ -221,7 +221,7 @@ func kuzzle_free_role(st *C.role) {
 }
 
 //do not export
-func _free_user(st *C.user) {
+func _free_user(st *C.kuzzle_user) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
 		C.free(unsafe.Pointer(st.content))
@@ -230,7 +230,7 @@ func _free_user(st *C.user) {
 }
 
 //export kuzzle_free_user
-func kuzzle_free_user(st *C.user) {
+func kuzzle_free_user(st *C.kuzzle_user) {
 	_free_user(st)
 	C.free(unsafe.Pointer(st))
 }
@@ -738,7 +738,7 @@ func kuzzle_free_collection_entry_result(st *C.collection_entry_result) {
 func kuzzle_free_user_search(st *C.user_search) {
 	if st != nil {
 		if st.hits != nil {
-			hits := (*[1<<26 - 1]C.user)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
+			hits := (*[1<<26 - 1]C.kuzzle_user)(unsafe.Pointer(st.hits))[:int(st.hits_length):int(st.hits_length)]
 
 			for _, user := range hits {
 				_free_user(&user)

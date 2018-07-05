@@ -18,7 +18,7 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 %rename(UserData) user_data;
-%rename(User, match="class") user;
+%rename(User, match="class") kuzzle_user;
 %rename(RoomOptions) room_options;
 %rename(SearchFilters) search_filters;
 %rename(SearchResult) search_result;

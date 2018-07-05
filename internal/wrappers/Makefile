@@ -186,6 +186,10 @@ endif
 makeabifolder:
 	mkdir -p $(OUTDIR)/../../../../jniLibs/armeabi-v7a
 
+GOOS=android
+GOARCH=386
+export GOOS
+export GOARCH
 android: LANGINCLUDE = $(JAVAINCLUDE)
 android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
 android: makeabifolder core_java swig_android wrapper_java android_object

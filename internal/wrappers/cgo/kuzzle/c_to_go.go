@@ -120,7 +120,7 @@ func cToGoProfile(p *C.profile) *security.Profile {
 	return profile
 }
 
-func cToGoUser(u *C.user) *security.User {
+func cToGoUser(u *C.kuzzle_user) *security.User {
 	if u == nil {
 		return nil
 	}

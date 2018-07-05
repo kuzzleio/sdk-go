@@ -1,5 +1,3 @@
-#define kuzzle_user user;
-
 %include "../java/common.i"
 
 %include "../java/exceptions.i"
