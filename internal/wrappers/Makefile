@@ -153,6 +153,8 @@ java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: core_java swig_java wrapper_java java_object
 #rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
+	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
+	cp build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java
 	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so $(ROOTOUTDIR)/java/src/main/resources/	
