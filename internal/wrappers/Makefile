@@ -63,7 +63,7 @@ CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: python java csharp
+all: python java csharp android
 
 kcore_wrap.o: kcore_wrap.cxx
 	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
@@ -102,6 +102,10 @@ java_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB)
 
+android_object:
+	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
+
 python_object:
 	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB)
@@ -124,6 +128,14 @@ else
 	mkdir -p $(OUTDIR)
 endif
 	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/java/core.i
+
+swig_android:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/android/core.i
 
 swig_python:
 ifeq ($(OS),Windows_NT)
@@ -151,14 +163,12 @@ endif
 java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
 java: core_java swig_java wrapper_java java_object
-#rm -rf $(OUTDIR)/kcore_wrap.o $(OUTDIR)/libkuzzlesdk.a $(OUTDIR)/libkuzzlesdk.so
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
-	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
+	mkdir -p $(ROOTOUTDIR)/java/src/main/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so $(ROOTOUTDIR)/java/src/main/resources/	
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && sh gradlew sourcesJar jar javadocJar && cd -
-	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
 	cp -p $(GOTARGET) $(OUTDIR)
 	cp -p $(GOTARGETSO) $(OUTDIR)
 
@@ -170,6 +180,14 @@ ifeq ($(OS),Windows_NT)
 else
 	$(RM) $(OUTDIR)$(PATHSEP)*.cs
 endif
+
+makeabifolder:
+	mkdir -p $(OUTDIR)/../../../../jniLibs/armeabi-v7a
+
+android: LANGINCLUDE = $(JAVAINCLUDE)
+android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
+android: makeabifolder core_java swig_android wrapper_java android_object
+	cd build/android && gradle assemble && cd -
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
@@ -201,6 +219,10 @@ ifeq ($(OS),Windows_NT)
 	if exist build$(PATHSEP)python $(RRM) build$(PATHSEP)python
 	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp
 	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs
+	if exist build$(PATHSEP)android$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)build
 else
 	$(RRM) build/c
 	$(RRM) build/java/src build/java/io build/java/build
@@ -209,6 +231,10 @@ else
 	$(RRM) build/cpp
 	$(RRM) kcore_wrap.cxx kcore_wrap.h kcore_wrap.o
 	$(RRM) build/io
+	$(RRM) build/android/app/build
+	$(RRM) build/android/app/src/main/java
+	$(RRM) build/android/app/src/main/jniLibs/
+	$(RRM) build/android/build
 endif
 .PHONY: all java csharp python wrapper swig clean object core
 
