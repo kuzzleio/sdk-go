@@ -43,6 +43,7 @@ struct KuzzleCtx {
   bool success;
   int hits;
   string content;
+  std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
   CustomNotificationListener *listener;

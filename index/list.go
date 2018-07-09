@@ -38,16 +38,15 @@ func (i *Index) List(options types.QueryOptions) ([]string, error) {
 		return nil, res.Error
 	}
 
-	var collectionList struct {
-		Total int
-		Hits  []string
+	var indexes struct {
+		Indexes []string
 	}
 
-	err := json.Unmarshal(res.Result, &collectionList)
+	err := json.Unmarshal(res.Result, &indexes)
 
 	if err != nil {
 		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
 	}
 
-	return collectionList.Hits, nil
+	return indexes.Indexes, nil
 }

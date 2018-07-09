@@ -5,7 +5,7 @@
 namespace {
   WHEN("^I create a collection \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -18,7 +18,7 @@ namespace {
 
   THEN("^the collection \'([^\"]*)\' should exists$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -27,7 +27,7 @@ namespace {
 
   WHEN("^I check if the collection \'([^\"]*)\' exists$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -45,7 +45,7 @@ namespace {
 
   GIVEN("^it has a collection \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_name);
+    REGEX_PARAM(string, collection_name);
 
     ScenarioScope<KuzzleCtx> ctx;
     ctx->collection = collection_name;
@@ -61,7 +61,7 @@ namespace {
 
   WHEN("^I list the collections of \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, index_name);
+    REGEX_PARAM(string, index_name);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -76,7 +76,7 @@ namespace {
 
   GIVEN("^the collection has a document with id \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, document_id);
+    REGEX_PARAM(string, document_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -88,7 +88,7 @@ namespace {
 
   WHEN("^I truncate the collection \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -100,7 +100,7 @@ namespace {
 
   THEN("^the collection \'([^\"]*)\' shall be empty$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -113,46 +113,45 @@ namespace {
 
   WHEN("^I update the mapping of collection \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string mapping = "{\"properties\": {\"gordon\": {\"type\": \"keyword\"}}}";
+    string mapping = "{\"properties\": {\"gordon\": {\"type\": \"keyword\"}}}";
 
     ctx->kuzzle->collection->updateMapping(ctx->index, collection_id, mapping);
   }
 
   THEN("^the mapping of \'([^\"]*)\' should be updated$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string mapping = ctx->kuzzle->collection->getMapping(ctx->index, collection_id);
-    std::string expected_mapping = "{\"" + ctx->index + "\":{\"mappings\":{\"" + collection_id + "\":{\"properties\":{\"a\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"gordon\":{\"type\":\"keyword\"}}}}}}";
+    string mapping = ctx->kuzzle->collection->getMapping(ctx->index, collection_id);
 
-    BOOST_CHECK(mapping == expected_mapping);
+    BOOST_CHECK(mapping.find("\"gordon\":{\"type\":\"keyword\"}") != string::npos);
   }
 
   WHEN("^I update the specifications of the collection \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string specifications = "{\"" + ctx->index + "\":{\""+ collection_id +"\":{\"strict\":false}}}";
+    string specifications = "{\"" + ctx->index + "\":{\""+ collection_id +"\":{\"strict\":false}}}";
 
     ctx->kuzzle->collection->updateSpecifications(ctx->index, collection_id, specifications);
   }
 
   THEN("^the specifications of \'([^\"]*)\' should be updated$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string specifications = ctx->kuzzle->collection->getSpecifications(ctx->index, collection_id);
-    std::string expected_specifications = "{\"validation\":{\"strict\":false},\"index\":\"" + ctx->index + "\",\"collection\":\"" + collection_id + "\"}";
+    string specifications = ctx->kuzzle->collection->getSpecifications(ctx->index, collection_id);
+    string expected_specifications = "{\"validation\":{\"strict\":false},\"index\":\"" + ctx->index + "\",\"collection\":\"" + collection_id + "\"}";
 
     BOOST_CHECK(specifications == expected_specifications);
 
@@ -161,11 +160,11 @@ namespace {
 
   WHEN("^I validate the specifications of \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string specifications = "{\"" + ctx->index + "\":{\"" + collection_id + "\":{\"strict\":true}}}";
+    string specifications = "{\"" + ctx->index + "\":{\"" + collection_id + "\":{\"strict\":true}}}";
 
     ctx->success = ctx->kuzzle->collection->validateSpecifications(specifications);
   }
@@ -183,14 +182,14 @@ namespace {
   {
     ScenarioScope<KuzzleCtx> ctx;
 
-    std::string specifications = "{\"" + ctx->index + "\":{\""+ ctx->collection +"\":{\"strict\":true}}}";
+    string specifications = "{\"" + ctx->index + "\":{\""+ ctx->collection +"\":{\"strict\":true}}}";
 
     ctx->kuzzle->collection->updateSpecifications(ctx->index, ctx->collection, specifications);
   }
 
   WHEN("^I delete the specifications of \'([^\"]*)\'$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 
@@ -199,7 +198,7 @@ namespace {
 
   THEN("^the specifications of \'([^\"]*)\' must not exist$")
   {
-    REGEX_PARAM(std::string, collection_id);
+    REGEX_PARAM(string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
 

@@ -38,7 +38,7 @@ Feature: Realtime subscription
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'test-collection'
-    And the collection has a document with id 'my-document-id'    
+    And the collection has a document with id 'my-document-id'
     And I subscribe to 'test-collection'
     And I unsubscribe
     When I publish a document

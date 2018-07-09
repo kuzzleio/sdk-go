@@ -105,7 +105,7 @@ Feature: Document management
     And there is an index 'test-index'
     And it has a collection 'mcreate-test-collection'
     And the collection doesn't have a document with id 'mcreate-my-document-id'
-    And the collection doesn't have a document with id 'mcreate-my-document-id2'    
+    And the collection doesn't have a document with id 'mcreate-my-document-id2'
     When I create the documents ['mcreate-my-document-id', 'mcreate-my-document-id2']
     Then I must have 2 documents in the collection
     And I should have no partial error
@@ -201,6 +201,6 @@ Feature: Document management
     And there is an index 'test-index'
     And it has a collection 'mget-test-collection'
     And the collection has a document with id 'mget-my-document-id'
-    And the collection has a document with id 'mget-my-document-id2'    
+    And the collection has a document with id 'mget-my-document-id2'
     When I get documents ['mget-my-document-id', 'mget-my-document-id2']
     Then the documents should be retrieved
