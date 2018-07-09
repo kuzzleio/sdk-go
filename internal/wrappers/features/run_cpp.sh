@@ -5,11 +5,7 @@ sh ./build_cpp_tests.sh
 
 FEATURE_FILE=$1
 
-if [ ! -z "$KUZZLE_HOST" ]; then
-  ./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
-else
-  ./_build_cpp_tests/KuzzleSDKStepDefs &
-fi
+./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
 
 if [ ! -z "$FEATURE_FILE" ]; then
   cucumber features/$FEATURE_FILE
