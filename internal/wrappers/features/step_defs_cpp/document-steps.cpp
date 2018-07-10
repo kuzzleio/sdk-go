@@ -348,7 +348,7 @@ namespace {
     ctx->success = ctx->kuzzle->document->exists(ctx->index, ctx->collection, document_id) ? 1 : 0;
   }
 
-  THEN("^the document should (not )?exists$")
+  THEN("^the document should (not )?exist(s)?$")
   {
     REGEX_PARAM(std::string, existence);
 

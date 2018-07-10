@@ -194,7 +194,7 @@ Feature: Document management
     And it has a collection 'exist-test-collection'
     And the collection has a document with id 'exist-my-document-id'
     When I check if 'exist-my-document-unknown' exists
-    Then the document should not exists
+    Then the document should not exist
 
   Scenario: Get multiple document
     Given Kuzzle Server is running
