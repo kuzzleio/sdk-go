@@ -31,16 +31,14 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    ctx->success = ctx->kuzzle->collection->exists(ctx->index, collection_id);
+    ctx->success = ctx->kuzzle->collection->exists(ctx->index, collection_id) ? 1 : 0;
   }
 
   THEN("^the collection should exist$")
   {
     ScenarioScope<KuzzleCtx> ctx;
 
-    BOOST_CHECK(ctx->success == true);
-
-    ctx->success = false;
+    BOOST_CHECK(ctx->success == 1);
   }
 
   GIVEN("^it has a collection \'([^\"]*)\'$")
@@ -166,16 +164,14 @@ namespace {
 
     string specifications = "{\"" + ctx->index + "\":{\"" + collection_id + "\":{\"strict\":true}}}";
 
-    ctx->success = ctx->kuzzle->collection->validateSpecifications(specifications);
+    ctx->success = ctx->kuzzle->collection->validateSpecifications(specifications) ? 1 : 0;
   }
 
   THEN("^they should be validated$")
   {
     ScenarioScope<KuzzleCtx> ctx;
 
-    BOOST_CHECK(ctx->success == true);
-
-    ctx->success = false;
+    BOOST_CHECK(ctx->success == 1);
   }
 
   GIVEN("^has specifications$")

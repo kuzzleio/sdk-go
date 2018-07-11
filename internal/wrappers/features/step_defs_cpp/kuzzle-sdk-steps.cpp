@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include "steps.hpp"
 
 // Anonymous namespace to handle a linker error
@@ -7,19 +6,6 @@ namespace {
   BEFORE() { kuz_log_sep(); }
 
   GIVEN("^I create a user 'useradmin' with password 'testpwd' with id 'useradmin-id'$") { pending(); }
-
-  WHEN("^I try to create a document with id '(my-document)'$")
-  {
-    REGEX_PARAM(std::string, document_id);
-
-    ScenarioScope<KuzzleCtx> ctx;
-
-    try {
-      ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
-    } catch (KuzzleException e) {
-      BOOST_FAIL(e.getMessage());
-    }
-  }
 
   GIVEN("^I update my user custom data with the pair ([\\w]+):(.+)$")
   {
@@ -128,53 +114,11 @@ namespace {
     BOOST_CHECK(error == NULL);
   }
 
-  GIVEN("^the collection doesn't have a document with id '(my-document-id)'$")
-  {
-    REGEX_PARAM(std::string, document_id);
-
-    ScenarioScope<KuzzleCtx> ctx;
-
-    try {
-      ctx->kuzzle->document->delete_(ctx->index, ctx->collection, document_id);
-    } catch (KuzzleException e) {
-    }
-  }
-
-  WHEN("^I try to create a new document with id 'my-document-id'$")
-  {
-    REGEX_PARAM(std::string, document_id);
-
-    ScenarioScope<KuzzleCtx> ctx;
-    ctx->success = true;
-    try {
-      ctx->kuzzle->document->create(ctx->index, ctx->collection, document_id, "{\"a\":\"document\"}");
-    } catch (KuzzleException e) {
-      ctx->success = true;
-    }
-  }
-
-  THEN("^I get an error with message 'document alread exists'$")
-  {
-    ScenarioScope<KuzzleCtx> ctx;
-    BOOST_CHECK(ctx->success == false);
-  }
-
   THEN("^I get an error$")
   {
     ScenarioScope<KuzzleCtx> ctx;
-    BOOST_CHECK(ctx->success == false);
-  }
 
-  GIVEN("^'test-index'/'test-collection' does't have a document with id "
-        "'my-document-id'$")
-  {
-    pending();
-  }
-
-  THEN("^the document is successfully created$")
-  {
-    ScenarioScope<KuzzleCtx> ctx;
-    BOOST_CHECK(ctx->success == false);
+    BOOST_CHECK(ctx->success == 0);
   }
 
   GIVEN("^there is an user with id '([\\w\\-]+)'$")
@@ -245,15 +189,14 @@ namespace {
     BOOST_CHECK_MESSAGE(ctx->currentUser != NULL, "Failed to retrieve current user");
   }
 
-  THEN("^the result contains (\\d+) hits$")
+  THEN("^(the result contains|I shall receive) (\\d+)( hits)?$")
   {
+    REGEX_PARAM(string, unused);
     REGEX_PARAM(unsigned int, hits);
 
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(hits == ctx->hits);
-
-    ctx->hits = -1;
   }
 
   THEN("^the content should not be null$")
@@ -263,4 +206,15 @@ namespace {
     BOOST_CHECK(ctx->content != "");
   }
 
+  THEN("^I (should have|get) (a|no) partial error$") {
+    REGEX_PARAM(string, unused);
+    REGEX_PARAM(string, error_presence);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    if (error_presence == "no")
+      BOOST_CHECK(ctx->partial_exception == 0);
+    else
+      BOOST_CHECK(ctx->partial_exception == 1);
+  }
 }
