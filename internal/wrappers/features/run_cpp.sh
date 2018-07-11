@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 cd internal/wrappers
-./build_cpp_tests.sh
+sh ./build_cpp_tests.sh
 
 FEATURE_FILE=$1
 

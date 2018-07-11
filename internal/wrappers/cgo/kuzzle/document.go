@@ -69,13 +69,15 @@ func kuzzle_document_exists(d *C.document, index *C.char, collection *C.char, id
 //export kuzzle_document_create
 func kuzzle_document_create(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).Create(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_create_or_replace
 func kuzzle_document_create_or_replace(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).CreateOrReplace(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_delete
@@ -100,13 +102,15 @@ func kuzzle_document_get(d *C.document, index *C.char, collection *C.char, id *C
 //export kuzzle_document_replace
 func kuzzle_document_replace(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).Replace(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_update
 func kuzzle_document_update(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).Update(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_validate
@@ -124,13 +128,15 @@ func kuzzle_document_search(d *C.document, index *C.char, collection *C.char, bo
 //export kuzzle_document_mcreate
 func kuzzle_document_mcreate(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).MCreate(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_mcreate_or_replace
 func kuzzle_document_mcreate_or_replace(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).MCreateOrReplace(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_mdelete
@@ -149,11 +155,13 @@ func kuzzle_document_mget(d *C.document, index *C.char, collection *C.char, ids 
 //export kuzzle_document_mreplace
 func kuzzle_document_mreplace(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).MReplace(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
 //export kuzzle_document_mupdate
 func kuzzle_document_mupdate(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
 	res, err := (*document.Document)(d.instance).MUpdate(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCStringResult(&res, err)
+	s := string(res)
+	return goToCStringResult(&s, err)
 }

@@ -50,6 +50,7 @@ struct KuzzleCtx {
   string content;
   // 1 mean yes, 0 no and -1 is base state
   int partial_exception = -1;
+  std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
   CustomNotificationListener *listener;

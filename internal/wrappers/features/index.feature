@@ -17,3 +17,9 @@ Feature: Index controller
     And there is the indexes 'test-index1' and 'test-index2'
     When I delete the indexes 'test-index1' and 'test-index2'
     Then indexes 'test-index1' and 'test-index2' don't exist
+
+  Scenario: List indexes
+    Given Kuzzle Server is running
+    And there is the indexes 'test-index1' and 'test-index2'
+    When I list indexes
+    Then I get 'test-index1' and 'test-index2'

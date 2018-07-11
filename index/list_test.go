@@ -49,7 +49,7 @@ func TestList(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Controller)
 			assert.Equal(t, "list", parsedQuery.Action)
 
-			res := types.KuzzleResponse{Result: []byte(`{"total": 2, "hits":["index_1", "index_2"]}`)}
+			res := types.KuzzleResponse{Result: []byte(`{"indexes":["index_1", "index_2"]}`)}
 
 			r, _ := json.Marshal(res.Result)
 			return &types.KuzzleResponse{Result: r}

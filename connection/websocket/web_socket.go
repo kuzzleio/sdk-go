@@ -29,7 +29,8 @@ import (
 )
 
 const (
-	MAX_EMIT_TIMEOUT = 10
+	MAX_EMIT_TIMEOUT  = 10
+	MAX_CONNECT_RETRY = 10
 )
 
 type subscription struct {
@@ -56,6 +57,7 @@ type webSocket struct {
 	eventListenersOnce map[int]map[chan<- interface{}]bool
 
 	retrying              bool
+	nbRetried             int
 	stopRetryingToConnect bool
 	requestHistory        map[string]time.Time
 
@@ -109,6 +111,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		replayInterval:        opts.ReplayInterval(),
 		state:                 state.Ready,
 		retrying:              false,
+		nbRetried:             0,
 		stopRetryingToConnect: false,
 		queueFilter:           defaultQueueFilter,
 		port:                  opts.Port(),
@@ -161,10 +164,11 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.state = state.Offline
 		ws.EmitEvent(event.NetworkError, err)
 
-		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
+		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect && ws.nbRetried < MAX_CONNECT_RETRY {
 			ws.retrying = true
 			time.Sleep(ws.reconnectionDelay)
 			ws.retrying = false
+			ws.nbRetried++
 			ws.Connect()
 		} else {
 			ws.EmitEvent(event.Disconnected, nil)
