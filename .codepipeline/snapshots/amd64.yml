@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - apt update && apt install figlet
+  build:
+    commands:
+      - bash .codepipeline/snapshots/snapshots.sh
+      - aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"

@@ -5,7 +5,7 @@ sh ./build_cpp_tests.sh
 
 FEATURE_FILE=$1
 
-if [ ! -z "$KUZZLE_HOST" ]; then
+if [ -z "$KUZZLE_HOST" ]; then
   ./_build_cpp_tests/KuzzleSDKStepDefs &
 else
   ./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
