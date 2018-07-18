@@ -8,7 +8,7 @@ dirs=(java cpp c)
 function snap_java() {
   cd internal/wrappers/build/java/build/libs
   newname="kuzzlesdk-java.jar"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_num/$newname"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/$newname"
   mv kuzzlesdk-1.0.0.jar $newname
 
   if [[ $TRAVIS_PULL_REQUEST -ne false ]]; then
@@ -23,7 +23,7 @@ function snap_java() {
 function snap_c() {
   cd internal/wrappers/build/c
   newname="libkuzzlesdk-c.so"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_num/kuzzlesdk-c.tar.gz"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/kuzzlesdk-c.tar.gz"
   mv libkuzzlesdk.so $newname
   mkdir lib include
   cp ../../headers/*.h include
@@ -42,7 +42,7 @@ function snap_c() {
 function snap_cpp() {
   cd internal/wrappers/build/cpp
   newname="libkuzzlesdk.so"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_num/kuzzlesdk-cpp.tar.gz"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/kuzzlesdk-cpp.tar.gz"
   mv libcpp.so $newname
   mkdir lib include
   cp ../../headers/* include
@@ -62,7 +62,9 @@ function snap_cpp() {
 if [[ -z $TRAVIS_PULL_REQUEST ]]; then
   export dest_dir="nightly"
 else
-  export pr_num="/$TRAVIS_PULL_REQUEST"
+  pr_num="$(echo $TRAVIS_PULL_REQUEST_BRANCH | cut -d- -f2)"
+  dir_name="KZL-$pr_num"
+  export pr_name="/$dir_name"
   export dest_dir="snapshots"
 fi
 
