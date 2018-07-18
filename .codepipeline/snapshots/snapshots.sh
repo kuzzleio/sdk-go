@@ -62,7 +62,7 @@ function snap_cpp() {
 if [[ -z $TRAVIS_PULL_REQUEST ]]; then
   export dest_dir="nightly"
 else
-  export pr_num="/$TRAVIS_PULL_REQUEST"
+  export pr_num="/$TRAVIS_PULL_REQUEST_BRANCH"
   export dest_dir="snapshots"
 fi
 
