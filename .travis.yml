@@ -13,7 +13,6 @@ env:
     # AWS SECRET
     - secure: 5kFEyv9xwFcVAG3mWMIXhrMfU8w0pXc9QO4ZyVFw09cjm0WVcMAC8tf+1xVrnvtLegDK/30dA4r3CMrW5zbhhxCl92IvhzPzXSrUfX5IV3y9tu8lV5DIjJ4wBBVOnlKcUb0wlWoPM1VnpIaS8a5Iq9cDehIhtNVqq1/dQe+3yB8KRpsqEkpDcrveDNr2urVvMfpy9IqeY0n8FqxTFFCsb/jmpRLD9FoANogajda+JKosgqs5Z1Ugbs6/qjNtsF9bEYBXE9dS5fP5Zq8+EvNB66FRnOru/EtKWg2sMULP59IKRbspEsxG8iY+G83pmMUDTg0KmaFtyc79RLq01zxtCPv7FmTsqtQ8Hmnz6Uf4oOjEc8tnuMMue6CxjUGTb2Tm1qOMsgR71unUJBYZECzpGy5AEKuRK26dMpJxkEN4YT3oYhv0J1df1uUceaB+b9gaQEZhKtQFn3y0jcI4CoJx4L0GYBBOMdp936NZHozjzFjY7ZB1gw13mCIBMF9xaDhIwRmFwYcLKFi1W1waU/b5MK+fJZ5Xx1zPZxicEyajIIRrWuDv/690Kr61+VQrlwbmy0ElU/fAFkIpUa2QZ6nt0o1mIqk1XfmedRmd11OmQcDHy19WyHCyJCO+hcNHi2EELiZ2SLCPaeS5mry0hptx0zKU4y6SSh2SWH05l3/S9e4=
 before_install:
-  - sudo apt update && sudo apt install figlet
   - sudo sysctl -w vm.max_map_count=262144
   - docker pull kuzzleio/sdk-cross:amd64
   - go get -u ./...
@@ -22,6 +21,7 @@ addons:
     packages:
     - python
     - python-pip
+    - figlet
 install:
   - sudo pip install awscli --upgrade
 script:
