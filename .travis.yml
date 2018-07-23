@@ -15,7 +15,7 @@ script:
   - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
   - sh .codepipeline/start_kuzzle.sh
   - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
-  - docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go android386 /build.sh
+  - docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:android386 /build.sh
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
