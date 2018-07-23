@@ -80,6 +80,7 @@ namespace {
 
     try {
       ctx->kuzzle->document->delete_(ctx->index, ctx->collection, document_id);
+      ctx->success = 1;
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }

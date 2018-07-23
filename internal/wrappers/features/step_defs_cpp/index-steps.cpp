@@ -42,12 +42,26 @@ namespace {
     REGEX_PARAM(std::string, index_name2);
     ScenarioScope<KuzzleCtx> ctx;
 
-    try {
-      ctx->kuzzle->index->create(index_name1);
-      ctx->kuzzle->index->create(index_name2);
-    } catch(KuzzleException e) {
-      K_LOG_E(e.getMessage().c_str());
-      BOOST_FAIL(e.getMessage());
+    if (! ctx->kuzzle->index->exists(index_name1)) {
+      try {
+        ctx->kuzzle->index->create(index_name1);
+      } catch(KuzzleException e) {
+        K_LOG_E(e.getMessage().c_str());
+        BOOST_FAIL(e.getMessage());
+      }
+    } else {
+      K_LOG_D("Using existing index: %s", index_name1.c_str());
+    }
+
+    if (! ctx->kuzzle->index->exists(index_name2)) {
+      try {
+        ctx->kuzzle->index->create(index_name2);
+      } catch(KuzzleException e) {
+        K_LOG_E(e.getMessage().c_str());
+        BOOST_FAIL(e.getMessage());
+      }
+    } else {
+      K_LOG_D("Using existing index: %s", index_name2.c_str());
     }
   }
 
@@ -103,4 +117,23 @@ namespace {
       !ctx->kuzzle->index->exists(index_name2)
     );
   }
+
+  WHEN("^I list indexes$")
+  {
+    ScenarioScope<KuzzleCtx> ctx;
+
+    ctx->string_array = ctx->kuzzle->index->list();
+  }
+
+  THEN("^I get \'([^\"]*)\' and \'([^\"]*)\'$")
+  {
+    REGEX_PARAM(std::string, index_name1);
+    REGEX_PARAM(std::string, index_name2);
+
+    ScenarioScope<KuzzleCtx> ctx;
+
+    BOOST_CHECK(std::find(ctx->string_array.begin(), ctx->string_array.end(), index_name1) != ctx->string_array.end());
+    BOOST_CHECK(std::find(ctx->string_array.begin(), ctx->string_array.end(), index_name2) != ctx->string_array.end());
+  }
+
 }

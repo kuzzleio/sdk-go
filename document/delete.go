@@ -52,8 +52,11 @@ func (d *Document) Delete(index string, collection string, _id string, options t
 		return "", res.Error
 	}
 
-	var deleted string
+	type r struct {
+		Id string `json:"_id"`
+	}
+	var deleted r
 	json.Unmarshal(res.Result, &deleted)
 
-	return deleted, nil
+	return deleted.Id, nil
 }

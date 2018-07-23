@@ -4,6 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #define EXPECT_EQ BOOST_CHECK_EQUAL
 #include <cucumber-cpp/autodetect.hpp>
+#include <cstdlib>
 #include <iostream>
 
 #include "auth.hpp"
@@ -34,15 +35,22 @@ struct KuzzleCtx {
   string index;
   string collection;
   string jwt;
+  string document_id;
+  search_result *documents;
 
   string room_id;
 
   user*                   currentUser        = NULL;
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
-  bool success;
-  int hits;
+  // 1 mean success, 0 failure and -1 is base state
+  int success = -1;
+  string error_message;
+  int hits = -1;
   string content;
+  // 1 mean yes, 0 no and -1 is base state
+  int partial_exception = -1;
+  std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
   CustomNotificationListener *listener;

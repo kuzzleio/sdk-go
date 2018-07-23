@@ -21,17 +21,17 @@ import (
 )
 
 // MGet fetches multiple documents at once
-func (d *Document) MGet(index string, collection string, ids []string, includeTrash bool, options types.QueryOptions) (string, error) {
+func (d *Document) MGet(index string, collection string, ids []string, includeTrash bool, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
-		return "", types.NewError("Document.MGet: index required", 400)
+		return nil, types.NewError("Document.MGet: index required", 400)
 	}
 
 	if collection == "" {
-		return "", types.NewError("Document.MGet: collection required", 400)
+		return nil, types.NewError("Document.MGet: collection required", 400)
 	}
 
 	if len(ids) == 0 {
-		return "", types.NewError("Document.MGet: ids filled array required", 400)
+		return nil, types.NewError("Document.MGet: ids filled array required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -54,11 +54,14 @@ func (d *Document) MGet(index string, collection string, ids []string, includeTr
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return "", res.Error
+		return nil, res.Error
 	}
 
-	var docs string
+	type r struct {
+		Hits json.RawMessage `json:"hits"`
+	}
+	var docs r
 	json.Unmarshal(res.Result, &docs)
 
-	return docs, nil
+	return docs.Hits, nil
 }

@@ -80,4 +80,21 @@ public class Indexdefs {
         Assert.assertFalse(k.getIndex().exists(index1));
         Assert.assertFalse(k.getIndex().exists(index2));
     }
+
+    @When("^I list indexes$")
+    public void i_list_indexes() throws Exception {
+      world.stringArray = k.getIndex().list();
+    }
+
+    @Then("^I get \'([^\"]*)\' and \'([^\"]*)\'$")
+    public void i_get_test_index_and_test_index(String index1, String index2) throws Exception {
+      int match = 0;
+
+      for (int i = 0; i < world.stringArray.size(); ++i) {
+        if (world.stringArray.get(i).equals(index1) || world.stringArray.get(i).equals(index2))
+          match++;
+      }
+
+      Assert.assertTrue(match == 2);
+    }
 }
