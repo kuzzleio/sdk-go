@@ -29,7 +29,8 @@ PATHSEP = $(strip $(SEP))
 ROOTOUTDIR = $(ROOT_DIR)build
 JAVA_HOME ?= /usr/local
 PYTHON_INCLUDE_DIR ?= `pkg-config --cflags python3`
-GOFLAGS = -buildmode=c-archive
+GOFLAGSARCHIVE = -buildmode=c-archive
+GOFLAGSSHARED = -buildmode=c-shared
 GOSRC = .$(PATHSEP)cgo$(PATHSEP)kuzzle$(PATHSEP)
 GOTARGETDIR = $(ROOTOUTDIR)/c
 GOTARGET = $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk$(STATICLIB)
@@ -37,7 +38,6 @@ GOTARGETSO = $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk$(DYNLIB)
 CPPDIR = $(ROOT_DIR)cpp
 HEADERSDIR = $(ROOT_DIR)headers
 
-CPP = $(CXX)
 CPPFLAGS = -g -fPIC
 INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
@@ -66,10 +66,10 @@ SWIG = swig
 all: python java csharp android
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CXX) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
-	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
+	$(CXX) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
 core_java:
 ifneq ($(OS),Windows_NT)
@@ -78,8 +78,8 @@ ifeq ($(wildcard $(GOCC)),)
 endif
 endif
 	cd ..$(PATHSEP)..$(PATHSEP) && go get .$(PATHSEP)... $(CMDSEP) cd internal$(PATHSEP)wrappers
-	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
-	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
+	$(GOCC) build -o $(GOTARGET) $(GOFLAGSSHARED) $(GOSRC)
+	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGSSHARED) $(GOSRC)
 ifeq ($(OS),Windows_NT)
 	$(MV) $(subst /,\,$(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk.h) kuzzle.h
 else
@@ -99,22 +99,22 @@ wrapper_python: $(OBJS)
 wrapper_csharp: $(OBJS)
 
 java_object:
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB)
 
 android_object:
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
-	strip $(OUTDIR)/../../../../jniLibs/armeabi-v7a/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/$(ARCH)/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/../../../../jniLibs/$(ARCH)/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
 
 python_object:
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB)
 
 csharp_object:
 ifeq ($(OS),Windows_NT)
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) -lWinmm -lntdll -lWS2_32
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) -lWinmm -lntdll -lWS2_32
 else
-	$(CPP) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS)
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS)
 endif
 	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB)
 
@@ -184,12 +184,13 @@ else
 endif
 
 makeabifolder:
-	mkdir -p $(OUTDIR)/../../../../jniLibs/armeabi-v7a
+	mkdir -p $(OUTDIR)/../../../../jniLibs/$(ARCH)
 
+android: ARCH ?= x86
 android: LANGINCLUDE = $(JAVAINCLUDE)
 android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
 android: makeabifolder core_java swig_android wrapper_java android_object
-	cd build/android && gradle assemble && cd -
+	cd build/android/app/src/main/jni && ndk-build && cd - && cd build/android && cp app/src/main/obj/local/$(ARCH)/*.so app/src/main/jniLibs/$(ARCH)/ && bash ./gradlew assemble
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
