@@ -26,6 +26,7 @@ using std::endl;
 using std::string;
 
 class CustomNotificationListener;
+class NotificationListener;
 
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
