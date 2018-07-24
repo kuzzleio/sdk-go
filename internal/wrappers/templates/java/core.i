@@ -26,6 +26,48 @@
 %rename(NotificationContent) notification_content;
 %rename(SubscribeToSelf) subscribe_to_self;
 
+// struct options
+%rename(queueMaxSize) queue_max_size;
+%rename(offlineMode) offline_mode;
+%rename(autoQueue) auto_queue;
+%rename(autoReconnect) auto_reconnect;
+%rename(autoReplay) auto_replay;
+%rename(autoReplay) auto_replay;
+%rename(autoResubscribe) auto_resubscribe;
+%rename(reconnectionDelay) reconnection_delay;
+%rename(replayInterval) replay_interval;
+%rename(defaultIndex) default_index;
+
+// struct query_options
+%rename(scrollId) scroll_id;
+%rename(ifExist) if_exist;
+%rename(retryOnConflict) retry_on_conflict;
+
+// struct kuzzle_request
+%rename(membersLength) members_length;
+%rename(keysLength) keys_length;
+%rename(fieldsLength) fields_length;
+
+// struct role
+%rename(profileIds) profile_ids;
+%rename(profileIdsLength) profile_ids_length;
+
+// struct notification_result
+%rename(nType) n_type;
+%rename(roomId) room_id;
+
+// struct statistics
+%rename(completedRequests) completed_requests;
+%rename(failedRequests) failed_requests;
+%rename(ongoingRequests) ongoing_requests;
+
+// struct token_validity
+%rename(expiresAt) expires_at;
+
+// struct kuzzle_response
+%rename(requestId) request_id;
+%rename(roomId) room_id;
+
 %rename(delete) delete_;
 
 %ignore *::error;
