@@ -13,6 +13,7 @@
 #include "index.hpp"
 #include "realtime.hpp"
 #include "kuzzle.hpp"
+#include "listeners.hpp"
 
 #include "kuzzle_utils.h"
 
@@ -24,9 +25,6 @@ using namespace kuzzleio;
 using std::cout;
 using std::endl;
 using std::string;
-
-class CustomNotificationListener;
-class NotificationListener;
 
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
