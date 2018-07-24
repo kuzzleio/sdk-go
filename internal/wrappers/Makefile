@@ -29,8 +29,7 @@ PATHSEP = $(strip $(SEP))
 ROOTOUTDIR = $(ROOT_DIR)build
 JAVA_HOME ?= /usr/local
 PYTHON_INCLUDE_DIR ?= `pkg-config --cflags python3`
-GOFLAGSARCHIVE = -buildmode=c-archive
-GOFLAGSSHARED = -buildmode=c-shared
+GOFLAGS = -buildmode=c-archive
 GOSRC = .$(PATHSEP)cgo$(PATHSEP)kuzzle$(PATHSEP)
 GOTARGETDIR = $(ROOTOUTDIR)/c
 GOTARGET = $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk$(STATICLIB)
@@ -78,8 +77,8 @@ ifeq ($(wildcard $(GOCC)),)
 endif
 endif
 	cd ..$(PATHSEP)..$(PATHSEP) && go get .$(PATHSEP)... $(CMDSEP) cd internal$(PATHSEP)wrappers
-	$(GOCC) build -o $(GOTARGET) $(GOFLAGSSHARED) $(GOSRC)
-	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGSSHARED) $(GOSRC)
+	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
+	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
 ifeq ($(OS),Windows_NT)
 	$(MV) $(subst /,\,$(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk.h) kuzzle.h
 else
@@ -188,6 +187,7 @@ makeabifolder:
 
 android: ARCH ?= x86
 android: LANGINCLUDE = $(JAVAINCLUDE)
+android: GOFLAGS = -buildmode=c-shared
 android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
 android: makeabifolder core_java swig_android wrapper_java android_object
 	cd build/android/app/src/main/jni && ndk-build && cd - && cd build/android && cp app/src/main/obj/local/$(ARCH)/*.so app/src/main/jniLibs/$(ARCH)/ && bash ./gradlew assemble
