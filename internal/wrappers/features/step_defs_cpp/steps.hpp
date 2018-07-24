@@ -26,6 +26,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
+class CustomNotificationListener;
+
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
   options kuzzle_options;
