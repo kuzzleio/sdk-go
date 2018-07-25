@@ -6,4 +6,4 @@ phases:
       - docker pull kuzzleio/sdk-cross:builder-armv7
   build:
     commands:
-      - docker run --rm --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:armv7-builder /build.sh
+      - docker run --rm --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:armv7-builder /build.sh

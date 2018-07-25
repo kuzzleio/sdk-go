@@ -6,7 +6,7 @@ phases:
       - docker pull kuzzleio/sdk-cross:i386
   build:
     commands:
-      - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:i386 /build.sh
+      - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:i386 /build.sh
 artifacts:
   files:
     - '**/*'
