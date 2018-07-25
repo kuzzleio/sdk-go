@@ -200,9 +200,9 @@ func kuzzle_flush_queue(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).FlushQueue()
 }
 
-//export kuzzle_replay_queue
-func kuzzle_replay_queue(k *C.kuzzle) {
-	(*kuzzle.Kuzzle)(k.instance).ReplayQueue()
+//export kuzzle_play_queue
+func kuzzle_play_queue(k *C.kuzzle) {
+	(*kuzzle.Kuzzle)(k.instance).PlayQueue()
 }
 
 //export kuzzle_start_queuing

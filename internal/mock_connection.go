@@ -109,7 +109,7 @@ func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{})
 	}
 }
 
-func (c *MockedConnection) ReplayQueue() {}
+func (c *MockedConnection) PlayQueue() {}
 
 func (c *MockedConnection) RemoveAllListeners(event int) {
 	if c.MockRemoveAllListeners != nil {

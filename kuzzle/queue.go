@@ -19,10 +19,9 @@ func (k *Kuzzle) FlushQueue() {
 	k.socket.ClearQueue()
 }
 
-// ReplayQueue replays the requests queued during offline mode.
-// Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (k *Kuzzle) ReplayQueue() {
-	k.socket.ReplayQueue()
+// PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+func (k *Kuzzle) PlayQueue() {
+	k.socket.PlayQueue()
 }
 
 // StartQueuing start the requests queuing.

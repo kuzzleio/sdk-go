@@ -397,7 +397,7 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Kuzzle::replayQueue() "
+%javamethodmodifiers kuzzleio::Kuzzle::playQueue() "
   /**
    * Replays the requests queued during offline mode.
    * Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
@@ -420,7 +420,7 @@
    * Set a new JWT and trigger the 'loginAttempt' event.
    *
    * @param jwt - New authentication JSON Web Token
-   * @return this 
+   * @return this
    */
   public";
 
@@ -501,7 +501,7 @@
 
 %javamethodmodifiers kuzzleio::Kuzzle::addListener(Event event, EventListener* listener) "
    /**
-   * Adds a listener to a Kuzzle global event. When an event is triggered, 
+   * Adds a listener to a Kuzzle global event. When an event is triggered,
    * listeners are called in the order of their insertion.
    *
    * @param event - Name of the global event to subscribe to
