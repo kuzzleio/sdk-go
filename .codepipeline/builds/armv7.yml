@@ -3,8 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - docker run --rm --privileged multiarch/qemu-user-static:register
-      - docker pull kuzzleio/sdk-cross:armv7
+      - docker pull kuzzleio/sdk-cross:builder-armv7
   build:
     commands:
-      - docker run --rm --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:armv7 /build.sh
+      - docker run --rm --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:armv7-builder /build.sh

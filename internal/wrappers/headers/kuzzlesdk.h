@@ -199,6 +199,7 @@ enum Mode {AUTO, MANUAL};
     .refresh = NULL, \
     .default_index = NULL  \
 }
+
 typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
