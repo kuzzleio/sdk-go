@@ -145,7 +145,7 @@ public class Collectiondefs {
     }
 
     @When("^I create a collection \'([^\"]*)\' with a mapping$")
-    public void i_create_a_collection_test_collection(String collection) throws Exception {
+    public void i_create_a_collection_test_collection_with_mapping(String collection) throws Exception {
         String mapping = "{\"properties\": {\"foo\": {\"type\": \"string\"}}}";
         k.getCollection().create(world.index, collection, mapping);
         world.collection = collection;
