@@ -3,18 +3,32 @@ sudo: required
 services:
   - docker
 go:
-  - "1.10"
-
+  - '1.10'
+env:
+  global:
+    - AWS_S3_BUCKET=dl.kuzzle.io
+    - AWS_CLOUDFRONT_DISTRIBUTION_ID=E12YL8EZVABYR0
+    # AWS ID ACCESS
+    - secure:  oxIaFgHaez73G4DA6f2AoDRoomS2BXFBHngSGcyPalc/s81Mbzzgs/NNeQ8DwTKGS8bKKzhENNpJO9T2hgJmHrVvoIBh4sjDQQ64oSnXKb0oSf+AzXb/eUpQ7UTQnbxjexOLxdtNu/uqPc4YD+BNl9thQRiOe78Xu1yc5r7/kU4hfFEKLVIT47PyDG6A+Soyvisa6xWA8Jy1Dwc2J56aFPRYoYz5zBPjZoGNnAVXxV+ocKLGbvzg5cT2cM/6HOi3hFRGRwXVED3rz8g3BBK9KZj6W83OUw6ruNmIODPo7Lkl/kaVzTLS8kv6LcLdNKOeSiyQm4Cax9/8sUB6XZd6E94nT36iKR7bPSX3t128pIN2Y5TJSlKdnY/aFye9ymd7ljMQGgy/AONP+NgYlw3Nb9xvh8dNjBQ9GBUIkg1JKmCe1yBFUlgYA6VBeI72eoYQ0lgKu5bpvNGtbxHHuQLJukpEU2JkqEZYATmJ7DC/fIXG0ITYIqHG60J+DGQLA2FPRkZA1qDEtx0Ejn6lwU6jzFuzMiUabxSGBARWz13xeKDehu3MYV59KECBjgNwRHeltbPHPYtDLPJEso5hjE6A+SO9bTwE/c2RgFIFhEwWtxA+OAgYdNv8246qXQ7Bk8LKmLQOt5gi7sMYLcvD5r0UCu4C6+fb6UfFyPTN0GdxLgY=
+    # AWS SECRET
+    - secure: 5kFEyv9xwFcVAG3mWMIXhrMfU8w0pXc9QO4ZyVFw09cjm0WVcMAC8tf+1xVrnvtLegDK/30dA4r3CMrW5zbhhxCl92IvhzPzXSrUfX5IV3y9tu8lV5DIjJ4wBBVOnlKcUb0wlWoPM1VnpIaS8a5Iq9cDehIhtNVqq1/dQe+3yB8KRpsqEkpDcrveDNr2urVvMfpy9IqeY0n8FqxTFFCsb/jmpRLD9FoANogajda+JKosgqs5Z1Ugbs6/qjNtsF9bEYBXE9dS5fP5Zq8+EvNB66FRnOru/EtKWg2sMULP59IKRbspEsxG8iY+G83pmMUDTg0KmaFtyc79RLq01zxtCPv7FmTsqtQ8Hmnz6Uf4oOjEc8tnuMMue6CxjUGTb2Tm1qOMsgR71unUJBYZECzpGy5AEKuRK26dMpJxkEN4YT3oYhv0J1df1uUceaB+b9gaQEZhKtQFn3y0jcI4CoJx4L0GYBBOMdp936NZHozjzFjY7ZB1gw13mCIBMF9xaDhIwRmFwYcLKFi1W1waU/b5MK+fJZ5Xx1zPZxicEyajIIRrWuDv/690Kr61+VQrlwbmy0ElU/fAFkIpUa2QZ6nt0o1mIqk1XfmedRmd11OmQcDHy19WyHCyJCO+hcNHi2EELiZ2SLCPaeS5mry0hptx0zKU4y6SSh2SWH05l3/S9e4=
 before_install:
   - sudo sysctl -w vm.max_map_count=262144
   - docker pull kuzzleio/sdk-cross:amd64
   - go get -u ./...
-
+addons:
+  apt:
+    packages:
+    - python
+    - python-pip
+    - figlet
+install:
+  - sudo pip install awscli --upgrade
 script:
   - ./test.sh
   - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
   - sh .codepipeline/start_kuzzle.sh
   - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
-
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
+  - if [[ $TRAVIS_PULL_REQUEST != false ]]; then sudo bash .codepipeline/snapshots/snapshots.sh; fi;

@@ -174,7 +174,7 @@ endif
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
-python: CC = g++
+python: CC = $(CPP)
 python: CFLAGS = -fPIC
 python: core_python swig_python wrapper_python python_object
 	cp $(ROOT_DIR)templates/python/*.py $(OUTDIR)
@@ -188,7 +188,7 @@ cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: LANGUAGE = c++
 cpp: makedir core_cpp $(CPPSDK)
 		ar rvs $(OUTDIR)/libcpp$(STATICLIB) $(OUTDIR)/*.o
-		g++ -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
+		$(CPP) -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
 
 clean:
 ifeq ($(OS),Windows_NT)
