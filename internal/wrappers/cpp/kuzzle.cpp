@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ namespace kuzzleio {
   Kuzzle::Kuzzle(const std::string& host, options *opts) {
     this->_kuzzle = new kuzzle();
     kuzzle_new_kuzzle(this->_kuzzle, const_cast<char*>(host.c_str()), (char*)"websocket", opts);
-    
+
     this->document = new Document(this, kuzzle_get_document_controller(_kuzzle));
     this->auth = new Auth(this, kuzzle_get_auth_controller(_kuzzle));
     this->index = new Index(this, kuzzle_get_index_controller(_kuzzle));

@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,31 +129,31 @@ namespace kuzzleio {
       break;
       case FORBIDDEN_EXCEPTION:
         delete(result);
-        throw ForbiddenException(error);      
+        throw ForbiddenException(error);
       break;
       case NOT_FOUND_EXCEPTION:
         delete(result);
-        throw NotFoundException(error);  
+        throw NotFoundException(error);
       break;
       case PRECONDITION_EXCEPTION:
         delete(result);
-        throw PreconditionException(error);  
+        throw PreconditionException(error);
       break;
       case SIZE_LIMIT_EXCEPTION:
         delete(result);
-        throw SizeLimitException(error);        
+        throw SizeLimitException(error);
       break;
       case INTERNAL_EXCEPTION:
         delete(result);
-        throw InternalException(error); 
+        throw InternalException(error);
       break;
       case SERVICE_UNAVAILABLE_EXCEPTION:
         delete(result);
-        throw ServiceUnavailableException(error);         
+        throw ServiceUnavailableException(error);
       break;
       case GATEWAY_TIMEOUT_EXCEPTION:
         delete(result);
-        throw GatewayTimeoutException(error);         
+        throw GatewayTimeoutException(error);
       break;
       default:
         delete(result);
