@@ -29,9 +29,16 @@ Feature: Collection management
     And the collection has a document with id 'my-document-id'
     And the collection has a document with id 'my-document-id2'
     When I truncate the collection 'test-collection'
-    Then the collection 'test-collection' shall be empty
+    Then the collection 'test-collection' should be empty
 
   Scenario: Create a collection with a custom mapping
+    Given Kuzzle Server is running
+    And there is an index 'test-index'
+    When I create a collection 'test-create-with-mapping' with a mapping
+    Then the collection 'test-create-with-mapping' should exists
+    And the mapping of 'test-create-with-mapping' should be updated
+
+  Scenario: Update a collection with a custom mapping
     Given Kuzzle Server is running
     And there is an index 'test-index'
     And it has a collection 'test-collection'

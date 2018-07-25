@@ -54,12 +54,12 @@ func main() {
 
 To run the tests you can simply execute the coverage.sh script
 ```sh
-./coverage.sh
+./test.sh
 ```
 
 You can also get html coverage by running
 ```sh
-./coverage.sh --html
+./test.sh --html
 ```
 ### e2e tests
 

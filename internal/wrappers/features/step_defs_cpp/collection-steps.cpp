@@ -96,7 +96,7 @@ namespace {
     ctx->kuzzle->collection->truncate(ctx->index, collection_id, &options);
   }
 
-  THEN("^the collection \'([^\"]*)\' shall be empty$")
+  THEN("^the collection \'([^\"]*)\' should be empty$")
   {
     REGEX_PARAM(string, collection_id);
 
@@ -199,5 +199,19 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     BOOST_CHECK(ctx->kuzzle->collection->getSpecifications(ctx->index, collection_id) == "");
+  }
+
+  WHEN("^I create a collection \'([^\"]*)\' with a mapping$")
+  {
+    REGEX_PARAM(string, collection_id);
+
+    ScenarioScope<KuzzleCtx> ctx;
+    string mapping = "{\"properties\": {\"gordon\": {\"type\": \"keyword\"}}}";
+
+    try {
+      ctx->kuzzle->collection->create(ctx->index, collection_id, &mapping);
+    } catch (KuzzleException e) {
+      BOOST_FAIL(e.getMessage());
+    }
   }
 }

@@ -79,7 +79,7 @@ public class Collectiondefs {
         k.getCollection().truncate(world.index, collection, o);
     }
 
-    @Then("^the collection \'([^\"]*)\' shall be empty$")
+    @Then("^the collection \'([^\"]*)\' should be empty$")
     public void it_should_be_empty(String collection) throws Exception {
         SearchResult res = k.getDocument().search(world.index, collection, "{}");
         Assert.assertEquals("[]", res.getDocuments());
@@ -99,7 +99,8 @@ public class Collectiondefs {
     @Then("^the mapping of \'([^\"]*)\' should be updated$")
     public void the_mapping_should_be_updated(String collection) throws Exception {
         String mapping = k.getCollection().getMapping(world.index, collection);
-        Assert.assertEquals("{\"test-index\":{\"mappings\":{\"test-collection\":{\"properties\":{\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}", mapping);
+        Assert.assertEquals(
+            "{\"" + world.index + "\":{\"mappings\":{\"" + collection + "\":{\"properties\":{\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}", mapping);
     }
 
     @When("^I update the specifications of the collection \'([^\"]*)\'$")
@@ -143,4 +144,10 @@ public class Collectiondefs {
         Assert.assertTrue(notFound);
     }
 
+    @When("^I create a collection \'([^\"]*)\' with a mapping$")
+    public void i_create_a_collection_test_collection(String collection) throws Exception {
+        String mapping = "{\"properties\": {\"foo\": {\"type\": \"string\"}}}";
+        k.getCollection().create(world.index, collection, mapping);
+        world.collection = collection;
+    }
 }
