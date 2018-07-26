@@ -6,4 +6,4 @@ phases:
       - docker pull kuzzleio/sdk-cross:i386
   build:
     commands:
-      - docker run -a stdout -a stderr --privileged --rm --net host --name deploy-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:i386 /deploy.sh
+      - docker run -a stdout -a stderr --privileged --rm --net host --name deploy-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:i386 /deploy.sh

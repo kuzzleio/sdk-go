@@ -39,7 +39,7 @@ type Connection interface {
 	RequestHistory() map[string]time.Time
 	StartQueuing()
 	StopQueuing()
-	ReplayQueue()
+	PlayQueue()
 	ClearQueue()
 
 	// property getters
