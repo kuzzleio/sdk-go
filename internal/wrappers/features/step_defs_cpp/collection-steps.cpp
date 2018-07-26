@@ -16,7 +16,7 @@ namespace {
     }
   }
 
-  THEN("^the collection \'([^\"]*)\' should exists$")
+  THEN("^the collection \'([^\"]*)\' should exist$")
   {
     REGEX_PARAM(string, collection_id);
 

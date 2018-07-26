@@ -4,7 +4,7 @@ Feature: Collection management
     Given Kuzzle Server is running
     And there is an index 'test-index'
     When I create a collection 'collection-test-collection'
-    Then the collection 'collection-test-collection' should exists
+    Then the collection 'collection-test-collection' should exist
 
   Scenario: Check if a collection exists
     Given Kuzzle Server is running
@@ -35,7 +35,7 @@ Feature: Collection management
     Given Kuzzle Server is running
     And there is an index 'test-index'
     When I create a collection 'test-create-with-mapping' with a mapping
-    Then the collection 'test-create-with-mapping' should exists
+    Then the collection 'test-create-with-mapping' should exist
     And the mapping of 'test-create-with-mapping' should be updated
 
   Scenario: Update a collection with a custom mapping

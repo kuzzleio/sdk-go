@@ -32,7 +32,7 @@ public class Collectiondefs {
         world.collection = collection;
     }
 
-    @Then("^the collection \'([^\"]*)\' should exists$")
+    @Then("^the collection \'([^\"]*)\' should exist$")
     public void the_collection_should_exists(String collection) throws Exception {
         Assert.assertTrue(k.getCollection().exists(world.index, collection));
     }
