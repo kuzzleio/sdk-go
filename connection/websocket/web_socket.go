@@ -212,7 +212,7 @@ func (ws *webSocket) Connect() (bool, error) {
 		}
 	}()
 
-	ws.ReplayQueue()
+	ws.PlayQueue()
 
 	return ws.wasConnected, err
 }
@@ -438,8 +438,8 @@ func (ws *webSocket) ClearQueue() {
 	ws.offlineQueue = nil
 }
 
-// ReplayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (ws *webSocket) ReplayQueue() {
+// PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+func (ws *webSocket) PlayQueue() {
 	if ws.state != state.Offline && !ws.autoReplay {
 		ws.cleanQueue()
 		ws.dequeue()

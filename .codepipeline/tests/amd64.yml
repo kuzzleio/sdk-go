@@ -8,7 +8,7 @@ phases:
       - bash .codepipeline/start_kuzzle.sh
   build:
     commands:
-      - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
+      - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
   post_build:
     commands:
       - docker kill codepipeline_elasticsearch_1 codepipeline_redis_1 kuzzle
