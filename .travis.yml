@@ -27,9 +27,9 @@ install:
 script:
   - ./test.sh
   - sh .codepipeline/start_kuzzle.sh
-  - docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:android-x86 /build.sh
+  - docker run --rm -it --mount -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:android-x86 /build.sh
   - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh  
-  - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
+  - docker run -a stdout -a stderr --privileged --rm --neté&work codepipeline_default --link kuzzle --name test-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - if [[ $TRAVIS_PULL_REQUEST != false ]]; then sudo bash .codepipeline/snapshots/snapshots.sh; fi;

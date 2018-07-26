@@ -114,31 +114,6 @@ install {
 // from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/bintrayv1.gradle'
 apply plugin: 'com.jfrog.bintray'
 
-// task sourcesJar(type: Jar) {
-//     classifier = 'sources'
-//     from android.sourceSets.main.java.srcDirs
-// }
-
-// task javadoc(type: Javadoc) {
-//     source = android.sourceSets.main.java.srcDirs
-//     classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.javadocDeps + configurations.compile
-// }
-
-// task javadocJar(type: Jar, dependsOn: javadoc) {
-//     classifier = 'javadoc'
-//     from javadoc.destinationDir
-// }
-
-// task jar(type: Jar) {
-//     from('build/intermediates/classes/release/')
-//     archiveName 'kuzzle-sdk.jar'
-// }
-
-// artifacts {
-//     archives javadocJar
-//     archives sourcesJar
-// }
-
 // Bintray
 bintray {
     user = System.getenv("bintray_user")
