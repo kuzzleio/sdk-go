@@ -90,7 +90,8 @@ public class Collectiondefs {
         k.getCollection().updateMapping(world.index, collection, "{" +
                 "\"properties\": {" +
                 "    \"foo\": {" +
-                "      \"type\": \"string\"" +
+                "      \"type\": \"string\"," +
+                "      \"fields\": {\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}" +
                 "    }" +
                 "}" +
                 "}");
@@ -146,7 +147,10 @@ public class Collectiondefs {
 
     @When("^I create a collection \'([^\"]*)\' with a mapping$")
     public void i_create_a_collection_test_collection_with_mapping(String collection) throws Exception {
-        String mapping = "{\"properties\": {\"foo\": {\"type\": \"string\"}}}";
+        String mapping = "{\"properties\": {\"foo\": {"
+            + "\"type\": \"string\", \"fields\": {"
+            + "\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}"
+            + "}}}";
         k.getCollection().create(world.index, collection, mapping);
         world.collection = collection;
     }

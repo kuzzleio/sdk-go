@@ -29,8 +29,8 @@ func (dc *Collection) Create(index string, collection string, body json.RawMessa
 		return types.NewError("Collection.Create: collection required", 400)
 	}
 
-	if body != nil && len(body) == 0 {
-		return types.NewError("Collection.Create: body is not a valid JSON", 400)
+	if body != nil && !json.Valid(body) {
+		return types.NewError("Collection.Create: body is not a valid JSON object", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)

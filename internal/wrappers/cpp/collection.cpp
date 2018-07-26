@@ -36,7 +36,7 @@ namespace kuzzleio {
             _collection,
             const_cast<char*>(index.c_str()),
             const_cast<char*>(collection.c_str()),
-            body ? const_cast<char*>(body->c_str()) : NULL,
+            body != NULL ? const_cast<char*>(body->c_str()) : NULL,
             options);
 
         if (r != NULL)

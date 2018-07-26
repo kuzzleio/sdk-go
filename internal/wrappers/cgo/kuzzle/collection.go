@@ -58,7 +58,13 @@ func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 
 //export kuzzle_collection_create
 func kuzzle_collection_create(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.error_result {
-	err := (*collection.Collection)(c.instance).Create(C.GoString(index), C.GoString(col), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	var rawBody json.RawMessage
+
+	if body != nil {
+		rawBody = json.RawMessage(C.GoString(body))
+	}
+
+	err := (*collection.Collection)(c.instance).Create(C.GoString(index), C.GoString(col), rawBody, SetQueryOptions(options))
 	return goToCErrorResult(err)
 }
 
