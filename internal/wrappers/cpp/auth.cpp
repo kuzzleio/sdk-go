@@ -60,12 +60,12 @@ namespace kuzzleio {
     delete(r);
   }
 
-  user* Auth::getCurrentUser() Kuz_Throw_KuzzleException {
+  kuzzle_user* Auth::getCurrentUser() Kuz_Throw_KuzzleException {
     user_result *r = kuzzle_get_current_user(_auth);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
 
-    user *u = r->result;
+    kuzzle_user *u = r->result;
     kuzzle_free_user_result(r);
     return u;
   }
@@ -132,11 +132,11 @@ namespace kuzzleio {
     return ret;
   }
 
-  user* Auth::updateSelf(const std::string& content, query_options* options) Kuz_Throw_KuzzleException {
+  kuzzle_user* Auth::updateSelf(const std::string& content, query_options* options) Kuz_Throw_KuzzleException {
     user_result *r = kuzzle_update_self(_auth, const_cast<char*>(content.c_str()), options);
     if (r->error != NULL)
       throwExceptionFromStatus(r);
-    user *ret = r->result;
+    kuzzle_user *ret = r->result;
     kuzzle_free_user_result(r);
     return ret;
   }

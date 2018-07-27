@@ -536,14 +536,14 @@ func goToCUserData(data *types.UserData) (*C.user_data, error) {
 	return cdata, nil
 }
 
-func goToCUser(k *C.kuzzle, user *security.User, dest *C.user) (*C.user, error) {
+func goToCUser(k *C.kuzzle, user *security.User, dest *C.kuzzle_user) (*C.kuzzle_user, error) {
 	if user == nil {
 		return nil, nil
 	}
 
-	var cuser *C.user
+	var cuser *C.kuzzle_user
 	if dest == nil {
-		cuser = (*C.user)(C.calloc(1, C.sizeof_user))
+		cuser = (*C.kuzzle_user)(C.calloc(1, C.sizeof_kuzzle_user))
 	} else {
 		cuser = dest
 	}
@@ -690,8 +690,8 @@ func goToCUserSearchResult(k *C.kuzzle, res *security.UserSearchResult, err erro
 	}
 
 	if len(res.Hits) > 0 {
-		result.result.hits = (*C.user)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_user))
-		users := (*[1<<26 - 1]C.user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
+		result.result.hits = (*C.kuzzle_user)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_kuzzle_user))
+		users := (*[1<<26 - 1]C.kuzzle_user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
 
 		for i, user := range res.Hits {
 			goToCUser(k, user, &users[i])

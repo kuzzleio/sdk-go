@@ -18,29 +18,19 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 %rename(UserData) user_data;
-%rename(User, match="class") user;
+%rename(User, match="class") kuzzle_user;
 %rename(RoomOptions) room_options;
 %rename(SearchFilters) search_filters;
 %rename(SearchResult) search_result;
 %rename(NotificationResult) notification_result;
 %rename(NotificationContent) notification_content;
 %rename(SubscribeToSelf) subscribe_to_self;
-%rename(Mapping, match="class") mapping;
 
-%rename(_auth, match="class") auth;
-%rename(_kuzzle, match="class") kuzzle;
-%rename(_realtime, match="class") realtime;
-%rename(_collection, match="class") collection;
-%rename(_document, match="class") document;
-%rename(_server, match="class") server;
+%rename(delete) delete_;
 
 %ignore *::error;
 %ignore *::status;
 %ignore *::stack;
-
-%feature("director") NotificationListener;
-%feature("director") EventListener;
-%feature("director") SubscribeListener;
 
 %{
 #include "kuzzle.cpp"
@@ -50,12 +40,32 @@
 #include "server.cpp"
 #include "document.cpp"
 #include "realtime.cpp"
-
-#define SWIG_FILE_WITH_INIT
 %}
 
-%include "stl.i"
+%include "../java/exceptions.i"
+%include "std_string.i"
+%include "typemap.i"
 %include "kcore.i"
+
+%include "std_vector.i"
+
+%template(StringVector) std::vector<std::string>;
+
+%typemap(out) const StringVector& %{
+    return $1;
+%}
+
+%pragma(java) jniclasscode=%{
+  static {
+    try {
+      System.loadLibrary("kuzzle-wrapper-android");
+    } catch (Exception e) {
+      System.err.println("Native code library failed to load. \n");
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+%}
 
 %extend options {
     options() {

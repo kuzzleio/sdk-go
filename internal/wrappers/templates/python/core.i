@@ -47,7 +47,7 @@
 %}
 
 %include "stl.i"
-%include "../../kcore.i"
+%include "kcore.i"
 
 %extend options {
     options() {
