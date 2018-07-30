@@ -1,6 +1,6 @@
 /* File : kcore.i */
 
-%module kuzzlesdk
+%module(directors="1") kuzzlesdk
 %{
 #include "exceptions.hpp"
 #include "event_emitter.hpp"

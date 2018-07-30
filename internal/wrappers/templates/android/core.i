@@ -32,6 +32,10 @@
 %ignore *::status;
 %ignore *::stack;
 
+%feature("director") NotificationListener;
+%feature("director") EventListener;
+%feature("director") SubscribeListener;
+
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
