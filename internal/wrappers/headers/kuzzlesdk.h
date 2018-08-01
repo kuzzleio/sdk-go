@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -188,7 +188,7 @@ enum Mode {AUTO, MANUAL};
 #define KUZZLE_OPTIONS_DEFAULT { \
     .queue_ttl = 120000, \
     .queue_max_size = 500, \
-    .offline_mode = 0,  \
+    .offline_mode = MANUAL,  \
     .auto_queue = false,  \
     .auto_reconnect = true,  \
     .auto_replay = false, \
@@ -203,7 +203,7 @@ enum Mode {AUTO, MANUAL};
 typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
-    unsigned char offline_mode;
+    enum Mode offline_mode;
     bool auto_queue;
     bool auto_reconnect;
     bool auto_replay;

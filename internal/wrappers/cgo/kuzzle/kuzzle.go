@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -200,9 +200,9 @@ func kuzzle_flush_queue(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).FlushQueue()
 }
 
-//export kuzzle_replay_queue
-func kuzzle_replay_queue(k *C.kuzzle) {
-	(*kuzzle.Kuzzle)(k.instance).ReplayQueue()
+//export kuzzle_play_queue
+func kuzzle_play_queue(k *C.kuzzle) {
+	(*kuzzle.Kuzzle)(k.instance).PlayQueue()
 }
 
 //export kuzzle_start_queuing

@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ func (k *Kuzzle) FlushQueue() {
 	k.socket.ClearQueue()
 }
 
-// ReplayQueue replays the requests queued during offline mode.
-// Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (k *Kuzzle) ReplayQueue() {
-	k.socket.ReplayQueue()
+// PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+func (k *Kuzzle) PlayQueue() {
+	k.socket.PlayQueue()
 }
 
 // StartQueuing start the requests queuing.

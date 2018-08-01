@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{})
 	}
 }
 
-func (c *MockedConnection) ReplayQueue() {}
+func (c *MockedConnection) PlayQueue() {}
 
 func (c *MockedConnection) RemoveAllListeners(event int) {
 	if c.MockRemoveAllListeners != nil {

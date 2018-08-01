@@ -54,12 +54,12 @@ func main() {
 
 To run the tests you can simply execute the coverage.sh script
 ```sh
-./coverage.sh
+./test.sh
 ```
 
 You can also get html coverage by running
 ```sh
-./coverage.sh --html
+./test.sh --html
 ```
 ### e2e tests
 
@@ -152,7 +152,7 @@ You can use Docker to simplify wrappers generation and testing
 In project root, use:
 
 ```bash
-$ docker run --rm -it --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
+$ docker run --rm -it -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
 ```
 
 This command will build all wrappers using our Docker Image
@@ -168,7 +168,7 @@ $ sh .codepipeline/start_kuzzle.sh
 Now run tests using Docker:
 
 ```bash
-$ docker run --rm -it --network codepipeline_default --link kuzzle --mount type=bind,source="$(pwd)",target=/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
+$ docker run --rm -it --network codepipeline_default --link kuzzle -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
 ```
 
 ## License

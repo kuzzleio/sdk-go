@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace kuzzleio {
             virtual void trigger(char*) const = 0;
     };
     class SubscribeListener {
-        public: 
+        public:
             virtual ~SubscribeListener(){};
             virtual void onSubscribe(room_result*) const = 0;
     };

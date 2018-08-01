@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,17 +15,22 @@
 package collection
 
 import (
+	"encoding/json"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Create creates a new empty data collection
-func (dc *Collection) Create(index string, collection string, options types.QueryOptions) error {
+func (dc *Collection) Create(index string, collection string, body json.RawMessage, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.Create: index required", 400)
 	}
 
 	if collection == "" {
 		return types.NewError("Collection.Create: collection required", 400)
+	}
+
+	if body != nil && !json.Valid(body) {
+		return types.NewError("Collection.Create: body is not a valid JSON object", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
@@ -35,7 +40,9 @@ func (dc *Collection) Create(index string, collection string, options types.Quer
 		Index:      index,
 		Controller: "collection",
 		Action:     "create",
+		Body:       body,
 	}
+
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch

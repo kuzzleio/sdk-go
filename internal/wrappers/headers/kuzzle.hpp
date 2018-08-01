@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ namespace kuzzleio {
       std::string getJwt();
       void disconnect();
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      Kuzzle* replayQueue();
+      Kuzzle* playQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
       Kuzzle* setDefaultIndex(const std::string& index);
       Kuzzle* startQueuing();

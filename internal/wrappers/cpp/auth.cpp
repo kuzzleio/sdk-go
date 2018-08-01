@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ namespace kuzzleio {
     kuzzle_free_string_array_result(r);
     return v;
   }
-  
+
   std::string Auth::login(const std::string& strategy, const std::string& credentials) Kuz_Throw_KuzzleException {
     string_result* r = kuzzle_login(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), NULL);
     if (r->error != NULL)

@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,8 +57,14 @@ func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 }
 
 //export kuzzle_collection_create
-func kuzzle_collection_create(c *C.collection, index *C.char, col *C.char, options *C.query_options) *C.error_result {
-	err := (*collection.Collection)(c.instance).Create(C.GoString(index), C.GoString(col), SetQueryOptions(options))
+func kuzzle_collection_create(c *C.collection, index *C.char, col *C.char, body *C.char, options *C.query_options) *C.error_result {
+	var rawBody json.RawMessage
+
+	if body != nil {
+		rawBody = json.RawMessage(C.GoString(body))
+	}
+
+	err := (*collection.Collection)(c.instance).Create(C.GoString(index), C.GoString(col), rawBody, SetQueryOptions(options))
 	return goToCErrorResult(err)
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,27 +15,34 @@
 package collection_test
 
 import (
+	"encoding/json"
 	"fmt"
-	"testing"
-
 	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestCreateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Create("", "collection", nil)
+	err := nc.Create("", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
 func TestCreateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "", nil)
+	err := nc.Create("index", "", nil, nil)
+	assert.NotNil(t, err)
+}
+
+func TestCreateBodyEmpty(t *testing.T) {
+	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Create("index", "collection", json.RawMessage(``), nil)
 	assert.NotNil(t, err)
 }
 
@@ -48,7 +55,7 @@ func TestCreateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection", nil)
+	err := nc.Create("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -64,7 +71,10 @@ func TestCreate(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection", nil)
+	err := nc.Create("index", "collection", nil, nil)
+	assert.Nil(t, err)
+
+	err = nc.Create("index", "collection", json.RawMessage(`{"properties":{}}`), nil)
 	assert.Nil(t, err)
 }
 
@@ -73,7 +83,7 @@ func ExampleCollection_Create() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	err := nc.Create("index", "collection", nil)
+	err := nc.Create("index", "collection", json.RawMessage(`{"properties":{"foo": {"type": "keyword"}}}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

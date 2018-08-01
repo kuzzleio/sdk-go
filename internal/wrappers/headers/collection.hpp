@@ -1,4 +1,4 @@
-// Copyright 2015-2017 Kuzzle
+// Copyright 2015-2018 Kuzzle
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ namespace kuzzleio {
             Collection(Kuzzle* kuzzle);
             Collection(Kuzzle* kuzzle, collection *collection);
             virtual ~Collection();
-            void create(const std::string& index, const std::string& collection, query_options *options=NULL) Kuz_Throw_KuzzleException;
+            void create(const std::string& index, const std::string& collection, const std::string* body=NULL, query_options *options=NULL) Kuz_Throw_KuzzleException;
             bool exists(const std::string& index, const std::string& collection, query_options *options=NULL) Kuz_Throw_KuzzleException;
             std::string list(const std::string& index, query_options *options=NULL) Kuz_Throw_KuzzleException;
             void truncate(const std::string& index, const std::string& collection, query_options *options=NULL) Kuz_Throw_KuzzleException;
