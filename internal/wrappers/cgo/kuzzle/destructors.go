@@ -248,7 +248,7 @@ func kuzzle_free_user_data(st *C.user_data) {
 func kuzzle_free_collection(st *C.collection) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.instance))
-		C.free(unsafe.Pointer(st.kuzzle))
+		C.free(unsafe.Pointer(st.k))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -257,7 +257,7 @@ func kuzzle_free_collection(st *C.collection) {
 func kuzzle_free_document(st *C.document) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.instance))
-		C.free(unsafe.Pointer(st.kuzzle))
+		C.free(unsafe.Pointer(st.k))
 		C.free(unsafe.Pointer(st))
 	}
 }
@@ -266,7 +266,7 @@ func kuzzle_free_document(st *C.document) {
 func kuzzle_free_notification_content(st *C.notification_content) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.id))
-		kuzzle_free_meta(st.meta)
+		kuzzle_free_meta(st.m)
 		C.free(unsafe.Pointer(st.content))
 		C.free(unsafe.Pointer(st))
 	}
@@ -300,7 +300,7 @@ func kuzzle_free_notification_result(st *C.notification_result) {
 //export kuzzle_free_profile_result
 func kuzzle_free_profile_result(st *C.profile_result) {
 	if st != nil {
-		kuzzle_free_profile(st.profile)
+		kuzzle_free_profile(st.p)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))
@@ -329,7 +329,7 @@ func kuzzle_free_profiles_result(st *C.profiles_result) {
 //export kuzzle_free_role_result
 func kuzzle_free_role_result(st *C.role_result) {
 	if st != nil {
-		kuzzle_free_role(st.role)
+		kuzzle_free_role(st.r)
 		C.free(unsafe.Pointer(st.error))
 		C.free(unsafe.Pointer(st.stack))
 		C.free(unsafe.Pointer(st))

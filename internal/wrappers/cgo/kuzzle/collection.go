@@ -51,7 +51,7 @@ func kuzzle_new_collection(c *C.collection, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(col)
 	c.instance = ptr
-	c.kuzzle = k
+	c.k = k
 
 	registerCollection(c, ptr)
 }

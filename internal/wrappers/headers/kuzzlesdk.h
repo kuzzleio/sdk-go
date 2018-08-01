@@ -19,6 +19,10 @@
 #include <errno.h>
 #include <stdbool.h>
 
+# ifdef __cplusplus
+namespace kuzzleio {
+# endif
+
 //query object used by query()
 typedef struct {
     char *query;
@@ -108,7 +112,7 @@ typedef struct {
 
 typedef struct {
   void *instance;
-  kuzzle* kuzzle;
+  kuzzle* k;
 } realtime;
 
 typedef struct {
@@ -120,17 +124,17 @@ typedef struct {
 
 typedef struct auth {
   void *instance;
-  kuzzle *kuzzle;
+  kuzzle *k;
 } auth;
 
 typedef struct {
   void *instance;
-  kuzzle *kuzzle;
+  kuzzle *k;
 } kuzzle_index;
 
 typedef struct {
   void *instance;
-  kuzzle* kuzzle;
+  kuzzle* k;
 } server;
 
 typedef struct {
@@ -242,13 +246,13 @@ typedef struct {
     char *id;
     policy *policies;
     size_t policies_length;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } profile;
 
 typedef struct {
     char *id;
     char *controllers;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } role;
 
 //kuzzle user
@@ -257,7 +261,7 @@ typedef struct {
     char *content;
     char **profile_ids;
     size_t profile_ids_length;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } user;
 
 // user content passed to user constructor
@@ -277,17 +281,17 @@ typedef struct {
 
 typedef struct {
     void *instance;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } collection;
 
 typedef struct {
     void *instance;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } document;
 
 typedef struct {
     char *id;
-    meta *meta;
+    meta *m;
     char *content;
     int count;
 } notification_content;
@@ -313,7 +317,7 @@ typedef struct notification_result {
 } notification_result;
 
 typedef struct profile_result {
-    profile *profile;
+    profile *p;
     int status;
     char *error;
     char *stack;
@@ -328,7 +332,7 @@ typedef struct profiles_result {
 } profiles_result;
 
 typedef struct role_result {
-    role *role;
+    role *r;
     int status;
     char *error;
     char *stack;
@@ -656,5 +660,9 @@ typedef struct collection_entry_result {
 
 typedef void (*kuzzle_notification_listener)(notification_result*, void*);
 typedef void (*kuzzle_subscribe_listener)(room_result*, void*);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

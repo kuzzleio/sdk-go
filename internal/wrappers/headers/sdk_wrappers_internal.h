@@ -15,6 +15,10 @@
 #ifndef __SDK_WRAPPERS_INTERNAL
 #define __SDK_WRAPPERS_INTERNAL
 
+# ifdef __cplusplus
+using namespace kuzzleio;
+# endif
+
 typedef char *char_ptr;
 typedef policy *policy_ptr;
 typedef policy_restriction *policy_restriction_ptr;

@@ -15,12 +15,18 @@
 #ifndef _CORE_HPP_
 #define _CORE_HPP_
 
-extern "C" {
-  #define _Complex
-  #include <stdio.h>
+#define _Complex
+#include <stdio.h>
 
-  #include "kuzzle.h"
-  #include "kuzzlesdk.h"
+# ifndef __cplusplus
+extern "C" {
+# endif
+
+#include "kuzzle.h"
+#include "kuzzlesdk.h"
+
+# ifndef __cplusplus
 }
+# endif
 
 #endif

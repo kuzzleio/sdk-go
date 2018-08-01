@@ -39,7 +39,7 @@ func kuzzle_new_realtime(rt *C.realtime, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(gort)
 	rt.instance = ptr
-	rt.kuzzle = k
+	rt.k = k
 
 	registerRealtime(rt, ptr)
 }
