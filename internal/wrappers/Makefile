@@ -186,11 +186,10 @@ makeabifolder:
 	mkdir -p $(OUTDIR)/../../../../jniLibs/$(ARCH)
 
 android: ARCH ?= x86
-android: CPPFLAGS += -D __KUZZLE_ANDROID__
 android: LANGINCLUDE = $(JAVAINCLUDE)
 android: GOFLAGS = -buildmode=c-shared
 android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
-android: makeabifolder core_java     wrapper_java android_object
+android: makeabifolder core_java swig_android wrapper_java android_object
 	cd build/android/app/src/main/jni && ndk-build && cd - && cd build/android && cp app/src/main/obj/local/$(ARCH)/*.so app/src/main/jniLibs/$(ARCH)/ && bash ./gradlew assemble
 
 python: LANGINCLUDE = $(PYTHONINCLUDE)
