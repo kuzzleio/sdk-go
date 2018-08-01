@@ -267,7 +267,6 @@ typedef struct {
     kuzzle *k;
 } kuzzle_user;
 
-
 // user content passed to user constructor
 typedef struct {
     char *content;
