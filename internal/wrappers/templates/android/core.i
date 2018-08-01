@@ -32,6 +32,10 @@
 %ignore *::status;
 %ignore *::stack;
 
+%feature("director") NotificationListener;
+%feature("director") EventListener;
+%feature("director") SubscribeListener;
+
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
@@ -45,6 +49,7 @@
 %include "../java/exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
+%include "json_wrap/document.i"
 %include "kcore.i"
 
 %include "std_vector.i"
