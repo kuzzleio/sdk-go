@@ -17,7 +17,6 @@
 
 #include "exceptions.hpp"
 #include "core.hpp"
-#include "listeners.hpp"
 #include "event_emitter.hpp"
 #include <string>
 #include <iostream>
@@ -31,6 +30,7 @@ namespace kuzzleio {
   class Index;
   class Server;
   class Realtime;
+  class EventListener;
 
   class Kuzzle : public KuzzleEventEmitter {
     private:

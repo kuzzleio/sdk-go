@@ -18,6 +18,7 @@
 #include <exception>
 #include <stdexcept>
 #include <stdlib.h>
+#include <string>
 
 #define Kuz_Throw_KuzzleException throw(\
   BadRequestException, \

@@ -169,7 +169,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     try {
-      ctx->hits = ctx->kuzzle->document->count_(ctx->index, ctx->collection, "{}");
+      ctx->hits = ctx->kuzzle->document->count(ctx->index, ctx->collection, "{}");
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -208,7 +208,7 @@ namespace {
     ScenarioScope<KuzzleCtx> ctx;
 
     try {
-      BOOST_CHECK(ctx->kuzzle->document->count_(ctx->index, ctx->collection, "{}") == documents_count);
+      BOOST_CHECK(ctx->kuzzle->document->count(ctx->index, ctx->collection, "{}") == documents_count);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }

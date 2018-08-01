@@ -186,7 +186,7 @@ Feature: Document management
     And it has a collection 'exist-test-collection'
     And the collection has a document with id 'exist-my-document-id'
     When I check if 'exist-my-document-id' exists
-    Then the document should exists
+    Then the document should exist
 
   Scenario: Check if a document does not exists
     Given Kuzzle Server is running

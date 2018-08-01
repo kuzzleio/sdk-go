@@ -6,8 +6,8 @@ main.go
 # Custom test file
 test.go
 _build*/
-build/
 kcore_wrap.cxx
 kcore_wrap.h
+.gradle
 
 internal/wrappers/kcore_wrap\.o

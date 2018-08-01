@@ -31,7 +31,7 @@ namespace kuzzleio {
         delete(_document);
     }
 
-    int Document::count_(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+    int Document::count(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
       int_result *r = kuzzle_document_count(_document, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
       if (r->error != NULL)
           throwExceptionFromStatus(r);

@@ -32,7 +32,7 @@ public class Collectiondefs {
         world.collection = collection;
     }
 
-    @Then("^the collection \'([^\"]*)\' should exists$")
+    @Then("^the collection \'([^\"]*)\' should exist$")
     public void the_collection_should_exists(String collection) throws Exception {
         Assert.assertTrue(k.getCollection().exists(world.index, collection));
     }
@@ -79,7 +79,7 @@ public class Collectiondefs {
         k.getCollection().truncate(world.index, collection, o);
     }
 
-    @Then("^the collection \'([^\"]*)\' shall be empty$")
+    @Then("^the collection \'([^\"]*)\' should be empty$")
     public void it_should_be_empty(String collection) throws Exception {
         SearchResult res = k.getDocument().search(world.index, collection, "{}");
         Assert.assertEquals("[]", res.getDocuments());
@@ -90,7 +90,8 @@ public class Collectiondefs {
         k.getCollection().updateMapping(world.index, collection, "{" +
                 "\"properties\": {" +
                 "    \"foo\": {" +
-                "      \"type\": \"string\"" +
+                "      \"type\": \"string\"," +
+                "      \"fields\": {\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}" +
                 "    }" +
                 "}" +
                 "}");
@@ -99,7 +100,8 @@ public class Collectiondefs {
     @Then("^the mapping of \'([^\"]*)\' should be updated$")
     public void the_mapping_should_be_updated(String collection) throws Exception {
         String mapping = k.getCollection().getMapping(world.index, collection);
-        Assert.assertEquals("{\"test-index\":{\"mappings\":{\"test-collection\":{\"properties\":{\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}", mapping);
+        Assert.assertEquals(
+            "{\"" + world.index + "\":{\"mappings\":{\"" + collection + "\":{\"properties\":{\"foo\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}", mapping);
     }
 
     @When("^I update the specifications of the collection \'([^\"]*)\'$")
@@ -143,4 +145,13 @@ public class Collectiondefs {
         Assert.assertTrue(notFound);
     }
 
+    @When("^I create a collection \'([^\"]*)\' with a mapping$")
+    public void i_create_a_collection_test_collection_with_mapping(String collection) throws Exception {
+        String mapping = "{\"properties\": {\"foo\": {"
+            + "\"type\": \"string\", \"fields\": {"
+            + "\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}"
+            + "}}}";
+        k.getCollection().create(world.index, collection, mapping);
+        world.collection = collection;
+    }
 }
