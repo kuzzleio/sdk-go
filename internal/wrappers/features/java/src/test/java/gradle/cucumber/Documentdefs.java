@@ -347,7 +347,7 @@ public class Documentdefs {
         }
     }
 
-    @Then("^the document should exists$")
+    @Then("^the document should exist$")
     public void the_document_should_exists() throws Exception {
         Assert.assertNull(this.errorMessage);
         Assert.assertTrue(this.documentExists);
