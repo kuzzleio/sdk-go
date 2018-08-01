@@ -54,7 +54,7 @@ func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(auth)
 	a.instance = ptr
-	a.kuzzle = k
+	a.k = k
 
 	registerAuth(a, ptr)
 }
@@ -109,7 +109,7 @@ func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_
 func kuzzle_get_current_user(a *C.auth) *C.user_result {
 	u, err := (*auth.Auth)(a.instance).GetCurrentUser()
 
-	return goToCUserResult(a.kuzzle, u, err)
+	return goToCUserResult(a.k, u, err)
 }
 
 //export kuzzle_get_my_credentials
@@ -175,7 +175,7 @@ func kuzzle_update_self(a *C.auth, data *C.char, options *C.query_options) *C.us
 		json.RawMessage(C.GoString(data)),
 		SetQueryOptions(options))
 
-	return goToCUserResult(a.kuzzle, res, err)
+	return goToCUserResult(a.k, res, err)
 }
 
 //export kuzzle_validate_my_credentials
