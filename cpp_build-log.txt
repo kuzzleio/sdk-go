@@ -1,0 +1,50 @@
+templates/java/core.i:151: Warning 303: %extend defined for an undeclared class options.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/exceptions.hpp:48: Warning 401: Nothing known about base class 'std::runtime_error'. Ignored.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:56: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:57: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:58: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:59: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:60: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:61: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:62: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:65: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:66: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:67: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:69: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:70: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:71: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:72: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:77: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:78: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:79: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:85: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:86: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:91: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:94: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:95: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:97: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:98: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:99: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/headers/kuzzlesdk.h:101: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/c/kuzzle.h:13: Warning 451: Setting a const char * variable may leak memory.
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/kuzzle.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Kuzzle.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/realtime.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Realtime.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/auth.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Auth.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/server.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Server.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/collection.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Collection.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/cpp/server.cpp:18: Warning 518: Portability warning: File /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/document.java will be overwritten by /go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/io/kuzzle/sdk/Document.java on case insensitive filesystems such as Windows' FAT32 and NTFS unless the class/module name is renamed
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/src/main/java/Document.java:86: error: @param name not found
+   * @param options  Request options
+            ^
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/src/main/java/Kuzzle.java:159: error: unexpected text
+   * @throws io.kuzzle.sdk.BadRequestException, io.kuzzle.sdk.ForbiddenException, io.kuzzle.sdk.GatewayTimeoutException, io.kuzzle.sdk.InternalException, io.kuzzle.sdk.NotFoundException, io.kuzzle.sdk.PartialException, io.kuzzle.sdk.PreconditionException, io.kuzzle.sdk.ServiceUnavailableException, io.kuzzle.sdk.UnauthorizedException
+     ^
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/src/main/java/Kuzzle.java:171: warning: no @param for query
+  public KuzzleResponse query(KuzzleRequest query) throws io.kuzzle.sdk.BadRequestException, io.kuzzle.sdk.ForbiddenException, io.kuzzle.sdk.GatewayTimeoutException, io.kuzzle.sdk.InternalException, io.kuzzle.sdk.NotFoundException, io.kuzzle.sdk.PartialException, io.kuzzle.sdk.PreconditionException, io.kuzzle.sdk.ServiceUnavailableException, io.kuzzle.sdk.UnauthorizedException {
+                        ^
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/src/main/java/Kuzzle.java:171: warning: no @return
+  public KuzzleResponse query(KuzzleRequest query) throws io.kuzzle.sdk.BadRequestException, io.kuzzle.sdk.ForbiddenException, io.kuzzle.sdk.GatewayTimeoutException, io.kuzzle.sdk.InternalException, io.kuzzle.sdk.NotFoundException, io.kuzzle.sdk.PartialException, io.kuzzle.sdk.PreconditionException, io.kuzzle.sdk.ServiceUnavailableException, io.kuzzle.sdk.UnauthorizedException {
+                        ^
+/go/src/github.com/kuzzleio/sdk-go/internal/wrappers/build/java/src/main/java/Server.java:41: warning: no @return
+  public java.util.Date now() {
+                        ^

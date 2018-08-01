@@ -33,7 +33,7 @@ import (
 func duplicateCollection(ptr *C.collection) *C.collection {
 	dest := (*C.collection)(C.calloc(1, C.sizeof_collection))
 
-	dest.kuzzle = ptr.kuzzle
+	dest.k = ptr.k
 
 	return dest
 }
@@ -73,7 +73,7 @@ func goToCShards(gShards *types.Shards) *C.shards {
 func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notification_content {
 	result := (*C.notification_content)(C.calloc(1, C.sizeof_notification_content))
 	result.id = C.CString(gNotifContent.Id)
-	result.meta = goToCMeta(gNotifContent.Meta)
+	result.m = goToCMeta(gNotifContent.Meta)
 	result.count = C.int(gNotifContent.Count)
 	marshalled, _ := json.Marshal(gNotifContent)
 	result.content = C.CString(string(marshalled))
@@ -293,7 +293,7 @@ func goToCProfile(k *C.kuzzle, profile *security.Profile, dest *C.profile) *C.pr
 
 	cprofile.id = C.CString(profile.Id)
 	cprofile.policies_length = C.size_t(len(profile.Policies))
-	cprofile.kuzzle = k
+	cprofile.k = k
 
 	if profile.Policies != nil {
 		cprofile.policies = (*C.policy)(C.calloc(C.size_t(len(profile.Policies)), C.sizeof_policy))
@@ -416,7 +416,7 @@ func goToCRole(k *C.kuzzle, role *security.Role, dest *C.role) *C.role {
 	}
 
 	crole.id = C.CString(role.Id)
-	crole.kuzzle = k
+	crole.k = k
 
 	if role.Controllers != nil {
 		ctrls, _ := json.Marshal(role.Controllers)
@@ -503,7 +503,7 @@ func goToCProfileResult(k *C.kuzzle, res *security.Profile, err error) *C.profil
 		return result
 	}
 
-	result.profile = goToCProfile(k, res, nil)
+	result.p = goToCProfile(k, res, nil)
 	return result
 }
 
@@ -549,7 +549,7 @@ func goToCUser(k *C.kuzzle, user *security.User, dest *C.kuzzle_user) (*C.kuzzle
 	}
 
 	cuser.id = C.CString(user.Id)
-	cuser.kuzzle = k
+	cuser.k = k
 
 	if user.Content != nil {
 		cnt, err := json.Marshal(user.Content)
