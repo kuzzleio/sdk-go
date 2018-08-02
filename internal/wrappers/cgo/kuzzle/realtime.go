@@ -59,28 +59,28 @@ func kuzzle_new_realtime(rt *C.realtime, k *C.kuzzle) {
 }
 
 //export kuzzle_realtime_count
-func kuzzle_realtime_count(rt *C.realtime, index, collection, roomId *C.char) *C.int_result {
-	res, err := (*realtime.Realtime)(rt.instance).Count(C.GoString(index), C.GoString(collection), C.GoString(roomId))
+func kuzzle_realtime_count(rt *C.realtime, index, collection, roomId *C.char, options *C.query_options) *C.int_result {
+	res, err := (*realtime.Realtime)(rt.instance).Count(C.GoString(index), C.GoString(collection), C.GoString(roomId), SetQueryOptions(options))
 	return goToCIntResult(res, err)
 }
 
 //export kuzzle_realtime_list
-func kuzzle_realtime_list(rt *C.realtime, index, collection *C.char) *C.string_result {
-	res, err := (*realtime.Realtime)(rt.instance).List(C.GoString(index), C.GoString(collection))
+func kuzzle_realtime_list(rt *C.realtime, index, collection *C.char, options *C.query_options) *C.string_result {
+	res, err := (*realtime.Realtime)(rt.instance).List(C.GoString(index), C.GoString(collection), SetQueryOptions(options))
 	var stringResult string
 	json.Unmarshal(res, &stringResult)
 	return goToCStringResult(&stringResult, err)
 }
 
 //export kuzzle_realtime_publish
-func kuzzle_realtime_publish(rt *C.realtime, index, collection, body *C.char) *C.error_result {
-	err := (*realtime.Realtime)(rt.instance).Publish(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)))
+func kuzzle_realtime_publish(rt *C.realtime, index, collection, body *C.char, options *C.query_options) *C.error_result {
+	err := (*realtime.Realtime)(rt.instance).Publish(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
 	return goToCErrorResult(err)
 }
 
 //export kuzzle_realtime_unsubscribe
-func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char) *C.error_result {
-	err := (*realtime.Realtime)(rt.instance).Unsubscribe(C.GoString(roomId))
+func kuzzle_realtime_unsubscribe(rt *C.realtime, roomId *C.char, options *C.query_options) *C.error_result {
+	err := (*realtime.Realtime)(rt.instance).Unsubscribe(C.GoString(roomId), SetQueryOptions(options))
 	return goToCErrorResult(err)
 }
 
@@ -106,22 +106,8 @@ func kuzzle_realtime_subscribe(rt *C.realtime, index, collection, body *C.char, 
 	return goToCSubscribeResult(subRes, err)
 }
 
-//export kuzzle_realtime_join
-func kuzzle_realtime_join(rt *C.realtime, index, collection, roomId *C.char, options *C.room_options, callback C.kuzzle_notification_listener, data unsafe.Pointer) *C.error_result {
-	c := make(chan types.KuzzleNotification)
-
-	err := (*realtime.Realtime)(rt.instance).Join(C.GoString(index), C.GoString(collection), C.GoString(roomId), SetRoomOptions(options), c)
-
-	go func() {
-		res := <-c
-		C.kuzzle_notify(callback, goToCNotificationResult(&res), data)
-	}()
-
-	return goToCErrorResult(err)
-}
-
 //export kuzzle_realtime_validate
-func kuzzle_realtime_validate(rt *C.realtime, index, collection, body *C.char) *C.bool_result {
-	res, err := (*realtime.Realtime)(rt.instance).Validate(C.GoString(index), C.GoString(collection), C.GoString(body))
+func kuzzle_realtime_validate(rt *C.realtime, index, collection, body *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*realtime.Realtime)(rt.instance).Validate(C.GoString(index), C.GoString(collection), C.GoString(body), SetQueryOptions(options))
 	return goToCBoolResult(res, err)
 }

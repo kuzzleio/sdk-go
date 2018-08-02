@@ -29,7 +29,7 @@ func TestListIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.List("", "collection")
+	_, err := nr.List("", "collection", nil)
 
 	assert.NotNil(t, err)
 }
@@ -38,7 +38,7 @@ func TestListCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.List("index", "")
+	_, err := nr.List("index", "", nil)
 
 	assert.NotNil(t, err)
 }
@@ -52,7 +52,7 @@ func TestListError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.List("index", "collection")
+	_, err := nr.List("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -87,7 +87,7 @@ func TestList(t *testing.T) {
 
 	nr := realtime.NewRealtime(k)
 
-	res, err := nr.List("index", "collection")
+	res, err := nr.List("index", "collection", nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }

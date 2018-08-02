@@ -17,8 +17,8 @@ namespace kuzzleio {
     delete(_realtime);
   }
 
-  int Realtime::count(const std::string& index, const std::string& collection, const std::string& roomId) Kuz_Throw_KuzzleException {
-    int_result *r = kuzzle_realtime_count(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()));
+  int Realtime::count(const std::string& index, const std::string& collection, const std::string& roomId, query_options *options) Kuz_Throw_KuzzleException {
+    int_result *r = kuzzle_realtime_count(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     int ret = r->result;
@@ -39,17 +39,8 @@ namespace kuzzleio {
     }
   }
 
-  void Realtime::join(const std::string& index, const std::string& collection, const std::string& roomId, room_options* options, NotificationListener* cb) Kuz_Throw_KuzzleException {
-    error_result *r = kuzzle_realtime_join(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(roomId.c_str()), options, call_subscribe_cb, this);
-    if (r != NULL)
-        throwExceptionFromStatus(r);
-
-    _listener_instances[roomId] = cb;
-    kuzzle_free_error_result(r);
-  }
-
-  std::string Realtime::list(const std::string& index, const std::string& collection) Kuz_Throw_KuzzleException {
-    string_result *r = kuzzle_realtime_list(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()));
+  std::string Realtime::list(const std::string& index, const std::string& collection, query_options *options) Kuz_Throw_KuzzleException {
+    string_result *r = kuzzle_realtime_list(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     std::string ret = r->result;
@@ -57,8 +48,8 @@ namespace kuzzleio {
     return ret;
   }
 
-  void Realtime::publish(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException {
-    error_result *r = kuzzle_realtime_publish(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()));
+  void Realtime::publish(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+    error_result *r = kuzzle_realtime_publish(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
     if (r != NULL)
         throwExceptionFromStatus(r);
     kuzzle_free_error_result(r);
@@ -77,8 +68,8 @@ namespace kuzzleio {
     return roomId;
   }
 
-  void Realtime::unsubscribe(const std::string& roomId) Kuz_Throw_KuzzleException {
-    error_result *r = kuzzle_realtime_unsubscribe(_realtime, const_cast<char*>(roomId.c_str()));
+  void Realtime::unsubscribe(const std::string& roomId, query_options *options) Kuz_Throw_KuzzleException {
+    error_result *r = kuzzle_realtime_unsubscribe(_realtime, const_cast<char*>(roomId.c_str()), options);
     if (r != NULL)
         throwExceptionFromStatus(r);
 
@@ -86,8 +77,8 @@ namespace kuzzleio {
     kuzzle_free_error_result(r);
   }
 
-  bool Realtime::validate(const std::string& index, const std::string& collection, const std::string& body) Kuz_Throw_KuzzleException {
-    bool_result *r = kuzzle_realtime_validate(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()));
+  bool Realtime::validate(const std::string& index, const std::string& collection, const std::string& body, query_options *options) Kuz_Throw_KuzzleException {
+    bool_result *r = kuzzle_realtime_validate(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);
     bool ret = r->result;
