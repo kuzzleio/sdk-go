@@ -18,7 +18,7 @@
 %rename(ShardsResult) shards_result;
 %rename(DateResult) date_result;
 %rename(UserData) user_data;
-%rename(User, match="class") kuzzle_user;
+%rename(KuzzleUser, match="class") kuzzle_user;
 %rename(RoomOptions) room_options;
 %rename(SearchFilters) search_filters;
 %rename(SearchResult) search_result;
@@ -50,6 +50,9 @@
 %include "std_string.i"
 %include "json_wrap/document.i"
 %include "json_wrap/server.i"
+%include "json_wrap/collection.i"
+%include "json_wrap/auth.i"
+
 %include "kcore.i"
 
 %include "std_vector.i"
