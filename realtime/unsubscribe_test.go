@@ -29,7 +29,7 @@ func TestUnsubscribeRoomIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Unsubscribe("")
+	err := nr.Unsubscribe("", nil)
 
 	assert.NotNil(t, err)
 }
@@ -43,7 +43,7 @@ func TestUnsubscribeError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Unsubscribe("roomID")
+	err := nr.Unsubscribe("roomID", nil)
 	assert.NotNil(t, err)
 }
 
@@ -67,6 +67,6 @@ func TestUnsubscribe(t *testing.T) {
 
 	nr := realtime.NewRealtime(k)
 
-	err := nr.Unsubscribe("roomID")
+	err := nr.Unsubscribe("roomID", nil)
 	assert.Nil(t, err)
 }
