@@ -50,6 +50,7 @@
 %include "std_string.i"
 %include "typemap.i"
 %include "json_wrap/document.i"
+%include "json_wrap/collection.i"
 %include "kcore.i"
 
 %include "std_vector.i"
