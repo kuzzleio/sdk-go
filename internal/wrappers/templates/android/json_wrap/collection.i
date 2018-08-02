@@ -21,7 +21,7 @@
 %javamethodmodifiers kuzzleio::Collection::validateSpecifications(const std::string& body, query_options *options) "private";
 %javamethodmodifiers kuzzleio::Collection::validateSpecifications(const std::string& body) "private";
 
-i
+
   public void create(String index, String collection, org.json.JSONObject body, QueryOptions options) throws org.json.JSONException, KuzzleException {
     create(index, collection, body.toString(), options);
   }
