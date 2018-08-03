@@ -14,6 +14,7 @@
 
 #include <exception>
 #include <stdexcept>
+#include "listeners.hpp"
 #include "kuzzle.hpp"
 #include "auth.hpp"
 #include "index.hpp"

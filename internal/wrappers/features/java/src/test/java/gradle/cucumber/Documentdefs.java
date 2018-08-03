@@ -205,12 +205,12 @@ public class Documentdefs {
 
     @Then("^I must have (\\d+) documents in the collection$")
     public void i_must_have_documents_in_the_collection(int nb) {
-        Assert.assertEquals(nb, k.getDocument().count_(world.index, world.collection, "{}"));
+        Assert.assertEquals(nb, k.getDocument().count(world.index, world.collection, "{}"));
     }
 
     @When("^I count how many documents there is in the collection$")
     public void i_count_how_many_documents_there_is_in_the_collection() throws Exception {
-        nbDocuments = k.getDocument().count_(world.index, world.collection, "{}");
+        nbDocuments = k.getDocument().count(world.index, world.collection, "{}");
     }
 
     @When("^I delete the documents \\[\'(.*)\', \'(.*)\'\\]$")
@@ -231,7 +231,7 @@ public class Documentdefs {
 
     @Then("^the collection must be empty$")
     public void the_collection_must_be_empty() {
-        Assert.assertEquals(0, k.getDocument().count_(world.index, world.collection, "{}"));
+        Assert.assertEquals(0, k.getDocument().count(world.index, world.collection, "{}"));
     }
 
     @And("^I get a partial error$")
@@ -347,7 +347,7 @@ public class Documentdefs {
         }
     }
 
-    @Then("^the document should exists$")
+    @Then("^the document should exist$")
     public void the_document_should_exists() throws Exception {
         Assert.assertNull(this.errorMessage);
         Assert.assertTrue(this.documentExists);

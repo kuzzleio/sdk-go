@@ -31,10 +31,17 @@ namespace kuzzleio {
         delete(_collection);
     }
 
-    void Collection::create(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, PreconditionException) {
-        error_result *r = kuzzle_collection_create(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+    void Collection::create(const std::string& index, const std::string& collection, const std::string* body, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, PreconditionException) {
+        error_result *r = kuzzle_collection_create(
+            _collection,
+            const_cast<char*>(index.c_str()),
+            const_cast<char*>(collection.c_str()),
+            body != NULL ? const_cast<char*>(body->c_str()) : NULL,
+            options);
+
         if (r != NULL)
             throwExceptionFromStatus(r);
+
         kuzzle_free_error_result(r);
     }
 

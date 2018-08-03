@@ -18,6 +18,8 @@
 #include <time.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 //query object used by query()
 typedef struct {
@@ -197,6 +199,7 @@ enum Mode {AUTO, MANUAL};
     .refresh = NULL, \
     .default_index = NULL  \
 }
+
 typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
@@ -251,14 +254,14 @@ typedef struct {
     kuzzle *kuzzle;
 } role;
 
-//kuzzle user
+// kuzzle user
 typedef struct {
     char *id;
     char *content;
     char **profile_ids;
     size_t profile_ids_length;
     kuzzle *kuzzle;
-} user;
+} kuzzle_user;
 
 // user content passed to user constructor
 typedef struct {
@@ -359,7 +362,7 @@ typedef struct user_rights_result {
 } user_rights_result;
 
 typedef struct user_result {
-    user *result;
+    kuzzle_user *result;
     int status;
     char *error;
     char *stack;
@@ -552,7 +555,7 @@ typedef struct {
 } role_search;
 
 typedef struct {
-    user *hits;
+    kuzzle_user *hits;
     size_t hits_length;
     unsigned total;
     char *scroll_id;

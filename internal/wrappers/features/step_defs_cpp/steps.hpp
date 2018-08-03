@@ -13,6 +13,7 @@
 #include "index.hpp"
 #include "realtime.hpp"
 #include "kuzzle.hpp"
+#include "listeners.hpp"
 
 #include "kuzzle_utils.h"
 
@@ -40,7 +41,7 @@ struct KuzzleCtx {
 
   string room_id;
 
-  user*                   currentUser        = NULL;
+  kuzzle_user*                   currentUser        = NULL;
   json_spirit::Value_type customUserDataType = json_spirit::null_type;
 
   // 1 mean success, 0 failure and -1 is base state

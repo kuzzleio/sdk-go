@@ -3,10 +3,14 @@
 
 #include "exceptions.hpp"
 #include "core.hpp"
-#include "listeners.hpp"
 #include <map>
 
 namespace kuzzleio {
+
+  class EventListener;
+  class NotificationListener;
+  class SubscribeListener;
+
   class Realtime {
     realtime *_realtime;
     std::map<std::string, NotificationListener*> _listener_instances;
