@@ -50,11 +50,15 @@
 %include "std_string.i"
 %include "typemap.i"
 %include "json_wrap/document.i"
+%include "json_wrap/server.i"
 %include "json_wrap/collection.i"
 %include "json_wrap/auth.i"
+
 %include "kcore.i"
 
 %include "std_vector.i"
+
+typedef long long time_t;
 
 %template(StringVector) std::vector<std::string>;
 
