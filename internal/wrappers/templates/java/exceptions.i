@@ -22,3 +22,5 @@ TO_JAVA_EXCEPTION(kuzzleio::ServiceUnavailableException, "io.kuzzle.sdk.ServiceU
 TO_JAVA_EXCEPTION(kuzzleio::SizeLimiException, "io.kuzzle.sdk.SizeLimiException", "io/kuzzle/sdk/SizeLimiException");
 TO_JAVA_EXCEPTION(kuzzleio::UnauthorizedException, "io.kuzzle.sdk.UnauthorizedException", "io/kuzzle/sdk/UnauthorizedException");
 TO_JAVA_EXCEPTION(kuzzleio::KuzzleException, "io.kuzzle.sdk.KuzzleException", "io/kuzzle/sdk/KuzzleException");
+TO_JAVA_EXCEPTION(kuzzleio::PluginImplementationException, "io.kuzzle.sdk.PluginImplementationException", "io/kuzzle/sdk/PluginImplementationException");
+TO_JAVA_EXCEPTION(kuzzleio::ExternalServiceException, "io.kuzzle.sdk.ExternalServiceException", "io/kuzzle/sdk/ExternalServiceException");
