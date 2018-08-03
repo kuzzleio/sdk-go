@@ -64,7 +64,7 @@ namespace kuzzleio {
     kuzzle_disconnect(_kuzzle);
   }
 
-  kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) Kuz_Throw_KuzzleException {
+  kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) throw(KUZZLE_ALL_EXCEPTIONS) {
     kuzzle_response *r = kuzzle_query(_kuzzle, query, options);
     if (r->error != NULL)
         throwExceptionFromStatus(r);

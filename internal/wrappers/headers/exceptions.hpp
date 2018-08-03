@@ -19,27 +19,27 @@
 #include <stdexcept>
 #include <stdlib.h>
 
-#define Kuz_Throw_KuzzleException throw(\
+#define KUZZLE_COMMON_EXCEPTIONS \
   BadRequestException, \
   ForbiddenException, \
   GatewayTimeoutException, \
   InternalException, \
+  ServiceUnavailableException, \
+  PluginImplementationException, \
+  ExternalServiceException
+
+#define KUZZLE_SPECIFIC_EXCEPTIONS \
   NotFoundException, \
   PartialException, \
   PreconditionException, \
-  ServiceUnavailableException, \
   SizeLimitException, \
   UnauthorizedException \
-)
 
-#define KUZZLE_COMMON_EXCEPTIONS (\
-  BadRequestException, \
-  ForbiddenException, \
-  GatewayTimeoutException, \
-  InternalException, \
-  ServiceUnavailableException, \
-)
+#define KUZZLE_ALL_EXCEPTIONS \
+  KUZZLE_COMMON_EXCEPTIONS, \
+  KUZZLE_SPECIFIC_EXCEPTIONS \
 
+#define Kuz_Throw_KuzzleException throw(KUZZLE_ALL_EXCEPTIONS)
 
 #define PARTIAL_EXCEPTION 206
 #define BAD_REQUEST_EXCEPTION 400
