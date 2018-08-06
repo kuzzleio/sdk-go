@@ -21,7 +21,7 @@ import (
 )
 
 // List lists all subscriptions on all indexes and all collections.
-func (r *Realtime) List(index string, collection string) (json.RawMessage, error) {
+func (r *Realtime) List(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" || collection == "" {
 		return nil, types.NewError("Realtime.List: index and collection required", 400)
 	}
@@ -35,7 +35,7 @@ func (r *Realtime) List(index string, collection string) (json.RawMessage, error
 
 	result := make(chan *types.KuzzleResponse)
 
-	go r.k.Query(query, nil, result)
+	go r.k.Query(query, options, result)
 
 	res := <-result
 
