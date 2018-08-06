@@ -45,7 +45,7 @@ namespace kuzzleio {
         kuzzle_free_error_result(r);
     }
 
-    bool Collection::exists(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    bool Collection::exists(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
         bool_result *r = kuzzle_collection_exists(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);

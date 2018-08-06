@@ -25,16 +25,14 @@
   ForbiddenException, \
   GatewayTimeoutException, \
   InternalException, \
-  ServiceUnavailableException, \
-  PluginImplementationException, \
-  ExternalServiceException
+  ServiceUnavailableException
 
 #define KUZZLE_SPECIFIC_EXCEPTIONS \
   NotFoundException, \
   PartialException, \
   PreconditionException, \
   SizeLimitException, \
-  UnauthorizedException \
+  UnauthorizedException
 
 #define KUZZLE_ALL_EXCEPTIONS \
   KUZZLE_COMMON_EXCEPTIONS, \
@@ -52,8 +50,6 @@
 #define INTERNAL_EXCEPTION 500
 #define SERVICE_UNAVAILABLE_EXCEPTION 503
 #define GATEWAY_TIMEOUT_EXCEPTION 504
-#define PLUGIN_IMPLENTATION_EXCEPTION 500
-#define EXTERNAL_SERVICE_EXCEPTION 500
 
 namespace kuzzleio {
 
@@ -117,16 +113,6 @@ namespace kuzzleio {
      : KuzzleException(UNAUTHORIZED_EXCEPTION, message) {}
     UnauthorizedException(const UnauthorizedException& ue) : KuzzleException(ue.status, ue.getMessage()) {}
   };
-  struct PluginImplementationException : KuzzleException {
-    PluginImplementationException(const std::string& message="Plugin Implementation Exception")
-     : KuzzleException(PLUGIN_IMPLENTATION_EXCEPTION, message) {}
-    PluginImplementationException(const PluginImplementationException& ue) : KuzzleException(ue.status, ue.getMessage()) {}
-  };
-  struct ExternalServiceException : KuzzleException {
-    ExternalServiceException(const std::string& message="External Service Exception")
-     : KuzzleException(EXTERNAL_SERVICE_EXCEPTION, message) {}
-    ExternalServiceException(const ExternalServiceException& ue) : KuzzleException(ue.status, ue.getMessage()) {}
-  };
 
   template <class T>
   void throwExceptionFromStatus(T *result) {
@@ -176,14 +162,6 @@ namespace kuzzleio {
       case GATEWAY_TIMEOUT_EXCEPTION:
         delete(result);
         throw GatewayTimeoutException(error);
-      break;
-      case PLUGIN_IMPLENTATION_EXCEPTION:
-        delete(result);
-        throw PluginImplementationException(error);
-      break;
-      case EXTERNAL_SERVICE_EXCEPTION:
-        delete(result);
-        throw ExternalServiceException(error);
       break;
       default:
         delete(result);

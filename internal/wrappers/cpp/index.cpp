@@ -66,7 +66,7 @@ namespace kuzzleio {
         return v;
     }
 
-    bool Index::exists(const std::string& index, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    bool Index::exists(const std::string& index, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
         bool_result *r = kuzzle_index_exists(_index, const_cast<char*>(index.c_str()), options);
         if (r->error != NULL)
             throwExceptionFromStatus(r);
