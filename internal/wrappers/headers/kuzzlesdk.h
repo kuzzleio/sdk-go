@@ -143,10 +143,10 @@ typedef struct {
 } realtime;
 
 typedef struct {
-    char *type_;
+    const char *type_;
     int  from;
     int  size;
-    char *scroll;
+    const char *scroll;
 } search_options;
 
 typedef struct auth {
@@ -165,33 +165,33 @@ typedef struct {
 } server;
 
 typedef struct {
-  char *room;
-  char *channel;
+  const char *room;
+  const char *channel;
   int status;
-  char *error;
-  char *stack;
+  const char *error;
+  const char *stack;
 } subscribe_result;
 
 //options passed to room constructor
 typedef struct {
-    char *scope;
-    char *state;
-    char *user;
+    const char *scope;
+    const char *state;
+    const char *user;
     bool subscribe_to_self;
-    char *volatiles;
+    const char *volatiles;
 } room_options;
 
 typedef struct {
     void *instance;
-    char *filters;
+    const char *filters;
     room_options *options;
 } room;
 
 typedef struct {
   room *result;
   int status;
-  char *error;
-  char *stack;
+  const char *error;
+  const char *stack;
 } room_result;
 
 typedef void (callback)(char* notification);
@@ -203,12 +203,12 @@ typedef struct {
     bool withcoord;
     long from;
     long size;
-    char *scroll;
-    char *scroll_id;
-    char *refresh;
-    char *if_exist;
+    const char *scroll;
+    const char *scroll_id;
+    const char *refresh;
+    const char *if_exist;
     int retry_on_conflict;
-    char *volatiles;
+    const char *volatiles;
 } query_options;
 
 typedef struct {
@@ -222,16 +222,16 @@ typedef struct {
     unsigned long reconnection_delay;
     unsigned long replay_interval;
     enum Mode connect;
-    char *refresh;
-    char *default_index;
+    const char *refresh;
+    const char *default_index;
 } options;
 
 //meta of a document
 typedef struct {
-    char *author;
+    const char *author;
     unsigned long long created_at;
     unsigned long long updated_at;
-    char *updater;
+    const char *updater;
     bool active;
     unsigned long long deleted_at;
 } meta;
@@ -241,34 +241,34 @@ typedef struct {
 typedef char *controllers;
 
 typedef struct  {
-    char *index;
+    const char *index;
     char **collections;
     size_t collections_length;
 } policy_restriction;
 
 typedef struct {
-    char *role_id;
+    const char *role_id;
     policy_restriction *restricted_to;
     size_t restricted_to_length;
 } policy;
 
 typedef struct {
-    char *id;
+    const char *id;
     policy *policies;
     size_t policies_length;
     kuzzle *k;
 } profile;
 
 typedef struct {
-    char *id;
-    char *controllers;
+    const char *id;
+    const char *controllers;
     kuzzle *k;
 } role;
 
 // kuzzle user
 typedef struct {
-    char *id;
-    char *content;
+    const char *id;
+    const char *content;
     char **profile_ids;
     size_t profile_ids_length;
     kuzzle *k;
@@ -276,7 +276,7 @@ typedef struct {
 
 // user content passed to user constructor
 typedef struct {
-    char *content;
+    const char *content;
     char **profile_ids;
     size_t profile_ids_length;
 } user_data;
@@ -300,107 +300,107 @@ typedef struct {
 } document;
 
 typedef struct {
-    char *id;
+    const char *id;
     meta *m;
-    char *content;
+    const char *content;
     int count;
 } notification_content;
 
 typedef struct notification_result {
-    char *request_id;
+    const char *request_id;
     notification_content *result;
-    char *volatiles;
-    char *index;
-    char *collection;
-    char *controller;
-    char *action;
-    char *protocol;
-    char *scope;
-    char *state;
-    char *user;
-    char *n_type;
-    char *room_id;
+    const char *volatiles;
+    const char *index;
+    const char *collection;
+    const char *controller;
+    const char *action;
+    const char *protocol;
+    const char *scope;
+    const char *state;
+    const char *user;
+    const char *n_type;
+    const char *room_id;
     unsigned long long timestamp;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } notification_result;
 
 typedef struct profile_result {
     profile *p;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } profile_result;
 
 typedef struct profiles_result {
     profile *profiles;
     size_t profiles_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } profiles_result;
 
 typedef struct role_result {
     role *r;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } role_result;
 
 typedef struct roles_result {
     role *roles;
     size_t roles_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } roles_result;
 
 typedef struct {
-    char *controller;
-    char *action;
-    char *index;
-    char *collection;
-    char *value;
+    const char *controller;
+    const char *action;
+    const char *index;
+    const char *collection;
+    const char *value;
 } user_right;
 
 typedef struct user_rights_result {
-    user_right *result;
-    size_t user_rights_length;
-    int status;
-    char *error;
-    char *stack;
+  user_right *result;
+  size_t user_rights_length;
+  int status;
+  const char *error;
+  const char *stack;
 } user_rights_result;
 
 typedef struct user_result {
     kuzzle_user *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } user_result;
 
 //statistics
 typedef struct {
-    char* completed_requests;
-    char* connections;
-    char* failed_requests;
-    char* ongoing_requests;
+    const char* completed_requests;
+    const char* connections;
+    const char* failed_requests;
+    const char* ongoing_requests;
     unsigned long long timestamp;
 } statistics;
 
 typedef struct statistics_result {
     statistics* result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } statistics_result;
 
 typedef struct all_statistics_result {
     statistics* result;
     size_t result_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } all_statistics_result;
 
 // ms.geopos
@@ -408,76 +408,76 @@ typedef struct geopos_result {
     double (*result)[2];
     size_t result_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } geopos_result;
 
 // ms.geopoint
 typedef struct point {
     float lat;
     float lon;
-    char *name;
+    const char *name;
 } point;
 
 // ms.msHashField
 typedef struct ms_hash_field {
-  char *field;
-  char *value;
+  const char *field;
+  const char *value;
 } ms_hash_field;
 
 // ms.keyValue
 typedef struct ms_key_value {
-  char *key;
-  char *value;
+  const char *key;
+  const char *value;
 } ms_key_value;
 
 // ms.sortedSet
 typedef struct ms_sorted_set {
   float score;
-  char *member;
+  const char *member;
 } ms_sorted_set;
 
 //check_token
 typedef struct token_validity {
     bool valid;
-    char *state;
+    const char *state;
     unsigned long long expires_at;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } token_validity;
 
 /* === Generic response structures === */
 
 // raw Kuzzle response
 typedef struct {
-    char *request_id;
-    char *result;
-    char *volatiles;
-    char *index;
-    char *collection;
-    char *controller;
-    char *action;
-    char *room_id;
-    char *channel;
+    const char *request_id;
+    const char *result;
+    const char *volatiles;
+    const char *index;
+    const char *collection;
+    const char *controller;
+    const char *action;
+    const char *room_id;
+    const char *channel;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } kuzzle_response;
 
 //any void result
 typedef struct error_result {
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } error_result;
 
 //any json result
 typedef struct json_result {
-    char *result;
+    const char *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } json_result;
 
 //any array of char result
@@ -485,39 +485,39 @@ typedef struct json_array_result {
     char **result;
     size_t result_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } json_array_result;
 
 //any boolean result
 typedef struct bool_result {
     bool result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } bool_result;
 
 //any integer result
 typedef struct int_result {
     long long result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } int_result;
 
 typedef struct date_result {
     long long result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } date_result;
 
 //any double result
 typedef struct double_result {
     double result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } double_result;
 
 //any array of integers result
@@ -525,16 +525,16 @@ typedef struct int_array_result {
     long long *result;
     size_t result_length;
     int status;
-    char *error;
-    char*stack;
+    const char *error;
+    const char *stack;
 } int_array_result;
 
 // any string result
 typedef struct string_result {
-    char *result;
+    const char *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } string_result;
 
 //any array of strings result
@@ -542,15 +542,15 @@ typedef struct string_array_result {
     char **result;
     size_t result_length;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } string_array_result;
 
 typedef struct {
     profile *hits;
     size_t hits_length;
     unsigned total;
-    char *scroll_id;
+    const char *scroll_id;
 } profile_search;
 
 typedef struct {
@@ -563,7 +563,7 @@ typedef struct {
     kuzzle_user *hits;
     size_t hits_length;
     unsigned total;
-    char *scroll_id;
+    const char *scroll_id;
 } user_search;
 
 //any delete* function
@@ -571,95 +571,95 @@ typedef struct ack_result {
     bool acknowledged;
     bool shards_acknowledged;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } ack_result;
 
 typedef struct shards_result {
     shards *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } shards_result;
 
 typedef struct {
     bool strict;
-    char *fields;
-    char *validators;
+    const char *fields;
+    const char *validators;
 } specification;
 
 typedef struct {
     specification *validation;
-    char *index;
-    char *collection;
+    const char *index;
+    const char *collection;
 } specification_entry;
 
 typedef struct specification_result {
     specification *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } specification_result;
 
 typedef struct search_result {
-    char *documents;
+    const char *documents;
     unsigned fetched;
     unsigned total;
-    char *aggregations;
-    char *filters;
+    const char *aggregations;
+    const char *filters;
     query_options *options;
-    char *collection;
+    const char *collection;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } search_result;
 
 typedef struct search_profiles_result {
     profile_search *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } search_profiles_result;
 
 typedef struct search_roles_result {
     role_search *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } search_roles_result;
 
 typedef struct search_users_result {
     user_search *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } search_users_result;
 
 typedef struct {
     specification_entry *hits;
     size_t hits_length;
     unsigned total;
-    char *scroll_id;
+    const char *scroll_id;
 } specification_search;
 
 typedef struct specification_search_result {
     specification_search *result;
     int status;
-    char *error;
-    char *stack;
+    const char *error;
+    const char *stack;
 } specification_search_result;
 
 typedef struct  {
     bool persisted;
-    char* name;
+    const char *name;
 } collection_entry;
 
 typedef struct collection_entry_result {
     collection_entry* result;
     size_t result_length;
     int status;
-    char* error;
-    char* stack;
+    const char *error;
+    const char *stack;
 } collection_entry_result;
 
 typedef void (*kuzzle_notification_listener)(notification_result*, void*);
