@@ -26,7 +26,7 @@ namespace kuzzleio {
     class EventListener {
         public:
             virtual ~EventListener(){};
-            virtual void trigger(char*) const = 0;
+            virtual void trigger(const std::string& jsonResponse) = 0;
     };
     class SubscribeListener {
         public:
