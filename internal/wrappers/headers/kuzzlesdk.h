@@ -54,9 +54,9 @@ enum Event {
 };
 
 enum is_action_allowed {
-    ALLOWED=0,
-    CONDITIONNAL=1,
-    DENIED=2
+    ALLOWED,
+    CONDITIONNAL,
+    DENIED
 };
 
 
