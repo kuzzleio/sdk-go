@@ -54,7 +54,7 @@ func kuzzle_new_server(s *C.server, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(server)
 	s.instance = ptr
-	s.kuzzle = k
+	s.k = k
 
 	registerServer(s, ptr)
 }

@@ -12,6 +12,8 @@
 %include "javadoc/room.i"
 %include "javadoc/collection.i"
 
+typedef long long time_t;
+
 %template(StringVector) std::vector<std::string>;
 
 %typemap(out) const StringVector& %{

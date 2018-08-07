@@ -40,7 +40,7 @@ func kuzzle_security_new_profile(k *C.kuzzle, id *C.char, policies *C.policy, po
 	cprofile.id = id
 	cprofile.policies = policies
 	cprofile.policies_length = policies_length
-	cprofile.kuzzle = k
+	cprofile.k = k
 
 	return cprofile
 }
@@ -82,7 +82,7 @@ func kuzzle_security_new_user(k *C.kuzzle, id *C.char, d *C.user_data) *C.kuzzle
 	cuser := (*C.kuzzle_user)(C.calloc(1, C.sizeof_kuzzle_user))
 
 	cuser.id = id
-	cuser.kuzzle = k
+	cuser.k = k
 
 	if d != nil {
 		cuser.content = d.content
@@ -125,7 +125,7 @@ func kuzzle_security_new_role(k *C.kuzzle, id *C.char, c C.controllers) *C.role 
 	crole := (*C.role)(C.calloc(1, C.sizeof_role))
 	crole.id = id
 	crole.controllers = C.CString(C.GoString(c))
-	crole.kuzzle = k
+	crole.k = k
 
 	return crole
 }
@@ -151,7 +151,7 @@ func kuzzle_security_get_profile(k *C.kuzzle, id *C.char, o *C.query_options) *C
 		return result
 	}
 
-	result.profile = goToCProfile(k, profile, nil)
+	result.p = goToCProfile(k, profile, nil)
 
 	return result
 }
@@ -183,7 +183,7 @@ func kuzzle_security_get_role(k *C.kuzzle, id *C.char, o *C.query_options) *C.ro
 		return result
 	}
 
-	result.role = goToCRole(k, role, nil)
+	result.r = goToCRole(k, role, nil)
 
 	return result
 }
@@ -317,7 +317,7 @@ func kuzzle_security_create_role(k *C.kuzzle, id, body *C.char, o *C.query_optio
 		return result
 	}
 
-	result.role = goToCRole(k, role, nil)
+	result.r = goToCRole(k, role, nil)
 
 	return result
 }
@@ -369,7 +369,7 @@ func kuzzle_security_create_or_replace_role(k *C.kuzzle, id, body *C.char, o *C.
 		return result
 	}
 
-	result.role = goToCRole(k, role, nil)
+	result.r = goToCRole(k, role, nil)
 
 	return result
 }
@@ -403,7 +403,7 @@ func kuzzle_security_update_profile(k *C.kuzzle, id *C.char, body *C.char, o *C.
 		return result
 	}
 
-	result.profile = goToCProfile(k, profile, nil)
+	result.p = goToCProfile(k, profile, nil)
 
 	return result
 }
@@ -426,7 +426,7 @@ func kuzzle_security_update_role(k *C.kuzzle, id *C.char, body *C.char, o *C.que
 		return result
 	}
 
-	result.role = goToCRole(k, role, nil)
+	result.r = goToCRole(k, role, nil)
 
 	return result
 }

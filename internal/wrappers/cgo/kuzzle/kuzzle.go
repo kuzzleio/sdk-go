@@ -83,7 +83,7 @@ func kuzzle_get_document_controller(k *C.kuzzle) *C.document {
 	d := (*C.document)(C.calloc(1, C.sizeof_document))
 
 	d.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Document))
-	d.kuzzle = k
+	d.k = k
 	return d
 }
 
@@ -92,7 +92,7 @@ func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
 	a := (*C.auth)(C.calloc(1, C.sizeof_auth))
 
 	a.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
-	a.kuzzle = k
+	a.k = k
 	return a
 }
 
@@ -101,7 +101,7 @@ func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
 	i := (*C.kuzzle_index)(C.calloc(1, C.sizeof_kuzzle_index))
 
 	i.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
-	i.kuzzle = k
+	i.k = k
 	return i
 }
 
@@ -115,7 +115,7 @@ func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
 	s := (*C.server)(C.calloc(1, C.sizeof_server))
 
 	s.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
-	s.kuzzle = k
+	s.k = k
 	return s
 }
 
@@ -124,7 +124,7 @@ func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
 	c := (*C.collection)(C.calloc(1, C.sizeof_collection))
 
 	c.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
-	c.kuzzle = k
+	c.k = k
 	return c
 }
 
@@ -133,7 +133,7 @@ func kuzzle_get_realtime_controller(k *C.kuzzle) *C.realtime {
 	rt := (*C.realtime)(C.calloc(1, C.sizeof_realtime))
 
 	rt.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Realtime))
-	rt.kuzzle = k
+	rt.k = k
 	return rt
 }
 

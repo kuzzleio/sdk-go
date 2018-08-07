@@ -21,17 +21,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//query object used by query()
-typedef struct {
-    char *query;
-    unsigned long long timestamp;
-    char   *request_id;
-} query_object;
+enum Mode {AUTO, MANUAL};
+//options passed to the Kuzzle() fct
 
-typedef struct {
-    query_object **queries;
-    size_t queries_length;
-} offline_queue;
+#define KUZZLE_OPTIONS_DEFAULT { \
+    .queue_ttl = 120000, \
+    .queue_max_size = 500, \
+    .offline_mode = MANUAL,  \
+    .auto_queue = false,  \
+    .auto_reconnect = true,  \
+    .auto_replay = false, \
+    .auto_resubscribe = true, \
+    .reconnection_delay = 1000, \
+    .replay_interval = 10, \
+    .connect = AUTO, \
+    .refresh = NULL, \
+    .default_index = NULL  \
+}
 
 enum Event {
     CONNECTED,
@@ -46,6 +52,29 @@ enum Event {
     JWT_EXPIRED,
     ERROR
 };
+
+enum is_action_allowed {
+    ALLOWED,
+    CONDITIONNAL,
+    DENIED
+};
+
+
+# ifdef __cplusplus
+namespace kuzzleio {
+# endif
+
+//query object used by query()
+typedef struct {
+    char *query;
+    unsigned long long timestamp;
+    char   *request_id;
+} query_object;
+
+typedef struct {
+    query_object **queries;
+    size_t queries_length;
+} offline_queue;
 
 typedef void (*kuzzle_event_listener)(int, char*, void*);
 
@@ -110,7 +139,7 @@ typedef struct {
 
 typedef struct {
   void *instance;
-  kuzzle* kuzzle;
+  kuzzle* k;
 } realtime;
 
 typedef struct {
@@ -122,17 +151,17 @@ typedef struct {
 
 typedef struct auth {
   void *instance;
-  kuzzle *kuzzle;
+  kuzzle *k;
 } auth;
 
 typedef struct {
   void *instance;
-  kuzzle *kuzzle;
+  kuzzle *k;
 } kuzzle_index;
 
 typedef struct {
   void *instance;
-  kuzzle* kuzzle;
+  kuzzle* k;
 } server;
 
 typedef struct {
@@ -182,24 +211,6 @@ typedef struct {
     char *volatiles;
 } query_options;
 
-enum Mode {AUTO, MANUAL};
-//options passed to the Kuzzle() fct
-
-#define KUZZLE_OPTIONS_DEFAULT { \
-    .queue_ttl = 120000, \
-    .queue_max_size = 500, \
-    .offline_mode = MANUAL,  \
-    .auto_queue = false,  \
-    .auto_reconnect = true,  \
-    .auto_replay = false, \
-    .auto_resubscribe = true, \
-    .reconnection_delay = 1000, \
-    .replay_interval = 10, \
-    .connect = AUTO, \
-    .refresh = NULL, \
-    .default_index = NULL  \
-}
-
 typedef struct {
     unsigned queue_ttl;
     unsigned long queue_max_size;
@@ -245,13 +256,13 @@ typedef struct {
     char *id;
     policy *policies;
     size_t policies_length;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } profile;
 
 typedef struct {
     char *id;
     char *controllers;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } role;
 
 // kuzzle user
@@ -260,7 +271,7 @@ typedef struct {
     char *content;
     char **profile_ids;
     size_t profile_ids_length;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } kuzzle_user;
 
 // user content passed to user constructor
@@ -280,17 +291,17 @@ typedef struct {
 
 typedef struct {
     void *instance;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } collection;
 
 typedef struct {
     void *instance;
-    kuzzle *kuzzle;
+    kuzzle *k;
 } document;
 
 typedef struct {
     char *id;
-    meta *meta;
+    meta *m;
     char *content;
     int count;
 } notification_content;
@@ -316,7 +327,7 @@ typedef struct notification_result {
 } notification_result;
 
 typedef struct profile_result {
-    profile *profile;
+    profile *p;
     int status;
     char *error;
     char *stack;
@@ -331,7 +342,7 @@ typedef struct profiles_result {
 } profiles_result;
 
 typedef struct role_result {
-    role *role;
+    role *r;
     int status;
     char *error;
     char *stack;
@@ -367,12 +378,6 @@ typedef struct user_result {
     char *error;
     char *stack;
 } user_result;
-
-enum is_action_allowed {
-    ALLOWED=0,
-    CONDITIONNAL=1,
-    DENIED=2
-};
 
 //statistics
 typedef struct {
@@ -659,5 +664,9 @@ typedef struct collection_entry_result {
 
 typedef void (*kuzzle_notification_listener)(notification_result*, void*);
 typedef void (*kuzzle_subscribe_listener)(room_result*, void*);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

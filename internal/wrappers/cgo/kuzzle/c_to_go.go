@@ -66,7 +66,7 @@ func cToGoKuzzleMeta(cMeta *C.meta) *types.Meta {
 }
 
 func cToGoCollection(c *C.collection) *collection.Collection {
-	return collection.NewCollection((*kuzzle.Kuzzle)(c.kuzzle.instance))
+	return collection.NewCollection((*kuzzle.Kuzzle)(c.k.instance))
 }
 
 func cToGoPolicyRestriction(r *C.policy_restriction) *types.PolicyRestriction {

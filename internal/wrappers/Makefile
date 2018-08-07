@@ -167,7 +167,7 @@ java: core_java swig_java wrapper_java java_object
 	cp build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/resources
 	mkdir -p $(ROOTOUTDIR)/java/src/main/java
-	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so $(ROOTOUTDIR)/java/src/main/resources/	
+	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so $(ROOTOUTDIR)/java/src/main/resources/
 	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
 	cd build/java && sh gradlew sourcesJar jar javadocJar && cd -
 	cp -p $(GOTARGET) $(OUTDIR)
@@ -208,7 +208,7 @@ cpp: OUTDIR = $(ROOTOUTDIR)/cpp
 cpp: LANGUAGE = c++
 cpp: makedir core_cpp $(CPPSDK)
 		ar rvs $(OUTDIR)/libcpp$(STATICLIB) $(OUTDIR)/*.o
-		$(CPP) -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
+		$(CXX) -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
 
 clean:
 ifeq ($(OS),Windows_NT)
