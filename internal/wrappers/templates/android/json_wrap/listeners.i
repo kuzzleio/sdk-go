@@ -1,3 +1,7 @@
+/********************************************/
+/*               EventListener              */
+/********************************************/
+
 %typemap(javaclassmodifiers) kuzzleio::EventListener "public abstract class"
 %javamethodmodifiers kuzzleio::EventListener::trigger "public abstract"
 %typemap(javaout) void kuzzleio::EventListener::trigger ";"
@@ -22,3 +26,12 @@
   Swig::LocalRefGuard $1_refguard(jenv, $input);
 }
 %apply const std::string& jsonResponse { const std::string& jsonResponse };
+
+
+/********************************************/
+/*               SubscribeListener          */
+/********************************************/
+
+%typemap(javaclassmodifiers) kuzzleio::SubscribeListener "public abstract class"
+%javamethodmodifiers kuzzleio::SubscribeListener::onSubscribe "public abstract"
+%typemap(javaout) void kuzzleio::SubscribeListener::onSubscribe ";"
