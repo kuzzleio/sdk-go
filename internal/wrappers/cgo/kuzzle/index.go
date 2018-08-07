@@ -52,7 +52,7 @@ func kuzzle_new_index(i *C.kuzzle_index, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(index)
 	i.instance = ptr
-	i.kuzzle = k
+	i.k = k
 
 	registerIndex(i, ptr)
 }

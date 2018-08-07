@@ -50,7 +50,7 @@ func kuzzle_new_document(d *C.document, k *C.kuzzle) {
 
 	ptr := unsafe.Pointer(doc)
 	d.instance = ptr
-	d.kuzzle = k
+	d.k = k
 	registerDocument(doc, ptr)
 }
 
