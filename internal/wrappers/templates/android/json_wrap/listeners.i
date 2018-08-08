@@ -1,37 +1,53 @@
+%define TYPEMAP_DIRECTOR_INPUT(JNI, CppType, JavaType, JNITypeFrom, JNITypeTo)
+  %typemap(jni) CppType JNI
+  %typemap(jtype) CppType JavaType
+  %typemap(jstype) CppType JavaType
+  %typemap(javain) CppType "$javainput"
+  %typemap(in) CppType {}
+  %typemap(javadirectorin) CppType "$jniinput";
+  %typemap(directorin, descriptor="L"JNITypeTo";", noblock=1) CppType {
+    if ($input) {
+      const jclass clazz = JCALL1(FindClass, jenv, JNITypeTo);
+      jmethodID methodID = jenv->GetMethodID(clazz, "<init>", "(L"JNITypeFrom";)V");
+      jobject a = jenv->NewObject(clazz, methodID, $input);
+      if (!a) return $null;
+      $input = a;
+    } else {
+      $input = NULL;
+    }
+    Swig::LocalRefGuard $1_refguard(jenv, $input);
+  }
+  %apply CppType { CppType };
+%enddef
+
+%define STRING_TO_JSONOBJECT_OUTPUT(CppType)
+    %typemap(jni) CppType "jstring"
+    %typemap(jstype) CppType "org.json.JSONObject"
+
+    %typemap(javaout) CppType {
+        org.json.JSONObject res = null;
+        
+        try {
+          res = new org.json.JSONObject($jnicall);
+        } catch(org.json.JSONException e) {
+          throw new RuntimeException(e);
+        }
+
+        return res;
+    }
+%enddef
+
 /********************************************/
 /*               EventListener              */
 /********************************************/
 
-%typemap(javaclassmodifiers) kuzzleio::EventListener "public abstract class"
-%javamethodmodifiers kuzzleio::EventListener::trigger "public abstract"
-%typemap(javaout) void kuzzleio::EventListener::trigger ";"
-
-%typemap(jni) const std::string& jsonResponse "jobject"
-%typemap(jtype) const std::string& jsonResponse "org.json.JSONObject"
-%typemap(jstype) const std::string& jsonResponse "org.json.JSONObject"
-%typemap(javain) const std::string& jsonResponse "$javainput"
-%typemap(in) const std::string& jsonResponse {}
-%typemap(javadirectorin) const std::string& jsonResponse "$jniinput";
-%typemap(directorin, descriptor="Lorg/json/JSONObject;", noblock=1) const std::string& jsonResponse {
-  const jclass clazz = JCALL1(FindClass, jenv, "org/json/JSONObject");
-  
-  if ($input) {
-    jmethodID methodID = jenv->GetMethodID(clazz, "<init>", "(Ljava/lang/String;)V");
-    jobject a = jenv->NewObject(clazz, methodID, $input);
-    if (!a) return $null;
-    $input = a;
-  } else {
-    $input = NULL;
-  }
-  Swig::LocalRefGuard $1_refguard(jenv, $input);
-}
-%apply const std::string& jsonResponse { const std::string& jsonResponse };
+TYPEMAP_DIRECTOR_INPUT("jobject", const std::string& jsonResponse, "org.json.JSONObject", "java/lang/String", "org/json/JSONObject")
 
 
 /********************************************/
-/*               SubscribeListener          */
+/*               NotificationListener       */
 /********************************************/
 
-%typemap(javaclassmodifiers) kuzzleio::SubscribeListener "public abstract class"
-%javamethodmodifiers kuzzleio::SubscribeListener::onSubscribe "public abstract"
-%typemap(javaout) void kuzzleio::SubscribeListener::onSubscribe ";"
+%ignore kuzzleio::Realtime::getListener(const std::string& roomId);
+%immutable s_notification_content::content;
+STRING_TO_JSONOBJECT_OUTPUT(char* s_notification_content::content);

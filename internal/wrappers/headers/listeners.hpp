@@ -21,7 +21,7 @@ namespace kuzzleio {
     class NotificationListener {
         public:
             virtual ~NotificationListener(){};
-            virtual void onMessage(notification_result*) const = 0;
+            virtual void onMessage(notification_result*) = 0;
     };
     class EventListener {
         public:
@@ -31,7 +31,7 @@ namespace kuzzleio {
     class SubscribeListener {
         public:
             virtual ~SubscribeListener(){};
-            virtual void onSubscribe(room_result*) const = 0;
+            virtual void onSubscribe(room_result*) = 0;
     };
 }
 

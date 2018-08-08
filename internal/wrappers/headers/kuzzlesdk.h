@@ -288,7 +288,7 @@ typedef struct {
     kuzzle *kuzzle;
 } document;
 
-typedef struct {
+typedef struct s_notification_content {
     char *id;
     meta *meta;
     char *content;
