@@ -20,22 +20,6 @@
   %apply CppType { CppType };
 %enddef
 
-%define STRING_TO_JSONOBJECT_OUTPUT(CppType)
-    %typemap(jni) CppType "jstring"
-    %typemap(jstype) CppType "org.json.JSONObject"
-
-    %typemap(javaout) CppType {
-        org.json.JSONObject res = null;
-        
-        try {
-          res = new org.json.JSONObject($jnicall);
-        } catch(org.json.JSONException e) {
-          throw new RuntimeException(e);
-        }
-
-        return res;
-    }
-%enddef
 
 /********************************************/
 /*               EventListener              */
@@ -49,5 +33,16 @@ TYPEMAP_DIRECTOR_INPUT("jobject", const std::string& jsonResponse, "org.json.JSO
 /********************************************/
 
 %ignore kuzzleio::Realtime::getListener(const std::string& roomId);
-%immutable s_notification_content::content;
-STRING_TO_JSONOBJECT_OUTPUT(char* s_notification_content::content);
+%typemap(jni) char* notification_content::content "jstring"
+%typemap(jstype) char* notification_content::content "org.json.JSONObject"
+
+%typemap(javaout) char* notification_content::content {
+    org.json.JSONObject res = null;
+    try {
+      res = new org.json.JSONObject($jnicall);
+    } catch (org.json.JSONException e) {
+      throw new RuntimeException(e);
+    }
+
+    return res;
+  }

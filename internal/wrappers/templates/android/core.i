@@ -23,7 +23,7 @@
 %rename(SearchFilters) search_filters;
 %rename(SearchResult) search_result;
 %rename(NotificationResult) notification_result;
-%rename(NotificationContent) s_notification_content;
+%rename(NotificationContent) notification_content;
 %rename(SubscribeToSelf) subscribe_to_self;
 
 %rename(delete) delete_;
@@ -36,16 +36,6 @@
 %feature("director") EventListener;
 %feature("director") SubscribeListener;
 
-%{
-#include "kuzzle.cpp"
-#include "collection.cpp"
-#include "auth.cpp"
-#include "index.cpp"
-#include "server.cpp"
-#include "document.cpp"
-#include "realtime.cpp"
-%}
-
 %typemap(javaclassmodifiers) kuzzleio::EventListener "public abstract class"
 %javamethodmodifiers kuzzleio::EventListener::trigger "public abstract"
 %typemap(javaout) void kuzzleio::EventListener::trigger ";"
@@ -57,6 +47,16 @@
 %typemap(javaclassmodifiers) kuzzleio::NotificationListener "public abstract class"
 %javamethodmodifiers kuzzleio::NotificationListener::onMessage "public abstract"
 %typemap(javaout) void kuzzleio::NotificationListener::onMessage ";"
+
+%{
+#include "kuzzle.cpp"
+#include "collection.cpp"
+#include "auth.cpp"
+#include "index.cpp"
+#include "server.cpp"
+#include "document.cpp"
+#include "realtime.cpp"
+%}
 
 %include "../java/exceptions.i"
 %include "std_string.i"
