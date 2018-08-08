@@ -19,7 +19,7 @@ import (
 )
 
 // Unsubscribe instructs Kuzzle to detach you from its subscribers for the given room
-func (r *Realtime) Unsubscribe(roomID string) error {
+func (r *Realtime) Unsubscribe(roomID string, options types.QueryOptions) error {
 	if roomID == "" {
 		return types.NewError("Realtime.Unsubscribe: roomID required", 400)
 	}
@@ -34,7 +34,7 @@ func (r *Realtime) Unsubscribe(roomID string) error {
 
 	result := make(chan *types.KuzzleResponse)
 
-	go r.k.Query(query, nil, result)
+	go r.k.Query(query, options, result)
 
 	res := <-result
 

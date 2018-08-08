@@ -20,18 +20,25 @@
 #include <stdlib.h>
 #include <string>
 
-#define Kuz_Throw_KuzzleException throw(\
+#define KUZZLE_COMMON_EXCEPTIONS \
   BadRequestException, \
   ForbiddenException, \
   GatewayTimeoutException, \
   InternalException, \
+  ServiceUnavailableException
+
+#define KUZZLE_SPECIFIC_EXCEPTIONS \
   NotFoundException, \
   PartialException, \
   PreconditionException, \
-  ServiceUnavailableException, \
   SizeLimitException, \
-  UnauthorizedException \
-)
+  UnauthorizedException
+
+#define KUZZLE_ALL_EXCEPTIONS \
+  KUZZLE_COMMON_EXCEPTIONS, \
+  KUZZLE_SPECIFIC_EXCEPTIONS \
+
+#define Kuz_Throw_KuzzleException throw(KUZZLE_ALL_EXCEPTIONS)
 
 #define PARTIAL_EXCEPTION 206
 #define BAD_REQUEST_EXCEPTION 400
@@ -58,52 +65,52 @@ namespace kuzzleio {
 
   struct BadRequestException : KuzzleException {
     BadRequestException(const std::string& message="Bad Request Exception")
-      : KuzzleException(400, message) {};
+      : KuzzleException(BAD_REQUEST_EXCEPTION, message) {};
     BadRequestException(const BadRequestException& bre) : KuzzleException(bre.status, bre.getMessage()) {}
   };
   struct ForbiddenException: KuzzleException {
     ForbiddenException(const std::string& message="Forbidden Exception")
-      : KuzzleException(403, message) {};
+      : KuzzleException(FORBIDDEN_EXCEPTION, message) {};
     ForbiddenException(const ForbiddenException& fe) : KuzzleException(fe.status, fe.getMessage()) {}
   };
   struct GatewayTimeoutException: KuzzleException {
     GatewayTimeoutException(const std::string& message="Gateway Timeout Exception")
-      : KuzzleException(504, message) {};
+      : KuzzleException(GATEWAY_TIMEOUT_EXCEPTION, message) {};
     GatewayTimeoutException(const GatewayTimeoutException& gte) : KuzzleException(gte.status, gte.getMessage()) {}
   };
   struct InternalException: KuzzleException {
     InternalException(const std::string& message="Internal Exception")
-      : KuzzleException(500, message) {};
+      : KuzzleException(INTERNAL_EXCEPTION, message) {};
     InternalException(const InternalException& ie) : KuzzleException(ie.status, ie.getMessage()) {}
   };
   struct NotFoundException: KuzzleException {
     NotFoundException(const std::string& message="Not Found Exception")
-      : KuzzleException(404, message) {};
+      : KuzzleException(NOT_FOUND_EXCEPTION, message) {};
     NotFoundException(const NotFoundException& nfe) : KuzzleException(nfe.status, nfe.getMessage()) {}
   };
   struct PartialException: KuzzleException {
     PartialException(const std::string& message="Partial Exception")
-      : KuzzleException(206, message) {};
+      : KuzzleException(PARTIAL_EXCEPTION, message) {};
     PartialException(const PartialException& pe) : KuzzleException(pe.status, pe.getMessage()) {}
   };
   struct PreconditionException: KuzzleException {
     PreconditionException(const std::string& message="Precondition Exception")
-      : KuzzleException(412, message) {};
+      : KuzzleException(PRECONDITION_EXCEPTION, message) {};
     PreconditionException(const PreconditionException& pe) : KuzzleException(pe.status, pe.getMessage()) {}
   };
   struct ServiceUnavailableException: KuzzleException {
     ServiceUnavailableException(const std::string& message="Service Unavailable Exception")
-      : KuzzleException(503, message) {};
+      : KuzzleException(SERVICE_UNAVAILABLE_EXCEPTION, message) {};
     ServiceUnavailableException(const ServiceUnavailableException& sue) : KuzzleException(sue.status, sue.getMessage()) {}
   };
   struct SizeLimitException: KuzzleException {
     SizeLimitException(const std::string& message="Size Limit Exception")
-      : KuzzleException(413, message) {};
+      : KuzzleException(SIZE_LIMIT_EXCEPTION, message) {};
     SizeLimitException(const SizeLimitException& sle) : KuzzleException(sle.status, sle.getMessage()) {}
   };
   struct UnauthorizedException : KuzzleException {
     UnauthorizedException(const std::string& message="Unauthorized Exception")
-     : KuzzleException(401, message) {}
+     : KuzzleException(UNAUTHORIZED_EXCEPTION, message) {}
     UnauthorizedException(const UnauthorizedException& ue) : KuzzleException(ue.status, ue.getMessage()) {}
   };
 

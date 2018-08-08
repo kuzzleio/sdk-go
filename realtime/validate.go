@@ -21,7 +21,7 @@ import (
 )
 
 // Validate validates data against existing validation rules
-func (r *Realtime) Validate(index string, collection string, body string) (bool, error) {
+func (r *Realtime) Validate(index string, collection string, body string, options types.QueryOptions) (bool, error) {
 	if (index == "" || collection == "") || body == "" {
 		return false, types.NewError("Realtime.Validate: index, collection and body required", 400)
 	}
@@ -36,7 +36,7 @@ func (r *Realtime) Validate(index string, collection string, body string) (bool,
 
 	result := make(chan *types.KuzzleResponse)
 
-	go r.k.Query(query, nil, result)
+	go r.k.Query(query, options, result)
 
 	res := <-result
 

@@ -99,7 +99,6 @@
 %rename(delete) delete_;
 
 %ignore *::error;
-%ignore *::status;
 %ignore *::stack;
 
 %feature("director") NotificationListener;

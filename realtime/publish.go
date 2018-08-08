@@ -21,7 +21,7 @@ import (
 )
 
 // Publish sends a real-time message to Kuzzle
-func (r *Realtime) Publish(index string, collection string, body json.RawMessage) error {
+func (r *Realtime) Publish(index string, collection string, body json.RawMessage, options types.QueryOptions) error {
 	if (index == "" || collection == "") || body == nil {
 		return types.NewError("Realtime.Publish: index, collection and body required", 400)
 	}
@@ -36,7 +36,7 @@ func (r *Realtime) Publish(index string, collection string, body json.RawMessage
 
 	result := make(chan *types.KuzzleResponse)
 
-	go r.k.Query(query, nil, result)
+	go r.k.Query(query, options, result)
 
 	res := <-result
 

@@ -21,7 +21,7 @@ import (
 )
 
 // Count returns the number of other subscriptions on that room.
-func (r *Realtime) Count(index, collection, roomID string) (int, error) {
+func (r *Realtime) Count(index, collection, roomID string, options types.QueryOptions) (int, error) {
 	if index == "" || collection == "" || roomID == "" {
 		return -1, types.NewError("Realtime.Count: index, collection and roomID required", 400)
 	}
@@ -38,7 +38,7 @@ func (r *Realtime) Count(index, collection, roomID string) (int, error) {
 
 	result := make(chan *types.KuzzleResponse)
 
-	go r.k.Query(query, nil, result)
+	go r.k.Query(query, options, result)
 
 	res := <-result
 
