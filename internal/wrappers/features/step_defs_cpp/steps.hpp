@@ -59,7 +59,7 @@ struct KuzzleCtx {
 
 class CustomNotificationListener : public NotificationListener {
   public:
-    virtual void onMessage(notification_result *res) const {
+    virtual void onMessage(notification_result *res) {
       ScenarioScope<KuzzleCtx> ctx;
 
       ctx->notif_result = res;
