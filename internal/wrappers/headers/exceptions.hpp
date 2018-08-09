@@ -119,7 +119,7 @@ namespace kuzzleio {
     const std::string error = std::string(result->error);
     delete(result->error);
     if (result->stack) {
-      free(result->stack);
+      free(const_cast<char *>(result->stack));
     }
 
     switch(result->status) {
