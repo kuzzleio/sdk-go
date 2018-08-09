@@ -28,7 +28,6 @@ import (
 
 func ExampleKuzzle_Connect() {
 	opts := types.NewOptions()
-	opts.SetConnect(types.Manual)
 
 	conn := websocket.NewWebSocket("localhost:7512", nil)
 	k, _ := kuzzle.NewKuzzle(conn, opts)

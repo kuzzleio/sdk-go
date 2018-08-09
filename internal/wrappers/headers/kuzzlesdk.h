@@ -34,7 +34,6 @@ enum Mode {AUTO, MANUAL};
     .auto_resubscribe = true, \
     .reconnection_delay = 1000, \
     .replay_interval = 10, \
-    .connect = AUTO, \
     .refresh = NULL, \
     .default_index = NULL  \
 }
@@ -221,7 +220,6 @@ typedef struct {
     bool auto_resubscribe;
     unsigned long reconnection_delay;
     unsigned long replay_interval;
-    enum Mode connect;
     char *refresh;
     char *default_index;
 } options;

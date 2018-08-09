@@ -87,13 +87,7 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	k.Document = document.NewDocument(k)
 	k.Index = index.NewIndex(k)
 
-	var err error
-
-	if options.Connect() == types.Auto {
-		err = k.Connect()
-	}
-
-	return k, err
+	return k, nil
 }
 
 // Connect connects to a Kuzzle instance using the provided host and port.
