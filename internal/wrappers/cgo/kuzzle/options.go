@@ -51,11 +51,6 @@ func kuzzle_new_options() *C.options {
 		copts.refresh = C.CString(refresh)
 	}
 
-	defaultIndex := opts.DefaultIndex()
-	if len(defaultIndex) > 0 {
-		copts.default_index = C.CString(defaultIndex)
-	}
-
 	return copts
 }
 
@@ -102,7 +97,6 @@ func SetOptions(options *C.options) (opts types.Options) {
 	opts.SetReconnectionDelay(time.Duration(int(options.reconnection_delay)))
 	opts.SetReplayInterval(time.Duration(int(options.replay_interval)))
 	opts.SetRefresh(C.GoString(options.refresh))
-	opts.SetDefaultIndex(C.GoString(options.default_index))
 
 	return
 }

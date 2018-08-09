@@ -29,6 +29,8 @@ public class Documentdefs {
     @Given("^Kuzzle Server is running$")
     public void kuzzle_Server_is_running() throws Exception {
         k = KuzzleSingleton.getInstance();
+
+        k.connect();
     }
 
     @Given("^there is an index \'([^\"]*)\'$")
