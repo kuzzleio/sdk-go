@@ -110,6 +110,11 @@ func kuzzle_get_jwt(k *C.kuzzle) *C.char {
 	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
 }
 
+//export kuzzle_set_jwt
+func kuzzle_set_jwt(k *C.kuzzle, jwt *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).SetJwt(C.GoString(jwt))
+}
+
 //export kuzzle_get_server_controller
 func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
 	s := (*C.server)(C.calloc(1, C.sizeof_server))
@@ -151,6 +156,11 @@ func kuzzle_connect(k *C.kuzzle) *C.char {
 //export kuzzle_disconnect
 func kuzzle_disconnect(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).Disconnect()
+}
+
+//export kuzzle_emit_event
+func kuzzle_emit_event(k *C.kuzzle, event C.int, body *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).EmitEvent(int(event), C.GoString(body))
 }
 
 //export kuzzle_get_default_index

@@ -49,6 +49,7 @@
 %include "../java/exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
+%include "json_wrap/kuzzle.i"
 %include "json_wrap/document.i"
 %include "json_wrap/server.i"
 %include "json_wrap/collection.i"

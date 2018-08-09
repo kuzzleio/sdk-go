@@ -27,6 +27,8 @@ namespace kuzzleio {
     Auth();
 
     public:
+      Kuzzle *_kuzzle;
+
       Auth(Kuzzle *kuzzle);
       Auth(Kuzzle *kuzzle, auth *auth);
       virtual ~Auth();
@@ -41,6 +43,7 @@ namespace kuzzleio {
       std::string login(const std::string& strategy, const std::string& credentials, int expiresIn) Kuz_Throw_KuzzleException;
       std::string login(const std::string& strategy, const std::string& credentials) Kuz_Throw_KuzzleException;
       void logout();
+      void setJwt(const std::string& jwt);
       std::string updateMyCredentials(const std::string& strategy, const std::string& credentials, query_options *options=NULL) Kuz_Throw_KuzzleException;      
       kuzzle_user* updateSelf(const std::string& content, query_options* options=NULL) Kuz_Throw_KuzzleException;      
       bool validateMyCredentials(const std::string& strategy, const std::string& credentials, query_options* options=NULL) Kuz_Throw_KuzzleException;
