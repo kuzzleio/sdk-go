@@ -33,10 +33,10 @@ TYPEMAP_DIRECTOR_INPUT("jobject", const std::string& jsonResponse, "org.json.JSO
 /********************************************/
 
 %ignore kuzzleio::Realtime::getListener(const std::string& roomId);
-%typemap(jni) char* notification_content::content "jstring"
-%typemap(jstype) char* notification_content::content "org.json.JSONObject"
+%typemap(jni) char* kuzzleio::notification_content::content "jstring"
+%typemap(jstype) char* kuzzleio::notification_content::content "org.json.JSONObject"
 
-%typemap(javaout) char* notification_content::content {
+%typemap(javaout) char* kuzzleio::notification_content::content {
     org.json.JSONObject res = null;
     try {
       res = new org.json.JSONObject($jnicall);
