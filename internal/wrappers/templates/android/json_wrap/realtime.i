@@ -4,8 +4,6 @@
 %javamethodmodifiers kuzzleio::Realtime::list(const std::string& index, const std::string& collection) "private";
 %javamethodmodifiers kuzzleio::Realtime::publish(const std::string& index, const std::string& collection, const std::string& body, query_options *options) "private";
 %javamethodmodifiers kuzzleio::Realtime::publish(const std::string& index, const std::string& collection, const std::string& body) "private";
-%rename (_subscribe) kuzzleio::Realtime::subscribe(const std::string& index, const std::string& collection, const std::string& body, NotificationListener* cb, room_options* options);
-%rename (_subscribe) kuzzleio::Realtime::subscribe(const std::string& index, const std::string& collection, const std::string& body, NotificationListener* cb);
 %javamethodmodifiers kuzzleio::Realtime::subscribe(const std::string& index, const std::string& collection, const std::string& body, query_options *options) "private";
 %javamethodmodifiers kuzzleio::Realtime::subscribe(const std::string& index, const std::string& collection, const std::string& body) "private";
 %javamethodmodifiers kuzzleio::Realtime::validate(const std::string& index, const std::string& collection, const std::string& body, query_options *options) "private";
@@ -31,13 +29,11 @@
     publish(index, collection, body, null);    
   }
 
-  public org.json.JSONObject subscribe(String index, String collection, org.json.JSONObject body, NotificationListener cb, RoomOptions options) throws org.json.JSONException, KuzzleException {
-    String res = _subscribe(index, collection, body.toString(), cb, options);
-
-    return new org.json.JSONObject(res);
+  public String subscribe(String index, String collection, org.json.JSONObject body, NotificationListener cb, RoomOptions options) throws org.json.JSONException, KuzzleException {
+    return subscribe(index, collection, body.toString(), cb, options);
   }
 
-  public org.json.JSONObject subscribe(String index, String collection, org.json.JSONObject body, NotificationListener cb) throws org.json.JSONException, KuzzleException {
+  public String subscribe(String index, String collection, org.json.JSONObject body, NotificationListener cb) throws org.json.JSONException, KuzzleException {
     return subscribe(index, collection, body, cb, null);
   }
 
