@@ -50,6 +50,7 @@
 %include "std_string.i"
 %include "typemap.i"
 %include "json_wrap/document.i"
+%include "json_wrap/realtime.i"
 %include "json_wrap/server.i"
 %include "json_wrap/collection.i"
 %include "json_wrap/auth.i"
