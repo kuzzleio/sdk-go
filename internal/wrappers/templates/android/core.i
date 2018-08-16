@@ -36,6 +36,18 @@
 %feature("director") EventListener;
 %feature("director") SubscribeListener;
 
+%typemap(javaclassmodifiers) kuzzleio::EventListener "public abstract class"
+%javamethodmodifiers kuzzleio::EventListener::trigger "public abstract"
+%typemap(javaout) void kuzzleio::EventListener::trigger ";"
+
+%typemap(javaclassmodifiers) kuzzleio::SubscribeListener "public abstract class"
+%javamethodmodifiers kuzzleio::SubscribeListener::onSubscribe "public abstract"
+%typemap(javaout) void kuzzleio::SubscribeListener::onSubscribe ";"
+
+%typemap(javaclassmodifiers) kuzzleio::NotificationListener "public abstract class"
+%javamethodmodifiers kuzzleio::NotificationListener::onMessage "public abstract"
+%typemap(javaout) void kuzzleio::NotificationListener::onMessage ";"
+
 %{
 #include "kuzzle.cpp"
 #include "collection.cpp"
@@ -49,6 +61,7 @@
 %include "../java/exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
+%include "json_wrap/listeners.i"
 %include "json_wrap/document.i"
 %include "json_wrap/realtime.i"
 %include "json_wrap/server.i"
