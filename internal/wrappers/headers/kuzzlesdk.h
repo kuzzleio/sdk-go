@@ -30,7 +30,7 @@ enum Mode {AUTO, MANUAL};
     .offline_mode = MANUAL,  \
     .auto_queue = false,  \
     .auto_reconnect = true,  \
-    .auto_replay = false, \_
+    .auto_replay = false, \
     .auto_resubscribe = true, \
     .reconnection_delay = 1000, \
     .replay_interval = 10, \
