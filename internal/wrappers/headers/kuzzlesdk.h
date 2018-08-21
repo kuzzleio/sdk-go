@@ -34,8 +34,7 @@ enum Mode {AUTO, MANUAL};
     .auto_resubscribe = true, \
     .reconnection_delay = 1000, \
     .replay_interval = 10, \
-    .refresh = NULL, \
-    .default_index = NULL  \
+    .refresh = NULL
 }
 
 enum Event {
@@ -221,7 +220,6 @@ typedef struct {
     unsigned long reconnection_delay;
     unsigned long replay_interval;
     const char *refresh;
-    const char *default_index;
 } options;
 
 //meta of a document
