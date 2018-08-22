@@ -11,3 +11,8 @@ kcore_wrap.h
 .gradle
 
 internal/wrappers/kcore_wrap\.o
+
+# Build files
+*.o
+*.so
+*.a

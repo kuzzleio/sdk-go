@@ -82,11 +82,6 @@ namespace kuzzleio {
     return this;
   }
 
-  Kuzzle* Kuzzle::setDefaultIndex(const std::string& index) {
-    kuzzle_set_default_index(_kuzzle, const_cast<char*>(index.c_str()));
-    return this;
-  }
-
   Kuzzle* Kuzzle::startQueuing() {
     kuzzle_start_queuing(_kuzzle);
     return this;

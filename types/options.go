@@ -43,12 +43,8 @@ type Options interface {
 	SetReconnectionDelay(time.Duration) *options
 	ReplayInterval() time.Duration
 	SetReplayInterval(time.Duration) *options
-	Connect() int
-	SetConnect(int) *options
 	Refresh() string
 	SetRefresh(string) *options
-	DefaultIndex() string
-	SetDefaultIndex(string) *options
 	Port() int
 	SetPort(int) *options
 	SslConnection() bool
@@ -67,7 +63,6 @@ type options struct {
 	replayInterval    time.Duration
 	connect           int
 	refresh           string
-	defaultIndex      string
 	port              int
 	sslConnection     bool
 }
@@ -153,30 +148,12 @@ func (o *options) SetReplayInterval(replayInterval time.Duration) *options {
 	return o
 }
 
-func (o options) Connect() int {
-	return o.connect
-}
-
-func (o *options) SetConnect(connect int) *options {
-	o.connect = connect
-	return o
-}
-
 func (o options) Refresh() string {
 	return o.refresh
 }
 
 func (o *options) SetRefresh(refresh string) *options {
 	o.refresh = refresh
-	return o
-}
-
-func (o options) DefaultIndex() string {
-	return o.defaultIndex
-}
-
-func (o *options) SetDefaultIndex(defaultIndex string) *options {
-	o.defaultIndex = defaultIndex
 	return o
 }
 
@@ -210,7 +187,6 @@ func NewOptions() *options {
 		autoResubscribe:   true,
 		reconnectionDelay: 1000,
 		replayInterval:    10,
-		connect:           Auto,
 		port:              7512,
 		sslConnection:     false,
 	}

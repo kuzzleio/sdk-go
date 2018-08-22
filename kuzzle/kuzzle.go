@@ -40,7 +40,6 @@ type Kuzzle struct {
 	wasConnected   bool
 	lastUrl        string
 	message        chan []byte
-	defaultIndex   string
 	jwt            string
 	headers        map[string]interface{}
 	version        string
@@ -68,9 +67,8 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	}
 
 	k := &Kuzzle{
-		socket:       c,
-		version:      version,
-		defaultIndex: options.DefaultIndex(),
+		socket:  c,
+		version: version,
 	}
 
 	k.RequestHistory = k.socket.RequestHistory()
@@ -81,19 +79,12 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 
 	k.RequestHistory = k.socket.RequestHistory()
 
-	k.defaultIndex = options.DefaultIndex()
 	k.Server = server.NewServer(k)
 	k.Collection = collection.NewCollection(k)
 	k.Document = document.NewDocument(k)
 	k.Index = index.NewIndex(k)
 
-	var err error
-
-	if options.Connect() == types.Auto {
-		err = k.Connect()
-	}
-
-	return k, err
+	return k, nil
 }
 
 // Connect connects to a Kuzzle instance using the provided host and port.
@@ -264,21 +255,6 @@ func (k *Kuzzle) SetQueueTTL(v time.Duration) {
 // SetReplayInterval sets the Kuzzle socket ReplayInterval field with the given value
 func (k *Kuzzle) SetReplayInterval(v time.Duration) {
 	k.socket.SetReplayInterval(v)
-}
-
-// DefaultIndex returns the Kuzzle default index name
-func (k *Kuzzle) DefaultIndex() string {
-	return k.defaultIndex
-}
-
-// SetDefaultIndex set the default data index. Has the same effect than the defaultIndex constructor option.
-func (k *Kuzzle) SetDefaultIndex(index string) error {
-	if index == "" {
-		return types.NewError("Kuzzle.SetDefaultIndex: index required", 400)
-	}
-
-	k.defaultIndex = index
-	return nil
 }
 
 func (k *Kuzzle) Volatile() types.VolatileData {
