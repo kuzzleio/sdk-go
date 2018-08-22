@@ -129,7 +129,6 @@ func kuzzle_free_room_options(st *C.room_options) {
 func kuzzle_free_options(st *C.options) {
 	if st != nil {
 		C.free(unsafe.Pointer(st.refresh))
-		C.free(unsafe.Pointer(st.default_index))
 		C.free(unsafe.Pointer(st))
 	}
 }
