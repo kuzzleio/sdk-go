@@ -163,21 +163,6 @@ func kuzzle_emit_event(k *C.kuzzle, event C.int, body *C.char) {
 	(*kuzzle.Kuzzle)(k.instance).EmitEvent(int(event), C.GoString(body))
 }
 
-//export kuzzle_get_default_index
-func kuzzle_get_default_index(k *C.kuzzle) *C.char {
-	return C.CString((*kuzzle.Kuzzle)(k.instance).DefaultIndex())
-}
-
-//export kuzzle_set_default_index
-func kuzzle_set_default_index(k *C.kuzzle, index *C.char) C.int {
-	err := (*kuzzle.Kuzzle)(k.instance).SetDefaultIndex(C.GoString(index))
-	if err != nil {
-		return C.int(C.EINVAL)
-	}
-
-	return 0
-}
-
 //export kuzzle_get_offline_queue
 func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result := (*C.offline_queue)(C.calloc(1, C.sizeof_offline_queue))

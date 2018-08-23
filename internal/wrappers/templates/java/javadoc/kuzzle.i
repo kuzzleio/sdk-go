@@ -388,15 +388,6 @@
    */
   public";
 
-%javamethodmodifiers kuzzleio::Kuzzle::setDefaultIndex(const std::string& index) "
-  /**
-   * Default index setter
-   *
-   * @param index - New default index name
-   * @return this
-   */
-  public";
-
 %javamethodmodifiers kuzzleio::Kuzzle::playQueue() "
   /**
    * Replays the requests queued during offline mode.

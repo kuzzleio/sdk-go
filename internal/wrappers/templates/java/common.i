@@ -64,7 +64,6 @@
 %rename(autoResubscribe) auto_resubscribe;
 %rename(reconnectionDelay) reconnection_delay;
 %rename(replayInterval) replay_interval;
-%rename(defaultIndex) default_index;
 
 // struct query_options
 %rename(scrollId) scroll_id;

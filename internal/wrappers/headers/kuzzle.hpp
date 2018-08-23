@@ -55,7 +55,6 @@ namespace kuzzleio {
       kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) throw(KUZZLE_ALL_EXCEPTIONS);
       Kuzzle* playQueue();
       Kuzzle* setAutoReplay(bool autoReplay);
-      Kuzzle* setDefaultIndex(const std::string& index);
       Kuzzle* startQueuing();
       Kuzzle* stopQueuing();
       Kuzzle* flushQueue();

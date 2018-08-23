@@ -6,6 +6,7 @@
 %typemap(javacode) kuzzleio::Server %{
   /**
    * {@link #now(QueryOptions)}
+   * @return java.util.Date
    */
   public java.util.Date now() {
     long res = _now();

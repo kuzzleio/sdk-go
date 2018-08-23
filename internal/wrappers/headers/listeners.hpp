@@ -21,17 +21,17 @@ namespace kuzzleio {
     class NotificationListener {
         public:
             virtual ~NotificationListener(){};
-            virtual void onMessage(notification_result*) const = 0;
+            virtual void onMessage(notification_result*) = 0;
     };
     class EventListener {
         public:
             virtual ~EventListener(){};
-            virtual void trigger(char*) const = 0;
+            virtual void trigger(const std::string& jsonResponse) = 0;
     };
     class SubscribeListener {
         public:
             virtual ~SubscribeListener(){};
-            virtual void onSubscribe(room_result*) const = 0;
+            virtual void onSubscribe(room_result*) = 0;
     };
 }
 
