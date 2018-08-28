@@ -93,7 +93,7 @@ typedef long long time_t;
   }
 %}
 
-%extend options {
+%extend kuzzleio::options {
     options() {
         options *o = kuzzle_new_options();
         return o;
