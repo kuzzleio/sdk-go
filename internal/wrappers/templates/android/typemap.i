@@ -27,7 +27,6 @@
 %typemap(javain) Event& "$javainput"
 %typemap(in) Event& (Event tmp) {
   jmethodID swigValueMethod = jenv->GetMethodID(jenv->GetObjectClass($input), "swigValue", "()I");
-  const jclass clazz = JCALL1(FindClass, jenv, "io/kuzzle/sdk/Event");
   jint swigValue = jenv->CallIntMethod($input, swigValueMethod, 0);
 
   Event e = (Event)swigValue;
