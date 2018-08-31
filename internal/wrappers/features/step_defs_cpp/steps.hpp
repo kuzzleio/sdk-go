@@ -6,6 +6,7 @@
 #include <cucumber-cpp/autodetect.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <functional>
 
 #include "auth.hpp"
 #include "collection.hpp"
@@ -53,16 +54,9 @@ struct KuzzleCtx {
   std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
-  CustomNotificationListener *listener;
+
+  std::function<void(const kuzzleio::notification_result*)> listener;
 };
 
-class CustomNotificationListener : public NotificationListener {
-  public:
-    virtual void onMessage(notification_result *res) {
-      ScenarioScope<KuzzleCtx> ctx;
-
-      ctx->notif_result = res;
-    }
-};
 
 #endif

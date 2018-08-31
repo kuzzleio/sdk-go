@@ -9,10 +9,12 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    ctx->listener = new CustomNotificationListener();
+    ctx->listener = [&ctx](const kuzzleio::notification_result* res) {
+      ctx->notif_result = const_cast<notification_result*>(res);
+    };
 
     try {
-      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", ctx->listener);
+      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", &ctx->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -38,7 +40,6 @@ namespace {
     sleep(1);
     BOOST_CHECK(ctx->notif_result != NULL);
     ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
-    delete ctx->listener;
     delete ctx->notif_result;
     ctx->notif_result = NULL;
     ctx->listener = NULL;
@@ -50,10 +51,12 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    ctx->listener = new CustomNotificationListener();
+    ctx->listener = [&ctx](const kuzzleio::notification_result* res) {
+      ctx->notif_result = const_cast<notification_result*>(res);
+    };
 
     try {
-      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, ctx->listener);
+      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, &ctx->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -102,7 +105,6 @@ namespace {
     try {
       ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
       ctx->notif_result = NULL;
-      delete ctx->listener;
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
