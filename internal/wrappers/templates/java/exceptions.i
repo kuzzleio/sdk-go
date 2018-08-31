@@ -1,13 +1,15 @@
 %define TO_JAVA_EXCEPTION(CPPTYPE, JTYPE, JNITYPE)
-%typemap(throws,throws=JTYPE) CPPTYPE {
-  (void)$1;
-  jclass excpcls = jenv->FindClass(JNITYPE);
-  if (excpcls) {
-    jenv->ThrowNew(excpcls, $1.what());
-   }
-  return $null;
+%javaexception(JTYPE) {
+    try {
+        $action
+    } catch (CPPTYPE &e) {
+        jclass clazz = jenv->FindClass(JNITYPE);
+        jenv->ThrowNew(clazz, e.what());
+        return $null;
+    }
 }
 %enddef
+
 
 %typemap(javabase) kuzzleio::KuzzleException "java.lang.RuntimeException";
 

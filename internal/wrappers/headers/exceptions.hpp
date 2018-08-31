@@ -36,7 +36,9 @@ namespace kuzzleio {
   struct KuzzleException : std::runtime_error {
     int status;
 
-    KuzzleException(int status=500, const std::string& message="Internal Exception");
+    KuzzleException(int status, const std::string& message);
+    KuzzleException(const std::string& message)
+    : KuzzleException(500, message) {};
     KuzzleException(const KuzzleException& ke) : status(ke.status), std::runtime_error(ke.getMessage()) {};
 
     virtual ~KuzzleException() throw() {};
