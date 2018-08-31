@@ -32,29 +32,23 @@
 %ignore *::status;
 %ignore *::stack;
 
-%feature("director") NotificationListener;
-%feature("director") EventListener;
-%feature("director") SubscribeListener;
-
-%typemap(javaclassmodifiers) kuzzleio::EventListener "public abstract class"
-%javamethodmodifiers kuzzleio::EventListener::trigger "public abstract"
-%typemap(javaout) void kuzzleio::EventListener::trigger ";"
-
-%typemap(javaclassmodifiers) kuzzleio::SubscribeListener "public abstract class"
-%javamethodmodifiers kuzzleio::SubscribeListener::onSubscribe "public abstract"
-%typemap(javaout) void kuzzleio::SubscribeListener::onSubscribe ";"
-
-%typemap(javaclassmodifiers) kuzzleio::NotificationListener "public abstract class"
-%javamethodmodifiers kuzzleio::NotificationListener::onMessage "public abstract"
-%typemap(javaout) void kuzzleio::NotificationListener::onMessage ";"
-
 %{
-#include "kuzzle.cpp"
 #include "collection.cpp"
 #include "auth.cpp"
 #include "index.cpp"
 #include "server.cpp"
 #include "document.cpp"
+%}
+
+%ignore getListener;
+%ignore getListeners;
+
+%include "../java/std_function.i"
+%std_function(NotificationListener, void, onMessage, const kuzzleio::notification_result*);
+%std_function(EventListener, void, trigger, const std::string);
+
+%{
+#include "kuzzle.cpp"
 #include "realtime.cpp"
 %}
 
