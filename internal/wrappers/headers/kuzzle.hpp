@@ -22,6 +22,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <functional>
 
 namespace kuzzleio {
   class Collection;
@@ -30,7 +31,6 @@ namespace kuzzleio {
   class Index;
   class Server;
   class Realtime;
-  class EventListener;
 
   class Kuzzle : public KuzzleEventEmitter {
     private:
@@ -45,28 +45,28 @@ namespace kuzzleio {
       Document *document;
       Realtime *realtime;
 
-      Kuzzle(const std::string& host, options *options=NULL);
+      Kuzzle(const std::string& host, options *options=nullptr);
       virtual ~Kuzzle();
 
-      char* connect();
+      char* connect() noexcept;
 
-      std::string getJwt();
-      void disconnect();
-      kuzzle_response* query(kuzzle_request* query, query_options* options=NULL) throw(KUZZLE_ALL_EXCEPTIONS);
-      Kuzzle* playQueue();
-      Kuzzle* setAutoReplay(bool autoReplay);
-      Kuzzle* startQueuing();
-      Kuzzle* stopQueuing();
-      Kuzzle* flushQueue();
-      std::string getVolatile();
-      Kuzzle* setVolatile(const std::string& volatiles);
-      std::map<int, EventListener*> getListeners();
+      std::string getJwt() noexcept;
+      void disconnect() noexcept;
+      kuzzle_response* query(kuzzle_request* query, query_options* options=nullptr);
+      Kuzzle* playQueue() noexcept;
+      Kuzzle* setAutoReplay(bool autoReplay) noexcept;
+      Kuzzle* startQueuing() noexcept;
+      Kuzzle* stopQueuing() noexcept;
+      Kuzzle* flushQueue() noexcept;
+      std::string getVolatile() noexcept;
+      Kuzzle* setVolatile(const std::string& volatiles) noexcept;
+      std::map<int, EventListener*> getListeners() noexcept;
 
-      virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener);
-      virtual KuzzleEventEmitter* removeListener(Event event, EventListener* listener);
-      virtual KuzzleEventEmitter* removeAllListeners(Event event);
-      virtual KuzzleEventEmitter* once(Event event, EventListener* listener);
-      virtual int listenerCount(Event event);
+      virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener) override;
+      virtual KuzzleEventEmitter* removeListener(Event event, EventListener* listener) override;
+      virtual KuzzleEventEmitter* removeAllListeners(Event event) override;
+      virtual KuzzleEventEmitter* once(Event event, EventListener* listener) override;
+      virtual int listenerCount(Event event) override;
 
   };
 }

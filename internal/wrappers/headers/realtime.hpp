@@ -4,12 +4,11 @@
 #include "exceptions.hpp"
 #include "core.hpp"
 #include <map>
+#include <functional>
+
+typedef const std::function<void(const kuzzleio::notification_result*)> NotificationListener;
 
 namespace kuzzleio {
-
-  class EventListener;
-  class NotificationListener;
-  class SubscribeListener;
 
   class Realtime {
     realtime *_realtime;
@@ -20,12 +19,12 @@ namespace kuzzleio {
       Realtime(Kuzzle* kuzzle);
       Realtime(Kuzzle* kuzzle, realtime* realtime);
       virtual ~Realtime();
-      int count(const std::string& index, const std::string& collection, const std::string& roomId, query_options *options=NULL) Kuz_Throw_KuzzleException;
-      std::string list(const std::string& index, const std::string& collection, query_options *options=NULL) Kuz_Throw_KuzzleException;
-      void publish(const std::string& index, const std::string& collection, const std::string& body, query_options *options=NULL) Kuz_Throw_KuzzleException;
-      std::string subscribe(const std::string& index, const std::string& collection, const std::string& body, NotificationListener* cb, room_options* options=NULL) Kuz_Throw_KuzzleException;
-      void unsubscribe(const std::string& roomId, query_options *options=NULL) Kuz_Throw_KuzzleException;
-      bool validate(const std::string& index, const std::string& collection, const std::string& body, query_options *options=NULL) Kuz_Throw_KuzzleException;
+      int count(const std::string& index, const std::string& collection, const std::string& roomId, query_options *options=nullptr);
+      std::string list(const std::string& index, const std::string& collection, query_options *options=nullptr);
+      void publish(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
+      std::string subscribe(const std::string& index, const std::string& collection, const std::string& body, NotificationListener* cb, room_options* options=nullptr);
+      void unsubscribe(const std::string& roomId, query_options *options=nullptr);
+      bool validate(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
 
       NotificationListener* getListener(const std::string& roomId);
   };
