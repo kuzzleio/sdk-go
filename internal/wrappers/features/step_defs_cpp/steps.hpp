@@ -13,7 +13,6 @@
 #include "index.hpp"
 #include "realtime.hpp"
 #include "kuzzle.hpp"
-#include "listeners.hpp"
 
 #include "kuzzle_utils.h"
 
