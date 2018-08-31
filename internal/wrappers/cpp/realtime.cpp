@@ -1,3 +1,4 @@
+#include "kuzzle.hpp"
 #include "realtime.hpp"
 
 namespace kuzzleio {

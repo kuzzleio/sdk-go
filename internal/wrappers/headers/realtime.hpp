@@ -10,6 +10,8 @@ typedef const std::function<void(const kuzzleio::notification_result*)> Notifica
 
 namespace kuzzleio {
 
+  class Kuzzle;
+
   class Realtime {
     realtime *_realtime;
     std::map<std::string, NotificationListener*> _listener_instances;
