@@ -1,5 +1,7 @@
 #include "steps.hpp"
 
+#include <iostream>
+
 // Anonymous namespace to handle a linker error
 // see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
 namespace {
@@ -8,10 +10,6 @@ namespace {
     REGEX_PARAM(std::string, collection_id);
 
     ScenarioScope<KuzzleCtx> ctx;
-
-    ctx->listener = [&ctx](const kuzzleio::notification_result* res) {
-      ctx->notif_result = const_cast<notification_result*>(res);
-    };
 
     try {
       ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", &ctx->listener);
@@ -50,10 +48,6 @@ namespace {
     REGEX_PARAM(std::string, filter);
 
     ScenarioScope<KuzzleCtx> ctx;
-
-    ctx->listener = [&ctx](const kuzzleio::notification_result* res) {
-      ctx->notif_result = const_cast<notification_result*>(res);
-    };
 
     try {
       ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, &ctx->listener);

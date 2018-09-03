@@ -26,8 +26,6 @@ using std::cout;
 using std::endl;
 using std::string;
 
-class CustomNotificationListener;
-
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
   options kuzzle_options;
@@ -55,7 +53,9 @@ struct KuzzleCtx {
 
   notification_result *notif_result = NULL;
 
-  std::function<void(const kuzzleio::notification_result*)> listener;
+  std::function<void(const kuzzleio::notification_result*)> listener = [this](const kuzzleio::notification_result* res) {
+    notif_result = const_cast<notification_result*>(res);
+  };
 };
 
 
