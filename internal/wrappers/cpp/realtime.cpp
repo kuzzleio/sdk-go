@@ -35,6 +35,7 @@ namespace kuzzleio {
       NotificationListener* listener = ((Realtime*)data)->getListener(res->room_id);
 
       if (listener) {
+        std::cout << listener << std::endl;
         (*listener)(res);
       }
     }
@@ -57,7 +58,7 @@ namespace kuzzleio {
   }
 
   std::string Realtime::subscribe(const std::string& index, const std::string& collection, const std::string& body, NotificationListener* cb, room_options* options) {
-    subscribe_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), &call_subscribe_cb, this, options);
+    subscribe_result *r = kuzzle_realtime_subscribe(_realtime, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()),  const_cast<char*>(body.c_str()), call_subscribe_cb, this, options);
     if (r->error != nullptr)
         throwExceptionFromStatus(r);
 

@@ -53,7 +53,7 @@ struct KuzzleCtx {
 
   notification_result *notif_result = NULL;
 
-  std::function<void(const kuzzleio::notification_result*)> listener = [this](const kuzzleio::notification_result* res) {
+  std::function<void(const kuzzleio::notification_result*)> listener = [&](const kuzzleio::notification_result* res) {
     notif_result = const_cast<notification_result*>(res);
   };
 };

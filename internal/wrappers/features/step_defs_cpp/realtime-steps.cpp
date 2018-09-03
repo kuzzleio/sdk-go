@@ -1,7 +1,5 @@
 #include "steps.hpp"
 
-#include <iostream>
-
 // Anonymous namespace to handle a linker error
 // see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
 namespace {
@@ -40,7 +38,6 @@ namespace {
     ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
     delete ctx->notif_result;
     ctx->notif_result = NULL;
-    ctx->listener = NULL;
   }
 
   GIVEN("^I subscribe to \'([^\"]*)\' with \'(.*)\' as filter$") {
