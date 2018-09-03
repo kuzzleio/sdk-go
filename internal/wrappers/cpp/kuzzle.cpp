@@ -120,6 +120,10 @@ namespace kuzzleio {
     return _listener_instances;
   }
 
+  void Kuzzle::emitEvent(Event& event, const std::string& body) {
+    kuzzle_emit_event(_kuzzle, event, const_cast<char*>(body.c_str()));
+  }
+
   KuzzleEventEmitter* Kuzzle::addListener(Event event, EventListener* listener) {
     kuzzle_add_listener(_kuzzle, event, &trigger_event_listener, this);
     _listener_instances[event] = listener;
