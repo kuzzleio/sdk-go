@@ -61,6 +61,7 @@ namespace kuzzleio {
       std::string getVolatile();
       Kuzzle* setVolatile(const std::string& volatiles);
       std::map<int, EventListener*> getListeners();
+      void emitEvent(Event& event, const std::string& body);
 
       virtual KuzzleEventEmitter* addListener(Event event, EventListener* listener);
       virtual KuzzleEventEmitter* removeListener(Event event, EventListener* listener);

@@ -18,11 +18,13 @@
 namespace kuzzleio {
   Auth::Auth(Kuzzle *kuzzle) {
       _auth = new auth();
+      _kuzzle = kuzzle;
       kuzzle_new_auth(_auth, kuzzle->_kuzzle);
   }
 
   Auth::Auth(Kuzzle *kuzzle, auth *auth) {
     _auth = auth;
+    _kuzzle = kuzzle;
     kuzzle_new_auth(_auth, kuzzle->_kuzzle);
   }
 
@@ -121,6 +123,10 @@ namespace kuzzleio {
 
   void Auth::logout() {
     kuzzle_logout(_auth);
+  }
+
+  void Auth::setJwt(const std::string& jwt) {
+    kuzzle_set_jwt(_kuzzle->_kuzzle, const_cast<char*>(jwt.c_str()));
   }
 
   std::string Auth::updateMyCredentials(const std::string& strategy, const std::string& credentials, query_options *options) Kuz_Throw_KuzzleException {

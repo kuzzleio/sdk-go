@@ -61,6 +61,7 @@
 %include "../java/exceptions.i"
 %include "std_string.i"
 %include "typemap.i"
+%include "json_wrap/kuzzle.i"
 %include "json_wrap/listeners.i"
 %include "json_wrap/document.i"
 %include "json_wrap/realtime.i"
@@ -92,7 +93,7 @@ typedef long long time_t;
   }
 %}
 
-%extend options {
+%extend kuzzleio::options {
     options() {
         options *o = kuzzle_new_options();
         return o;
