@@ -44,6 +44,7 @@ namespace kuzzleio {
       std::string login(const std::string& strategy, const std::string& credentials);
       void logout() noexcept;
       void setJwt(const std::string& jwt) noexcept;
+      void setJwt(const std::string& jwt) noexcept;
       std::string updateMyCredentials(const std::string& strategy, const std::string& credentials, query_options *options=nullptr);      
       kuzzle_user* updateSelf(const std::string& content, query_options* options=nullptr);      
       bool validateMyCredentials(const std::string& strategy, const std::string& credentials, query_options* options=nullptr);
