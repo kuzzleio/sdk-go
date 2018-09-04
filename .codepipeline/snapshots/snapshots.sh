@@ -4,83 +4,89 @@ set -e
 
 dirs=(java cpp c)
 
+function push_java() {
+  sdk_version=$1
 
-function snap_java() {
   cd internal/wrappers/build/java/build/libs
-  newname="kuzzlesdk-java.jar"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/$newname"
-  mv kuzzlesdk-1.0.0.jar $newname
 
-  if [[ $TRAVIS_PULL_REQUEST -ne false ]]; then
-    aws s3 cp $newname $s3_dest --expires "$(date -d '+2 weeks' --utc +'%Y-%m-%dT%H:%M:%SZ')"
-  else
-    aws s3 cp $newname $s3_dest
-  fi
+  sdk_name="kuzzlesdk-java.jar"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/java/$sdk_version/$sdk_name"
+
+  mv kuzzlesdk-1.0.0.jar $sdk_name
+
+  aws s3 cp $sdk_name $s3_dest
 
   cd -
 }
 
-function snap_c() {
+function push_c() {
+  sdk_version=$1
+
   cd internal/wrappers/build/c
-  newname="libkuzzlesdk-c.so"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/kuzzlesdk-c.tar.gz"
-  mv libkuzzlesdk.so $newname
+
+  sdk_name="libkuzzlesdk-c.so"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/c/$sdk_version/kuzzlesdk-c.tar.gz"
+
+  mv libkuzzlesdk.so $sdk_name
   mkdir lib include
   cp ../../headers/*.h include
-  cp $newname lib/
+  cp $sdk_name lib/
   tar cfz kuzzlesdk-c.tar.gz lib include
 
-  if [[ $TRAVIS_PULL_REQUEST -ne false ]]; then
-    aws s3 cp kuzzlesdk-c.tar.gz $s3_dest --expires "$(date -d '+2 weeks' --utc +'%Y-%m-%dT%H:%M:%SZ')"
-  else
-    aws s3 cp kuzzlesdk-c.tar.gz $s3_dest
-  fi
+  aws s3 cp kuzzlesdk-c.tar.gz $s3_dest
 
   cd -
 }
 
-function snap_cpp() {
+function push_cpp() {
+  sdk_version=$1
+
   cd internal/wrappers/build/cpp
-  newname="libkuzzlesdk.so"
-  s3_dest="s3://$AWS_S3_BUCKET/sdk/$dest_dir$pr_name/kuzzlesdk-cpp.tar.gz"
-  mv libcpp.so $newname
+
+  sdk_name="libkuzzlesdk.so"
+  s3_dest="s3://$AWS_S3_BUCKET/sdk/cpp/$sdk_version/kuzzlesdk-cpp.tar.gz"
+
+  mv libcpp.so $sdk_name
   mkdir lib include
   cp ../../headers/* include
-  cp $newname lib/
+  cp $sdk_name lib/
   tar cfz kuzzlesdk-cpp.tar.gz lib include
 
-  if [[ $TRAVIS_PULL_REQUEST -ne false ]]; then
-    aws s3 cp kuzzlesdk-cpp.tar.gz $s3_dest --expires "$(date -d '+2 weeks' --utc +'%Y-%m-%dT%H:%M:%SZ')"
-  else
-    aws s3 cp kuzzlesdk-cpp.tar.gz $s3_dest
-  fi
+  aws s3 cp kuzzlesdk-cpp.tar.gz $s3_dest
 
   cd -
 }
 
+function push_sdks() {
+  sdk_version=$1
 
-if [[ -z $TRAVIS_PULL_REQUEST ]]; then
-  export dest_dir="nightly"
-else
-  pr_num="$(echo $TRAVIS_PULL_REQUEST_BRANCH | cut -d- -f2)"
-  dir_name="KZL-$pr_num"
-  export pr_name="/$dir_name"
-  export dest_dir="snapshots"
-fi
-
-for dir in ${dirs[@]}; do
-  echo -e "\n----------------------------------------------------------------\n"
-  figlet "$dir SDK Snapshot"
-  echo -e "\n----------------------------------------------------------------\n"
+  for dir in ${dirs[@]}; do
+    echo -e "\n----------------------------------------------------------------\n"
+    figlet "$dir SDK Snapshot"
+    echo -e "\n----------------------------------------------------------------\n"
 
 
-  snap_$dir
+    push_$dir $sdk_version
 
-  if [[ $? -ne 0 ]]; then
-    exit 1
+    if [[ $? -ne 0 ]]; then
+      exit 1
+    fi
+  done
+
+  if [[ $? -eq 0 ]]; then
+    aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
   fi
-done
+}
 
-if [[ $? -eq 0 ]]; then
-  aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+if [[ $TRAVIS_BRANCH = "master" ]]; then
+  sdk_version="latest"
+  push_sdks $sdk_version
+elif [[ $TRAVIS_BRANCH = *"-stable" ]]; then
+  sdk_version=$TRAVIS_BRANCH
+  push_sdks $sdk_version
+elif [[ $TRAVIS_BRANCH = *"-dev" ]]; then
+  sdk_version=$TRAVIS_BRANCH
+  push_sdks $sdk_version
+else
+  echo "TRAVIS_BRANCH not set or not on a build branch (*-stable, *-dev or master)"
 fi
