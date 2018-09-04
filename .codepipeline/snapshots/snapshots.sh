@@ -78,6 +78,11 @@ function push_sdks() {
   fi
 }
 
+if [[ $TRAVIS_PULL_REQUEST = false ]]; then
+  echo "This script run only on push and not on PR"
+  exit 0
+fi
+
 if [[ $TRAVIS_BRANCH = "master" ]]; then
   sdk_version="latest"
   push_sdks $sdk_version
