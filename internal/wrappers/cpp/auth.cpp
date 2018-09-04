@@ -128,7 +128,7 @@ namespace kuzzleio {
   void Auth::setJwt(const std::string& jwt) {
     kuzzle_set_jwt(_kuzzle->_kuzzle, const_cast<char*>(jwt.c_str()));
   }
-  
+
   std::string Auth::updateMyCredentials(const std::string& strategy, const std::string& credentials, query_options *options) {
     string_result *r = kuzzle_update_my_credentials(_auth, const_cast<char*>(strategy.c_str()), const_cast<char*>(credentials.c_str()), options);
     if (r->error != nullptr)

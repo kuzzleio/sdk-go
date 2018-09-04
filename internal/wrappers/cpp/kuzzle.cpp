@@ -120,7 +120,7 @@ namespace kuzzleio {
     return _listener_instances;
   }
 
-  void Kuzzle::emitEvent(Event& event, const std::string& body) {
+  void Kuzzle::emitEvent(Event& event, const std::string& body) noexcept {
     kuzzle_emit_event(_kuzzle, event, const_cast<char*>(body.c_str()));
   }
 
