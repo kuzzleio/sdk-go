@@ -35,7 +35,6 @@ namespace kuzzleio {
       NotificationListener* listener = ((Realtime*)data)->getListener(res->room_id);
 
       if (listener) {
-        std::cout << listener << std::endl;
         (*listener)(res);
       }
     }

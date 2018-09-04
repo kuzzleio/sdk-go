@@ -52,11 +52,25 @@ struct KuzzleCtx {
   std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
-
-  std::function<void(const kuzzleio::notification_result*)> listener = [&](const kuzzleio::notification_result* res) {
-    notif_result = const_cast<notification_result*>(res);
-  };
 };
 
+class CustomNotificationListener {
+  private:
+    CustomNotificationListener() {
+      listener = [](const kuzzleio::notification_result* res) {
+        ScenarioScope<KuzzleCtx> ctx;
+        ctx->notif_result = const_cast<notification_result*>(res);
+      };
+    };
+    static CustomNotificationListener* _singleton;
+  public:
+    std::function<void(const kuzzleio::notification_result*)> listener;
+    static CustomNotificationListener* getSingleton() {
+      if (!_singleton) {
+        _singleton = new CustomNotificationListener();
+      }
+      return _singleton;
+    }
+};
 
 #endif
