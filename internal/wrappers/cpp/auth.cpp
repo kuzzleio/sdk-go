@@ -125,7 +125,7 @@ namespace kuzzleio {
     kuzzle_logout(_auth);
   }
 
-  void Auth::setJwt(const std::string& jwt) {
+  void Auth::setJwt(const std::string& jwt) noexcept {
     kuzzle_set_jwt(_kuzzle->_kuzzle, const_cast<char*>(jwt.c_str()));
   }
 
