@@ -4,7 +4,7 @@ set -e
 
 dirs=(java cpp c)
 
-function push_java() {
+function package_and_push_java() {
   sdk_version=$1
 
   cd internal/wrappers/build/java/build/libs
@@ -19,7 +19,7 @@ function push_java() {
   cd -
 }
 
-function push_c() {
+function package_and_push_c() {
   sdk_version=$1
 
   cd internal/wrappers/build/c
@@ -38,7 +38,7 @@ function push_c() {
   cd -
 }
 
-function push_cpp() {
+function package_and_push_cpp() {
   sdk_version=$1
 
   cd internal/wrappers/build/cpp
@@ -49,6 +49,7 @@ function push_cpp() {
   mv libcpp.so $sdk_name
   mkdir lib include
   cp ../../headers/* include
+  cp ../c/kuzzle.h include/kuzzle.h
   cp $sdk_name lib/
   tar cfz kuzzlesdk-cpp.tar.gz lib include
 
@@ -57,7 +58,7 @@ function push_cpp() {
   cd -
 }
 
-function push_sdks() {
+function package_and_push_sdks() {
   sdk_version=$1
 
   for dir in ${dirs[@]}; do
@@ -66,7 +67,7 @@ function push_sdks() {
     echo -e "\n----------------------------------------------------------------\n"
 
 
-    push_$dir $sdk_version
+    package_and_push_$dir $sdk_version
 
     if [[ $? -ne 0 ]]; then
       exit 1
@@ -85,13 +86,13 @@ fi
 
 if [[ $TRAVIS_BRANCH = "master" ]]; then
   sdk_version="latest"
-  push_sdks $sdk_version
+  package_and_push_sdks $sdk_version
 elif [[ $TRAVIS_BRANCH = *"-stable" ]]; then
   sdk_version=$TRAVIS_BRANCH
-  push_sdks $sdk_version
+  package_and_push_sdks $sdk_version
 elif [[ $TRAVIS_BRANCH = *"-dev" ]]; then
   sdk_version=$TRAVIS_BRANCH
-  push_sdks $sdk_version
+  package_and_push_sdks $sdk_version
 else
   echo "TRAVIS_BRANCH not set or not on a build branch (*-stable, *-dev or master)"
 fi
