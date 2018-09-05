@@ -21,9 +21,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-enum Mode {AUTO, MANUAL};
-//options passed to the Kuzzle() fct
+# ifdef __cplusplus
+namespace kuzzleio {
+# endif
 
+enum Mode {AUTO, MANUAL};
+
+//options passed to the Kuzzle() fct
 #define KUZZLE_OPTIONS_DEFAULT { \
     .queue_ttl = 120000, \
     .queue_max_size = 500, \
@@ -56,11 +60,6 @@ enum is_action_allowed {
     CONDITIONNAL,
     DENIED
 };
-
-
-# ifdef __cplusplus
-namespace kuzzleio {
-# endif
 
 //query object used by query()
 typedef struct {
