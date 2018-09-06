@@ -6,7 +6,7 @@
 #include <map>
 #include <functional>
 
-typedef const std::function<void(const kuzzleio::notification_result*)> NotificationListener;
+typedef std::function<void(const kuzzleio::notification_result*)> NotificationListener;
 
 namespace kuzzleio {
 

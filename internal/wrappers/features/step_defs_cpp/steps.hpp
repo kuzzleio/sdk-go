@@ -64,7 +64,7 @@ class CustomNotificationListener {
     };
     static CustomNotificationListener* _singleton;
   public:
-    std::function<void(const kuzzleio::notification_result*)> listener;
+    NotificationListener listener;
     static CustomNotificationListener* getSingleton() {
       if (!_singleton) {
         _singleton = new CustomNotificationListener();
