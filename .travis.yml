@@ -32,9 +32,9 @@ install:
 script:
   - ./test.sh
   - docker run --rm -it -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:android-x86 /build.sh
-  - docker run -a stdout -a stderr --net host --rm --privileged --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
+  - docker run -t -a stdout -a stderr --net host --rm --privileged --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
   - sh .codepipeline/start_kuzzle.sh
-  - docker run -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
+  - docker run -t -a stdout -a stderr --privileged --rm --network codepipeline_default --link kuzzle --name test-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
