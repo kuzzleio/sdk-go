@@ -110,7 +110,7 @@ namespace kuzzleio {
   }
 
   void trigger_event_listener(int event, char* res, void* data) {
-    EventListener* listener = ((Kuzzle*)data)->getListeners()[event];
+    EventListener* listener = static_cast<Kuzzle*>(data)->getListeners()[event];
     if (listener) {
       (*listener)(res);
     }
