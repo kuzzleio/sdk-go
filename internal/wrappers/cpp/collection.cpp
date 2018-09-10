@@ -31,23 +31,23 @@ namespace kuzzleio {
         delete(_collection);
     }
 
-    void Collection::create(const std::string& index, const std::string& collection, const std::string* body, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, PreconditionException) {
+    void Collection::create(const std::string& index, const std::string& collection, const std::string* body, query_options *options) {
         error_result *r = kuzzle_collection_create(
             _collection,
             const_cast<char*>(index.c_str()),
             const_cast<char*>(collection.c_str()),
-            body != NULL ? const_cast<char*>(body->c_str()) : NULL,
+            body != nullptr ? const_cast<char*>(body->c_str()) : nullptr,
             options);
 
-        if (r != NULL)
+        if (r != nullptr)
             throwExceptionFromStatus(r);
 
         kuzzle_free_error_result(r);
     }
 
-    bool Collection::exists(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
+    bool Collection::exists(const std::string& index, const std::string& collection, query_options *options) {
         bool_result *r = kuzzle_collection_exists(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         bool ret = r->result;
@@ -55,9 +55,9 @@ namespace kuzzleio {
         return ret;
     }
 
-    std::string Collection::list(const std::string& index, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    std::string Collection::list(const std::string& index, query_options *options) {
         string_result *r = kuzzle_collection_list(_collection, const_cast<char*>(index.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         std::string ret = r->result;
@@ -65,17 +65,17 @@ namespace kuzzleio {
         return ret;
     }
 
-    void Collection::truncate(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    void Collection::truncate(const std::string& index, const std::string& collection, query_options *options) {
         error_result *r = kuzzle_collection_truncate(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r != NULL)
+        if (r != nullptr)
             throwExceptionFromStatus(r);
 
         kuzzle_free_error_result(r);
     }
 
-    std::string Collection::getMapping(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    std::string Collection::getMapping(const std::string& index, const std::string& collection, query_options *options) {
         string_result *r = kuzzle_collection_get_mapping(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         std::string ret = r->result;
@@ -84,17 +84,17 @@ namespace kuzzleio {
         return ret;
     }
 
-    void Collection::updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    void Collection::updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options) {
         error_result *r = kuzzle_collection_update_mapping(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
-        if (r != NULL)
+        if (r != nullptr)
             throwExceptionFromStatus(r);
 
         kuzzle_free_error_result(r);
     }
 
-    std::string Collection::getSpecifications(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    std::string Collection::getSpecifications(const std::string& index, const std::string& collection, query_options *options) {
         string_result *r = kuzzle_collection_get_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         std::string ret = r->result;
@@ -103,9 +103,9 @@ namespace kuzzleio {
         return ret;
     }
 
-    search_result* Collection::searchSpecifications(query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
+    search_result* Collection::searchSpecifications(query_options *options) {
         search_result *r = kuzzle_collection_search_specifications(_collection, options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         search_result *ret = r;
@@ -114,9 +114,9 @@ namespace kuzzleio {
         return ret;
     }
 
-    std::string Collection::updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException) {
+    std::string Collection::updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options) {
         string_result *r = kuzzle_collection_update_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
         std::string ret = r->result;
         kuzzle_free_string_result(r);
@@ -124,9 +124,9 @@ namespace kuzzleio {
         return ret;
     }
 
-    bool Collection::validateSpecifications(const std::string& body, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
+    bool Collection::validateSpecifications(const std::string& body, query_options *options) {
         bool_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()), options);
-        if (r->error != NULL)
+        if (r->error != nullptr)
             throwExceptionFromStatus(r);
 
         bool ret = r->result;
@@ -135,9 +135,9 @@ namespace kuzzleio {
         return ret;
     }
 
-    void Collection::deleteSpecifications(const std::string& index, const std::string& collection, query_options *options) throw(KUZZLE_COMMON_EXCEPTIONS) {
+    void Collection::deleteSpecifications(const std::string& index, const std::string& collection, query_options *options) {
         error_result *r = kuzzle_collection_delete_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
-        if (r != NULL)
+        if (r != nullptr)
             throwExceptionFromStatus(r);
 
         kuzzle_free_error_result(r);

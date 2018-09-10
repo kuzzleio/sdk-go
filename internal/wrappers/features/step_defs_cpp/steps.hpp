@@ -6,6 +6,7 @@
 #include <cucumber-cpp/autodetect.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <functional>
 
 #include "auth.hpp"
 #include "collection.hpp"
@@ -13,7 +14,6 @@
 #include "index.hpp"
 #include "realtime.hpp"
 #include "kuzzle.hpp"
-#include "listeners.hpp"
 
 #include "kuzzle_utils.h"
 
@@ -25,8 +25,6 @@ using namespace kuzzleio;
 using std::cout;
 using std::endl;
 using std::string;
-
-class CustomNotificationListener;
 
 struct KuzzleCtx {
   Kuzzle* kuzzle = NULL;
@@ -54,15 +52,24 @@ struct KuzzleCtx {
   std::vector<string> string_array;
 
   notification_result *notif_result = NULL;
-  CustomNotificationListener *listener;
 };
 
-class CustomNotificationListener : public NotificationListener {
+class CustomNotificationListener {
+  private:
+    CustomNotificationListener() {
+      listener = [](const kuzzleio::notification_result* res) {
+        ScenarioScope<KuzzleCtx> ctx;
+        ctx->notif_result = const_cast<notification_result*>(res);
+      };
+    };
+    static CustomNotificationListener* _singleton;
   public:
-    virtual void onMessage(notification_result *res) {
-      ScenarioScope<KuzzleCtx> ctx;
-
-      ctx->notif_result = res;
+    NotificationListener listener;
+    static CustomNotificationListener* getSingleton() {
+      if (!_singleton) {
+        _singleton = new CustomNotificationListener();
+      }
+      return _singleton;
     }
 };
 

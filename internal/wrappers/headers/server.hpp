@@ -27,13 +27,13 @@ namespace kuzzleio {
       Server(Kuzzle* kuzzle);
       Server(Kuzzle *kuzzle, server *server);
       virtual ~Server();
-      bool adminExists(query_options *options) Kuz_Throw_KuzzleException;
-      std::string getAllStats(query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string getStats(time_t start, time_t end, query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string getLastStats(query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string getConfig(query_options* options=NULL) Kuz_Throw_KuzzleException;
-      std::string info(query_options* options=NULL) Kuz_Throw_KuzzleException;
-      long long now(query_options* options=NULL) Kuz_Throw_KuzzleException;
+      bool adminExists(query_options *options);
+      std::string getAllStats(query_options* options=nullptr);
+      std::string getStats(time_t start, time_t end, query_options* options=nullptr);
+      std::string getLastStats(query_options* options=nullptr);
+      std::string getConfig(query_options* options=nullptr);
+      std::string info(query_options* options=nullptr);
+      long long now(query_options* options=nullptr);
   };
 }
 

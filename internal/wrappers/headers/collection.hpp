@@ -30,17 +30,17 @@ namespace kuzzleio {
             Collection(Kuzzle* kuzzle);
             Collection(Kuzzle* kuzzle, collection *collection);
             virtual ~Collection();
-            void create(const std::string& index, const std::string& collection, const std::string* body=NULL, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, PreconditionException);
-            bool exists(const std::string& index, const std::string& collection, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-            std::string list(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            void truncate(const std::string& index, const std::string& collection, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            std::string getMapping(const std::string& index, const std::string& collection, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            void updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options=NULL)  throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            std::string getSpecifications(const std::string& index, const std::string& collection, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            search_result* searchSpecifications(query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-            std::string updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-            bool validateSpecifications(const std::string& body, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-            void deleteSpecifications(const std::string& index, const std::string& collection, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
+            void create(const std::string& index, const std::string& collection, const std::string* body=nullptr, query_options *options=nullptr);
+            bool exists(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            std::string list(const std::string& index, query_options *options=nullptr);
+            void truncate(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            std::string getMapping(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            void updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
+            std::string getSpecifications(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            search_result* searchSpecifications(query_options *options=nullptr);
+            std::string updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
+            bool validateSpecifications(const std::string& body, query_options *options=nullptr);
+            void deleteSpecifications(const std::string& index, const std::string& collection, query_options *options=nullptr);
     };
 }
 

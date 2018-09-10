@@ -14,7 +14,6 @@
 
 #include <exception>
 #include <stdexcept>
-#include "listeners.hpp"
 #include "kuzzle.hpp"
 #include "auth.hpp"
 #include "index.hpp"
@@ -57,68 +56,71 @@ namespace kuzzleio {
     delete(this->realtime);
   }
 
-  char* Kuzzle::connect() {
+  char* Kuzzle::connect() noexcept {
     return kuzzle_connect(_kuzzle);
   }
 
-  void Kuzzle::disconnect() {
+  void Kuzzle::disconnect() noexcept {
     kuzzle_disconnect(_kuzzle);
   }
 
-  kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) throw(KUZZLE_ALL_EXCEPTIONS) {
+  kuzzle_response* Kuzzle::query(kuzzle_request* query, query_options* options) {
     kuzzle_response *r = kuzzle_query(_kuzzle, query, options);
-    if (r->error != NULL)
+    if (r->error != nullptr)
         throwExceptionFromStatus(r);
     return r;
   }
 
-  Kuzzle* Kuzzle::playQueue() {
+  Kuzzle* Kuzzle::playQueue() noexcept {
     kuzzle_play_queue(_kuzzle);
     return this;
   }
 
-  Kuzzle* Kuzzle::setAutoReplay(bool autoReplay) {
+  Kuzzle* Kuzzle::setAutoReplay(bool autoReplay) noexcept {
     kuzzle_set_auto_replay(_kuzzle, autoReplay);
     return this;
   }
 
-  Kuzzle* Kuzzle::startQueuing() {
+  Kuzzle* Kuzzle::startQueuing() noexcept {
     kuzzle_start_queuing(_kuzzle);
     return this;
   }
 
-  Kuzzle* Kuzzle::stopQueuing() {
+  Kuzzle* Kuzzle::stopQueuing() noexcept {
     kuzzle_stop_queuing(_kuzzle);
     return this;
   }
 
-  Kuzzle* Kuzzle::flushQueue() {
+  Kuzzle* Kuzzle::flushQueue() noexcept {
     kuzzle_flush_queue(_kuzzle);
     return this;
   }
 
-  Kuzzle* Kuzzle::setVolatile(const std::string& volatiles) {
+  Kuzzle* Kuzzle::setVolatile(const std::string& volatiles) noexcept {
     kuzzle_set_volatile(_kuzzle, const_cast<char*>(volatiles.c_str()));
     return this;
   }
 
-  std::string Kuzzle::getVolatile() {
+  std::string Kuzzle::getVolatile() noexcept {
     return std::string(kuzzle_get_volatile(_kuzzle));
   }
 
-  std::string Kuzzle::getJwt() {
+  std::string Kuzzle::getJwt() noexcept {
     return std::string(kuzzle_get_jwt(_kuzzle));
   }
 
   void trigger_event_listener(int event, char* res, void* data) {
-    ((Kuzzle*)data)->getListeners()[event]->trigger(res);
+    EventListener* listener = static_cast<Kuzzle*>(data)->getListeners()[event];
+    if (listener) {
+      (*listener)(res);
+    }
   }
 
-  std::map<int, EventListener*> Kuzzle::getListeners() {
+  std::map<int, EventListener*> Kuzzle::getListeners() noexcept {
     return _listener_instances;
   }
 
-  void Kuzzle::emitEvent(Event& event, const std::string& body) {
+  void Kuzzle::emitEvent(Event& event, const std::string& body) noexcept {
     kuzzle_emit_event(_kuzzle, event, const_cast<char*>(body.c_str()));
   }
 
@@ -131,7 +133,7 @@ namespace kuzzleio {
 
   KuzzleEventEmitter* Kuzzle::removeListener(Event event, EventListener* listener) {
     kuzzle_remove_listener(_kuzzle, event, (void*)&trigger_event_listener);
-    _listener_instances[event] = NULL;
+    _listener_instances[event] = nullptr;
 
     return this;
   }

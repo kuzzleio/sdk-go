@@ -32,7 +32,7 @@ public class UserManagementdefs {
 
     @Given("^the user has 'local' credentials with name \'([^\"]*)\' and password \'([^\"]*)\'$")
     public void the_user_has_local_credentials_with_name_and_password(String name, String password) throws Exception {
-        KuzzleRequest request = new KuzzleRequest();
+      KuzzleRequest request = new KuzzleRequest();
         String json = "{\n" +
                 "  \"content\": {\n" +
                 "    \"profileIds\": [\"default\"]" +
