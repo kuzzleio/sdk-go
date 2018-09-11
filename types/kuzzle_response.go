@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package types
 
 import (
@@ -6,12 +20,14 @@ import (
 )
 
 type (
+	// KuzzleError is a custom Error type for Kuzzle
 	KuzzleError struct {
 		Message string `json:"message"`
 		Stack   string `json:"stack"`
 		Status  int    `json:"status"`
 	}
 
+	// Meta contains metadata
 	Meta struct {
 		Author    string `json:"author"`
 		CreatedAt int    `json:"createdAt"`
@@ -21,6 +37,12 @@ type (
 		DeletedAt int    `json:"deletedAt"`
 	}
 
+	SubscribeResult struct {
+		Room    string `json:"roomId"`
+		Channel string `json:"channel"`
+	}
+
+	// NotificationResult contains
 	NotificationResult struct {
 		Id      string          `json:"_id"`
 		Meta    *Meta           `json:"_meta"`
@@ -28,10 +50,11 @@ type (
 		Count   int             `json:"count"`
 	}
 
+	// KuzzleNotification is a notification from Kuzzle
 	KuzzleNotification struct {
 		RequestId  string              `json:"requestId"`
 		Result     *NotificationResult `json:"result"`
-		Volatile   VolatileData        `json:"volatile"`
+		Volatile   json.RawMessage     `json:"volatile"`
 		Index      string              `json:"index"`
 		Collection string              `json:"collection"`
 		Controller string              `json:"controller"`
@@ -42,11 +65,13 @@ type (
 		User       string              `json:"user"`
 		Type       string              `json:"type"`
 		RoomId     string              `json:"room"`
+		Channel    string              `json:"channel"`
 		Timestamp  int                 `json:"timestamp"`
 		Status     int                 `json:"status"`
-		Error      *KuzzleError        `json:"error"`
+		Error      KuzzleError         `json:"error"`
 	}
 
+	// KuzzleResponse is a response to a KuzzleRequest
 	KuzzleResponse struct {
 		RequestId  string          `json:"requestId"`
 		Result     json.RawMessage `json:"result"`
@@ -58,7 +83,7 @@ type (
 		RoomId     string          `json:"room"`
 		Channel    string          `json:"channel"`
 		Status     int             `json:"status"`
-		Error      *KuzzleError    `json:"error"`
+		Error      KuzzleError     `json:"error"`
 	}
 
 	SpecificationField struct {
@@ -181,19 +206,11 @@ type (
 	}
 
 	Statistics struct {
-		CompletedRequests map[string]int `json:"completedRequests"`
-		Connections       map[string]int `json:"connections"`
-		FailedRequests    map[string]int `json:"failedRequests"`
-		OngoingRequests   map[string]int `json:"ongoingRequests"`
-		Timestamp         int            `json:"timestamp"`
-	}
-
-	Rights struct {
-		Controller string `json:"controller"`
-		Action     string `json:"action"`
-		Index      string `json:"index"`
-		Collection string `json:"collection"`
-		Value      string `json:"value"`
+		CompletedRequests json.RawMessage `json:"completedRequests"`
+		Connections       json.RawMessage `json:"connections"`
+		FailedRequests    json.RawMessage `json:"failedRequests"`
+		OngoingRequests   json.RawMessage `json:"ongoingRequests"`
+		Timestamp         int             `json:"timestamp"`
 	}
 
 	LoginAttempt struct {
@@ -223,7 +240,7 @@ type (
 	CredentialStrategyFields []string
 	CredentialFields         map[string]CredentialStrategyFields
 
-	Credentials map[string]interface{}
+	Credentials = json.RawMessage
 
 	UserRights struct {
 		Controller string `json:"controller"`
@@ -246,7 +263,7 @@ type (
 	}
 )
 
-func (e *KuzzleError) Error() string {
+func (e KuzzleError) Error() string {
 	msg := e.Message
 
 	if len(e.Stack) > 0 {
@@ -260,8 +277,9 @@ func (e *KuzzleError) Error() string {
 	return msg
 }
 
-func NewError(msg string, status ...int) *KuzzleError {
-	err := &KuzzleError{Message: msg}
+// NewError instanciates a new KuzzleError
+func NewError(msg string, status ...int) KuzzleError {
+	err := KuzzleError{Message: msg}
 
 	if len(status) == 1 {
 		err.Status = status[0]

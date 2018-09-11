@@ -1,5 +1,20 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package types
 
+// QueryOptions provides a public access to queryOptions private struct
 type QueryOptions interface {
 	Queuable() bool
 	SetQueuable(bool) *queryOptions
@@ -63,6 +78,8 @@ type QueryOptions interface {
 	SetWithdist(bool) *queryOptions
 	Withcoord() bool
 	SetWithcoord(bool) *queryOptions
+	Reset() bool
+	ID() string
 }
 
 type queryOptions struct {
@@ -97,6 +114,8 @@ type queryOptions struct {
 	unit            string
 	withcoord       bool
 	withdist        bool
+	reset           bool
+	_id             string
 }
 
 func (qo queryOptions) Queuable() bool {
@@ -378,6 +397,15 @@ func (qo *queryOptions) SetWithdist(withdist bool) *queryOptions {
 	return qo
 }
 
+func (qo *queryOptions) Reset() bool {
+	return qo.reset
+}
+
+func (qo *queryOptions) ID() string {
+	return qo._id
+}
+
+// NewQueryOptions instanciates a new QueryOptions with default values
 func NewQueryOptions() *queryOptions {
 	return &queryOptions{
 		size:    10,

@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
@@ -19,7 +33,6 @@ func kuzzle_new_options() *C.options {
 
 	copts.queue_ttl = C.uint(opts.QueueTTL())
 	copts.queue_max_size = C.ulong(opts.QueueMaxSize())
-	copts.offline_mode = C.uchar(opts.OfflineMode())
 	copts.auto_queue = C.bool(opts.AutoQueue())
 	copts.auto_reconnect = C.bool(opts.AutoReconnect())
 	copts.auto_replay = C.bool(opts.AutoReplay())
@@ -27,20 +40,15 @@ func kuzzle_new_options() *C.options {
 	copts.reconnection_delay = C.ulong(opts.ReconnectionDelay())
 	copts.replay_interval = C.ulong(opts.ReplayInterval())
 
-	if opts.Connect() == 1 {
-		copts.connect = C.MANUAL
+	if opts.OfflineMode() == 1 {
+		copts.offline_mode = C.MANUAL
 	} else {
-		copts.connect = C.AUTO
+		copts.offline_mode = C.AUTO
 	}
 
 	refresh := opts.Refresh()
 	if len(refresh) > 0 {
 		copts.refresh = C.CString(refresh)
-	}
-
-	defaultIndex := opts.DefaultIndex()
-	if len(defaultIndex) > 0 {
-		copts.default_index = C.CString(defaultIndex)
 	}
 
 	return copts
@@ -63,9 +71,9 @@ func SetQueryOptions(options *C.query_options) (opts types.QueryOptions) {
 	opts.SetRefresh(C.GoString(options.refresh))
 	opts.SetIfExist(C.GoString(options.if_exist))
 	opts.SetRetryOnConflict(int(options.retry_on_conflict))
-	volatiles := JsonCConvert(options.volatiles)
+	volatiles := types.VolatileData(C.GoString(options.volatiles))
 	if volatiles != nil {
-		opts.SetVolatile(volatiles.(map[string]interface{}))
+		opts.SetVolatile(volatiles)
 	}
 
 	return
@@ -88,9 +96,7 @@ func SetOptions(options *C.options) (opts types.Options) {
 	opts.SetAutoResubscribe(bool(options.auto_resubscribe))
 	opts.SetReconnectionDelay(time.Duration(int(options.reconnection_delay)))
 	opts.SetReplayInterval(time.Duration(int(options.replay_interval)))
-	opts.SetConnect(int(options.connect))
 	opts.SetRefresh(C.GoString(options.refresh))
-	opts.SetDefaultIndex(C.GoString(options.default_index))
 
 	return
 }
@@ -106,7 +112,7 @@ func SetRoomOptions(options *C.room_options) (opts types.RoomOptions) {
 		opts.SetSubscribeToSelf(bool(options.subscribe_to_self))
 
 		if options.volatiles != nil {
-			opts.SetVolatile(JsonCConvert(options.volatiles).(map[string]interface{}))
+			opts.SetVolatile(types.VolatileData(C.GoString(options.volatiles)))
 		}
 	}
 	return

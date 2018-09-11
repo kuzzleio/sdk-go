@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package websocket
 
 import (
@@ -15,8 +29,18 @@ import (
 )
 
 const (
-	MAX_EMIT_TIMEOUT = 10
+	MAX_EMIT_TIMEOUT  = 10
+	MAX_CONNECT_RETRY = 10
 )
+
+type subscription struct {
+	roomID              string
+	channel             string
+	filters             json.RawMessage
+	notificationChannel chan<- types.KuzzleNotification
+	onReconnectChannel  chan<- interface{}
+	subscribeToSelf     bool
+}
 
 type webSocket struct {
 	ws      *websocket.Conn
@@ -26,13 +50,14 @@ type webSocket struct {
 
 	listenChan         chan []byte
 	channelsResult     sync.Map
-	subscriptions      *types.RoomList
+	subscriptions      sync.Map
 	lastUrl            string
 	wasConnected       bool
 	eventListeners     map[int]map[chan<- interface{}]bool
 	eventListenersOnce map[int]map[chan<- interface{}]bool
 
 	retrying              bool
+	nbRetried             int
 	stopRetryingToConnect bool
 	requestHistory        map[string]time.Time
 
@@ -54,6 +79,7 @@ type webSocket struct {
 
 var defaultQueueFilter connection.QueueFilter
 
+// NewWebSocket instanciates a new webSocket connection object
 func NewWebSocket(host string, options types.Options) connection.Connection {
 	defaultQueueFilter = func([]byte) bool {
 		return true
@@ -73,7 +99,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		offlineQueue:          []*types.QueryObject{},
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
-		subscriptions:         &types.RoomList{},
+		subscriptions:         sync.Map{},
 		eventListeners:        make(map[int]map[chan<- interface{}]bool),
 		eventListenersOnce:    make(map[int]map[chan<- interface{}]bool),
 		requestHistory:        make(map[string]time.Time),
@@ -85,6 +111,7 @@ func NewWebSocket(host string, options types.Options) connection.Connection {
 		replayInterval:        opts.ReplayInterval(),
 		state:                 state.Ready,
 		retrying:              false,
+		nbRetried:             0,
 		stopRetryingToConnect: false,
 		queueFilter:           defaultQueueFilter,
 		port:                  opts.Port(),
@@ -137,10 +164,11 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.state = state.Offline
 		ws.EmitEvent(event.NetworkError, err)
 
-		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect {
+		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect && ws.nbRetried < MAX_CONNECT_RETRY {
 			ws.retrying = true
 			time.Sleep(ws.reconnectionDelay)
 			ws.retrying = false
+			ws.nbRetried++
 			ws.Connect()
 		} else {
 			ws.EmitEvent(event.Disconnected, nil)
@@ -161,16 +189,18 @@ func (ws *webSocket) Connect() (bool, error) {
 		ws.EmitEvent(event.Connected, nil)
 	}
 
-	resChan := make(chan []byte)
+	ws.listenChan = make(chan []byte)
+
+	go ws.listen()
 
 	go func() {
 		for {
 			_, message, err := ws.ws.ReadMessage()
-
+			ws.listenChan <- message
 			// TODO: either send a Disconnected event on a proper disconnection,
 			// or a NetworkError one if the socket has been unexpectedly closed
 			if err != nil {
-				close(resChan)
+				close(ws.listenChan)
 				ws.ws.Close()
 				ws.state = state.Offline
 				if ws.autoQueue {
@@ -179,15 +209,10 @@ func (ws *webSocket) Connect() (bool, error) {
 				ws.EmitEvent(event.Disconnected, nil)
 				return
 			}
-			go func() {
-				resChan <- message
-			}()
 		}
 	}()
 
-	ws.listenChan = resChan
-	go ws.listen()
-	ws.ReplayQueue()
+	ws.PlayQueue()
 
 	return ws.wasConnected, err
 }
@@ -263,66 +288,49 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterRoom(room types.IRoom) {
-	rooms, found := ws.subscriptions.Load(room.Channel())
+func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
-		rooms = map[string]types.IRoom{}
-		ws.subscriptions.Store(room.Channel(), rooms)
+		subs = map[string]subscription{}
 	}
 
-	rooms.(map[string]types.IRoom)[room.Id()] = room
-}
-
-func (ws *webSocket) UnregisterRoom(roomId string) {
-	_, ok := ws.subscriptions.Load(roomId)
-	if ok {
-		ws.subscriptions.Delete(roomId)
+	subs.(map[string]subscription)[roomID] = subscription{
+		channel:             channel,
+		roomID:              roomID,
+		notificationChannel: notifChan,
+		onReconnectChannel:  onReconnectChannel,
+		filters:             filters,
+		subscribeToSelf:     subscribeToSelf,
 	}
+
+	ws.subscriptions.Store(channel, subs)
 }
 
-/*
-func (ws *webSocket) listen() {
-	for {
-		var message types.KuzzleResponse
-		var r collection.Room
-
-		msg := <-ws.listenChan
-
-		json.Unmarshal(msg, &message)
-		m := message
-
-		json.Unmarshal(m.Result, &r)
-
-		s, ok := ws.subscriptions.Load(m.RoomId)
-		if m.RoomId != "" && ok {
-			var notification types.KuzzleNotification
-
-			json.Unmarshal(msg, &notification)
-
-			s.(*sync.Map).Range(func(key, value interface{}) bool {
-				channel := value.(types.IRoom).RealtimeChannel()
-				if channel != nil {
-					value.(types.IRoom).RealtimeChannel() <- &notification
-				}
-				return true
-			})
-		}
-
-		c, ok := ws.channelsResult.Load(m.RequestId)
-		if ok {
-			if message.Error != nil && message.Error.Message == "Token expired" {
-				ws.EmitEvent(event.JwtExpired, nil)
+func (ws *webSocket) UnregisterSub(roomID string) {
+	ws.subscriptions.Range(func(k, v interface{}) bool {
+		for k, sub := range v.(map[string]subscription) {
+			if sub.roomID == roomID {
+				close(sub.onReconnectChannel)
+				close(sub.notificationChannel)
+				delete(v.(map[string]subscription), k)
 			}
-
-			// If this is a response to a query we simply broadcast the response to the corresponding channel
-			c.(chan<- *types.KuzzleResponse) <- &message
-			close(c.(chan<- *types.KuzzleResponse))
-			ws.channelsResult.Delete(m.RequestId)
 		}
-	}
+		return true
+	})
 }
-*/
+
+func (ws *webSocket) CancelSubs() {
+	ws.subscriptions.Range(func(roomId, s interface{}) bool {
+		for _, sub := range s.(map[string]subscription) {
+			if sub.notificationChannel != nil {
+				close(sub.onReconnectChannel)
+			}
+			ws.subscriptions.Delete(roomId)
+		}
+		return true
+	})
+}
 
 func (ws *webSocket) listen() {
 	for {
@@ -337,19 +345,22 @@ func (ws *webSocket) listen() {
 
 			json.Unmarshal(msg, &notification)
 
-			for _, room := range s.(map[string]types.IRoom) {
-				channel := room.RealtimeChannel()
-
-				if channel != nil && (!fromSelf || room.SubscribeToSelf()) {
-					channel <- notification
+			for _, sub := range s.(map[string]subscription) {
+				if sub.notificationChannel != nil && (!fromSelf || sub.subscribeToSelf) {
+					sub.notificationChannel <- notification
 				}
 			}
+
 		} else if c, found := ws.channelsResult.Load(message.RequestId); found {
-			if message.Error != nil && message.Error.Message == "Token expired" {
+			if message.Error.Error() != "" && message.Error.Message == "Token expired" {
 				ws.EmitEvent(event.TokenExpired, nil)
 			}
 
 			// If this is a response to a query we simply broadcast the response to the corresponding channel
+			c.(chan<- *types.KuzzleResponse) <- &message
+			close(c.(chan<- *types.KuzzleResponse))
+			ws.channelsResult.Delete(message.RequestId)
+		} else if c, found := ws.channelsResult.Load(message.RoomId); found {
 			c.(chan<- *types.KuzzleResponse) <- &message
 			close(c.(chan<- *types.KuzzleResponse))
 			ws.channelsResult.Delete(message.RequestId)
@@ -427,8 +438,8 @@ func (ws *webSocket) ClearQueue() {
 	ws.offlineQueue = nil
 }
 
-// ReplayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (ws *webSocket) ReplayQueue() {
+// PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
+func (ws *webSocket) PlayQueue() {
 	if ws.state != state.Offline && !ws.autoReplay {
 		ws.cleanQueue()
 		ws.dequeue()
@@ -532,10 +543,6 @@ func (ws *webSocket) State() int {
 
 func (ws *webSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
-}
-
-func (ws *webSocket) Rooms() *types.RoomList {
-	return ws.subscriptions
 }
 
 func (ws *webSocket) AutoQueue() bool {

@@ -1,7 +1,22 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package kuzzle
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
@@ -25,7 +40,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	type body struct{}
 
 	if query.Body == nil {
-		query.Body = make(map[string]interface{})
+		query.Body = json.RawMessage("{}")
 	}
 
 	if options == nil {
@@ -34,14 +49,30 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 
 	if options.Volatile() != nil {
 		query.Volatile = options.Volatile()
-		query.Volatile["sdkVersion"] = version
+
+		mapped := make(map[string]interface{})
+		json.Unmarshal(query.Volatile, &mapped)
+
+		mapped["sdkVersion"] = version
+
+		query.Volatile, _ = json.Marshal(mapped)
+
 	} else {
-		query.Volatile = types.VolatileData{"sdkVersion": version}
+		vol := fmt.Sprintf(`{"sdkVersion": "%s"}`, version)
+		query.Volatile = types.VolatileData(vol)
 	}
 
 	jsonRequest, _ := json.Marshal(query)
+
 	out := map[string]interface{}{}
-	json.Unmarshal(jsonRequest, &out)
+	err := json.Unmarshal(jsonRequest, &out)
+
+	if err != nil {
+		if responseChannel != nil {
+			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}
+		}
+		return
+	}
 
 	refresh := options.Refresh()
 	if refresh != "" {
@@ -66,6 +97,11 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		out["retryOnConflict"] = retryOnConflict
 	}
 
+	jwt := k.Jwt()
+	if jwt != "" {
+		out["jwt"] = jwt
+	}
+
 	finalRequest, err := json.Marshal(out)
 
 	if err != nil {
@@ -76,6 +112,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 	}
 
 	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
+
 	if err != nil {
 		if responseChannel != nil {
 			responseChannel <- &types.KuzzleResponse{Error: types.NewError(err.Error())}

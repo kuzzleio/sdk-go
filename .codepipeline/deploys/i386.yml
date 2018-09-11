@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker pull kuzzleio/sdk-cross:i386
+  build:
+    commands:
+      - docker run -a stdout -a stderr --privileged --rm --net host --name deploy-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:i386 /deploy.sh

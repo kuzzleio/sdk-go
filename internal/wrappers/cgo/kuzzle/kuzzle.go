@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
@@ -10,38 +24,36 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"sync"
 	"time"
 	"unsafe"
 
 	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/types"
 )
 
 // map which stores instances to keep references in case the gc passes
-var instances map[interface{}]bool
+var instances sync.Map
 
 // map which stores channel and function's pointers adresses for listeners
 var listeners_list map[uintptr]chan<- interface{}
 
 // register new instance to the instances map
-func registerKuzzle(instance interface{}) {
-	instances[instance] = true
+func registerKuzzle(instance interface{}, ptr unsafe.Pointer) {
+	instances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
 //export unregisterKuzzle
 func unregisterKuzzle(k *C.kuzzle) {
-	delete(instances, (*kuzzle.Kuzzle)(k.instance))
+	instances.Delete(k)
 }
 
 //export kuzzle_new_kuzzle
 func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) {
 	var c connection.Connection
-
-	if instances == nil {
-		instances = make(map[interface{}]bool)
-	}
 
 	if listeners_list == nil {
 		listeners_list = make(map[uintptr]chan<- interface{})
@@ -59,10 +71,75 @@ func kuzzle_new_kuzzle(k *C.kuzzle, host, protocol *C.char, options *C.options) 
 		panic(err.Error())
 	}
 
-	registerKuzzle(inst)
-
-	k.instance = unsafe.Pointer(inst)
+	ptr := unsafe.Pointer(inst)
+	k.instance = ptr
 	k.loader = nil
+
+	registerKuzzle(inst, ptr)
+}
+
+//export kuzzle_get_document_controller
+func kuzzle_get_document_controller(k *C.kuzzle) *C.document {
+	d := (*C.document)(C.calloc(1, C.sizeof_document))
+
+	d.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Document))
+	d.k = k
+	return d
+}
+
+//export kuzzle_get_auth_controller
+func kuzzle_get_auth_controller(k *C.kuzzle) *C.auth {
+	a := (*C.auth)(C.calloc(1, C.sizeof_auth))
+
+	a.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Auth))
+	a.k = k
+	return a
+}
+
+//export kuzzle_get_index_controller
+func kuzzle_get_index_controller(k *C.kuzzle) *C.kuzzle_index {
+	i := (*C.kuzzle_index)(C.calloc(1, C.sizeof_kuzzle_index))
+
+	i.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Index))
+	i.k = k
+	return i
+}
+
+//export kuzzle_get_jwt
+func kuzzle_get_jwt(k *C.kuzzle) *C.char {
+	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
+}
+
+//export kuzzle_set_jwt
+func kuzzle_set_jwt(k *C.kuzzle, jwt *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).SetJwt(C.GoString(jwt))
+}
+
+//export kuzzle_get_server_controller
+func kuzzle_get_server_controller(k *C.kuzzle) *C.server {
+	s := (*C.server)(C.calloc(1, C.sizeof_server))
+
+	s.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Server))
+	s.k = k
+	return s
+}
+
+//export kuzzle_get_collection_controller
+func kuzzle_get_collection_controller(k *C.kuzzle) *C.collection {
+	c := (*C.collection)(C.calloc(1, C.sizeof_collection))
+
+	c.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Collection))
+	c.k = k
+	return c
+}
+
+//export kuzzle_get_realtime_controller
+func kuzzle_get_realtime_controller(k *C.kuzzle) *C.realtime {
+	rt := (*C.realtime)(C.calloc(1, C.sizeof_realtime))
+
+	rt.instance = unsafe.Pointer(unsafe.Pointer((*kuzzle.Kuzzle)(k.instance).Realtime))
+	rt.k = k
+	return rt
 }
 
 // Allocates memory
@@ -81,19 +158,9 @@ func kuzzle_disconnect(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).Disconnect()
 }
 
-//export kuzzle_get_default_index
-func kuzzle_get_default_index(k *C.kuzzle) *C.char {
-	return C.CString((*kuzzle.Kuzzle)(k.instance).DefaultIndex())
-}
-
-//export kuzzle_set_default_index
-func kuzzle_set_default_index(k *C.kuzzle, index *C.char) C.int {
-	err := (*kuzzle.Kuzzle)(k.instance).SetDefaultIndex(C.GoString(index))
-	if err != nil {
-		return C.int(C.EINVAL)
-	}
-
-	return 0
+//export kuzzle_emit_event
+func kuzzle_emit_event(k *C.kuzzle, event C.int, body *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).EmitEvent(int(event), C.GoString(body))
 }
 
 //export kuzzle_get_offline_queue
@@ -104,7 +171,7 @@ func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 	result.queries_length = C.size_t(len(offlineQueue))
 
 	result.queries = (**C.query_object)(C.calloc(result.queries_length, C.sizeof_query_object_ptr))
-	queryObjects := (*[1<<30 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.queries_length:result.queries_length]
+	queryObjects := (*[1<<28 - 1]*C.query_object)(unsafe.Pointer(result.queries))[:result.queries_length:result.queries_length]
 
 	idx := 0
 	for _, queryObject := range offlineQueue {
@@ -114,10 +181,10 @@ func kuzzle_get_offline_queue(k *C.kuzzle) *C.offline_queue {
 		mquery, _ := json.Marshal(queryObject.Query)
 
 		buffer := C.CString(string(mquery))
-		queryObjects[idx].query = C.json_tokener_parse(buffer)
+		queryObjects[idx].query = C.CString(C.GoString(buffer))
 		C.free(unsafe.Pointer(buffer))
 
-		idx += 1
+		idx++
 	}
 
 	return result
@@ -128,9 +195,9 @@ func kuzzle_flush_queue(k *C.kuzzle) {
 	(*kuzzle.Kuzzle)(k.instance).FlushQueue()
 }
 
-//export kuzzle_replay_queue
-func kuzzle_replay_queue(k *C.kuzzle) {
-	(*kuzzle.Kuzzle)(k.instance).ReplayQueue()
+//export kuzzle_play_queue
+func kuzzle_play_queue(k *C.kuzzle) {
+	(*kuzzle.Kuzzle)(k.instance).PlayQueue()
 }
 
 //export kuzzle_start_queuing
@@ -151,16 +218,15 @@ func kuzzle_add_listener(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data 
 	listeners_list[uintptr(unsafe.Pointer(cb))] = c
 	(*kuzzle.Kuzzle)(k.instance).AddListener(int(e), c)
 	go func() {
-		res := <-c
+		for {
+			res, ok := <-c
+			if ok == false {
+				break
+			}
+			r, _ := json.Marshal(res)
 
-		var jsonRes *C.json_object
-		r, _ := json.Marshal(res)
-
-		buffer := C.CString(string(r))
-		jsonRes = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-
-		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+			C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
+		}
 	}()
 }
 
@@ -173,14 +239,9 @@ func kuzzle_once(k *C.kuzzle, e C.int, cb C.kuzzle_event_listener, data unsafe.P
 	go func() {
 		res := <-c
 
-		var jsonRes *C.json_object
 		r, _ := json.Marshal(res)
 
-		buffer := C.CString(string(r))
-		jsonRes = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-
-		C.kuzzle_trigger_event(e, cb, jsonRes, data)
+		C.kuzzle_trigger_event(e, cb, C.CString(string(r)), data)
 	}()
 }
 
@@ -310,14 +371,14 @@ func kuzzle_get_ssl_connection(k *C.kuzzle) C.bool {
 }
 
 //export kuzzle_get_volatile
-func kuzzle_get_volatile(k *C.kuzzle) *C.json_object {
-	r, _ := goToCJson((*kuzzle.Kuzzle)(k.instance).Volatile())
+func kuzzle_get_volatile(k *C.kuzzle) *C.char {
+	r := C.CString(string((*kuzzle.Kuzzle)(k.instance).Volatile()))
 	return r
 }
 
 //export kuzzle_set_volatile
-func kuzzle_set_volatile(k *C.kuzzle, v *C.json_object) {
-	(*kuzzle.Kuzzle)(k.instance).SetVolatile(JsonCConvert(v).(map[string]interface{}))
+func kuzzle_set_volatile(k *C.kuzzle, v *C.char) {
+	(*kuzzle.Kuzzle)(k.instance).SetVolatile(types.VolatileData(C.GoString(v)))
 }
 
 func main() {

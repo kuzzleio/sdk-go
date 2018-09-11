@@ -1,4 +1,20 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package types
+
+import "encoding/json"
 
 type KuzzleRequest struct {
 	RequestId  string        `json:"requestId,omitempty"`
@@ -13,7 +29,7 @@ type KuzzleRequest struct {
 	Scroll     string        `json:"scroll,omitempty"`
 	ScrollId   string        `json:"scrollId,omitempty"`
 	Strategy   string        `json:"strategy,omitempty"`
-	ExpiresIn  int           `json:"expiresIn"`
+	ExpiresIn  int           `json:"expiresIn,omitempty"`
 	Volatile   VolatileData  `json:"volatile"`
 	Scope      string        `json:"scope"`
 	State      string        `json:"state"`
@@ -44,6 +60,7 @@ type KuzzleRequest struct {
 	Limit      string        `json:"limit,omitempty"`
 	Count      int           `json:"count,omitempty"`
 	Match      string        `json:"match,omitempty"`
+	Reset      bool          `json:"reset,omitempty"`
 }
 
 type SubscribeQuery struct {
@@ -53,7 +70,7 @@ type SubscribeQuery struct {
 	Body  interface{} `json:"body"`
 }
 
-type VolatileData map[string]interface{}
+type VolatileData = json.RawMessage
 
 type UserData struct {
 	ProfileIds []string               `json:"profileIds"`
@@ -96,8 +113,8 @@ type MSSortedSet struct {
 }
 
 type SearchFilters struct {
-	Query        interface{}   `json:"query,omitempty"`
-	Sort         []interface{} `json:"sort,omitempty"`
-	Aggregations interface{}   `json:"aggregations,omitempty"`
-	SearchAfter  []interface{} `json:"search_after,omitempty"`
+	Query        json.RawMessage `json:"query,omitempty"`
+	Sort         json.RawMessage `json:"sort,omitempty"`
+	Aggregations json.RawMessage `json:"aggregations,omitempty"`
+	SearchAfter  json.RawMessage `json:"search_after,omitempty"`
 }

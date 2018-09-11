@@ -1,12 +1,29 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "kuzzle.hpp"
 #include "collection.hpp"
-#include "document.hpp"
-#include "room.hpp"
 
 namespace kuzzleio {
-    Collection::Collection(Kuzzle* kuzzle, const std::string& col, const std::string& index) {
+    Collection::Collection(Kuzzle* kuzzle) {
         _collection = new collection();
-        kuzzle_new_collection(_collection, kuzzle->_kuzzle, const_cast<char*>(col.c_str()), const_cast<char*>(index.c_str()));
+        kuzzle_new_collection(_collection, kuzzle->_kuzzle);
+    }
+
+    Collection::Collection(Kuzzle* kuzzle, collection *collection) {
+        _collection = collection;
+        kuzzle_new_collection(collection, kuzzle->_kuzzle);
     }
 
     Collection::~Collection() {
@@ -14,226 +31,115 @@ namespace kuzzleio {
         delete(_collection);
     }
 
-    int Collection::count(search_filters* filters, query_options* options) Kuz_Throw_KuzzleException {
-      int_result *r = kuzzle_collection_count(_collection, filters, options);
-      if (r->error != NULL)
-          throwExceptionFromStatus(r);
-      int ret = r->result;
-      delete(r);
-      return ret;
+    void Collection::create(const std::string& index, const std::string& collection, const std::string* body, query_options *options) {
+        error_result *r = kuzzle_collection_create(
+            _collection,
+            const_cast<char*>(index.c_str()),
+            const_cast<char*>(collection.c_str()),
+            body != nullptr ? const_cast<char*>(body->c_str()) : nullptr,
+            options);
+
+        if (r != nullptr)
+            throwExceptionFromStatus(r);
+
+        kuzzle_free_error_result(r);
     }
 
-    Collection* Collection::createDocument(Document* document, const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
-      document_result *r = kuzzle_collection_create_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-          throwExceptionFromStatus(r);
-      delete(r);
-      return this;
+    bool Collection::exists(const std::string& index, const std::string& collection, query_options *options) {
+        bool_result *r = kuzzle_collection_exists(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
+
+        bool ret = r->result;
+        kuzzle_free_bool_result(r);
+        return ret;
     }
 
-    std::string Collection::deleteDocument(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
-      string_result *r = kuzzle_collection_delete_document(_collection, const_cast<char*>(id.c_str()), options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      std::string ret = r->result;
-      delete(r);
-      return ret;
+    std::string Collection::list(const std::string& index, query_options *options) {
+        string_result *r = kuzzle_collection_list(_collection, const_cast<char*>(index.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
+
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
+        return ret;
     }
 
-    Document* Collection::fetchDocument(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
-      document_result *r = kuzzle_collection_fetch_document(_collection, const_cast<char*>(id.c_str()), options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
-      return ret;
+    void Collection::truncate(const std::string& index, const std::string& collection, query_options *options) {
+        error_result *r = kuzzle_collection_truncate(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+        if (r != nullptr)
+            throwExceptionFromStatus(r);
+
+        kuzzle_free_error_result(r);
     }
 
-    std::vector<Document*> Collection::mCreateDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = new document *[documents.size()];
-      int i = 0;
-      for(auto const& doc: documents) {
-        docs[i] = doc->_document;
-        i++;
-      }
-      document_array_result *r = kuzzle_collection_m_create_document(_collection, docs, documents.size(), options);
+    std::string Collection::getMapping(const std::string& index, const std::string& collection, query_options *options) {
+        string_result *r = kuzzle_collection_get_mapping(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
 
-      delete[] docs;
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
 
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-
-      std::vector<Document*> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
-
-      delete(r);
-      return v;
+        return ret;
     }
 
-    std::vector<Document*> Collection::mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = new document *[documents.size()];
-      int i = 0;
-      for (auto const& doc : documents) {
-        docs[i] = doc->_document;
-        i++;
-      }
-      document_array_result *r = kuzzle_collection_m_create_or_replace_document(_collection, docs, documents.size(), options);
+    void Collection::updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options) {
+        error_result *r = kuzzle_collection_update_mapping(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r != nullptr)
+            throwExceptionFromStatus(r);
 
-      delete[] docs;
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-
-      std::vector<Document*> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
-
-      delete(r);
-      return v;
+        kuzzle_free_error_result(r);
     }
 
-    std::vector<std::string> Collection::mDeleteDocument(std::vector<std::string>& ids, query_options* options) Kuz_Throw_KuzzleException {
-      char **docsIds = new char *[ids.size()];
-      int i = 0;
-      for (auto const& id : ids) {
-        docsIds[i] = const_cast<char*>(id.c_str());
-        i++;
-      }
-      string_array_result *r = kuzzle_collection_m_delete_document(_collection, docsIds, ids.size(), options);
+    std::string Collection::getSpecifications(const std::string& index, const std::string& collection, query_options *options) {
+        string_result *r = kuzzle_collection_get_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
 
-      delete[] docsIds;
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
 
-      std::vector<std::string> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(r->result[i]);
-
-      delete(r);
-      return v;
+        return ret;
     }
 
-    std::vector<Document*> Collection::mGetDocument(std::vector<std::string>& ids, query_options* options) Kuz_Throw_KuzzleException {
-      char **docsIds = new char *[ids.size()];
-      int i = 0;
-      for (auto const& id : ids) {
-        docsIds[i] = const_cast<char*>(id.c_str());
-        i++;
-      }
-      document_array_result *r = kuzzle_collection_m_get_document(_collection, docsIds, ids.size(), options);
+    search_result* Collection::searchSpecifications(query_options *options) {
+        search_result *r = kuzzle_collection_search_specifications(_collection, options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
 
-      delete[] docsIds;
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
+        search_result *ret = r;
+        kuzzle_free_search_result(r);
 
-      std::vector<Document*> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
-
-      delete(r);
-      return v;
+        return ret;
     }
 
-    std::vector<Document*> Collection::mReplaceDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = new document *[documents.size()];
-      int i = 0;
-      for (auto const& doc : documents) {
-        docs[i] = doc->_document;
-        i++;
-      }
-      document_array_result *r = kuzzle_collection_m_replace_document(_collection, docs, documents.size(), options);
+    std::string Collection::updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options) {
+        string_result *r = kuzzle_collection_update_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), const_cast<char*>(body.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
+        std::string ret = r->result;
+        kuzzle_free_string_result(r);
 
-      delete[] docs;
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-
-      std::vector<Document*> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
-
-      delete(r);
-      return v;
+        return ret;
     }
 
-    std::vector<Document*> Collection::mUpdateDocument(std::vector<Document*>& documents, query_options* options) Kuz_Throw_KuzzleException {
-      document **docs = new document *[documents.size()];
-      int i = 0;
-      for (auto const& doc : documents) {
-        docs[i] = doc->_document;
-        i++;
-      }
-      document_array_result *r = kuzzle_collection_m_update_document(_collection, docs, documents.size(), options);
+    bool Collection::validateSpecifications(const std::string& body, query_options *options) {
+        bool_result *r = kuzzle_collection_validate_specifications(_collection, const_cast<char*>(body.c_str()), options);
+        if (r->error != nullptr)
+            throwExceptionFromStatus(r);
 
-      delete[] docs;
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
+        bool ret = r->result;
+        kuzzle_free_bool_result(r);
 
-      std::vector<Document*> v;
-      for (int i = 0; i < r->result_length; i++)
-        v.push_back(new Document(this, (r->result + i)->id, (r->result + i)->content));
-
-      delete(r);
-      return v;
+        return ret;
     }
 
-    bool Collection::publishMessage(json_object* content, query_options* options) Kuz_Throw_KuzzleException {
-      bool_result *r = kuzzle_collection_publish_message(_collection, content, options);
-      if (r->error != NULL)
-          throwExceptionFromStatus(r);
-      bool ret = r->result;
-      delete(r);
-      return ret;
-    }
+    void Collection::deleteSpecifications(const std::string& index, const std::string& collection, query_options *options) {
+        error_result *r = kuzzle_collection_delete_specifications(_collection, const_cast<char*>(index.c_str()), const_cast<char*>(collection.c_str()), options);
+        if (r != nullptr)
+            throwExceptionFromStatus(r);
 
-    Document* Collection::replaceDocument(const std::string& id, Document* document, query_options* options) Kuz_Throw_KuzzleException {
-      document_result* r = kuzzle_collection_update_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
-      return ret;
+        kuzzle_free_error_result(r);
     }
-
-    search_result* Collection::scroll(const std::string& id, query_options* options) Kuz_Throw_KuzzleException {
-      search_result* r = kuzzle_collection_scroll(_collection, const_cast<char*>(id.c_str()), options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      return r;
-    }
-
-    search_result* Collection::search(search_filters* filters, query_options* options) Kuz_Throw_KuzzleException {
-      search_result* r = kuzzle_collection_search(_collection, filters, options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      return r;
-    }
-
-    void call_collection_cb(notification_result* res, void* data) {
-      ((Collection*)data)->getListener()->onMessage(res);
-    }
-
-    NotificationListener* Collection::getListener() {
-      return _listener_instance;
-    }
-
-    Room* Collection::subscribe(search_filters* filters, NotificationListener *listener, room_options* options) Kuz_Throw_KuzzleException {
-      room_result* r = kuzzle_collection_subscribe(_collection, filters, options, &call_collection_cb, this);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      _listener_instance = listener;
-      
-      Room* ret = new Room(r->result, NULL, listener);
-      free(r);
-      return ret;
-    }
-
-    Document* Collection::updateDocument(const std::string& id, Document* document, query_options* options) Kuz_Throw_KuzzleException {
-      document_result* r = kuzzle_collection_update_document(_collection, const_cast<char*>(id.c_str()), document->_document, options);
-      if (r->error != NULL)
-        throwExceptionFromStatus(r);
-      Document* ret = new Document(this, r->result->id, r->result->content);
-      delete(r);
-      return ret;
-    }
-
 }

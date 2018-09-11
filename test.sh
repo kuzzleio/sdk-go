@@ -5,7 +5,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 workdir=$dir/.cover
 profile="$workdir/cover.out"
 mode=count
-dirs=(kuzzle connection/websocket collection security ms)
+dirs=(kuzzle connection/websocket collection security ms realtime index server auth document)
 timeout=${TIMEOUT:=1m}
 
 generate_cover_data() {
@@ -34,18 +34,13 @@ linter_check() {
     fi
 }
 
-make_wrappers() {
-		cd "${dir}/internal/wrappers"
-		make all	
-}
-
 cd "$dir"
 
 linter_check .
 linter_check ./internal/wrappers
 generate_cover_data
 show_cover_report func
-make_wrappers
+
 case "$1" in
 "")
     ;;

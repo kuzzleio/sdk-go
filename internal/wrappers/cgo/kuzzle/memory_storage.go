@@ -1,12 +1,24 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
   #cgo CFLAGS: -I../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include <string.h>
-  #include <json-c/json.h>
   #include "kuzzlesdk.h"
   #include "sdk_wrappers_internal.h"
 
@@ -18,9 +30,10 @@ package main
 import "C"
 import (
 	"encoding/json"
+	"unsafe"
+
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
-	"unsafe"
 )
 
 //export kuzzle_ms_append
@@ -128,20 +141,20 @@ func kuzzle_ms_expireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.que
 }
 
 //export kuzzle_ms_flushdb
-func kuzzle_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.void_result {
+func kuzzle_ms_flushdb(k *C.kuzzle, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Flushdb(SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_geoadd
-func kuzzle_ms_geoadd(k *C.kuzzle, key *C.char, points **C.json_object, plen C.size_t, options *C.query_options) *C.int_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(points))[:plen:plen]
+func kuzzle_ms_geoadd(k *C.kuzzle, key *C.char, points **C.point, plen C.size_t, options *C.query_options) *C.int_result {
+	wrapped := (*[1 << 20]*C.point)(unsafe.Pointer(points))[:plen:plen]
 	gopoints := make([]*types.GeoPoint, int(plen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, gopoints[i])
 	}
 
@@ -184,7 +197,7 @@ func kuzzle_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t,
 		SetQueryOptions(options))
 
 	if err != nil {
-		kuzzleError := err.(*types.KuzzleError)
+		kuzzleError := err.(types.KuzzleError)
 		result.status = C.int(kuzzleError.Status)
 		result.error = C.CString(kuzzleError.Message)
 
@@ -205,7 +218,7 @@ func kuzzle_ms_geopos(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t,
 }
 
 //export kuzzle_ms_georadius
-func kuzzle_ms_georadius(k *C.kuzzle, key *C.char, lon C.double, lat C.double, dist C.double, unit *C.char, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_georadius(k *C.kuzzle, key *C.char, lon C.double, lat C.double, dist C.double, unit *C.char, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Georadius(
 		C.GoString(key),
 		float64(lon),
@@ -214,19 +227,14 @@ func kuzzle_ms_georadius(k *C.kuzzle, key *C.char, lon C.double, lat C.double, d
 		C.GoString(unit),
 		SetQueryOptions(options))
 
-	var ires []interface{}
-	if err == nil {
-		ires = make([]interface{}, len(res))
-		for i, d := range res {
-			ires[i] = d
-		}
-	}
+	json0, _ := json.Marshal(res)
 
-	return goToCJsonArrayResult(ires, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_georadiusbymember
-func kuzzle_ms_georadiusbymember(k *C.kuzzle, key *C.char, member *C.char, dist C.double, unit *C.char, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_georadiusbymember(k *C.kuzzle, key *C.char, member *C.char, dist C.double, unit *C.char, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Georadiusbymember(
 		C.GoString(key),
 		C.GoString(member),
@@ -234,15 +242,10 @@ func kuzzle_ms_georadiusbymember(k *C.kuzzle, key *C.char, member *C.char, dist 
 		C.GoString(unit),
 		SetQueryOptions(options))
 
-	var ires []interface{}
-	if err == nil {
-		ires = make([]interface{}, len(res))
-		for i, d := range res {
-			ires[i] = d
-		}
-	}
+	json0, _ := json.Marshal(res)
 
-	return goToCJsonArrayResult(ires, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_get
@@ -316,12 +319,15 @@ func kuzzle_ms_hget(k *C.kuzzle, key *C.char, field *C.char, options *C.query_op
 }
 
 //export kuzzle_ms_hgetall
-func kuzzle_ms_hgetall(k *C.kuzzle, key *C.char, options *C.query_options) *C.json_result {
+func kuzzle_ms_hgetall(k *C.kuzzle, key *C.char, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hgetall(
 		C.GoString(key),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_hincrby
@@ -387,13 +393,13 @@ func kuzzle_ms_hmget(k *C.kuzzle, key *C.char, fields **C.char, flen C.size_t, o
 }
 
 //export kuzzle_ms_hmset
-func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.ms_hash_field, elen C.size_t, options *C.query_options) *C.error_result {
+	wrapped := (*[1 << 20]*C.ms_hash_field)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MsHashField, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -402,17 +408,20 @@ func kuzzle_ms_hmset(k *C.kuzzle, key *C.char, entries **C.json_object, elen C.s
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_hscan
-func kuzzle_ms_hscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.json_result {
+func kuzzle_ms_hscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Hscan(
 		C.GoString(key),
 		int(cursor),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_hset
@@ -577,25 +586,25 @@ func kuzzle_ms_lrem(k *C.kuzzle, key *C.char, count C.long, value *C.char, optio
 }
 
 //export kuzzle_ms_lset
-func kuzzle_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_lset(k *C.kuzzle, key *C.char, index C.long, value *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Lset(
 		C.GoString(key),
 		int(index),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_ltrim
-func kuzzle_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.void_result {
+func kuzzle_ms_ltrim(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Ltrim(
 		C.GoString(key),
 		int(start),
 		int(stop),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_mget
@@ -618,13 +627,13 @@ func kuzzle_ms_mget(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.query_
 }
 
 //export kuzzle_ms_mset
-func kuzzle_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.void_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_mset(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.error_result {
+	wrapped := (*[1 << 20]*C.ms_key_value)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -632,17 +641,17 @@ func kuzzle_ms_mset(k *C.kuzzle, entries **C.json_object, elen C.size_t, options
 		goentries,
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_msetnx
-func kuzzle_ms_msetnx(k *C.kuzzle, entries **C.json_object, elen C.size_t, options *C.query_options) *C.bool_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(entries))[:elen:elen]
+func kuzzle_ms_msetnx(k *C.kuzzle, entries **C.ms_key_value, elen C.size_t, options *C.query_options) *C.bool_result {
+	wrapped := (*[1 << 20]*C.ms_key_value)(unsafe.Pointer(entries))[:elen:elen]
 	goentries := make([]*types.MSKeyValue, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goentries[i])
 	}
 
@@ -712,13 +721,13 @@ func kuzzle_ms_pfcount(k *C.kuzzle, keys **C.char, klen C.size_t, options *C.que
 }
 
 //export kuzzle_ms_pfmerge
-func kuzzle_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.size_t, options *C.query_options) *C.void_result {
+func kuzzle_ms_pfmerge(k *C.kuzzle, key *C.char, sources **C.char, slen C.size_t, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pfmerge(
 		C.GoString(key),
 		cToGoStrings(sources, slen),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_ping
@@ -730,14 +739,14 @@ func kuzzle_ms_ping(k *C.kuzzle, options *C.query_options) *C.string_result {
 }
 
 //export kuzzle_ms_psetex
-func kuzzle_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+func kuzzle_ms_psetex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Psetex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_pttl
@@ -758,13 +767,13 @@ func kuzzle_ms_randomkey(k *C.kuzzle, options *C.query_options) *C.string_result
 }
 
 //export kuzzle_ms_rename
-func kuzzle_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_rename(k *C.kuzzle, key *C.char, newkey *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Rename(
 		C.GoString(key),
 		C.GoString(newkey),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_renamenx
@@ -827,12 +836,15 @@ func kuzzle_ms_sadd(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, o
 }
 
 //export kuzzle_ms_scan
-func kuzzle_ms_scan(k *C.kuzzle, cursor C.int, options *C.query_options) *C.json_result {
+func kuzzle_ms_scan(k *C.kuzzle, cursor C.int, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Scan(
 		int(cursor),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_scard
@@ -866,24 +878,24 @@ func kuzzle_ms_sdiffstore(k *C.kuzzle, key *C.char, keys **C.char, klen C.size_t
 }
 
 //export kuzzle_ms_set
-func kuzzle_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.void_result {
+func kuzzle_ms_set(k *C.kuzzle, key *C.char, value *C.char, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Set(
 		C.GoString(key),
 		C.GoString(value),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_setex
-func kuzzle_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.void_result {
+func kuzzle_ms_setex(k *C.kuzzle, key *C.char, value *C.char, ttl C.ulong, options *C.query_options) *C.error_result {
 	err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Setex(
 		C.GoString(key),
 		C.GoString(value),
 		int(ttl),
 		SetQueryOptions(options))
 
-	return goToCVoidResult(err)
+	return goToCErrorResult(err)
 }
 
 //export kuzzle_ms_setnx
@@ -983,13 +995,16 @@ func kuzzle_ms_srem(k *C.kuzzle, key *C.char, members **C.char, mlen C.size_t, o
 }
 
 //export kuzzle_ms_sscan
-func kuzzle_ms_sscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.json_result {
+func kuzzle_ms_sscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Sscan(
 		C.GoString(key),
 		int(cursor),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_strlen
@@ -1056,13 +1071,13 @@ func kuzzle_ms_type(k *C.kuzzle, key *C.char, options *C.query_options) *C.strin
 }
 
 //export kuzzle_ms_zadd
-func kuzzle_ms_zadd(k *C.kuzzle, key *C.char, elements **C.json_object, elen C.size_t, options *C.query_options) *C.int_result {
-	wrapped := (*[1 << 20]*C.json_object)(unsafe.Pointer(elements))[:elen:elen]
+func kuzzle_ms_zadd(k *C.kuzzle, key *C.char, elements **C.ms_sorted_set, elen C.size_t, options *C.query_options) *C.int_result {
+	wrapped := (*[1 << 20]*C.ms_sorted_set)(unsafe.Pointer(elements))[:elen:elen]
 	goelements := make([]*types.MSSortedSet, int(elen))
 
 	for i, jobj := range wrapped {
-		stringified := C.json_object_to_json_string(jobj)
-		gobytes := C.GoBytes(unsafe.Pointer(stringified), C.int(C.strlen(stringified)))
+		stringified, _ := json.Marshal(jobj)
+		gobytes := C.GoBytes(unsafe.Pointer(&stringified), C.int(C.strlen(C.CString(string(stringified)))))
 		json.Unmarshal(gobytes, goelements[i])
 	}
 
@@ -1127,24 +1142,17 @@ func kuzzle_ms_zlexcount(k *C.kuzzle, key *C.char, min *C.char, max *C.char, opt
 }
 
 //export kuzzle_ms_zrange
-func kuzzle_ms_zrange(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_zrange(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrange(
 		C.GoString(key),
 		int(start),
 		int(stop),
 		SetQueryOptions(options))
 
-	var converted []interface{}
+	json0, _ := json.Marshal(res)
 
-	if res != nil {
-		converted = make([]interface{}, len(res), len(res))
-
-		for i, val := range res {
-			converted[i] = *val
-		}
-	}
-
-	return goToCJsonArrayResult(converted, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zrangebylex
@@ -1159,24 +1167,17 @@ func kuzzle_ms_zrangebylex(k *C.kuzzle, key *C.char, min *C.char, max *C.char, o
 }
 
 //export kuzzle_ms_zrangebyscore
-func kuzzle_ms_zrangebyscore(k *C.kuzzle, key *C.char, min C.double, max C.double, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_zrangebyscore(k *C.kuzzle, key *C.char, min C.double, max C.double, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrangebyscore(
 		C.GoString(key),
 		float64(min),
 		float64(max),
 		SetQueryOptions(options))
 
-	var converted []interface{}
+	json0, _ := json.Marshal(res)
 
-	if res != nil {
-		converted = make([]interface{}, len(res), len(res))
-
-		for i, val := range res {
-			converted[i] = *val
-		}
-	}
-
-	return goToCJsonArrayResult(converted, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zrank
@@ -1233,56 +1234,45 @@ func kuzzle_ms_zremrangebyscore(k *C.kuzzle, key *C.char, min C.double, max C.do
 }
 
 //export kuzzle_ms_zrevrange
-func kuzzle_ms_zrevrange(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_zrevrange(k *C.kuzzle, key *C.char, start C.long, stop C.long, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrevrange(
 		C.GoString(key),
 		int(start),
 		int(stop),
 		SetQueryOptions(options))
 
-	var converted []interface{}
+	json0, _ := json.Marshal(res)
 
-	if res != nil {
-		converted = make([]interface{}, len(res), len(res))
-
-		for i, val := range res {
-			converted[i] = *val
-		}
-	}
-
-	return goToCJsonArrayResult(converted, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zrevrangebylex
-func kuzzle_ms_zrevrangebylex(k *C.kuzzle, key *C.char, min *C.char, max *C.char, options *C.query_options) *C.string_array_result {
+func kuzzle_ms_zrevrangebylex(k *C.kuzzle, key *C.char, min *C.char, max *C.char, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrevrangebylex(
 		C.GoString(key),
 		C.GoString(min),
 		C.GoString(max),
 		SetQueryOptions(options))
 
-	return goToCStringArrayResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zrevrangebyscore
-func kuzzle_ms_zrevrangebyscore(k *C.kuzzle, key *C.char, min C.double, max C.double, options *C.query_options) *C.json_array_result {
+func kuzzle_ms_zrevrangebyscore(k *C.kuzzle, key *C.char, min C.double, max C.double, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zrevrangebyscore(
 		C.GoString(key),
 		float64(min),
 		float64(max),
 		SetQueryOptions(options))
 
-	var converted []interface{}
+	json0, _ := json.Marshal(res)
 
-	if res != nil {
-		converted = make([]interface{}, len(res), len(res))
-
-		for i, val := range res {
-			converted[i] = *val
-		}
-	}
-
-	return goToCJsonArrayResult(converted, err)
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zrevrank
@@ -1296,13 +1286,16 @@ func kuzzle_ms_zrevrank(k *C.kuzzle, key *C.char, member *C.char, options *C.que
 }
 
 //export kuzzle_ms_zscan
-func kuzzle_ms_zscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.json_result {
+func kuzzle_ms_zscan(k *C.kuzzle, key *C.char, cursor C.int, options *C.query_options) *C.string_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Zscan(
 		C.GoString(key),
 		int(cursor),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	json0, _ := json.Marshal(res)
+
+	str := string(json0)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_ms_zscore

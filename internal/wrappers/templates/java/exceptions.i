@@ -1,24 +1,31 @@
-%define TO_JAVA_EXCEPTION(CPPTYPE, JTYPE, JNITYPE)
-%typemap(throws,throws=JTYPE) CPPTYPE {
-  (void)$1;
-  jclass excpcls = jenv->FindClass(JNITYPE);
-  if (excpcls) {
-    jenv->ThrowNew(excpcls, $1.what());
-   }
-  return $null;
-}
+%define CATCH(cppException, JNIException)
+  catch (cppException &e) {
+    jclass clazz = jenv->FindClass(JNIException);
+    jenv->ThrowNew(clazz, e.what());
+    return $null;
+  }
 %enddef
 
-%typemap(javabase) kuzzleio::KuzzleException "java.lang.RuntimeException";
+%javaexception("io.kuzzle.sdk.BadRequestException, io.kuzzle.sdk.ForbiddenException, 
+                io.kuzzle.sdk.GatewayTimeoutException, io.kuzzle.sdk.InternalException, 
+                io.kuzzle.sdk.NotFoundException, io.kuzzle.sdk.PartialException,
+                io.kuzzle.sdk.PreconditionException, io.kuzzle.sdk.ServiceUnavailableException,
+                io.kuzzle.sdk.SizeLimitException, io.kuzzle.sdk.UnauthorizedException,
+                io.kuzzle.sdk.KuzzleException") {
+    try {
+        $action
+    } CATCH (kuzzleio::BadRequestException, "io/kuzzle/sdk/BadRequestException")
+    CATCH (kuzzleio::ForbiddenException, "io/kuzzle/sdk/ForbiddenException")
+    CATCH (kuzzleio::GatewayTimeoutException, "io/kuzzle/sdk/GatewayTimeoutException")
+    CATCH (kuzzleio::InternalException, "io/kuzzle/sdk/InternalException")
+    CATCH (kuzzleio::NotFoundException, "io/kuzzle/sdk/NotFoundException")
+    CATCH (kuzzleio::PartialException, "io/kuzzle/sdk/PartialException")
+    CATCH (kuzzleio::PreconditionException, "io/kuzzle/sdk/PreconditionException")
+    CATCH (kuzzleio::ServiceUnavailableException, "io/kuzzle/sdk/ServiceUnavailableException")
+    CATCH (kuzzleio::SizeLimitException, "io/kuzzle/sdk/SizeLimitException")
+    CATCH (kuzzleio::UnauthorizedException, "io/kuzzle/sdk/UnauthorizedException")
+    CATCH (kuzzleio::KuzzleException, "io/kuzzle/sdk/KuzzleException")   
+}
 
-TO_JAVA_EXCEPTION(kuzzleio::BadRequestException, "io.kuzzle.sdk.BadRequestException", "io/kuzzle/sdk/BadRequestException");
-TO_JAVA_EXCEPTION(kuzzleio::ForbiddenException, "io.kuzzle.sdk.ForbiddenException", "io/kuzzle/sdk/ForbiddenException");
-TO_JAVA_EXCEPTION(kuzzleio::GatewayTimeoutException, "io.kuzzle.sdk.GatewayTimeoutException", "io/kuzzle/sdk/GatewayTimeoutException");
-TO_JAVA_EXCEPTION(kuzzleio::InternalException, "io.kuzzle.sdk.InternalException", "io/kuzzle/sdk/InternalException");
-TO_JAVA_EXCEPTION(kuzzleio::NotFoundException, "io.kuzzle.sdk.NotFoundException", "io/kuzzle/sdk/NotFoundException");
-TO_JAVA_EXCEPTION(kuzzleio::PartialException, "io.kuzzle.sdk.PartialException", "io/kuzzle/sdk/PartialException");
-TO_JAVA_EXCEPTION(kuzzleio::PreconditionException, "io.kuzzle.sdk.PreconditionException", "io/kuzzle/sdk/PreconditionException");
-TO_JAVA_EXCEPTION(kuzzleio::ServiceUnavailableException, "io.kuzzle.sdk.ServiceUnavailableException", "io/kuzzle/sdk/ServiceUnavailableException");
-TO_JAVA_EXCEPTION(kuzzleio::SizeLimiException, "io.kuzzle.sdk.SizeLimiException", "io/kuzzle/sdk/SizeLimiException");
-TO_JAVA_EXCEPTION(kuzzleio::UnauthorizedException, "io.kuzzle.sdk.UnauthorizedException", "io/kuzzle/sdk/UnauthorizedException");
-TO_JAVA_EXCEPTION(kuzzleio::KuzzleException, "io.kuzzle.sdk.KuzzleException", "io/kuzzle/sdk/KuzzleException");
+
+%typemap(javabase) kuzzleio::KuzzleException "java.lang.RuntimeException";

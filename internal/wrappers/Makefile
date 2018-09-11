@@ -1,106 +1,244 @@
-ROOT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+ROOT_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+ifeq ($(OS),Windows_NT)
+	STATICLIB = .lib
+	DYNLIB = .dll
+	GOROOT ?= C:/Go
+	GOCC ?= $(GOROOT)bin\go
+	SEP = \\
+	RM = del /Q /F /S
+	RRM = rmdir /S /Q
+	MV = rename
+	CMDSEP = &
+	ROOT_DIR_CLEAN = $(subst /,\,$(ROOT_DIR))
+	LIB_PREFIX =
+else
+	STATICLIB = .a
+	DYNLIB = .so
+	GOROOT ?= /usr/local/go
+	GOCC ?= $(GOROOT)/bin/go
+	SEP = /
+	RM = rm -f
+	RRM = rm -f -r
+	MV = mv -f
+	CMDSEP = ;
+	ROOT_DIR_CLEAN = $(ROOT_DIR)
+	LIB_PREFIX = lib
+endif
+
+PATHSEP = $(strip $(SEP))
 ROOTOUTDIR = $(ROOT_DIR)build
-GOROOT ?= /usr/local
-GOCC = $(GOROOT)/bin/go
 JAVA_HOME ?= /usr/local
-PYTHON_INCLUDE_DIR ?= /usr/include/python3.5
+PYTHON_INCLUDE_DIR ?= `pkg-config --cflags python3`
 GOFLAGS = -buildmode=c-archive
-GOSRC = ./cgo/kuzzle/
+GOSRC = .$(PATHSEP)cgo$(PATHSEP)kuzzle$(PATHSEP)
 GOTARGETDIR = $(ROOTOUTDIR)/c
-GOTARGET = $(GOTARGETDIR)/libkuzzlesdk.a
-GOTARGETSO = $(GOTARGETDIR)/libkuzzlesdk.so
+GOTARGET = $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk$(STATICLIB)
+GOTARGETSO = $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk$(DYNLIB)
 CPPDIR = $(ROOT_DIR)cpp
 HEADERSDIR = $(ROOT_DIR)headers
 
-CPP = g++
 CPPFLAGS = -g -fPIC -std=c++11
 INCS = -I$(HEADERSDIR) -I$(CPPDIR) -I$(ROOT_DIR)templates -I$(GOTARGETDIR)
 LDFLAGS = -L$(GOTARGETDIR)
-LIBS = -lkuzzlesdk -ljson-c
+LIBS = -lkuzzlesdk
 SRCS = kcore_wrap.cxx
 OBJS = $(SRCS:.cxx=.o)
 
-CPPSRCS = 	kuzzle.cpp \
+JAVAINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+PYTHONINCLUDE = $(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/python
+
+CPP_SDK_SRCS = kuzzle.cpp \
 					document.cpp \
 					collection.cpp \
-					room.cpp \
+					realtime.cpp \
+					auth.cpp \
+					server.cpp \
+					index.cpp
+
+CPPSRCS = $(CPP_SDK_SRCS) \
 					kcore_wrap.cxx
 
-CPPSDK = $(CPPSRCS:.cpp=.o)
+CPPSDK = $(CPP_SDK_SRCS:.cpp=.o)
 
 SWIG = swig
 
-all: java
+all: python java csharp android
 
 kcore_wrap.o: kcore_wrap.cxx
-	$(CPP) -ggdb -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+	$(CXX) -c $< -o $@ $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
 
 %.o: cpp/%.cpp
-	$(CPP) -fPIC -c $< -o $(OUTDIR)/$@ -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
+	$(CXX) -fPIC -c $< -o $(OUTDIR)/$@ $(CPPFLAGS) -I./headers -I./build/c/ -L./build/c -lkuzzlesdk
 
-core:
+core_java:
+ifneq ($(OS),Windows_NT)
 ifeq ($(wildcard $(GOCC)),)
 	$(error "Unable to find go compiler")
 endif
-	mkdir -p $(GOTARGETDIR)
+endif
+	cd ..$(PATHSEP)..$(PATHSEP) && go get .$(PATHSEP)... $(CMDSEP) cd internal$(PATHSEP)wrappers
 	$(GOCC) build -o $(GOTARGET) $(GOFLAGS) $(GOSRC)
 	$(GOCC) build -o $(GOTARGETSO) $(GOFLAGS) $(GOSRC)
-	mv -f $(GOTARGETDIR)/libkuzzlesdk.h $(GOTARGETDIR)/kuzzle.h
+ifeq ($(OS),Windows_NT)
+	$(MV) $(subst /,\,$(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk.h) kuzzle.h
+else
+	$(MV) $(GOTARGETDIR)$(PATHSEP)$(LIB_PREFIX)kuzzlesdk.h $(GOTARGETDIR)$(PATHSEP)kuzzle.h
+endif
 
-wrapper: $(OBJS)
+core_python: core_java
 
-object:
-	$(CPP) -ggdb -shared $(OUTDIR)/kcore_wrap.o -o $(OUTDIR)/libkuzzle-wrapper-$(LANGUAGE).so $(LDFLAGS) $(LIBS) $(INCS) $(LANGINCLUDE)
+core_csharp: core_java
 
-posttask:
-	cp -p $(GOTARGET) $(OUTDIR)
-	cp -p $(GOTARGETSO) $(OUTDIR)
-	#rm -f $(OUTDIR)/kcore_wrap.o
-	#rm -f kcore_wrap.cxx
+core_cpp: core_java
+
+wrapper_java: $(OBJS)
+
+wrapper_python: $(OBJS)
+
+wrapper_csharp: $(OBJS)
+
+java_object:
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-java$(DYNLIB)
+
+android_object:
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/../../../../jniLibs/$(ARCH)/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(JAVAINCLUDE)
+	strip $(OUTDIR)/../../../../jniLibs/$(ARCH)/$(LIB_PREFIX)kuzzle-wrapper-android$(DYNLIB)
+
+python_object:
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) $(PYTHONINCLUDE)
+	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-python$(DYNLIB)
+
+csharp_object:
+ifeq ($(OS),Windows_NT)
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS) -lWinmm -lntdll -lWS2_32
+else
+	$(CXX) -shared kcore_wrap.o -o $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB) $(CPPFLAGS) $(LDFLAGS) $(LIBS) $(INCS)
+endif
+	strip $(OUTDIR)/$(LIB_PREFIX)kuzzle-wrapper-csharp$(DYNLIB)
 
 swig:
-	mkdir -p $(OUTDIR)
 	$(SWIG) -Wall -c++ -$(LANGUAGE) $(SWIGOPTS) -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(LANGINCLUDE) templates/$(LANGUAGE)/core.i
 
-makedir:
-	mkdir -p $(OUTDIR)			
+swig_java:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/java/core.i
 
+swig_android:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -java -package io.kuzzle.sdk -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(JAVAINCLUDE) templates/android/core.i
+
+swig_python:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(OUTDIR) mkdir $(OUTDIR)
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -python -py3 -outdir $(OUTDIR) -o $(SRCS) $(INCS) $(PYTHONINCLUDE) templates/python/core.i
+
+swig_csharp:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
+else
+	mkdir -p $(OUTDIR)
+endif
+	$(SWIG) -Wall -c++ -csharp -namespace Kuzzleio -dllimport kuzzle-wrapper-csharp -outdir $(OUTDIR) -o $(SRCS) $(INCS)  templates/csharp/core.i
+
+makedir:
+ifeq ($(OS),Windows_NT)
+	@if not exist $(subst /,\,$(OUTDIR)) mkdir $(subst /,\,$(OUTDIR))
+else
+	mkdir -p $(OUTDIR)
+endif
+
+java: LANGINCLUDE = $(JAVAINCLUDE)
 java: OUTDIR = $(ROOTOUTDIR)/java/io/kuzzle/sdk
-java: LANGINCLUDE = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-java: LANGUAGE = java
-java: SWIGOPTS = -package io.kuzzle.sdk
-java: core swig wrapper object posttask
+java: core_java swig_java wrapper_java java_object
 	$(JAVA_HOME)/bin/javac $(OUTDIR)/*.java
-	$(JAVA_HOME)/bin/jar cf $(OUTDIR)/kuzzlesdk.jar $(OUTDIR)/*.class
-	#rm -f $(OUTDIR)/*.java $(OUTDIR)/*.class
+	mkdir -p $(ROOTOUTDIR)/io/kuzzle/sdk/resources
+	cp build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so build/io/kuzzle/sdk/resources
+	mkdir -p $(ROOTOUTDIR)/java/src/main/resources
+	mkdir -p $(ROOTOUTDIR)/java/src/main/java
+	mv build/java/io/kuzzle/sdk/$(LIB_PREFIX)kuzzle-wrapper-java.so $(ROOTOUTDIR)/java/src/main/resources/
+	ln -sf $(ROOTOUTDIR)/java/io/kuzzle/sdk/* $(ROOTOUTDIR)/java/src/main/java/
+	cd build/java && sh gradlew sourcesJar jar javadocJar && cd -
+	cp -p $(GOTARGET) $(OUTDIR)
+	cp -p $(GOTARGETSO) $(OUTDIR)
 
 csharp: OUTDIR = $(ROOTOUTDIR)/csharp
-csharp: LANGUAGE = csharp
-csharp: SWIGOPTS = -dllimport kuzzlesdk
-csharp: core swig wrapper object posttask makedir
-	mcs -t:library $(OUTDIR)/*.cs -out:$(OUTDIR)/libkuzzle-csharp.so
-	rm -f $(OUTDIR)/*.cs
+csharp: core_csharp swig_csharp wrapper_csharp csharp_object
+	mcs -t:library $(OUTDIR)/*.cs -sdk:2 -out:$(OUTDIR)/$(LIB_PREFIX)kuzzle-csharp$(DYNLIB)
+ifeq ($(OS),Windows_NT)
+	$(RM) "$(subst /,\,$(OUTDIR))$(PATHSEP)*.cs"
+else
+	$(RM) $(OUTDIR)$(PATHSEP)*.cs
+endif
 
+makeabifolder:
+	mkdir -p $(OUTDIR)/../../../../jniLibs/$(ARCH)
+
+android: ARCH ?= x86
+android: LANGINCLUDE = $(JAVAINCLUDE)
+android: GOFLAGS = -buildmode=c-shared
+android: OUTDIR = $(ROOTOUTDIR)/android/app/src/main/java/io/kuzzle/sdk
+android: makeabifolder core_java swig_android wrapper_java android_object
+	cd build/android/app/src/main/jni && ndk-build && cd - && cd build/android && cp app/src/main/obj/local/$(ARCH)/*.so app/src/main/jniLibs/$(ARCH)/ && bash ./gradlew assemble
+
+python: LANGINCLUDE = $(PYTHONINCLUDE)
 python: OUTDIR = $(ROOTOUTDIR)/python
-python: LANGINCLUDE = -I$(PYTHON_INCLUDE_DIR) -I$(ROOT_DIR)templates/$(LANGUAGE)
-python: LANGUAGE = python
-python: SWIGOPTS = -py3
-python: CC = g++
+python: CC = $(CPP)
 python: CFLAGS = -fPIC
-python: core swig wrapper makedir
-	cp $(ROOT_DIR)templates/$(LANGUAGE)/*.py $(OUTDIR)
+python: core_python swig_python wrapper_python python_object
+	cp $(ROOT_DIR)templates/python/*.py $(OUTDIR)
 	cp $(ROOT_DIR)$(SRCS) $(OUTDIR)/
 	cp $(ROOT_DIR)kcore_wrap.h $(OUTDIR)/
-	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/$(LANGUAGE) -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk -b $(OUTDIR) -t $(OUTDIR)/tmp
+	python3 $(OUTDIR)/setup.py build_ext -I $(HEADERSDIR):$(CPPDIR):$(OUTDIR):$(GOTARGETDIR):$(OUTDIR)/templates/python -L $(OUTDIR):$(GOTARGETDIR) -R $(GOTARGETDIR) -l kuzzlesdk  -b $(OUTDIR) -t $(OUTDIR)/tmp
+	cp -p $(GOTARGET) $(OUTDIR)
+	cp -p $(GOTARGETSO) $(OUTDIR)
 
 cpp: OUTDIR = $(ROOTOUTDIR)/cpp
-cpp: makedir $(CPPSDK)
-		ar rvs $(OUTDIR)/libcpp.a $(OUTDIR)/*.o
-		g++ -shared -fPIC -o $(OUTDIR)/libcpp.so -Wl,--whole-archive $(OUTDIR)/libcpp.a build/c/libkuzzlesdk.a -Wl,--no-whole-archive
+cpp: LANGUAGE = c++
+cpp: makedir core_cpp $(CPPSDK)
+		ar rvs $(OUTDIR)/libcpp$(STATICLIB) $(OUTDIR)/*.o
+		$(CXX) -shared -fPIC -o $(OUTDIR)/libcpp$(DYNLIB) -Wl,--whole-archive $(OUTDIR)/libcpp$(STATICLIB) build/c/$(LIB_PREFIX)kuzzlesdk$(STATICLIB) -Wl,--no-whole-archive
 
 clean:
-	rm -rf build
-
+ifeq ($(OS),Windows_NT)
+	if exist kcore_wrap.cxx $(RM) kcore_wrap.cxx
+	if exist kcore_wrap.h $(RM) kcore_wrap.h
+	if exist kcore_wrap.o $(RM) kcore_wrap.o
+	if exist build$(PATHSEP)c $(RRM) build$(PATHSEP)c
+	if exist build$(PATHSEP)java$(PATHSEP)src  $(RRM) build$(PATHSEP)java$(PATHSEP)src
+	if exist build$(PATHSEP)java$(PATHSEP)io $(RRM) build$(PATHSEP)java$(PATHSEP)io
+	if exist build$(PATHSEP)java$(PATHSEP)build $(RRM) build$(PATHSEP)java$(PATHSEP)build
+	if exist build$(PATHSEP)python $(RRM) build$(PATHSEP)python
+	if exist build$(PATHSEP)csharp $(RRM) build$(PATHSEP)csharp
+	if exist build$(PATHSEP)io $(RRM) build$(PATHSEP)io
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)build
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)java
+	if exist build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs build$(PATHSEP)android$(PATHSEP)app$(PATHSEP)src$(PATHSEP)main$(PATHSEP)jniLibs
+	if exist build$(PATHSEP)android$(PATHSEP)build build$(PATHSEP)android$(PATHSEP)build
+else
+	$(RRM) build/c
+	$(RRM) build/java/src build/java/io build/java/build
+	$(RRM) build/python
+	$(RRM) build/csharp
+	$(RRM) build/cpp
+	$(RRM) kcore_wrap.cxx kcore_wrap.h kcore_wrap.o
+	$(RRM) build/io
+	$(RRM) build/android/app/build
+	$(RRM) build/android/app/src/main/java
+	$(RRM) build/android/app/src/main/jniLibs/
+	$(RRM) build/android/build
+endif
 .PHONY: all java csharp python wrapper swig clean object core
 
 

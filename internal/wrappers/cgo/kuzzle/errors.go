@@ -1,8 +1,21 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
   #cgo CFLAGS: -I../../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include "kuzzlesdk.h"
 */
@@ -42,6 +55,11 @@ func Set_statistics_error(s *C.statistics_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
+// apply a types.KuzzleError on a statistics* C struct
+func Set_subscribe_error(s *C.subscribe_result, err error) {
+	setErr(&s.status, &s.error, &s.stack, err)
+}
+
 // apply a types.KuzzleError on a string_array_result* C struct
 func Set_string_array_result_error(s *C.string_array_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
@@ -72,18 +90,8 @@ func Set_shards_result_error(s *C.shards_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
-// apply a types.KuzzleError on a document* C struct
-func Set_document_error(s *C.document_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
 // apply a types.KuzzleError on a search_result* C struct
 func Set_search_result_error(s *C.search_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
-// apply a types.KuzzleError on a search_result* C struct
-func Set_mapping_result_error(s *C.mapping_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
@@ -136,6 +144,10 @@ func Set_profiles_result_error(s *C.profiles_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
+func Set_roles_result_error(s *C.roles_result, err error) {
+	setErr(&s.status, &s.error, &s.stack, err)
+}
+
 func Set_user_rights_error(s *C.user_rights_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
@@ -148,11 +160,7 @@ func Set_collection_entry_error(s *C.collection_entry_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
-func Set_void_result_error(s *C.void_result, err error) {
-	setErr(&s.status, &s.error, &s.stack, err)
-}
-
-func Set_document_array_result_error(s *C.document_array_result, err error) {
+func Set_error_result_error(s *C.error_result, err error) {
 	setErr(&s.status, &s.error, &s.stack, err)
 }
 
@@ -161,7 +169,7 @@ func Set_room_result_error(s *C.room_result, err error) {
 }
 
 func setErr(status *C.int, error **C.char, stack **C.char, err error) {
-	kuzzleError := err.(*types.KuzzleError)
+	kuzzleError := err.(types.KuzzleError)
 	*status = C.int(kuzzleError.Status)
 	*error = C.CString(kuzzleError.Message)
 

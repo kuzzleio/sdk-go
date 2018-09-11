@@ -1,8 +1,21 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
   #cgo CFLAGS: -I../../headers
-  #cgo LDFLAGS: -ljson-c
 
   #include <stdlib.h>
   #include <errno.h>
@@ -11,52 +24,46 @@ package main
 */
 import "C"
 import (
+	"encoding/json"
+	"sync"
+	"unsafe"
+
+	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
-//export kuzzle_set_jwt
-func kuzzle_set_jwt(k *C.kuzzle, token *C.char) {
-	(*kuzzle.Kuzzle)(k.instance).SetJwt(C.GoString(token))
+// map which stores instances to keep references in case the gc passes
+var authInstances sync.Map
+
+//register new instance of server
+func registerAuth(instance interface{}, ptr unsafe.Pointer) {
+	authInstances.Store(instance, ptr)
 }
 
-//export kuzzle_unset_jwt
-func kuzzle_unset_jwt(k *C.kuzzle) {
-	(*kuzzle.Kuzzle)(k.instance).UnsetJwt()
+// unregister an instance from the instances map
+//export unregisterAuth
+func unregisterAuth(a *C.auth) {
+	authInstances.Delete(a)
 }
 
 // Allocates memory
-//export kuzzle_get_jwt
-func kuzzle_get_jwt(k *C.kuzzle) *C.char {
-	return C.CString((*kuzzle.Kuzzle)(k.instance).Jwt())
-}
+//export kuzzle_new_auth
+func kuzzle_new_auth(a *C.auth, k *C.kuzzle) {
+	kuz := (*kuzzle.Kuzzle)(k.instance)
+	auth := auth.NewAuth(kuz)
 
-//export kuzzle_login
-func kuzzle_login(k *C.kuzzle, strategy *C.char, credentials *C.json_object, expires_in *C.int) *C.string_result {
-	var expire int
-	if expires_in != nil {
-		expire = int(*expires_in)
-	}
+	ptr := unsafe.Pointer(auth)
+	a.instance = ptr
+	a.k = k
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).Login(C.GoString(strategy), JsonCConvert(credentials).(map[string]interface{}), &expire)
-
-	return goToCStringResult(&res, err)
-}
-
-//export kuzzle_logout
-func kuzzle_logout(k *C.kuzzle) *C.char {
-	err := (*kuzzle.Kuzzle)(k.instance).Logout()
-	if err != nil {
-		return C.CString(err.Error())
-	}
-
-	return nil
+	registerAuth(a, ptr)
 }
 
 //export kuzzle_check_token
-func kuzzle_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
+func kuzzle_check_token(a *C.auth, token *C.char) *C.token_validity {
 	result := (*C.token_validity)(C.calloc(1, C.sizeof_token_validity))
 
-	res, err := (*kuzzle.Kuzzle)(k.instance).CheckToken(C.GoString(token))
+	res, err := (*auth.Auth)(a.instance).CheckToken(C.GoString(token))
 	if err != nil {
 		Set_token_validity_error(result, err)
 		return result
@@ -70,77 +77,113 @@ func kuzzle_check_token(k *C.kuzzle, token *C.char) *C.token_validity {
 }
 
 //export kuzzle_create_my_credentials
-func kuzzle_create_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).CreateMyCredentials(
+func kuzzle_create_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.string_result {
+	res, err := (*auth.Auth)(a.instance).CreateMyCredentials(
 		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
+		json.RawMessage(C.GoString(credentials)),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	str := string(res)
+	return goToCStringResult(&str, err)
+}
+
+//export kuzzle_credentials_exist
+func kuzzle_credentials_exist(a *C.auth, strategy *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*auth.Auth)(a.instance).CredentialsExist(
+		C.GoString(strategy),
+		SetQueryOptions(options))
+
+	return goToCBoolResult(res, err)
 }
 
 //export kuzzle_delete_my_credentials
-func kuzzle_delete_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.bool_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).DeleteMyCredentials(
+func kuzzle_delete_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.error_result {
+	err := (*auth.Auth)(a.instance).DeleteMyCredentials(
 		C.GoString(strategy),
 		SetQueryOptions(options))
 
-	return goToCBoolResult(res, err)
+	return goToCErrorResult(err)
+}
+
+//export kuzzle_get_current_user
+func kuzzle_get_current_user(a *C.auth) *C.user_result {
+	u, err := (*auth.Auth)(a.instance).GetCurrentUser()
+
+	return goToCUserResult(a.k, u, err)
 }
 
 //export kuzzle_get_my_credentials
-func kuzzle_get_my_credentials(k *C.kuzzle, strategy *C.char, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyCredentials(
+func kuzzle_get_my_credentials(a *C.auth, strategy *C.char, options *C.query_options) *C.string_result {
+	res, err := (*auth.Auth)(a.instance).GetMyCredentials(
 		C.GoString(strategy),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_update_my_credentials
-func kuzzle_update_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateMyCredentials(
-		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
-		SetQueryOptions(options))
-
-	return goToCJsonResult(res, err)
-}
-
-//export kuzzle_validate_my_credentials
-func kuzzle_validate_my_credentials(k *C.kuzzle, strategy *C.char, credentials *C.json_object, options *C.query_options) *C.bool_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).ValidateMyCredentials(
-		C.GoString(strategy),
-		JsonCConvert(credentials).(map[string]interface{}),
-		SetQueryOptions(options))
-
-	return goToCBoolResult(res, err)
+	str := string(res)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_get_my_rights
-func kuzzle_get_my_rights(k *C.kuzzle, options *C.query_options) *C.json_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).GetMyRights(SetQueryOptions(options))
+func kuzzle_get_my_rights(a *C.auth, options *C.query_options) *C.user_rights_result {
+	res, err := (*auth.Auth)(a.instance).GetMyRights(SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	return goToCUserRightsResult(res, err)
+}
+
+//export kuzzle_get_strategies
+func kuzzle_get_strategies(a *C.auth, options *C.query_options) *C.string_array_result {
+	res, err := (*auth.Auth)(a.instance).GetStrategies(SetQueryOptions(options))
+
+	return goToCStringArrayResult(res, err)
+}
+
+//export kuzzle_login
+func kuzzle_login(a *C.auth, strategy *C.char, credentials *C.char, expires_in *C.int) *C.string_result {
+	var expire int
+	if expires_in != nil {
+		expire = int(*expires_in)
+	}
+
+	res, err := (*auth.Auth)(a.instance).Login(C.GoString(strategy), json.RawMessage(C.GoString(credentials)), &expire)
+
+	return goToCStringResult(&res, err)
+}
+
+//export kuzzle_logout
+func kuzzle_logout(a *C.auth) *C.char {
+	err := (*auth.Auth)(a.instance).Logout()
+	if err != nil {
+		return C.CString(err.Error())
+	}
+
+	return nil
+}
+
+//export kuzzle_update_my_credentials
+func kuzzle_update_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.string_result {
+	res, err := (*auth.Auth)(a.instance).UpdateMyCredentials(
+		C.GoString(strategy),
+		json.RawMessage(C.GoString(credentials)),
+		SetQueryOptions(options))
+
+	str := string(res)
+	return goToCStringResult(&str, err)
 }
 
 //export kuzzle_update_self
-func kuzzle_update_self(k *C.kuzzle, data *C.user_data, options *C.query_options) *C.json_result {
-	userData, err := cToGoUserData(data)
-	if err != nil {
-		return goToCJsonResult(nil, err)
-	}
-
-	res, err := (*kuzzle.Kuzzle)(k.instance).UpdateSelf(
-		userData,
+func kuzzle_update_self(a *C.auth, data *C.char, options *C.query_options) *C.user_result {
+	res, err := (*auth.Auth)(a.instance).UpdateSelf(
+		json.RawMessage(C.GoString(data)),
 		SetQueryOptions(options))
 
-	return goToCJsonResult(res, err)
+	return goToCUserResult(a.k, res, err)
 }
 
-//export kuzzle_who_am_i
-func kuzzle_who_am_i(k *C.kuzzle) *C.user_result {
-	res, err := (*kuzzle.Kuzzle)(k.instance).WhoAmI()
+//export kuzzle_validate_my_credentials
+func kuzzle_validate_my_credentials(a *C.auth, strategy *C.char, credentials *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*auth.Auth)(a.instance).ValidateMyCredentials(
+		C.GoString(strategy),
+		json.RawMessage(C.GoString(credentials)),
+		SetQueryOptions(options))
 
-	return goToCUserResult(k, res, err)
+	return goToCBoolResult(res, err)
 }

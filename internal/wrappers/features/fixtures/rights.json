@@ -1,0 +1,29 @@
+{
+  "controllers": {
+    "auth": {
+      "actions": {
+        "*": true
+      }
+    },
+    "security": {
+      "actions": {
+        "*": true
+      }
+    },
+    "collection": {
+      "actions": {
+        "*": true
+      }
+    },
+    "index": {
+      "actions": {
+        "*": true
+      }
+    },
+    "document": {
+      "actions": {
+        "*": false
+      }
+    }
+  }
+}

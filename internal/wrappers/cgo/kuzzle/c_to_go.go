@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
@@ -16,103 +30,20 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-func cToGoControllers(c *C.controllers) (*types.Controllers, error) {
-	if c == nil {
-		return nil, nil
-	}
-
-	if JsonCType(c) != C.json_type_object {
-		return nil, types.NewError("Invalid controller structure", 400)
-	}
-	j := JsonCConvert(c)
-	controllers := &types.Controllers{}
-
-	for controller, val := range j.(map[string]interface{}) {
-		rawController, ok := val.(map[string]interface{})
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		rawActions, ok := rawController["Actions"]
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		actionsMap, ok := rawActions.(map[string]interface{})
-		if !ok {
-			return nil, types.NewError("Invalid controllers structure", 400)
-		}
-
-		controllers.Controllers[controller] = &types.Controller{}
-		for action, value := range actionsMap {
-			boolValue, ok := value.(bool)
-			if !ok {
-				return nil, types.NewError("Invalid controllers structure", 400)
-			}
-
-			controllers.Controllers[controller].Actions[action] = boolValue
-		}
-	}
-
-	return controllers, nil
-}
-
-func cToGoRole(crole *C.role) (*security.Role, error) {
-	id := C.GoString(crole.id)
-	var controllers *types.Controllers
-
-	if crole.controllers != nil {
-		c, err := cToGoControllers(crole.controllers)
-
-		if err != nil {
-			return nil, err
-		}
-		controllers = c
-	}
-
-	role := (*kuzzle.Kuzzle)(crole.kuzzle.instance).Security.NewRole(id, controllers)
-
-	return role, nil
-}
-
-func cToGoSearchFilters(searchFilters *C.search_filters) *types.SearchFilters {
-	if searchFilters == nil {
-		return nil
-	}
-	return &types.SearchFilters{
-		Query:        JsonCConvert(searchFilters.query),
-		Sort:         JsonCConvert(searchFilters.sort).([]interface{}),
-		Aggregations: JsonCConvert(searchFilters.aggregations),
-		SearchAfter:  JsonCConvert(searchFilters.search_after).([]interface{}),
-	}
-}
-
 // convert a C char** to a go array of string
 func cToGoStrings(arr **C.char, len C.size_t) []string {
 	if len == 0 {
 		return nil
 	}
 
-	tmpslice := (*[1 << 30]*C.char)(unsafe.Pointer(arr))[:len:len]
-	goStrings := make([]string, len)
-	for i, s := range tmpslice {
-		goStrings[i] = C.GoString(s)
+	tmpslice := (*[1 << 27]*C.char)(unsafe.Pointer(arr))[:len:len]
+	goStrings := make([]string, 0, len)
+
+	for _, s := range tmpslice {
+		goStrings = append(goStrings, C.GoString(s))
 	}
 
 	return goStrings
-}
-
-// Helper to convert a C document** to a go array of document pointers
-func cToGoDocuments(col *C.collection, docs **C.document, length C.uint) []*collection.Document {
-	if length == 0 {
-		return nil
-	}
-	tmpslice := (*[1 << 30]*C.document)(unsafe.Pointer(docs))[:length:length]
-	godocuments := make([]*collection.Document, length)
-	for i, doc := range tmpslice {
-		godocuments[i] = cToGoDocument(col, doc)
-	}
-	return godocuments
 }
 
 func cToGoShards(cShards *C.shards) *types.Shards {
@@ -135,28 +66,7 @@ func cToGoKuzzleMeta(cMeta *C.meta) *types.Meta {
 }
 
 func cToGoCollection(c *C.collection) *collection.Collection {
-	return collection.NewCollection((*kuzzle.Kuzzle)(c.kuzzle.instance), C.GoString(c.collection), C.GoString(c.index))
-}
-
-func cToGoMapping(cMapping *C.mapping) *collection.Mapping {
-	mapping := collection.NewMapping(cToGoCollection(cMapping.collection))
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cMapping.mapping))), &mapping.Mapping)
-
-	return mapping
-}
-
-func cToGoSpecification(cSpec *C.specification) *types.Specification {
-	spec := types.Specification{}
-	spec.Strict = bool(cSpec.strict)
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cSpec.fields))), &spec.Fields)
-	json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cSpec.validators))), &spec.Validators)
-
-	return &spec
-}
-
-func cToGoDocument(c *C.collection, cDoc *C.document) *collection.Document {
-	gDoc := ((*collection.Document)(cDoc.instance))
-	return gDoc
+	return collection.NewCollection((*kuzzle.Kuzzle)(c.k.instance))
 }
 
 func cToGoPolicyRestriction(r *C.policy_restriction) *types.PolicyRestriction {
@@ -168,7 +78,7 @@ func cToGoPolicyRestriction(r *C.policy_restriction) *types.PolicyRestriction {
 		return restriction
 	}
 
-	slice := (*[1<<30 - 1]*C.char)(unsafe.Pointer(r.collections))[:r.collections_length:r.collections_length]
+	slice := (*[1<<28 - 1]*C.char)(unsafe.Pointer(r.collections))[:r.collections_length:r.collections_length]
 	for _, col := range slice {
 		restriction.Collections = append(restriction.Collections, C.GoString(col))
 	}
@@ -185,7 +95,7 @@ func cToGoPolicy(p *C.policy) *types.Policy {
 		return policy
 	}
 
-	slice := (*[1<<30 - 1]*C.policy_restriction)(unsafe.Pointer(p.restricted_to))[:p.restricted_to_length]
+	slice := (*[1<<28 - 1]*C.policy_restriction)(unsafe.Pointer(p.restricted_to))[:p.restricted_to_length]
 	for _, crestriction := range slice {
 		policy.RestrictedTo = append(policy.RestrictedTo, cToGoPolicyRestriction(crestriction))
 	}
@@ -195,15 +105,14 @@ func cToGoPolicy(p *C.policy) *types.Policy {
 
 func cToGoProfile(p *C.profile) *security.Profile {
 	profile := &security.Profile{
-		Id:       C.GoString(p.id),
-		Security: (*kuzzle.Kuzzle)(p.kuzzle.instance).Security,
+		Id: C.GoString(p.id),
 	}
 
 	if p.policies == nil {
 		return profile
 	}
 
-	slice := (*[1<<30 - 1]*C.policy)(unsafe.Pointer(p.policies))[:p.policies_length]
+	slice := (*[1<<28 - 1]*C.policy)(unsafe.Pointer(p.policies))[:p.policies_length]
 	for _, cpolicy := range slice {
 		profile.Policies = append(profile.Policies, cToGoPolicy(cpolicy))
 	}
@@ -211,37 +120,12 @@ func cToGoProfile(p *C.profile) *security.Profile {
 	return profile
 }
 
-func cToGoUserData(cdata *C.user_data) (*types.UserData, error) {
-	if cdata == nil {
-		return nil, nil
-	}
-
-	data := &types.UserData{}
-
-	if cdata.content != nil {
-		err := json.Unmarshal([]byte(C.GoString(C.json_object_to_json_string(cdata.content))), data.Content)
-		if err != nil {
-			return nil, types.NewError(err.Error(), 400)
-		}
-	}
-
-	if cdata.profile_ids_length > 0 {
-		size := int(cdata.profile_ids_length)
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:size:size]
-		for i := 0; i < size; i++ {
-			data.ProfileIds = append(data.ProfileIds, C.GoString(carray[i]))
-		}
-	}
-
-	return data, nil
-}
-
-func cToGoUser(u *C.user) *security.User {
+func cToGoUser(u *C.kuzzle_user) *security.User {
 	if u == nil {
 		return nil
 	}
 
-	user := (*kuzzle.Kuzzle)(u.kuzzle.instance).Security.NewUser(C.GoString(u.id), nil)
+	user := security.NewUser(C.GoString(u.id), nil)
 
 	return user
 }
@@ -257,31 +141,29 @@ func cToGoUserRigh(r *C.user_right) *types.UserRights {
 	return right
 }
 
-func cToGoSearchResult(s *C.search_result) *collection.SearchResult {
-	var godocuments []*collection.Document
-
-	if s.documents_length > 0 {
-		tmpslice := (*[1 << 30]C.document)(unsafe.Pointer(s.documents))[:s.documents_length:s.documents_length]
-
-		godocuments = make([]*collection.Document, s.documents_length)
-
-		for i, doc := range tmpslice {
-			godocuments[i] = cToGoDocument(s.collection, &doc)
-		}
-	}
-
+func cToGoSearchResult(s *C.search_result) *types.SearchResult {
 	opts := types.NewQueryOptions()
 
 	opts.SetSize(int(s.options.size))
 	opts.SetFrom(int(s.options.from))
 	opts.SetScrollId(C.GoString(s.options.scroll_id))
 
-	return &collection.SearchResult{
-		Collection: cToGoCollection(s.collection),
-		Documents:  godocuments,
+	c, _ := json.Marshal(s.collection)
+
+	var documents json.RawMessage
+	d, _ := json.Marshal(s.documents)
+	documents = d
+
+	return &types.SearchResult{
+		Collection: string(c),
+		Documents:  documents,
 		Total:      int(s.total),
 		Fetched:    int(s.fetched),
 		Options:    opts,
-		Filters:    cToGoSearchFilters(s.filters),
+		Filters:    json.RawMessage(C.GoString(s.filters)),
 	}
+}
+
+func cToGoKuzzleNotificationChannel(c *C.kuzzle_notification_listener) chan<- types.KuzzleNotification {
+	return make(chan<- types.KuzzleNotification)
 }

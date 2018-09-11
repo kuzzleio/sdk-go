@@ -1,15 +1,26 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package security
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 type Profile struct {
 	Id       string `json:"_id"`
 	Policies []*types.Policy
-	Security *Security
 }
 
 type ProfileSearchResult struct {
@@ -18,68 +29,9 @@ type ProfileSearchResult struct {
 	ScrollId string `json:"scrollId"`
 }
 
-func (p *Profile) AddPolicy(policy *types.Policy) *Profile {
-	p.Policies = append(p.Policies, policy)
-
-	return p
-}
-
-// Delete deletes the profile form Kuzzle.
-func (p *Profile) Delete(options types.QueryOptions) (string, error) {
-	return p.Security.rawDelete("deleteProfile", p.Id, options)
-}
-
-// Save creates or replaces the profile in Kuzzle.
-func (p Profile) Save(options types.QueryOptions) (*Profile, error) {
-	action := "createOrReplaceProfile"
-
-	if options == nil && p.Id == "" {
-		action = "createProfile"
+func NewProfile(id string, policies []*types.Policy) *Profile {
+	return &Profile{
+		Id:       id,
+		Policies: policies,
 	}
-
-	if options != nil {
-		if options.IfExist() == "error" {
-			action = "createProfile"
-		} else if options.IfExist() != "replace" {
-			return nil, types.NewError(fmt.Sprintf("Invalid value for 'ifExist' option: '%s'", options.IfExist()), 400)
-		}
-	}
-
-	return p.persist(action, options)
-}
-
-func (p *Profile) persist(action string, options types.QueryOptions) (*Profile, error) {
-	if options == nil {
-		options = types.NewQueryOptions()
-	}
-
-	if action != "createProfile" && p.Id == "" {
-		return nil, types.NewError("Profile."+action+": id is required", 400)
-	}
-
-	ch := make(chan *types.KuzzleResponse)
-
-	query := &types.KuzzleRequest{
-		Controller: "security",
-		Action:     action,
-		Body: types.Policies{
-			Policies: p.Policies,
-		},
-		Id: p.Id,
-	}
-	go p.Security.Kuzzle.Query(query, options, ch)
-
-	res := <-ch
-
-	if res.Error != nil {
-		return nil, res.Error
-	}
-
-	jsonProfile := &jsonProfile{}
-	json.Unmarshal(res.Result, jsonProfile)
-
-	p.Id = jsonProfile.Id
-	p.Policies = jsonProfile.Source.Policies
-
-	return p, nil
 }

@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
@@ -12,7 +26,6 @@ import (
 	"encoding/json"
 	"unsafe"
 
-	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -20,15 +33,7 @@ import (
 func duplicateCollection(ptr *C.collection) *C.collection {
 	dest := (*C.collection)(C.calloc(1, C.sizeof_collection))
 
-	if ptr.index != nil {
-		dest.index = C.CString(C.GoString(ptr.index))
-	}
-
-	if ptr.collection != nil {
-		dest.collection = C.CString(C.GoString(ptr.collection))
-	}
-
-	dest.kuzzle = ptr.kuzzle
+	dest.k = ptr.k
 
 	return dest
 }
@@ -65,43 +70,13 @@ func goToCShards(gShards *types.Shards) *C.shards {
 }
 
 // Allocates memory
-func goToCDocument(col *C.collection, gDoc *collection.Document, dest *C.document) *C.document {
-	var result *C.document
-	if dest == nil {
-		result = (*C.document)(C.calloc(1, C.sizeof_document))
-	} else {
-		result = dest
-	}
-
-	result.id = C.CString(gDoc.Id)
-	result.index = C.CString(gDoc.Index)
-	result.result = C.CString(gDoc.Result)
-	result.collection = C.CString(gDoc.Collection)
-	result.meta = goToCMeta(gDoc.Meta)
-	result.shards = goToCShards(gDoc.Shards)
-	result._collection = duplicateCollection(col)
-
-	if string(gDoc.Content) != "" {
-		buffer := C.CString(string(gDoc.Content))
-		result.content = C.json_tokener_parse(buffer)
-		C.free(unsafe.Pointer(buffer))
-	} else {
-		result.content = C.json_object_new_object()
-	}
-
-	result.version = C.int(gDoc.Version)
-	result.created = C.bool(gDoc.Created)
-
-	return result
-}
-
-// Allocates memory
 func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notification_content {
 	result := (*C.notification_content)(C.calloc(1, C.sizeof_notification_content))
 	result.id = C.CString(gNotifContent.Id)
-	result.meta = goToCMeta(gNotifContent.Meta)
+	result.m = goToCMeta(gNotifContent.Meta)
 	result.count = C.int(gNotifContent.Count)
-	result.content, _ = goToCJson(gNotifContent)
+	marshalled, _ := json.Marshal(gNotifContent)
+	result.content = C.CString(string(marshalled))
 
 	return result
 }
@@ -110,12 +85,12 @@ func goToCNotificationContent(gNotifContent *types.NotificationResult) *C.notifi
 func goToCNotificationResult(gNotif *types.KuzzleNotification) *C.notification_result {
 	result := (*C.notification_result)(C.calloc(1, C.sizeof_notification_result))
 
-	if gNotif.Error != nil {
+	if gNotif.Error.Error() != "" {
 		Set_notification_result_error(result, gNotif.Error)
 		return result
 	}
 
-	result.volatiles, _ = goToCJson(gNotif.Volatile)
+	result.volatiles = C.CString(string(gNotif.Volatile))
 	result.request_id = C.CString(gNotif.RequestId)
 	result.result = goToCNotificationContent(gNotif.Result)
 	result.index = C.CString(gNotif.Index)
@@ -140,10 +115,10 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.request_id = C.CString(gRes.RequestId)
 
 	bufResult := C.CString(string(gRes.Result))
-	result.result = C.json_tokener_parse(bufResult)
+	result.result = bufResult
 	C.free(unsafe.Pointer(bufResult))
 
-	result.volatiles, _ = goToCJson(gRes.Volatile)
+	result.volatiles = C.CString(string(gRes.Volatile))
 	result.index = C.CString(gRes.Index)
 	result.collection = C.CString(gRes.Collection)
 	result.controller = C.CString(gRes.Controller)
@@ -152,45 +127,9 @@ func goToCKuzzleResponse(gRes *types.KuzzleResponse) *C.kuzzle_response {
 	result.channel = C.CString(gRes.Channel)
 	result.status = C.int(gRes.Status)
 
-	if gRes.Error != nil {
+	if gRes.Error.Error() != "" {
 		// The error might be a partial error
 		Set_kuzzle_response_error(result, gRes.Error)
-	}
-
-	return result
-}
-
-// Allocates memory
-func goToCDocumentResult(col *C.collection, goRes *collection.Document, err error) *C.document_result {
-	result := (*C.document_result)(C.calloc(1, C.sizeof_document_result))
-
-	if err != nil {
-		Set_document_error(result, err)
-		return result
-	}
-
-	result.result = goToCDocument(col, goRes, nil)
-
-	return result
-}
-
-func goToCDocumentArrayResult(col *C.collection, goRes []*collection.Document, err error) *C.document_array_result {
-	result := (*C.document_array_result)(C.calloc(1, C.sizeof_document_array_result))
-
-	if err != nil {
-		Set_document_array_result_error(result, err)
-		return result
-	}
-
-	if goRes != nil {
-		result.result_length = C.size_t(len(goRes))
-		result.result = (*C.document)(C.calloc(result.result_length, C.sizeof_document))
-
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
-
-		for i, doc := range goRes {
-			goToCDocument(col, doc, &cArray[i])
-		}
 	}
 
 	return result
@@ -208,7 +147,7 @@ func goToCPolicyRestriction(restriction *types.PolicyRestriction, dest *C.policy
 
 	if restriction.Collections != nil {
 		crestriction.collections = (**C.char)(C.calloc(C.size_t(len(restriction.Collections)), C.sizeof_char_ptr))
-		collections := (*[1<<30 - 1]*C.char)(unsafe.Pointer(crestriction.collections))[:len(restriction.Collections)]
+		collections := (*[1<<28 - 1]*C.char)(unsafe.Pointer(crestriction.collections))[:len(restriction.Collections)]
 
 		for i, col := range restriction.Collections {
 			collections[i] = C.CString(col)
@@ -234,6 +173,20 @@ func goToCStringResult(goRes *string, err error) *C.string_result {
 	return result
 }
 
+func goToCSubscribeResult(goRes *types.SubscribeResult, err error) *C.subscribe_result {
+	result := (*C.subscribe_result)(C.calloc(1, C.sizeof_subscribe_result))
+
+	if err != nil {
+		Set_subscribe_error(result, err)
+		return result
+	}
+
+	result.room = C.CString(goRes.Room)
+	result.channel = C.CString(goRes.Channel)
+
+	return result
+}
+
 func goToCStringArrayResult(goRes []string, err error) *C.string_array_result {
 	result := (*C.string_array_result)(C.calloc(1, C.sizeof_string_array_result))
 
@@ -246,7 +199,7 @@ func goToCStringArrayResult(goRes []string, err error) *C.string_array_result {
 		result.result = (**C.char)(C.calloc(C.size_t(len(goRes)), C.sizeof_char_ptr))
 		result.result_length = C.size_t(len(goRes))
 
-		cArray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
+		cArray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
 
 		for i, substring := range goRes {
 			cArray[i] = C.CString(substring)
@@ -320,7 +273,7 @@ func goToCPolicy(policy *types.Policy, dest *C.policy) *C.policy {
 
 	if policy.RestrictedTo != nil {
 		cpolicy.restricted_to = (*C.policy_restriction)(C.calloc(C.size_t(len(policy.RestrictedTo)), C.sizeof_policy_restriction))
-		restrictions := (*[1<<30 - 1]C.policy_restriction)(unsafe.Pointer(cpolicy.restricted_to))[:len(policy.RestrictedTo)]
+		restrictions := (*[1<<27 - 1]C.policy_restriction)(unsafe.Pointer(cpolicy.restricted_to))[:len(policy.RestrictedTo)]
 
 		for i, restriction := range policy.RestrictedTo {
 			goToCPolicyRestriction(restriction, &restrictions[i])
@@ -340,11 +293,11 @@ func goToCProfile(k *C.kuzzle, profile *security.Profile, dest *C.profile) *C.pr
 
 	cprofile.id = C.CString(profile.Id)
 	cprofile.policies_length = C.size_t(len(profile.Policies))
-	cprofile.kuzzle = k
+	cprofile.k = k
 
 	if profile.Policies != nil {
 		cprofile.policies = (*C.policy)(C.calloc(C.size_t(len(profile.Policies)), C.sizeof_policy))
-		policies := (*[1<<30 - 1]C.policy)(unsafe.Pointer(cprofile.policies))[:len(profile.Policies)]
+		policies := (*[1<<27 - 1]C.policy)(unsafe.Pointer(cprofile.policies))[:len(profile.Policies)]
 		for i, policy := range profile.Policies {
 			goToCPolicy(policy, &policies[i])
 		}
@@ -370,7 +323,7 @@ func goToCProfileSearchResult(k *C.kuzzle, res *security.ProfileSearchResult, er
 
 	if len(res.Hits) > 0 {
 		result.result.hits = (*C.profile)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_profile))
-		profiles := (*[1<<30 - 1]C.profile)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
+		profiles := (*[1<<27 - 1]C.profile)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
 
 		for i, profile := range res.Hits {
 			goToCProfile(k, profile, &profiles[i])
@@ -394,7 +347,7 @@ func goToCRoleSearchResult(k *C.kuzzle, res *security.RoleSearchResult, err erro
 
 	if len(res.Hits) > 0 {
 		result.result.hits = (*C.role)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_role))
-		cArray := (*[1<<30 - 1]C.role)(unsafe.Pointer(result.result.hits))[:len(res.Hits):len(res.Hits)]
+		cArray := (*[1<<27 - 1]C.role)(unsafe.Pointer(result.result.hits))[:len(res.Hits):len(res.Hits)]
 
 		for i, role := range res.Hits {
 			goToCRole(k, role, &cArray[i])
@@ -418,79 +371,38 @@ func goToCBoolResult(goRes bool, err error) *C.bool_result {
 	return result
 }
 
-func goToCSearchFilters(filters *types.SearchFilters) *C.search_filters {
-	result := (*C.search_filters)(C.calloc(1, C.sizeof_search_filters))
-
-	result.query, _ = goToCJson(filters.Query)
-	result.sort, _ = goToCJson(filters.Sort)
-	result.aggregations, _ = goToCJson(filters.Aggregations)
-	result.search_after, _ = goToCJson(filters.SearchAfter)
-
-	return result
-}
-
 // Allocates memory
-func goToCSearchResult(col *C.collection, goRes *collection.SearchResult, err error) *C.search_result {
+func goToCSearchResult(goRes *types.SearchResult, err error) *C.search_result {
 	result := (*C.search_result)(C.calloc(1, C.sizeof_search_result))
-	result.collection = duplicateCollection(col)
 
 	if err != nil {
 		Set_search_result_error(result, err)
 		return result
 	}
 
-	result.documents_length = C.size_t(len(goRes.Documents))
+	result.collection = C.CString(string(goRes.Collection))
+	result.documents = C.CString(string(goRes.Documents))
+
 	result.fetched = C.uint(goRes.Fetched)
 	result.total = C.uint(goRes.Total)
 
-	if len(goRes.Documents) > 0 {
-		result.documents = (*C.document)(C.calloc(result.documents_length, C.sizeof_document))
-		cArray := (*[1<<30 - 1]C.document)(unsafe.Pointer(result.documents))[:len(goRes.Documents):len(goRes.Documents)]
-
-		for i, doc := range goRes.Documents {
-			goToCDocument(col, doc, &cArray[i])
-		}
-	}
-
 	if goRes.Filters != nil {
-		result.filters = goToCSearchFilters(goRes.Filters)
+		result.filters = C.CString(string(goRes.Filters))
 	}
 
 	result.options = (*C.query_options)(C.calloc(1, C.sizeof_query_options))
-	result.options.from = C.long(goRes.Options.From())
-	result.options.size = C.long(goRes.Options.Size())
+	if goRes.Options != nil {
+		result.options.from = C.long(goRes.Options.From())
+		result.options.size = C.long(goRes.Options.Size())
 
-	if goRes.Options.ScrollId() != "" {
-		result.options.scroll_id = C.CString(goRes.Options.ScrollId())
+		if goRes.Options.ScrollId() != "" {
+			result.options.scroll_id = C.CString(goRes.Options.ScrollId())
+		}
 	}
 
 	if len(goRes.Aggregations) > 0 {
-		result.aggregations, _ = goToCJson(goRes.Aggregations)
+		result.aggregations = C.CString(string(goRes.Aggregations))
 	}
-
-	return result
-}
-
-// Allocates memory
-func goToCMapping(c *C.collection, goMapping *collection.Mapping) *C.mapping {
-	result := (*C.mapping)(C.calloc(1, C.sizeof_mapping))
-
-	result.collection = duplicateCollection(c)
-	result.mapping, _ = goToCJson(goMapping.Mapping)
-
-	return result
-}
-
-// Allocates memory
-func goToCMappingResult(c *C.collection, goRes *collection.Mapping, err error) *C.mapping_result {
-	result := (*C.mapping_result)(C.calloc(1, C.sizeof_mapping_result))
-
-	if err != nil {
-		Set_mapping_result_error(result, err)
-		return result
-	}
-
-	result.result = goToCMapping(c, goRes)
 
 	return result
 }
@@ -504,10 +416,11 @@ func goToCRole(k *C.kuzzle, role *security.Role, dest *C.role) *C.role {
 	}
 
 	crole.id = C.CString(role.Id)
-	crole.kuzzle = k
+	crole.k = k
 
 	if role.Controllers != nil {
-		crole.controllers, _ = goToCJson(role.Controllers)
+		ctrls, _ := json.Marshal(role.Controllers)
+		crole.controllers = C.CString(string(ctrls))
 	}
 
 	return crole
@@ -518,8 +431,9 @@ func goToCSpecification(goSpec *types.Specification) *C.specification {
 	result := (*C.specification)(C.calloc(1, C.sizeof_specification))
 
 	result.strict = C.bool(goSpec.Strict)
-	result.fields, _ = goToCJson(goSpec.Fields)
-	result.validators, _ = goToCJson(goSpec.Validators)
+	flds, _ := json.Marshal(goSpec.Fields)
+	result.fields = C.CString(string(flds))
+	result.validators = C.CString(string(goSpec.Validators))
 	return result
 }
 
@@ -572,73 +486,10 @@ func goToCSpecificationSearchResult(goRes *types.SpecificationSearchResult, err 
 
 	if len(goRes.Hits) > 0 {
 		result.result.hits = (*C.specification_entry)(C.calloc(C.size_t(len(goRes.Hits)), C.sizeof_specification_entry))
-		cArray := (*[1<<30 - 1]C.specification_entry)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
+		cArray := (*[1<<27 - 1]C.specification_entry)(unsafe.Pointer(result.result.hits))[:len(goRes.Hits):len(goRes.Hits)]
 
 		for i, spec := range goRes.Hits {
 			goToCSpecificationEntry(&spec.Source, &cArray[i])
-		}
-	}
-
-	return result
-}
-
-func goToCJson(data interface{}) (*C.json_object, error) {
-	r, err := json.Marshal(data)
-	if err != nil {
-		return nil, types.NewError(err.Error(), 400)
-	}
-
-	buffer := C.CString(string(r))
-	defer C.free(unsafe.Pointer(buffer))
-
-	tok := C.json_tokener_new()
-	defer C.json_tokener_free(tok)
-
-	j := C.json_tokener_parse_ex(tok, buffer, C.int(C.strlen(buffer)))
-	jerr := C.json_tokener_get_error(tok)
-	if jerr != C.json_tokener_success {
-		return nil, types.NewError(C.GoString(C.json_tokener_error_desc(jerr)), 400)
-	}
-
-	return j, nil
-}
-
-func goToCJsonResult(goRes interface{}, err error) *C.json_result {
-	result := (*C.json_result)(C.calloc(1, C.sizeof_json_result))
-
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	result.result, err = goToCJson(goRes)
-	if err != nil {
-		Set_json_result_error(result, err)
-		return result
-	}
-
-	return result
-}
-
-func goToCJsonArrayResult(goRes []interface{}, err error) *C.json_array_result {
-	result := (*C.json_array_result)(C.calloc(1, C.sizeof_json_array_result))
-
-	if err != nil {
-		Set_json_array_result_error(result, err)
-		return result
-	}
-
-	result.result_length = C.size_t(len(goRes))
-	if goRes != nil {
-		result.result = (**C.json_object)(C.calloc(result.result_length, C.sizeof_json_object_ptr))
-		cArray := (*[1<<30 - 1]*C.json_object)(unsafe.Pointer(result.result))[:len(goRes):len(goRes)]
-
-		for i, res := range goRes {
-			cArray[i], err = goToCJson(res)
-			if err != nil {
-				Set_json_array_result_error(result, err)
-				return result
-			}
 		}
 	}
 
@@ -652,7 +503,7 @@ func goToCProfileResult(k *C.kuzzle, res *security.Profile, err error) *C.profil
 		return result
 	}
 
-	result.profile = goToCProfile(k, res, nil)
+	result.p = goToCProfile(k, res, nil)
 	return result
 }
 
@@ -664,17 +515,18 @@ func goToCUserData(data *types.UserData) (*C.user_data, error) {
 	cdata := (*C.user_data)(C.calloc(1, C.sizeof_user_data))
 
 	if data.Content != nil {
-		jsonO, err := goToCJson(data.Content)
+		cnt, err := json.Marshal(data.Content)
 		if err != nil {
 			return nil, err
 		}
+		jsonO := C.CString(string(cnt))
 		cdata.content = jsonO
 	}
 
 	if data.ProfileIds != nil {
 		cdata.profile_ids_length = C.size_t(len(data.ProfileIds))
 		cdata.profile_ids = (**C.char)(C.calloc(C.size_t(len(data.ProfileIds)), C.sizeof_char_ptr))
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:len(data.ProfileIds):len(data.ProfileIds)]
+		carray := (*[1<<27 - 1]*C.char)(unsafe.Pointer(cdata.profile_ids))[:len(data.ProfileIds):len(data.ProfileIds)]
 
 		for i, profileId := range data.ProfileIds {
 			carray[i] = C.CString(profileId)
@@ -684,33 +536,34 @@ func goToCUserData(data *types.UserData) (*C.user_data, error) {
 	return cdata, nil
 }
 
-func goToCUser(k *C.kuzzle, user *security.User, dest *C.user) (*C.user, error) {
+func goToCUser(k *C.kuzzle, user *security.User, dest *C.kuzzle_user) (*C.kuzzle_user, error) {
 	if user == nil {
 		return nil, nil
 	}
 
-	var cuser *C.user
+	var cuser *C.kuzzle_user
 	if dest == nil {
-		cuser = (*C.user)(C.calloc(1, C.sizeof_user))
+		cuser = (*C.kuzzle_user)(C.calloc(1, C.sizeof_kuzzle_user))
 	} else {
 		cuser = dest
 	}
 
 	cuser.id = C.CString(user.Id)
-	cuser.kuzzle = k
+	cuser.k = k
 
 	if user.Content != nil {
-		jsonO, err := goToCJson(user.Content)
+		cnt, err := json.Marshal(user.Content)
 		if err != nil {
 			return nil, err
 		}
-		cuser.content = jsonO
+
+		cuser.content = C.CString(string(cnt))
 	}
 
 	if user.ProfileIds != nil {
 		cuser.profile_ids_length = C.size_t(len(user.ProfileIds))
 		cuser.profile_ids = (**C.char)(C.calloc(C.size_t(len(user.ProfileIds)), C.sizeof_char_ptr))
-		carray := (*[1<<30 - 1]*C.char)(unsafe.Pointer(cuser.profile_ids))[:len(user.ProfileIds):len(user.ProfileIds)]
+		carray := (*[1<<28 - 1]*C.char)(unsafe.Pointer(cuser.profile_ids))[:len(user.ProfileIds):len(user.ProfileIds)]
 
 		for i, profileId := range user.ProfileIds {
 			carray[i] = C.CString(profileId)
@@ -733,7 +586,7 @@ func goToCUserResult(k *C.kuzzle, user *security.User, err error) *C.user_result
 		return result
 	}
 
-	result.user = cuser
+	result.result = cuser
 
 	return result
 }
@@ -749,10 +602,31 @@ func goToCProfilesResult(k *C.kuzzle, profiles []*security.Profile, err error) *
 
 	if profiles != nil {
 		result.profiles = (*C.profile)(C.calloc(C.size_t(len(profiles)), C.sizeof_profile))
-		carray := (*[1<<30 - 1]C.profile)(unsafe.Pointer(result.profiles))[:len(profiles):len(profiles)]
+		carray := (*[1<<27 - 1]C.profile)(unsafe.Pointer(result.profiles))[:len(profiles):len(profiles)]
 
 		for i, profile := range profiles {
 			goToCProfile(k, profile, &carray[i])
+		}
+	}
+
+	return result
+}
+
+func goToCRolesResult(k *C.kuzzle, roles []*security.Role, err error) *C.roles_result {
+	result := (*C.roles_result)(C.calloc(1, C.sizeof_roles_result))
+	if err != nil {
+		Set_roles_result_error(result, err)
+		return result
+	}
+
+	result.roles_length = C.size_t(len(roles))
+
+	if roles != nil {
+		result.roles = (*C.role)(C.calloc(C.size_t(len(roles)), C.sizeof_role))
+		carray := (*[1<<27 - 1]C.role)(unsafe.Pointer(result.roles))[:len(roles):len(roles)]
+
+		for i, role := range roles {
+			goToCRole(k, role, &carray[i])
 		}
 	}
 
@@ -789,8 +663,8 @@ func goToCUserRightsResult(rights []*types.UserRights, err error) *C.user_rights
 
 	result.user_rights_length = C.size_t(len(rights))
 	if rights != nil {
-		result.user_rights = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
-		carray := (*[1<<30 - 1]C.user_right)(unsafe.Pointer(result.user_rights))[:len(rights):len(rights)]
+		result.result = (*C.user_right)(C.calloc(C.size_t(len(rights)), C.sizeof_user_right))
+		carray := (*[1<<26 - 1]C.user_right)(unsafe.Pointer(result.result))[:len(rights):len(rights)]
 
 		for i, right := range rights {
 			goToCUserRight(right, &carray[i])
@@ -816,8 +690,8 @@ func goToCUserSearchResult(k *C.kuzzle, res *security.UserSearchResult, err erro
 	}
 
 	if len(res.Hits) > 0 {
-		result.result.hits = (*C.user)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_user))
-		users := (*[1<<30 - 1]C.user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
+		result.result.hits = (*C.kuzzle_user)(C.calloc(C.size_t(len(res.Hits)), C.sizeof_kuzzle_user))
+		users := (*[1<<26 - 1]C.kuzzle_user)(unsafe.Pointer(result.result.hits))[:len(res.Hits)]
 
 		for i, user := range res.Hits {
 			goToCUser(k, user, &users[i])
@@ -846,7 +720,7 @@ func goToCCollectionListResult(collections []*types.CollectionsList, err error) 
 	if collections != nil {
 		result.result = (*C.collection_entry)(C.calloc(C.size_t(len(collections)), C.sizeof_collection_entry))
 		result.result_length = C.size_t(len(collections))
-		carray := (*[1<<30 - 1]C.collection_entry)(unsafe.Pointer(result.result))[:len(collections):len(collections)]
+		carray := (*[1<<27 - 1]C.collection_entry)(unsafe.Pointer(result.result))[:len(collections):len(collections)]
 
 		for i, collection := range collections {
 			fillCollectionList(collection, &carray[i])
@@ -858,21 +732,21 @@ func goToCCollectionListResult(collections []*types.CollectionsList, err error) 
 
 // Allocates memory
 func fillStatistics(src *types.Statistics, dest *C.statistics) {
-	dest.ongoing_requests, _ = goToCJson(src.OngoingRequests)
-	dest.completed_requests, _ = goToCJson(src.CompletedRequests)
-	dest.connections, _ = goToCJson(src.Connections)
-	dest.failed_requests, _ = goToCJson(src.FailedRequests)
+	dest.ongoing_requests = C.CString(string(src.OngoingRequests))
+	dest.completed_requests = C.CString(string(src.CompletedRequests))
+	dest.connections = C.CString(string(src.Connections))
+	dest.failed_requests = C.CString(string(src.FailedRequests))
 	dest.timestamp = C.ulonglong(src.Timestamp)
 }
 
 // Allocates memory
-func goToCVoidResult(err error) *C.void_result {
+func goToCErrorResult(err error) *C.error_result {
 	if err == nil {
 		return nil
 	}
 
-	result := (*C.void_result)(C.calloc(1, C.sizeof_void_result))
-	Set_void_result_error(result, err)
+	result := (*C.error_result)(C.calloc(1, C.sizeof_error_result))
+	Set_error_result_error(result, err)
 
 	return result
 }
@@ -888,21 +762,5 @@ func goToCDateResult(goRes int, err error) *C.date_result {
 
 	result.result = C.longlong(goRes)
 
-	return result
-}
-
-// Allocates memory
-func goToCRoomResult(err error) *C.room_result {
-	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
-
-	if err != nil {
-		Set_room_result_error(result, err)
-		return result
-	}
-
-	room := (*C.room)(C.calloc(1, C.sizeof_room))
-	room.instance = unsafe.Pointer(room)
-	registerRoom(room)
-	result.result = room
 	return result
 }

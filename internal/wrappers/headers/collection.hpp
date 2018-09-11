@@ -1,38 +1,46 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef _COLLECTION_HPP_
 #define _COLLECTION_HPP_
 
 #include <iostream>
 #include <list>
 #include "core.hpp"
+#include "exceptions.hpp"
 
 namespace kuzzleio {
-    class Document;
-    class Room;
-
+    class Kuzzle;
     class Collection {
-        public:
-            collection* _collection;
-            NotificationListener* _listener_instance;
+        collection* _collection;
+        Collection();
 
-            Collection(Kuzzle* kuzzle, const std::string& collection, const std::string& index);
+        public:
+            Collection(Kuzzle* kuzzle);
+            Collection(Kuzzle* kuzzle, collection *collection);
             virtual ~Collection();
-            int count(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Collection* createDocument(Document* document, const std::string& id="", query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::string deleteDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Document* fetchDocument(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mCreateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mCreateOrReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<std::string> mDeleteDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mGetDocument(std::vector<std::string>& ids, query_options* options=NULL) Kuz_Throw_KuzzleException;            
-            std::vector<Document*> mReplaceDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            std::vector<Document*> mUpdateDocument(std::vector<Document*>& documents, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            bool publishMessage(json_object* content, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Document* replaceDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            search_result* scroll(const std::string& id, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            search_result* search(search_filters* filters, query_options* options=NULL) Kuz_Throw_KuzzleException;
-            Room* subscribe(search_filters* filters, NotificationListener* listener, room_options* options=NULL) Kuz_Throw_KuzzleException;
-            NotificationListener* getListener();
-            Document* updateDocument(const std::string& id, Document* document, query_options* options=NULL) Kuz_Throw_KuzzleException;            
+            void create(const std::string& index, const std::string& collection, const std::string* body=nullptr, query_options *options=nullptr);
+            bool exists(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            std::string list(const std::string& index, query_options *options=nullptr);
+            void truncate(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            std::string getMapping(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            void updateMapping(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
+            std::string getSpecifications(const std::string& index, const std::string& collection, query_options *options=nullptr);
+            search_result* searchSpecifications(query_options *options=nullptr);
+            std::string updateSpecifications(const std::string& index, const std::string& collection, const std::string& body, query_options *options=nullptr);
+            bool validateSpecifications(const std::string& body, query_options *options=nullptr);
+            void deleteSpecifications(const std::string& index, const std::string& collection, query_options *options=nullptr);
     };
 }
 

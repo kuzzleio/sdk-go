@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 /*
@@ -7,118 +21,147 @@ package main
 */
 import "C"
 import (
+	"encoding/json"
+	"sync"
 	"unsafe"
 
-	col "github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/types"
+	"github.com/kuzzleio/sdk-go/document"
+	"github.com/kuzzleio/sdk-go/kuzzle"
 )
 
 // map which stores instances to keep references in case the gc passes
-var documentInstances map[interface{}]bool
+var documentInstances sync.Map
 
 // register new instance to the instances map
-func registerDocument(instance interface{}) {
-	documentInstances[instance] = true
+func registerDocument(instance interface{}, ptr unsafe.Pointer) {
+	documentInstances.Store(instance, ptr)
 }
 
 // unregister an instance from the instances map
 //export unregisterDocument
 func unregisterDocument(d *C.document) {
-	delete(documentInstances, (*col.Document)(d.instance))
+	documentInstances.Delete(d)
 }
 
 //export kuzzle_new_document
-func kuzzle_new_document(d *C.document, c *C.collection, id *C.char, content *C.json_object) {
-	doc := col.NewDocument((*col.Collection)(c.instance), C.GoString(id))
+func kuzzle_new_document(d *C.document, k *C.kuzzle) {
+	kuz := (*kuzzle.Kuzzle)(k.instance)
+	doc := document.NewDocument(kuz)
 
-	if content != nil {
-		doc.SetContent(JsonCConvert(content).(map[string]interface{}), true)
-	}
-	if documentInstances == nil {
-		documentInstances = make(map[interface{}]bool)
-	}
-
-	registerDocument(doc)
-	d._collection = c
-	d.instance = unsafe.Pointer(doc)
+	ptr := unsafe.Pointer(doc)
+	d.instance = ptr
+	d.k = k
+	registerDocument(doc, ptr)
 }
 
-//export kuzzle_document_subscribe
-// TODO close on Unsubscribe
-func kuzzle_document_subscribe(d *C.document, options *C.room_options, cb C.kuzzle_notification_listener, data unsafe.Pointer) *C.room_result {
-	c := make(chan types.KuzzleNotification)
-	goroom, _ := cToGoDocument(d._collection, d).Subscribe(SetRoomOptions(options), c)
-
-	go func() {
-		for {
-			res := <-c
-			C.kuzzle_notify(cb, goToCNotificationResult(&res), data)
-		}
-	}()
-	<-goroom.ResponseChannel()
-
-	room := (*C.room)(C.calloc(1, C.sizeof_room))
-	room.instance = unsafe.Pointer(goroom)
-	registerRoom(room)
-	result := (*C.room_result)(C.calloc(1, C.sizeof_room_result))
-
-	result.result = room
-	return result
-}
-
-// Does not re-allocate the document
-//export kuzzle_document_save
-func kuzzle_document_save(d *C.document, options *C.query_options) *C.document_result {
-	_, err := cToGoDocument(d._collection, d).Save(SetQueryOptions(options))
-	return currentDocumentResult(d, err)
-}
-
-//export kuzzle_document_refresh
-func kuzzle_document_refresh(d *C.document, options *C.query_options) *C.document_result {
-	res, err := cToGoDocument(d._collection, d).Refresh(SetQueryOptions(options))
-	return goToCDocumentResult(d._collection, res, err)
-}
-
-//export kuzzle_document_publish
-func kuzzle_document_publish(d *C.document, options *C.query_options) *C.bool_result {
-	//res, err := cToGoDocument(d._collection, d).Publish(SetQueryOptions(options))
-
-	res, err := (*col.Document)(d.instance).Publish(SetQueryOptions(options))
-	return goToCBoolResult(res, err)
+//export kuzzle_document_count
+func kuzzle_document_count(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.int_result {
+	res, err := (*document.Document)(d.instance).Count(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	return goToCIntResult(res, err)
 }
 
 //export kuzzle_document_exists
-func kuzzle_document_exists(d *C.document, options *C.query_options) *C.bool_result {
-	res, err := cToGoDocument(d._collection, d).Exists(SetQueryOptions(options))
+func kuzzle_document_exists(d *C.document, index *C.char, collection *C.char, id *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*document.Document)(d.instance).Exists(C.GoString(index), C.GoString(collection), C.GoString(id), SetQueryOptions(options))
 	return goToCBoolResult(res, err)
 }
 
+//export kuzzle_document_create
+func kuzzle_document_create(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).Create(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
+//export kuzzle_document_create_or_replace
+func kuzzle_document_create_or_replace(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).CreateOrReplace(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
 //export kuzzle_document_delete
-func kuzzle_document_delete(d *C.document, options *C.query_options) *C.string_result {
-	res, err := (*col.Document)(d.instance).Delete(SetQueryOptions(options))
+func kuzzle_document_delete(d *C.document, index *C.char, collection *C.char, id *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).Delete(C.GoString(index), C.GoString(collection), C.GoString(id), SetQueryOptions(options))
 	return goToCStringResult(&res, err)
 }
 
-//export kuzzle_document_set_content
-func kuzzle_document_set_content(d *C.document, content *C.json_object, replace C.bool) {
-	(*col.Document)(d.instance).SetContent(JsonCConvert(content).(map[string]interface{}), bool(replace))
+//export kuzzle_document_delete_by_query
+func kuzzle_document_delete_by_query(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_array_result {
+	res, err := (*document.Document)(d.instance).DeleteByQuery(C.GoString(index), C.GoString(collection), C.GoString(body), SetQueryOptions(options))
+	return goToCStringArrayResult(res, err)
 }
 
-//export kuzzle_document_get_content
-func kuzzle_document_get_content(d *C.document) *C.json_object {
-	r, _ := goToCJson((*col.Document)(d.instance).Content)
-	return r
+//export kuzzle_document_get
+func kuzzle_document_get(d *C.document, index *C.char, collection *C.char, id *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).Get(C.GoString(index), C.GoString(collection), C.GoString(id), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
 }
 
-// Allocates memory for result, not document
-func currentDocumentResult(d *C.document, err error) *C.document_result {
-	result := (*C.document_result)(C.calloc(1, C.sizeof_document_result))
+//export kuzzle_document_replace
+func kuzzle_document_replace(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).Replace(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
 
-	if err != nil {
-		Set_document_error(result, err)
-	}
+//export kuzzle_document_update
+func kuzzle_document_update(d *C.document, index *C.char, collection *C.char, id *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).Update(C.GoString(index), C.GoString(collection), C.GoString(id), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
 
-	result.result = d
+//export kuzzle_document_validate
+func kuzzle_document_validate(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.bool_result {
+	res, err := (*document.Document)(d.instance).Validate(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	return goToCBoolResult(res, err)
+}
 
-	return result
+//export kuzzle_document_search
+func kuzzle_document_search(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.search_result {
+	res, err := (*document.Document)(d.instance).Search(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	return goToCSearchResult(res, err)
+}
+
+//export kuzzle_document_mcreate
+func kuzzle_document_mcreate(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).MCreate(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
+//export kuzzle_document_mcreate_or_replace
+func kuzzle_document_mcreate_or_replace(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).MCreateOrReplace(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
+//export kuzzle_document_mdelete
+func kuzzle_document_mdelete(d *C.document, index *C.char, collection *C.char, ids **C.char, l C.size_t, options *C.query_options) *C.string_array_result {
+	res, err := (*document.Document)(d.instance).MDelete(C.GoString(index), C.GoString(collection), cToGoStrings(ids, l), SetQueryOptions(options))
+	return goToCStringArrayResult(res, err)
+}
+
+//export kuzzle_document_mget
+func kuzzle_document_mget(d *C.document, index *C.char, collection *C.char, ids **C.char, l C.size_t, includeTrash C.bool, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).MGet(C.GoString(index), C.GoString(collection), cToGoStrings(ids, l), bool(includeTrash), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
+//export kuzzle_document_mreplace
+func kuzzle_document_mreplace(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).MReplace(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
+}
+
+//export kuzzle_document_mupdate
+func kuzzle_document_mupdate(d *C.document, index *C.char, collection *C.char, body *C.char, options *C.query_options) *C.string_result {
+	res, err := (*document.Document)(d.instance).MUpdate(C.GoString(index), C.GoString(collection), json.RawMessage(C.GoString(body)), SetQueryOptions(options))
+	s := string(res)
+	return goToCStringResult(&s, err)
 }

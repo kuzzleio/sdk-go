@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker pull kuzzleio/sdk-cross:builder-armv7
+  build:
+    commands:
+      - docker run --rm --name build-machine -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:armv7-builder /build.sh

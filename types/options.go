@@ -1,3 +1,17 @@
+// Copyright 2015-2018 Kuzzle
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 		http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package types
 
 import (
@@ -9,6 +23,7 @@ const (
 	Manual
 )
 
+// Options provides a public access to options private struct
 type Options interface {
 	QueueTTL() time.Duration
 	SetQueueTTL(time.Duration) *options
@@ -28,12 +43,8 @@ type Options interface {
 	SetReconnectionDelay(time.Duration) *options
 	ReplayInterval() time.Duration
 	SetReplayInterval(time.Duration) *options
-	Connect() int
-	SetConnect(int) *options
 	Refresh() string
 	SetRefresh(string) *options
-	DefaultIndex() string
-	SetDefaultIndex(string) *options
 	Port() int
 	SetPort(int) *options
 	SslConnection() bool
@@ -52,7 +63,6 @@ type options struct {
 	replayInterval    time.Duration
 	connect           int
 	refresh           string
-	defaultIndex      string
 	port              int
 	sslConnection     bool
 }
@@ -138,30 +148,12 @@ func (o *options) SetReplayInterval(replayInterval time.Duration) *options {
 	return o
 }
 
-func (o options) Connect() int {
-	return o.connect
-}
-
-func (o *options) SetConnect(connect int) *options {
-	o.connect = connect
-	return o
-}
-
 func (o options) Refresh() string {
 	return o.refresh
 }
 
 func (o *options) SetRefresh(refresh string) *options {
 	o.refresh = refresh
-	return o
-}
-
-func (o options) DefaultIndex() string {
-	return o.defaultIndex
-}
-
-func (o *options) SetDefaultIndex(defaultIndex string) *options {
-	o.defaultIndex = defaultIndex
 	return o
 }
 
@@ -183,6 +175,7 @@ func (o *options) SetSslConnection(v bool) *options {
 	return o
 }
 
+// NewOptions instanciates new Options with default values
 func NewOptions() *options {
 	return &options{
 		queueTTL:          120000,
@@ -194,7 +187,6 @@ func NewOptions() *options {
 		autoResubscribe:   true,
 		reconnectionDelay: 1000,
 		replayInterval:    10,
-		connect:           Auto,
 		port:              7512,
 		sslConnection:     false,
 	}
