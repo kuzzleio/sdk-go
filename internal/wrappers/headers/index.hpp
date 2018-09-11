@@ -29,15 +29,15 @@ namespace kuzzleio {
       Index(Kuzzle* kuzzle);
       Index(Kuzzle* kuzzle, kuzzle_index *index);
       virtual ~Index();
-      void create(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-      void delete_(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-      std::vector<std::string> mDelete(const std::vector<std::string>& indexes, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-      bool exists(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-      void refresh(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-      void refreshInternal(query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
-      void setAutoRefresh(const std::string& index, bool autoRefresh, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-      bool getAutoRefresh(const std::string& index, query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS, NotFoundException);
-      std::vector<std::string> list(query_options *options=NULL) throw(KUZZLE_COMMON_EXCEPTIONS);
+      void create(const std::string& index, query_options *options=nullptr);
+      void delete_(const std::string& index, query_options *options=nullptr);
+      std::vector<std::string> mDelete(const std::vector<std::string>& indexes, query_options *options=nullptr);
+      bool exists(const std::string& index, query_options *options=nullptr);
+      void refresh(const std::string& index, query_options *options=nullptr);
+      void refreshInternal(query_options *options=nullptr);
+      void setAutoRefresh(const std::string& index, bool autoRefresh, query_options *options=nullptr);
+      bool getAutoRefresh(const std::string& index, query_options *options=nullptr);
+      std::vector<std::string> list(query_options *options=nullptr);
   };
 }
 

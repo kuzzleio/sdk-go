@@ -20,26 +20,6 @@
 #include <stdlib.h>
 #include <string>
 
-#define KUZZLE_COMMON_EXCEPTIONS \
-  BadRequestException, \
-  ForbiddenException, \
-  GatewayTimeoutException, \
-  InternalException, \
-  ServiceUnavailableException
-
-#define KUZZLE_SPECIFIC_EXCEPTIONS \
-  NotFoundException, \
-  PartialException, \
-  PreconditionException, \
-  SizeLimitException, \
-  UnauthorizedException
-
-#define KUZZLE_ALL_EXCEPTIONS \
-  KUZZLE_COMMON_EXCEPTIONS, \
-  KUZZLE_SPECIFIC_EXCEPTIONS \
-
-#define Kuz_Throw_KuzzleException throw(KUZZLE_ALL_EXCEPTIONS)
-
 #define PARTIAL_EXCEPTION 206
 #define BAD_REQUEST_EXCEPTION 400
 #define UNAUTHORIZED_EXCEPTION 401
@@ -56,7 +36,9 @@ namespace kuzzleio {
   struct KuzzleException : std::runtime_error {
     int status;
 
-    KuzzleException(int status=500, const std::string& message="Internal Exception");
+    KuzzleException(int status, const std::string& message);
+    KuzzleException(const std::string& message)
+    : KuzzleException(500, message) {};
     KuzzleException(const KuzzleException& ke) : status(ke.status), std::runtime_error(ke.getMessage()) {};
 
     virtual ~KuzzleException() throw() {};

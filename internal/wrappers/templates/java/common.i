@@ -100,16 +100,26 @@
 %ignore *::error;
 %ignore *::stack;
 
-%feature("director") NotificationListener;
-%feature("director") EventListener;
-%feature("director") SubscribeListener;
+
+%include "std_string.i"
+
 
 %{
-#include "kuzzle.cpp"
 #include "collection.cpp"
 #include "auth.cpp"
 #include "index.cpp"
 #include "server.cpp"
 #include "document.cpp"
+%}
+
+%ignore getListener;
+%ignore getListeners;
+
+%include "std_function.i"
+%std_function(NotificationListener, void, onMessage, const kuzzleio::notification_result*);
+%std_function(EventListener, void, trigger, const std::string);
+
+%{
+#include "kuzzle.cpp"
 #include "realtime.cpp"
 %}

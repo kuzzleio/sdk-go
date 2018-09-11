@@ -1,5 +1,9 @@
 #include "steps.hpp"
 
+#include <signal.h>
+
+CustomNotificationListener* CustomNotificationListener::_singleton;
+
 // Anonymous namespace to handle a linker error
 // see https://stackoverflow.com/questions/14320148/linker-error-on-cucumber-cpp-when-dealing-with-multiple-feature-files
 namespace {
@@ -9,10 +13,9 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    ctx->listener = new CustomNotificationListener();
-
     try {
-      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", ctx->listener);
+      CustomNotificationListener *l = CustomNotificationListener::getSingleton();
+      ctx->room_id = ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, "{}", &l->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -35,13 +38,13 @@ namespace {
 
   THEN("^I receive a notification$") {
     ScenarioScope<KuzzleCtx> ctx;
+
     sleep(1);
     BOOST_CHECK(ctx->notif_result != NULL);
     ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
-    delete ctx->listener;
+
     delete ctx->notif_result;
     ctx->notif_result = NULL;
-    ctx->listener = NULL;
   }
 
   GIVEN("^I subscribe to \'([^\"]*)\' with \'(.*)\' as filter$") {
@@ -50,10 +53,9 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
-    ctx->listener = new CustomNotificationListener();
-
     try {
-      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, ctx->listener);
+      CustomNotificationListener *l = CustomNotificationListener::getSingleton();
+      ctx->kuzzle->realtime->subscribe(ctx->index, collection_id, filter, &l->listener);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -66,8 +68,11 @@ namespace {
 
     ScenarioScope<KuzzleCtx> ctx;
 
+    query_options options = {0};
+    options.refresh = const_cast<char*>("wait_for");
+
     try {
-      ctx->kuzzle->document->update(ctx->index, ctx->collection, document_id, "{\""+key+"\":\""+value+"\"}");
+      ctx->kuzzle->document->update(ctx->index, ctx->collection, document_id, "{\""+key+"\":\""+value+"\"}", &options);
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }
@@ -102,7 +107,6 @@ namespace {
     try {
       ctx->kuzzle->realtime->unsubscribe(ctx->room_id);
       ctx->notif_result = NULL;
-      delete ctx->listener;
     } catch (KuzzleException e) {
       BOOST_FAIL(e.getMessage());
     }

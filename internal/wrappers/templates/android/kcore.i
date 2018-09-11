@@ -19,7 +19,6 @@
 
 %include "kuzzlesdk.h"
 %include "kuzzle.h"
-%include "listeners.hpp"
 %include "exceptions.hpp"
 %include "event_emitter.hpp"
 %include "kuzzle.hpp"

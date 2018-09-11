@@ -15,11 +15,12 @@
 #ifndef _EVENT_EMITTER_HPP_
 #define _EVENT_EMITTER_HPP_
 
+#include <functional>
 #include "kuzzle.hpp"
 
-namespace kuzzleio {
+typedef const std::function<void(const std::string)> EventListener;
 
-  class EventListener;
+namespace kuzzleio {
 
   class KuzzleEventEmitter {
     public:

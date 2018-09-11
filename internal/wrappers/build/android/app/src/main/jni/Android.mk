@@ -11,7 +11,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := kuzzle
 LOCAL_CFLAGS    := -frtti
 LOCAL_CPP_FEATURES := rtti exceptions
-LOCAL_CPPFLAGS += -I../../../../../../headers -I../../../../../../cpp/ -I../../../../../../build/c
+LOCAL_CPPFLAGS += -std=gnu++11 -I../../../../../../headers -I../../../../../../cpp/ -I../../../../../../build/c
 LOCAL_SHARED_LIBRARIES := kuzzlesdk
 LOCAL_SRC_FILES := ../../../../../../kcore_wrap.cxx
 include $(BUILD_SHARED_LIBRARY)
