@@ -1,11 +1,53 @@
-language: go
-go:
-  - '1.10'
-  - '1.11'
+os: linux
+dist: trusty
 
-script:
-  - go get -u ./...
-  - ./test.sh
+language: minimal
+sudo: required
+
+services:
+  - docker
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+matrix:
+  include:
+# ---------------------------------------------
+# AMD64: Build and Test
+# ---------------------------------------------
+    - env:
+        - ARCH="amd64"
+
+      script:
+        # Build
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc ./.ci/setup_and_test.sh
+
+# ---------------------------------------------
+# I386: Build and Test
+# ---------------------------------------------
+    - env:
+        - ARCH="i386"
+
+      script:
+        # Build
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-i386 ./.ci/setup_and_test.sh
+
+# ---------------------------------------------
+# ARMV7: Build and Test
+# ---------------------------------------------
+    - env:
+        - ARCH="armhf"
+
+      script:
+        # Build
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-armhf ./.ci/setup_and_test.sh
+
+# ---------------------------------------------
+# ARMV8: Build and Test
+# ---------------------------------------------
+    - env:
+        - ARCH="aarch64"
+
+      script:
+        # Build
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-aarch64 ./.ci/setup_and_test.sh
