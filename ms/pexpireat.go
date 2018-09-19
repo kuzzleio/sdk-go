@@ -16,17 +16,18 @@ package ms
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // PexipreAt sets an expiration timestamp on a key.
 // After the timestamp has been reached, the key will automatically be deleted.
 // The timestamp parameter accepts an Epoch time value, in milliseconds.
-func (ms *Ms) Pexpireat(key string, timestamp int, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Pexpireat(key string, timestamp uint64, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Timestamp int `json:"timestamp"`
+		Timestamp uint64 `json:"timestamp"`
 	}
 
 	query := &types.KuzzleRequest{

@@ -40,12 +40,12 @@ func TestNowQueryError(t *testing.T) {
 
 func TestNow(t *testing.T) {
 	type now struct {
-		Now int `json:"now"`
+		Now int64 `json:"now"`
 	}
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			n := now{Now: 1500646351073}
+			n := now{Now: int64(1488540242465)}
 
 			marsh, _ := json.Marshal(n)
 			return &types.KuzzleResponse{Result: marsh}
@@ -54,7 +54,7 @@ func TestNow(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	res, _ := k.Server.Now(nil)
-	assert.Equal(t, 1500646351073, res)
+	assert.Equal(t, int64(1488540242465), res)
 }
 
 func ExampleKuzzle_Now() {

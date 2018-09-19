@@ -695,7 +695,7 @@ func kuzzle_ms_pexpire(k *C.kuzzle, key *C.char, ttl C.ulong, options *C.query_o
 func kuzzle_ms_pexpireat(k *C.kuzzle, key *C.char, ts C.ulonglong, options *C.query_options) *C.bool_result {
 	res, err := (*kuzzle.Kuzzle)(k.instance).MemoryStorage.Pexpireat(
 		C.GoString(key),
-		int(ts),
+		uint64(ts),
 		SetQueryOptions(options))
 
 	return goToCBoolResult(res, err)

@@ -20,7 +20,7 @@ matrix:
 
       script:
         # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc ./.ci/setup_and_test.sh
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang ./.ci/setup_and_test.sh
 
 # ---------------------------------------------
 # I386: Build and Test
@@ -30,7 +30,7 @@ matrix:
 
       script:
         # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-i386 ./.ci/setup_and_test.sh
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang-i386 ./.ci/setup_and_test.sh
 
 # ---------------------------------------------
 # ARMV7: Build and Test
@@ -40,7 +40,8 @@ matrix:
 
       script:
         # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-armhf ./.ci/setup_and_test.sh
+        - docker run --rm --privileged multiarch/qemu-user-static:register
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:armhf-golang-runner taskset -c 1 ./.ci/setup_and_test.sh
 
 # ---------------------------------------------
 # ARMV8: Build and Test
@@ -50,4 +51,5 @@ matrix:
 
       script:
         # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:gcc-aarch64 ./.ci/setup_and_test.sh
+        - docker run --rm --privileged multiarch/qemu-user-static:register
+        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:aarch64-golang-runner taskset -c 1 ./.ci/setup_and_test.sh

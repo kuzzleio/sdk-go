@@ -21,7 +21,7 @@ import (
 )
 
 // Now retrieves the current Kuzzle time.
-func (s *Server) Now(options types.QueryOptions) (int, error) {
+func (s *Server) Now(options types.QueryOptions) (int64, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
@@ -37,7 +37,7 @@ func (s *Server) Now(options types.QueryOptions) (int, error) {
 	}
 
 	type now struct {
-		Now int `json:"now"`
+		Now int64 `json:"now"`
 	}
 
 	n := now{}
