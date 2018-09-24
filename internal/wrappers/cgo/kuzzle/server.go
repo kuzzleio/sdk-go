@@ -122,5 +122,5 @@ func kuzzle_info(s *C.server, options *C.query_options) *C.string_result {
 func kuzzle_now(s *C.server, options *C.query_options) *C.date_result {
 	time, err := (*server.Server)(s.instance).Now(SetQueryOptions(options))
 
-	return goToCDateResult(time, err)
+	return goToCDateResult(int(time), err)
 }
