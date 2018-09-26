@@ -62,10 +62,10 @@ func TestValidateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
+	vr, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
 	assert.Nil(t, err)
-	assert.NotNil(t, res)
-	assert.Equal(t, true, res)
+	assert.NotNil(t, vr)
+	assert.Equal(t, true, vr.Valid)
 }
 
 func ExampleCollection_ValidateSpecifications() {
