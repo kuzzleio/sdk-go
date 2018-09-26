@@ -16,16 +16,17 @@ package ms
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Pexpire sets a timeout (in milliseconds) on a key.
 // After the timeout has expired, the key will automatically be deleted.
-func (ms *Ms) Pexpire(key string, ttl int, options types.QueryOptions) (bool, error) {
+func (ms *Ms) Pexpire(key string, ttl uint64, options types.QueryOptions) (bool, error) {
 	result := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Milliseconds int `json:"milliseconds"`
+		Milliseconds uint64 `json:"milliseconds"`
 	}
 
 	query := &types.KuzzleRequest{
@@ -41,7 +42,7 @@ func (ms *Ms) Pexpire(key string, ttl int, options types.QueryOptions) (bool, er
 	if res.Error.Error() != "" {
 		return false, res.Error
 	}
-	var returnedResult int
+	var returnedResult uint64
 	json.Unmarshal(res.Result, &returnedResult)
 
 	return returnedResult == 1, nil

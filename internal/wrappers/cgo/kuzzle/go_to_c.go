@@ -764,3 +764,24 @@ func goToCDateResult(goRes int, err error) *C.date_result {
 
 	return result
 }
+
+// Allocates memory
+func goToCValidationResponse(validationResponse *types.ValidationResponse, err error) *C.validation_response {
+	var cvalidation_response *C.validation_response
+
+	cvalidation_response = (*C.validation_response)(C.calloc(1, C.sizeof_validation_response))
+
+	cvalidation_response.valid = C.bool(validationResponse.Valid)
+	cvalidation_response.description = C.CString(validationResponse.Description)
+
+	if validationResponse.Details != nil && len(validationResponse.Details) > 0 {
+		cvalidation_response.details = (**C.char)(C.calloc(C.size_t(len(validationResponse.Details)), C.sizeof_char_ptr))
+		details := (*[1<<28 - 1]*C.char)(unsafe.Pointer(cvalidation_response.details))[:len(validationResponse.Details)]
+
+		for i, detail := range validationResponse.Details {
+			details[i] = C.CString(detail)
+		}
+	}
+
+	return cvalidation_response
+}
