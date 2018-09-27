@@ -16,6 +16,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SearchResult is a search result representation
@@ -30,7 +31,7 @@ type SearchResult struct {
 }
 
 // NewSearchResult Search Result constructor
-func NewSearchResult(collection string, filters json.RawMessage, options QueryOptions, raw *KuzzleResponse) *SearchResult {
+func NewSearchResult(collection string, filters json.RawMessage, options QueryOptions, raw *KuzzleResponse) (*SearchResult, error) {
 	type ParseSearchResult struct {
 		Documents    json.RawMessage `json:"hits"`
 		Total        int             `json:"total"`
@@ -39,7 +40,11 @@ func NewSearchResult(collection string, filters json.RawMessage, options QueryOp
 	}
 
 	var parsed ParseSearchResult
-	json.Unmarshal(raw.Result, &parsed)
+	err := json.Unmarshal(raw.Result, &parsed)
+
+	if err != nil {
+		return nil, NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), raw.Result), 500)
+	}
 
 	sr := &SearchResult{
 		Collection:   collection,
@@ -56,5 +61,5 @@ func NewSearchResult(collection string, filters json.RawMessage, options QueryOp
 		sr.Options.SetSize(options.Size())
 	}
 
-	return sr
+	return sr, nil
 }
