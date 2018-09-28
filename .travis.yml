@@ -5,8 +5,8 @@ language: go
 go:
   - 1.10
 
-install:
-  - go get ./...
+before_install:
+  - go get -u ./...
 
 script:
   - ./test.sh
