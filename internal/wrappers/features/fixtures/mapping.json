@@ -1,7 +1,0 @@
-{
-  "properties": {
-    "position": {
-      "type": "geo_point"
-    }
-  }
-}
