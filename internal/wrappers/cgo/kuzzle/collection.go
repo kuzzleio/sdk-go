@@ -133,7 +133,7 @@ func kuzzle_collection_update_specifications(c *C.collection, index *C.char, col
 }
 
 //export kuzzle_collection_validate_specifications
-func kuzzle_collection_validate_specifications(c *C.collection, body *C.char, options *C.query_options) *C.bool_result {
+func kuzzle_collection_validate_specifications(c *C.collection, body *C.char, options *C.query_options) *C.validation_response {
 	res, err := (*collection.Collection)(c.instance).ValidateSpecifications(json.RawMessage(C.GoString(body)), SetQueryOptions(options))
-	return goToCBoolResult(res, err)
+	return goToCValidationResponse(res, err)
 }

@@ -658,6 +658,12 @@ typedef struct collection_entry_result {
     const char *stack;
 } collection_entry_result;
 
+typedef struct validation_response {
+  bool valid;
+  char **details;
+  const char *description;
+} validation_response;
+
 typedef void (*kuzzle_notification_listener)(notification_result*, void*);
 typedef void (*kuzzle_subscribe_listener)(room_result*, void*);
 
