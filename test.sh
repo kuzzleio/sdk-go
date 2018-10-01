@@ -37,7 +37,6 @@ linter_check() {
 cd "$dir"
 
 linter_check .
-linter_check ./internal/wrappers
 generate_cover_data
 show_cover_report func
 
