@@ -16,6 +16,7 @@ package ms
 
 import (
 	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 

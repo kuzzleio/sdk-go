@@ -52,7 +52,11 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 		return nil, res.Error
 	}
 
-	sr := types.NewSearchResult(collection, body, options, res)
+	sr, err := types.NewSearchResult(collection, body, options, res)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return sr, nil
 }
