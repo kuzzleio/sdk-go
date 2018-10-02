@@ -21,7 +21,7 @@ import (
 )
 
 // MCreate creates the provided documents.
-func (d *Document) MCreate(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+func (d *Document) MCreate(index string, collection string, documents json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Document.MCreate: index required", 400)
 	}
@@ -30,18 +30,22 @@ func (d *Document) MCreate(index string, collection string, body json.RawMessage
 		return nil, types.NewError("Document.MCreate: collection required", 400)
 	}
 
-	if body == nil {
+	if documents == nil {
 		return nil, types.NewError("Document.MCreate: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
+
+	type body struct {
+		Documents json.RawMessage `json:"documents"`
+	}
 
 	query := &types.KuzzleRequest{
 		Index:      index,
 		Collection: collection,
 		Controller: "document",
 		Action:     "mCreate",
-		Body:       body,
+		Body:       &body{documents},
 	}
 
 	go d.Kuzzle.Query(query, options, ch)
