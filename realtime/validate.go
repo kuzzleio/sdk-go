@@ -21,8 +21,8 @@ import (
 )
 
 // Validate validates data against existing validation rules
-func (r *Realtime) Validate(index string, collection string, body string, options types.QueryOptions) (bool, error) {
-	if (index == "" || collection == "") || body == "" {
+func (r *Realtime) Validate(index string, collection string, body json.RawMessage, options types.QueryOptions) (bool, error) {
+	if index == "" || collection == "" || body == nil {
 		return false, types.NewError("Realtime.Validate: index, collection and body required", 400)
 	}
 

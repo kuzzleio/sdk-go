@@ -29,7 +29,7 @@ func TestValidateIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.Validate("", "collection", "body", nil)
+	_, err := nr.Validate("", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 
 	assert.NotNil(t, err)
 }
@@ -38,7 +38,7 @@ func TestValidateCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.Validate("index", "", "body", nil)
+	_, err := nr.Validate("index", "", json.RawMessage(`{"foo": "bar"}`), nil)
 
 	assert.NotNil(t, err)
 }
@@ -47,7 +47,7 @@ func TestValidateBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.Validate("index", "collection", "", nil)
+	_, err := nr.Validate("index", "collection", nil, nil)
 
 	assert.NotNil(t, err)
 }
@@ -61,7 +61,7 @@ func TestValidateError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.Validate("index", "collection", "body", nil)
+	_, err := nr.Validate("index", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -87,7 +87,7 @@ func TestValidate(t *testing.T) {
 
 	nr := realtime.NewRealtime(k)
 
-	res, err := nr.Validate("index", "collection", "body", nil)
+	res, err := nr.Validate("index", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.Nil(t, err)
 	assert.Equal(t, true, res)
 }
