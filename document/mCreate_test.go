@@ -110,6 +110,6 @@ func TestMCreateDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MCreate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	_, err := d.MCreate("index", "collection", json.RawMessage(`["foo", "bar"]`), nil)
 	assert.Nil(t, err)
 }
