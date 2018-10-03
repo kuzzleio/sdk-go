@@ -30,7 +30,7 @@ func TestMGetIndexNull(t *testing.T) {
 	d := document.NewDocument(k)
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MGet("", "collection", ids, true, nil)
+	_, err := d.MGet("", "collection", ids, nil)
 	assert.NotNil(t, err)
 }
 
@@ -39,7 +39,7 @@ func TestMGetCollectionNull(t *testing.T) {
 	d := document.NewDocument(k)
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MGet("index", "", ids, true, nil)
+	_, err := d.MGet("index", "", ids, nil)
 	assert.NotNil(t, err)
 }
 
@@ -47,7 +47,7 @@ func TestMGetIdsNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 	var ids []string
-	_, err := d.MGet("index", "collection", ids, true, nil)
+	_, err := d.MGet("index", "collection", ids, nil)
 	assert.NotNil(t, err)
 }
 
@@ -61,7 +61,7 @@ func TestMGetDocumentError(t *testing.T) {
 	d := document.NewDocument(k)
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MGet("index", "collection", ids, true, nil)
+	_, err := d.MGet("index", "collection", ids, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -115,6 +115,6 @@ func TestMGetDocument(t *testing.T) {
 	d := document.NewDocument(k)
 	var ids []string
 	ids = append(ids, "id1")
-	_, err := d.MGet("index", "collection", ids, true, nil)
+	_, err := d.MGet("index", "collection", ids, nil)
 	assert.Nil(t, err)
 }

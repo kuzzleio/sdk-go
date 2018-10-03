@@ -21,7 +21,7 @@ import (
 )
 
 // MGet fetches multiple documents at once
-func (d *Document) MGet(index string, collection string, ids []string, includeTrash bool, options types.QueryOptions) (json.RawMessage, error) {
+func (d *Document) MGet(index string, collection string, ids []string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Document.MGet: index required", 400)
 	}
@@ -37,8 +37,7 @@ func (d *Document) MGet(index string, collection string, ids []string, includeTr
 	ch := make(chan *types.KuzzleResponse)
 
 	type body struct {
-		Ids          []string `json:"ids"`
-		IncludeTrash bool     `json:"includeTrash"`
+		Ids []string `json:"ids"`
 	}
 
 	query := &types.KuzzleRequest{
@@ -46,7 +45,7 @@ func (d *Document) MGet(index string, collection string, ids []string, includeTr
 		Collection: collection,
 		Controller: "document",
 		Action:     "mGet",
-		Body:       &body{Ids: ids, IncludeTrash: includeTrash},
+		Body:       &body{ids},
 	}
 
 	go d.Kuzzle.Query(query, options, ch)
