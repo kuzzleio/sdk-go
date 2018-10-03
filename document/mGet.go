@@ -47,6 +47,9 @@ func (d *Document) MGet(index string, collection string, ids []string, options t
 		Action:     "mGet",
 		Body:       &body{ids},
 	}
+	if options != nil {
+		query.IncludeTrash = options.IncludeTrash()
+	}
 
 	go d.Kuzzle.Query(query, options, ch)
 

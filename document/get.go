@@ -43,6 +43,9 @@ func (d *Document) Get(index string, collection string, _id string, options type
 		Action:     "get",
 		Id:         _id,
 	}
+	if options != nil {
+		query.IncludeTrash = options.IncludeTrash()
+	}
 
 	go d.Kuzzle.Query(query, options, ch)
 

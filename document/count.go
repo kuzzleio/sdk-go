@@ -47,6 +47,10 @@ func (d *Document) Count(index string, collection string, body json.RawMessage, 
 		Action:     "count",
 		Body:       body,
 	}
+	if options != nil {
+		query.IncludeTrash = options.IncludeTrash()
+	}
+
 	go d.Kuzzle.Query(query, options, ch)
 
 	res := <-ch

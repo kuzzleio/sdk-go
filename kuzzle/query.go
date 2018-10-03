@@ -97,8 +97,6 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		out["retryOnConflict"] = retryOnConflict
 	}
 
-	out["includeTrash"] = options.IncludeTrash()
-
 	jwt := k.Jwt()
 	if jwt != "" {
 		out["jwt"] = jwt

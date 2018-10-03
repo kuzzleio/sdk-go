@@ -43,6 +43,9 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 		Action:     "search",
 		Body:       body,
 	}
+	if options != nil {
+		query.IncludeTrash = options.IncludeTrash()
+	}
 
 	go d.Kuzzle.Query(query, options, ch)
 
