@@ -29,7 +29,7 @@ func TestDeleteByQueryIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.DeleteByQuery("", "collection", "body", nil)
+	_, err := d.DeleteByQuery("", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestDeleteByQueryCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.DeleteByQuery("index", "", "body", nil)
+	_, err := d.DeleteByQuery("index", "", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestDeleteByQueryBodyNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.DeleteByQuery("index", "collection", "", nil)
+	_, err := d.DeleteByQuery("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestDeleteByQueryDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.DeleteByQuery("index", "collection", "body", nil)
+	_, err := d.DeleteByQuery("index", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -85,6 +85,6 @@ func TestDeleteByQueryDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.DeleteByQuery("index", "collection", "body", nil)
+	_, err := d.DeleteByQuery("index", "collection", json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.Nil(t, err)
 }

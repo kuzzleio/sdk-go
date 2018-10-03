@@ -21,17 +21,17 @@ import (
 )
 
 // DeleteByQuery deletes all the documents from Kuzzle that match the given filter or query.
-func (d *Document) DeleteByQuery(index string, collection string, body string, options types.QueryOptions) ([]string, error) {
+func (d *Document) DeleteByQuery(index string, collection string, body json.RawMessage, options types.QueryOptions) ([]string, error) {
 	if index == "" {
-		return nil, types.NewError("Document.MCreate: index required", 400)
+		return nil, types.NewError("Document.DeleteByQuery: index required", 400)
 	}
 
 	if collection == "" {
-		return nil, types.NewError("Document.MCreate: collection required", 400)
+		return nil, types.NewError("Document.DeleteByQuery: collection required", 400)
 	}
 
-	if body == "" {
-		return nil, types.NewError("Document.MCreate: body required", 400)
+	if body == nil {
+		return nil, types.NewError("Document.DeleteByQuery: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
