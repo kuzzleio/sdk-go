@@ -29,7 +29,7 @@ func TestMReplaceIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MReplace("", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	_, err := d.MReplace("", "collection", json.RawMessage(`["foo", "bar"]`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestMReplaceCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MReplace("index", "", json.RawMessage(`{"foo":"bar"}`), nil)
+	_, err := d.MReplace("index", "", json.RawMessage(`["foo", "bar"]`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -58,7 +58,7 @@ func TestMReplaceDocumentError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MReplace("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	_, err := d.MReplace("index", "collection", json.RawMessage(`["foo", "bar"]`), nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -111,6 +111,6 @@ func TestMReplaceDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.MReplace("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	_, err := d.MReplace("index", "collection", json.RawMessage(`["foo", "bar"]`), nil)
 	assert.Nil(t, err)
 }

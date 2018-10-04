@@ -21,7 +21,7 @@ import (
 )
 
 // MUpdate updates multiple documents at once
-func (d *Document) MUpdate(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+func (d *Document) MUpdate(index string, collection string, documents json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Document.MUpdate: index required", 400)
 	}
@@ -30,18 +30,22 @@ func (d *Document) MUpdate(index string, collection string, body json.RawMessage
 		return nil, types.NewError("Document.MUpdate: collection required", 400)
 	}
 
-	if body == nil {
+	if documents == nil {
 		return nil, types.NewError("Document.MUpdate: body required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
+
+	type body struct {
+		Documents json.RawMessage `json:"documents"`
+	}
 
 	query := &types.KuzzleRequest{
 		Collection: collection,
 		Index:      index,
 		Controller: "document",
 		Action:     "mUpdate",
-		Body:       body,
+		Body:       &body{documents},
 	}
 
 	go d.Kuzzle.Query(query, options, ch)
