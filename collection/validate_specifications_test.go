@@ -28,10 +28,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestValidateSpecificationsBodyNull(t *testing.T) {
+func TestValidateSpecificationsSpecificationsNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.ValidateSpecifications(nil, nil)
+	_, err := nc.ValidateSpecifications("index", "collection", nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -44,7 +44,7 @@ func TestValidateSpecificationsError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
+	_, err := nc.ValidateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.NotNil(t, err)
 }
 
@@ -62,7 +62,7 @@ func TestValidateSpecifications(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	vr, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
+	vr, err := nc.ValidateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, vr)
 	assert.Equal(t, true, vr.Valid)
@@ -73,7 +73,7 @@ func ExampleCollection_ValidateSpecifications() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.ValidateSpecifications(json.RawMessage(`{"body": "body"}`), nil)
+	res, err := nc.ValidateSpecifications("index", "collection", json.RawMessage(`{"body": "body"}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

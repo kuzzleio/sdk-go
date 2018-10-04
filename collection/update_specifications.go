@@ -16,12 +16,13 @@ package collection
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // UpdateSpecifications updates the current specifications of this collection.
-func (dc *Collection) UpdateSpecifications(index string, collection string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+func (dc *Collection) UpdateSpecifications(index string, collection string, specifications json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Collection.UpdateSpecifications: index required", 400)
 	}
@@ -30,19 +31,28 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, body
 		return nil, types.NewError("Collection.UpdateSpecifications: collection required", 400)
 	}
 
-	if body == nil {
-		return nil, types.NewError("Collection.UpdateSpecifications: body required", 400)
+	if specifications == nil {
+		return nil, types.NewError("Collection.UpdateSpecifications: specifications required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
 
+	body := make(map[string]map[string]json.RawMessage)
+	body[index] = make(map[string]json.RawMessage)
+	body[index][collection] = specifications
+
+	jsonBody, err := json.Marshal(body)
+
+	if err != nil {
+		return nil, types.NewError(fmt.Sprintf("Unable to construct body: %s\n", err.Error()), 500)
+	}
+
 	query := &types.KuzzleRequest{
-		Collection: collection,
-		Index:      index,
 		Controller: "collection",
 		Action:     "updateSpecifications",
-		Body:       body,
+		Body:       jsonBody,
 	}
+
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
