@@ -21,11 +21,11 @@ import (
 
 	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/realtime"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/server"
@@ -35,7 +35,7 @@ import (
 const version = "1.0.0"
 
 type Kuzzle struct {
-	socket connection.Connection
+	socket protocol.Protocol
 
 	wasConnected   bool
 	lastUrl        string
@@ -57,7 +57,7 @@ type Kuzzle struct {
 }
 
 // NewKuzzle is the Kuzzle constructor
-func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
+func NewKuzzle(c protocol.Protocol, options types.Options) (*Kuzzle, error) {
 	if c == nil {
 		return nil, types.NewError("Connection is nil")
 	}
@@ -183,7 +183,7 @@ func (k *Kuzzle) OfflineQueue() []*types.QueryObject {
 }
 
 // OfflineQueueLoader returns the Kuzzle socket OfflineQueueLoader field value
-func (k *Kuzzle) OfflineQueueLoader() connection.OfflineQueueLoader {
+func (k *Kuzzle) OfflineQueueLoader() protocol.OfflineQueueLoader {
 	return k.socket.OfflineQueueLoader()
 }
 
@@ -193,7 +193,7 @@ func (k *Kuzzle) Port() int {
 }
 
 // QueueFilter returns the Kuzzle socket QueueFilter field value
-func (k *Kuzzle) QueueFilter() connection.QueueFilter {
+func (k *Kuzzle) QueueFilter() protocol.QueueFilter {
 	return k.socket.QueueFilter()
 }
 
@@ -233,12 +233,12 @@ func (k *Kuzzle) SetAutoReplay(v bool) {
 }
 
 // SetOfflineQueueLoader sets the Kuzzle socket OfflineQueueLoader field with given value
-func (k *Kuzzle) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
+func (k *Kuzzle) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
 	k.socket.SetOfflineQueueLoader(v)
 }
 
 // SetQueueFilter sets the Kuzzle socket QueueFilter field with given value
-func (k *Kuzzle) SetQueueFilter(v connection.QueueFilter) {
+func (k *Kuzzle) SetQueueFilter(v protocol.QueueFilter) {
 	k.socket.SetQueueFilter(v)
 }
 

@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
