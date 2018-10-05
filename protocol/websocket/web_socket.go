@@ -80,7 +80,7 @@ type webSocket struct {
 var defaultQueueFilter protocol.QueueFilter
 
 // NewWebSocket instanciates a new webSocket connection object
-func NewWebSocket(host string, options types.Options) protocol.Connection {
+func NewWebSocket(host string, options types.Options) protocol.Protocol {
 	defaultQueueFilter = func([]byte) bool {
 		return true
 	}
