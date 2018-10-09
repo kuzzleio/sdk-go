@@ -21,9 +21,9 @@ import (
 
 // ValidationResponse contains a validation response
 type ValidationResponse struct {
-	Valid       bool
-	Details     []string
-	Description string
+	Valid       bool     `json:"valid"`
+	Details     []string `json:"details"`
+	Description string   `json:"description"`
 }
 
 func NewValidationResponse(validationResponse json.RawMessage) (*ValidationResponse, error) {

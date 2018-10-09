@@ -50,7 +50,7 @@ func (dc *Collection) UpdateSpecifications(index string, collection string, spec
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "updateSpecifications",
-		Body:       jsonBody,
+		Body:       json.RawMessage(jsonBody),
 	}
 
 	go dc.Kuzzle.Query(query, options, ch)

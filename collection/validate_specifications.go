@@ -50,7 +50,7 @@ func (dc *Collection) ValidateSpecifications(index string, collection string, sp
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "validateSpecifications",
-		Body:       jsonBody,
+		Body:       json.RawMessage(jsonBody),
 	}
 
 	go dc.Kuzzle.Query(query, options, ch)
