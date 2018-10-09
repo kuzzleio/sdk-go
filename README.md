@@ -29,23 +29,29 @@ go get github.com/kuzzleio/sdk-go
 ## Basic usage
 
 ````go
+package main
+
+import (
+	"fmt"
+
+	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/kuzzle"
+)
+
 func main() {
-    conn := websocket.NewWebSocket("localhost:7512", nil)
-    k, _ := kuzzle.NewKuzzle(conn, nil)
+	conn := websocket.NewWebSocket("localhost", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+	k.Connect()
 
-    res, err := k.GetAllStatistics(nil)
+	res, err := k.Server.GetAllStats(nil)
 
-    if err != nil {
-        fmt.Println(err.Error())
-        return
-    }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-    for _, stat := range res {
-        fmt.Println(stat.Timestamp, stat.FailedRequests, stat.Connections, stat.CompletedRequests, stat.OngoingRequests)
-    }
+	fmt.Println(string(res))
 }
-
-
 ````
 
 ## <a name="tests"></a> Running Tests
