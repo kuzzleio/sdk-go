@@ -16,6 +16,7 @@ package document
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -52,9 +53,13 @@ func (d *Document) DeleteByQuery(index string, collection string, body json.RawM
 		return nil, res.Error
 	}
 
-	var deleted []string
-	json.Unmarshal(res.Result, &deleted)
+	var deleted struct {
+		Ids []string `json:"ids"`
+	}
+	err := json.Unmarshal(res.Result, &deleted)
+	if err != nil {
+		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+	}
 
-	return deleted, nil
-
+	return deleted.Ids, nil
 }
