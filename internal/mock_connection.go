@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/kuzzleio/sdk-go/connection"
+	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/mock"
 )
@@ -145,7 +145,7 @@ func (c *MockedConnection) OfflineQueue() []*types.QueryObject {
 	return offlineQueue
 }
 
-func (c *MockedConnection) OfflineQueueLoader() connection.OfflineQueueLoader {
+func (c *MockedConnection) OfflineQueueLoader() protocol.OfflineQueueLoader {
 	return nil
 }
 
@@ -153,7 +153,7 @@ func (c *MockedConnection) Port() int {
 	return 0
 }
 
-func (c *MockedConnection) QueueFilter() connection.QueueFilter {
+func (c *MockedConnection) QueueFilter() protocol.QueueFilter {
 	return nil
 }
 
@@ -183,10 +183,10 @@ func (c *MockedConnection) SetAutoQueue(v bool) {
 func (c *MockedConnection) SetAutoReplay(v bool) {
 }
 
-func (c *MockedConnection) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
+func (c *MockedConnection) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
 }
 
-func (c *MockedConnection) SetQueueFilter(v connection.QueueFilter) {
+func (c *MockedConnection) SetQueueFilter(v protocol.QueueFilter) {
 }
 
 func (c *MockedConnection) SetQueueMaxSize(v int) {

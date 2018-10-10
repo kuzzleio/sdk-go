@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package connection
+package protocol
 
 import (
 	"encoding/json"
@@ -21,8 +21,8 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Connection provides functions to manage many connection type (websocket...)
-type Connection interface {
+// Protocol provides functions to manage many connection type (websocket...)
+type Protocol interface {
 	AddListener(event int, channel chan<- interface{})
 	RemoveListener(event int, channel chan<- interface{})
 	RemoveAllListeners(event int)

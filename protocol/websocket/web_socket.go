@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/event"
+	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -67,9 +67,9 @@ type webSocket struct {
 	autoResubscribe    bool
 	host               string
 	offlineQueue       []*types.QueryObject
-	offlineQueueLoader connection.OfflineQueueLoader
+	offlineQueueLoader protocol.OfflineQueueLoader
 	port               int
-	queueFilter        connection.QueueFilter
+	queueFilter        protocol.QueueFilter
 	queueMaxSize       int
 	queueTTL           time.Duration
 	reconnectionDelay  time.Duration
@@ -77,10 +77,10 @@ type webSocket struct {
 	ssl                bool
 }
 
-var defaultQueueFilter connection.QueueFilter
+var defaultQueueFilter protocol.QueueFilter
 
 // NewWebSocket instanciates a new webSocket connection object
-func NewWebSocket(host string, options types.Options) connection.Connection {
+func NewWebSocket(host string, options types.Options) protocol.Protocol {
 	defaultQueueFilter = func([]byte) bool {
 		return true
 	}
@@ -569,7 +569,7 @@ func (ws *webSocket) OfflineQueue() []*types.QueryObject {
 	return ws.offlineQueue
 }
 
-func (ws *webSocket) OfflineQueueLoader() connection.OfflineQueueLoader {
+func (ws *webSocket) OfflineQueueLoader() protocol.OfflineQueueLoader {
 	return ws.offlineQueueLoader
 }
 
@@ -577,7 +577,7 @@ func (ws *webSocket) Port() int {
 	return ws.port
 }
 
-func (ws *webSocket) QueueFilter() connection.QueueFilter {
+func (ws *webSocket) QueueFilter() protocol.QueueFilter {
 	return ws.queueFilter
 }
 
@@ -609,11 +609,11 @@ func (ws *webSocket) SetAutoReplay(v bool) {
 	ws.autoReplay = v
 }
 
-func (ws *webSocket) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
+func (ws *webSocket) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
 	ws.offlineQueueLoader = v
 }
 
-func (ws *webSocket) SetQueueFilter(v connection.QueueFilter) {
+func (ws *webSocket) SetQueueFilter(v protocol.QueueFilter) {
 	if v == nil {
 		ws.queueFilter = defaultQueueFilter
 	} else {
