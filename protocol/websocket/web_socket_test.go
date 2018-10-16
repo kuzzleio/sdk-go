@@ -22,7 +22,7 @@ import (
 )
 
 func TestAddListener(t *testing.T) {
-	c := webSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
+	c := WebSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
 	c.Connect()
 	c.AddListener(event.LoginAttempt, nil)
 	c.AddListener(event.Disconnected, nil)
@@ -30,7 +30,7 @@ func TestAddListener(t *testing.T) {
 }
 
 func TestOnce(t *testing.T) {
-	c := webSocket{eventListenersOnce: make(map[int]map[chan<- interface{}]bool)}
+	c := WebSocket{eventListenersOnce: make(map[int]map[chan<- interface{}]bool)}
 	listener := make(chan interface{})
 	go func() {
 		<-listener
@@ -42,7 +42,7 @@ func TestOnce(t *testing.T) {
 }
 
 func TestRemoveAllListeners(t *testing.T) {
-	c := webSocket{
+	c := WebSocket{
 		eventListeners:     make(map[int]map[chan<- interface{}]bool),
 		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
 	}
@@ -66,7 +66,7 @@ func TestRemoveAllListeners(t *testing.T) {
 }
 
 func TestRemoveListener(t *testing.T) {
-	c := webSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
+	c := WebSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
 
 	listener := make(chan interface{})
 	c.AddListener(event.LoginAttempt, listener)
@@ -83,7 +83,7 @@ func TestRemoveListener(t *testing.T) {
 }
 
 func TestListenerCount(t *testing.T) {
-	c := webSocket{
+	c := WebSocket{
 		eventListeners:     make(map[int]map[chan<- interface{}]bool),
 		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
 	}
@@ -102,7 +102,7 @@ func TestListenerCount(t *testing.T) {
 }
 
 func TestEmitEvent(t *testing.T) {
-	c := webSocket{
+	c := WebSocket{
 		eventListeners:     make(map[int]map[chan<- interface{}]bool),
 		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
 	}
