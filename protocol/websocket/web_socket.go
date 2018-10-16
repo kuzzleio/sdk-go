@@ -42,7 +42,7 @@ type subscription struct {
 	subscribeToSelf     bool
 }
 
-type webSocket struct {
+type WebSocket struct {
 	ws      *websocket.Conn
 	mu      *sync.Mutex
 	queuing bool
@@ -93,7 +93,7 @@ func NewWebSocket(host string, options types.Options) protocol.Protocol {
 		opts = options
 	}
 
-	ws := &webSocket{
+	ws := &WebSocket{
 		mu:                    &sync.Mutex{},
 		queueTTL:              opts.QueueTTL(),
 		offlineQueue:          []*types.QueryObject{},
@@ -131,7 +131,7 @@ func NewWebSocket(host string, options types.Options) protocol.Protocol {
 }
 
 //Connect connects to a kuzzle instance
-func (ws *webSocket) Connect() (bool, error) {
+func (ws *WebSocket) Connect() (bool, error) {
 	if ws.state != state.Offline {
 		return false, nil
 	}
@@ -217,7 +217,7 @@ func (ws *webSocket) Connect() (bool, error) {
 	return ws.wasConnected, err
 }
 
-func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
+func (ws *WebSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
 	queuable := options == nil || options.Queuable()
 	queuable = queuable && ws.queueFilter(query)
 
@@ -247,14 +247,15 @@ func (ws *webSocket) Send(query []byte, options types.QueryOptions, responseChan
 	return nil
 }
 
-func (ws *webSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
+func (ws *WebSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
 	if responseChannel != nil {
 		responseChannel <- &types.KuzzleResponse{Status: 400, Error: types.NewError("Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: "+string(query), 400)}
 	}
 }
 
 // Clean up the queue, ensuring the queryTTL and queryMaxSize properties are respected
-func (ws *webSocket) cleanQueue() {
+// Clean up the queue, ensuring the queryTTL and queryMaxSize properties are respected
+func (ws *WebSocket) cleanQueue() {
 	now := time.Now()
 	now = now.Add(-ws.queueTTL * time.Millisecond)
 
@@ -288,7 +289,7 @@ func (ws *webSocket) cleanQueue() {
 	}
 }
 
-func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+func (ws *WebSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
 	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
@@ -307,7 +308,7 @@ func (ws *webSocket) RegisterSub(channel, roomID string, filters json.RawMessage
 	ws.subscriptions.Store(channel, subs)
 }
 
-func (ws *webSocket) UnregisterSub(roomID string) {
+func (ws *WebSocket) UnregisterSub(roomID string) {
 	ws.subscriptions.Range(func(k, v interface{}) bool {
 		for k, sub := range v.(map[string]subscription) {
 			if sub.roomID == roomID {
@@ -320,7 +321,7 @@ func (ws *webSocket) UnregisterSub(roomID string) {
 	})
 }
 
-func (ws *webSocket) CancelSubs() {
+func (ws *WebSocket) CancelSubs() {
 	ws.subscriptions.Range(func(roomId, s interface{}) bool {
 		for _, sub := range s.(map[string]subscription) {
 			if sub.notificationChannel != nil {
@@ -332,7 +333,7 @@ func (ws *webSocket) CancelSubs() {
 	})
 }
 
-func (ws *webSocket) listen() {
+func (ws *WebSocket) listen() {
 	for {
 		msg := <-ws.listenChan
 
@@ -371,7 +372,7 @@ func (ws *webSocket) listen() {
 }
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
-func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
+func (ws *WebSocket) AddListener(event int, channel chan<- interface{}) {
 	if ws.eventListeners[event] == nil {
 		ws.eventListeners[event] = make(map[chan<- interface{}]bool)
 	}
@@ -379,7 +380,7 @@ func (ws *webSocket) AddListener(event int, channel chan<- interface{}) {
 }
 
 // Removes all listeners, either from all events and close channels
-func (ws *webSocket) RemoveAllListeners(event int) {
+func (ws *WebSocket) RemoveAllListeners(event int) {
 	for k := range ws.eventListeners {
 		if event == k || event == -1 {
 			delete(ws.eventListeners, k)
@@ -394,24 +395,24 @@ func (ws *webSocket) RemoveAllListeners(event int) {
 }
 
 // Removes a listener from an event.
-func (ws *webSocket) RemoveListener(event int, c chan<- interface{}) {
+func (ws *WebSocket) RemoveListener(event int, c chan<- interface{}) {
 	delete(ws.eventListeners[event], c)
 	delete(ws.eventListenersOnce[event], c)
 }
 
-func (ws *webSocket) Once(event int, channel chan<- interface{}) {
+func (ws *WebSocket) Once(event int, channel chan<- interface{}) {
 	if ws.eventListenersOnce[event] == nil {
 		ws.eventListenersOnce[event] = make(map[chan<- interface{}]bool)
 	}
 	ws.eventListenersOnce[event][channel] = true
 }
 
-func (ws *webSocket) ListenerCount(event int) int {
+func (ws *WebSocket) ListenerCount(event int) int {
 	return len(ws.eventListenersOnce[event]) + len(ws.eventListeners[event])
 }
 
 // Emit an event to all registered listeners
-func (ws *webSocket) EmitEvent(event int, arg interface{}) {
+func (ws *WebSocket) EmitEvent(event int, arg interface{}) {
 	for c := range ws.eventListeners[event] {
 		c <- arg
 	}
@@ -422,31 +423,31 @@ func (ws *webSocket) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (ws *webSocket) StartQueuing() {
+func (ws *WebSocket) StartQueuing() {
 	if ws.state == state.Offline && !ws.autoQueue {
 		ws.queuing = true
 	}
 }
 
-func (ws *webSocket) StopQueuing() {
+func (ws *WebSocket) StopQueuing() {
 	if ws.state == state.Offline && !ws.autoQueue {
 		ws.queuing = false
 	}
 }
 
-func (ws *webSocket) ClearQueue() {
+func (ws *WebSocket) ClearQueue() {
 	ws.offlineQueue = nil
 }
 
 // PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (ws *webSocket) PlayQueue() {
+func (ws *WebSocket) PlayQueue() {
 	if ws.state != state.Offline && !ws.autoReplay {
 		ws.cleanQueue()
 		ws.dequeue()
 	}
 }
 
-func (ws *webSocket) mergeOfflineQueueWithLoader() error {
+func (ws *WebSocket) mergeOfflineQueueWithLoader() error {
 	type query struct {
 		requestId  string `json:"requestId"`
 		controller string `json:"controller"`
@@ -475,7 +476,7 @@ func (ws *webSocket) mergeOfflineQueueWithLoader() error {
 	return nil
 }
 
-func (ws *webSocket) dequeue() error {
+func (ws *WebSocket) dequeue() error {
 	if ws.offlineQueueLoader != nil {
 		err := ws.mergeOfflineQueueWithLoader()
 		if err != nil {
@@ -497,7 +498,7 @@ func (ws *webSocket) dequeue() error {
 	return nil
 }
 
-func (ws *webSocket) emitRequest(query *types.QueryObject) error {
+func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
 	now := time.Now()
 	now = now.Add(-MAX_EMIT_TIMEOUT * time.Second)
 
@@ -521,7 +522,7 @@ func (ws *webSocket) emitRequest(query *types.QueryObject) error {
 	return nil
 }
 
-func (ws *webSocket) Close() error {
+func (ws *WebSocket) Close() error {
 	ws.stopRetryingToConnect = true
 	ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	ws.state = state.Disconnected
@@ -529,7 +530,7 @@ func (ws *webSocket) Close() error {
 	return ws.ws.Close()
 }
 
-func (ws *webSocket) isValidState() bool {
+func (ws *WebSocket) isValidState() bool {
 	switch ws.state {
 	case state.Initializing, state.Ready, state.Disconnected, state.Error, state.Offline:
 		return true
@@ -537,83 +538,83 @@ func (ws *webSocket) isValidState() bool {
 	return false
 }
 
-func (ws *webSocket) State() int {
+func (ws *WebSocket) State() int {
 	return ws.state
 }
 
-func (ws *webSocket) RequestHistory() map[string]time.Time {
+func (ws *WebSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
 }
 
-func (ws *webSocket) AutoQueue() bool {
+func (ws *WebSocket) AutoQueue() bool {
 	return ws.autoQueue
 }
 
-func (ws *webSocket) AutoReconnect() bool {
+func (ws *WebSocket) AutoReconnect() bool {
 	return ws.autoReconnect
 }
 
-func (ws *webSocket) AutoResubscribe() bool {
+func (ws *WebSocket) AutoResubscribe() bool {
 	return ws.autoResubscribe
 }
 
-func (ws *webSocket) AutoReplay() bool {
+func (ws *WebSocket) AutoReplay() bool {
 	return ws.autoReplay
 }
 
-func (ws *webSocket) Host() string {
+func (ws *WebSocket) Host() string {
 	return ws.host
 }
 
-func (ws *webSocket) OfflineQueue() []*types.QueryObject {
+func (ws *WebSocket) OfflineQueue() []*types.QueryObject {
 	return ws.offlineQueue
 }
 
-func (ws *webSocket) OfflineQueueLoader() protocol.OfflineQueueLoader {
+func (ws *WebSocket) OfflineQueueLoader() protocol.OfflineQueueLoader {
 	return ws.offlineQueueLoader
 }
 
-func (ws *webSocket) Port() int {
+func (ws *WebSocket) Port() int {
 	return ws.port
 }
 
-func (ws *webSocket) QueueFilter() protocol.QueueFilter {
+func (ws *WebSocket) QueueFilter() protocol.QueueFilter {
 	return ws.queueFilter
 }
 
-func (ws *webSocket) QueueMaxSize() int {
+func (ws *WebSocket) QueueMaxSize() int {
 	return ws.queueMaxSize
 }
 
-func (ws *webSocket) QueueTTL() time.Duration {
+func (ws *WebSocket) QueueTTL() time.Duration {
 	return ws.queueTTL
 }
 
-func (ws *webSocket) ReplayInterval() time.Duration {
+func (ws *WebSocket) ReplayInterval() time.Duration {
 	return ws.replayInterval
 }
 
-func (ws *webSocket) ReconnectionDelay() time.Duration {
+func (ws *WebSocket) ReconnectionDelay() time.Duration {
 	return ws.reconnectionDelay
 }
 
-func (ws *webSocket) SslConnection() bool {
+func (ws *WebSocket) SslConnection() bool {
 	return ws.ssl
 }
 
-func (ws *webSocket) SetAutoQueue(v bool) {
+func (ws *WebSocket) SetAutoQueue(v bool) {
 	ws.autoQueue = v
 }
 
-func (ws *webSocket) SetAutoReplay(v bool) {
+func (ws *WebSocket) SetAutoReplay(v bool) {
 	ws.autoReplay = v
 }
 
-func (ws *webSocket) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
+func (ws *WebSocket) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
 	ws.offlineQueueLoader = v
 }
 
-func (ws *webSocket) SetQueueFilter(v protocol.QueueFilter) {
+func (ws *WebSocket) SetQueueFilter(v protocol.QueueFilter) {
 	if v == nil {
 		ws.queueFilter = defaultQueueFilter
 	} else {
@@ -621,14 +622,14 @@ func (ws *webSocket) SetQueueFilter(v protocol.QueueFilter) {
 	}
 }
 
-func (ws *webSocket) SetQueueMaxSize(v int) {
+func (ws *WebSocket) SetQueueMaxSize(v int) {
 	ws.queueMaxSize = v
 }
 
-func (ws *webSocket) SetQueueTTL(v time.Duration) {
+func (ws *WebSocket) SetQueueTTL(v time.Duration) {
 	ws.queueTTL = v
 }
 
-func (ws *webSocket) SetReplayInterval(v time.Duration) {
+func (ws *WebSocket) SetReplayInterval(v time.Duration) {
 	ws.replayInterval = v
 }
