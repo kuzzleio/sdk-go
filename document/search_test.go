@@ -77,7 +77,8 @@ func TestSearchDocument(t *testing.T) {
 
 			return &types.KuzzleResponse{Result: []byte(`
 			{
-				"hits": ["id1", "id2"]
+				"hits": ["id1", "id2"],
+				"total": 42
 			}`),
 			}
 		},
@@ -85,6 +86,8 @@ func TestSearchDocument(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
 
-	_, err := d.Search("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	response, err := d.Search("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
+	assert.Equal(t, 2, response.Fetched)
+	assert.Equal(t, 42, response.Total)
 }

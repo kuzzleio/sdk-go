@@ -46,12 +46,15 @@ func NewSearchResult(collection string, filters json.RawMessage, options QueryOp
 		return nil, NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), raw.Result), 500)
 	}
 
+	var docs []interface{}
+	json.Unmarshal(parsed.Documents, &docs)
+
 	sr := &SearchResult{
 		Collection:   collection,
 		Filters:      filters,
 		Documents:    parsed.Documents,
 		Total:        parsed.Total,
-		Fetched:      len(parsed.Documents),
+		Fetched:      len(docs),
 		Aggregations: parsed.Aggregations,
 		Options:      NewQueryOptions(),
 	}
