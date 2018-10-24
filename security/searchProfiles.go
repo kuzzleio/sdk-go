@@ -50,9 +50,21 @@ func (s *Security) SearchProfiles(body json.RawMessage, options types.QueryOptio
 	jsonSearchResult := &jsonProfileSearchResult{}
 	json.Unmarshal(res.Result, jsonSearchResult)
 
+	sr, err := types.NewSearchResult(s.Kuzzle, "scrollProfiles", query, options, res)
+
+	if err != nil {
+		return nil, err
+	}
+
 	searchResult := &ProfileSearchResult{
-		ScrollId: jsonSearchResult.ScrollId,
-		Total:    jsonSearchResult.Total,
+		Aggregations: sr.Aggregations,
+		Total:        sr.Total,
+		Fetched:      sr.Fetched,
+		ScrollId:     sr.ScrollId,
+		kuzzle:       s.Kuzzle,
+		request:      query,
+		response:     res,
+		options:      options,
 	}
 	for _, j := range jsonSearchResult.Hits {
 		p := j.jsonProfileToProfile()

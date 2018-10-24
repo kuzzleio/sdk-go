@@ -24,12 +24,6 @@ type User struct {
 	ProfileIds []string
 }
 
-type UserSearchResult struct {
-	Hits     []*User
-	Total    int
-	ScrollId string
-}
-
 func NewUser(id string, content *types.UserData) *User {
 	u := &User{
 		Id: id,

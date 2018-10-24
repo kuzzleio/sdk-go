@@ -23,11 +23,6 @@ type Role struct {
 	Controllers map[string]*types.Controller
 }
 
-type RoleSearchResult struct {
-	Hits  []*Role
-	Total int
-}
-
 func NewRole(id string, controllers *types.Controllers) *Role {
 	r := &Role{
 		Id: id,

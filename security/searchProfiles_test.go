@@ -93,7 +93,7 @@ func TestSearchProfileWithScroll(t *testing.T) {
 				"hits": [
 					{"_id": "profile42", "_source": {"policies": [{"roleId": "admin"}]}}
 				],
-				"scrollId": "f00b4r"
+				"_scroll_id": "f00b4r"
 			}`)}
 		},
 	}
@@ -110,6 +110,6 @@ func TestSearchProfileWithScroll(t *testing.T) {
 	assert.Equal(t, []*types.Policy{
 		{RoleId: "admin"},
 	}, res.Hits[0].Policies)
-	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, "profile42", res.Hits[0].Id)
+	assert.Equal(t, "f00b4r", res.ScrollId)
 }

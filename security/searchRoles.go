@@ -20,6 +20,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+// SearchRoles returns the roles matching the given query
 func (s *Security) SearchRoles(body json.RawMessage, options types.QueryOptions) (*RoleSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
@@ -49,8 +50,21 @@ func (s *Security) SearchRoles(body json.RawMessage, options types.QueryOptions)
 	jsonSearchResult := &jsonRoleSearchResult{}
 	json.Unmarshal(res.Result, jsonSearchResult)
 
+	sr, err := types.NewSearchResult(s.Kuzzle, "scrollRoles", query, options, res)
+
+	if err != nil {
+		return nil, err
+	}
+
 	searchResult := &RoleSearchResult{
-		Total: jsonSearchResult.Total,
+		Aggregations: sr.Aggregations,
+		Total:        sr.Total,
+		Fetched:      sr.Fetched,
+		ScrollId:     sr.ScrollId,
+		kuzzle:       s.Kuzzle,
+		request:      query,
+		response:     res,
+		options:      options,
 	}
 	for _, j := range jsonSearchResult.Hits {
 		r := j.jsonRoleToRole()
