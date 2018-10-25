@@ -62,7 +62,6 @@ type KuzzleRequest struct {
 	Match        string        `json:"match,omitempty"`
 	Reset        bool          `json:"reset,omitempty"`
 	IncludeTrash bool          `json:"includeTrash,omitempty"`
-	SearchAfter  []interface{} `json:"search_after,omitempty"`
 }
 
 type SubscribeQuery struct {

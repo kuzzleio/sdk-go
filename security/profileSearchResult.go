@@ -56,10 +56,15 @@ func (psr *ProfileSearchResult) Next() (*ProfileSearchResult, error) {
 		response:     psr.response,
 		options:      psr.options,
 	}
-	err = json.Unmarshal(nsr.Hits, npsr.Hits)
+	var jprofiles []jsonProfile
+	err = json.Unmarshal(nsr.Hits, &jprofiles)
 
 	if err != nil {
 		return nil, err
+	}
+
+	for _, jprofile := range jprofiles {
+		npsr.Hits = append(npsr.Hits, jprofile.jsonProfileToProfile())
 	}
 
 	return npsr, nil

@@ -55,10 +55,15 @@ func (usr *UserSearchResult) Next() (*UserSearchResult, error) {
 		response:     usr.response,
 		options:      usr.options,
 	}
-	err = json.Unmarshal(nsr.Hits, nsr.Hits)
+	var jusers []jsonUser
+	err = json.Unmarshal(nsr.Hits, &jusers)
 
 	if err != nil {
 		return nil, err
+	}
+
+	for _, juser := range jusers {
+		nusr.Hits = append(nusr.Hits, juser.jsonUserToUser())
 	}
 
 	return nusr, nil

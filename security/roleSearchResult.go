@@ -55,10 +55,15 @@ func (rsr *RoleSearchResult) Next() (*RoleSearchResult, error) {
 		response:     rsr.response,
 		options:      rsr.options,
 	}
-	err = json.Unmarshal(nsr.Hits, nsr.Hits)
+	var jroles []jsonRole
+	err = json.Unmarshal(nsr.Hits, &jroles)
 
 	if err != nil {
 		return nil, err
+	}
+
+	for _, jrole := range jroles {
+		nrsr.Hits = append(nrsr.Hits, jrole.jsonRoleToRole())
 	}
 
 	return nrsr, nil

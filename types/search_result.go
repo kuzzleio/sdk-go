@@ -84,6 +84,8 @@ func (sr *SearchResult) Next() (*SearchResult, error) {
 	json.Unmarshal(j, &pb)
 
 	if sr.ScrollId != "" {
+		// scroll
+
 		query := &KuzzleRequest{
 			Controller: sr.request.Controller,
 			Action:     sr.scrollAction,
@@ -106,9 +108,10 @@ func (sr *SearchResult) Next() (*SearchResult, error) {
 
 		return nsr, nil
 	} else if pb.Sort != nil && sr.request.Size > 0 {
+		// search_after
+
 		query := sr.request
 		query.RequestId = ""
-		query.SearchAfter = make([]interface{}, 0)
 
 		type Parsed struct {
 			Hits []map[string]interface{} `json:"hits"`
@@ -140,6 +143,7 @@ func (sr *SearchResult) Next() (*SearchResult, error) {
 			mbody["search_after"] = searchAfter
 			query.Body = mbody
 		}
+		fmt.Println(searchAfter)
 
 		options := sr.options
 
@@ -157,6 +161,8 @@ func (sr *SearchResult) Next() (*SearchResult, error) {
 
 		return nsr, nil
 	} else if sr.request.Size > 0 {
+		// from/size
+
 		if sr.request.From >= sr.Total {
 			return nil, nil
 		}
