@@ -26,29 +26,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCountIndexNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nr := realtime.NewRealtime(k)
-
-	_, err := nr.Count("", "collection", "roomID", nil)
-
-	assert.NotNil(t, err)
-}
-
-func TestCountCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nr := realtime.NewRealtime(k)
-
-	_, err := nr.Count("index", "", "roomID", nil)
-
-	assert.NotNil(t, err)
-}
-
 func TestCountRoomIDNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	_, err := nr.Count("index", "collection", "", nil)
+	_, err := nr.Count("", nil)
 
 	assert.NotNil(t, err)
 }
@@ -62,7 +44,7 @@ func TestCountError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	realTime := realtime.NewRealtime(k)
 
-	_, err := realTime.Count("index", "collection", "42", nil)
+	_, err := realTime.Count("42", nil)
 	assert.NotNil(t, err)
 }
 
@@ -81,6 +63,6 @@ func TestCount(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	realTime := realtime.NewRealtime(k)
 
-	res, _ := realTime.Count("index", "collection", "42", nil)
+	res, _ := realTime.Count("42", nil)
 	assert.Equal(t, 10, res)
 }
