@@ -19,6 +19,10 @@
   List any dependencies that are required for this change.
 -->
 
+<!-- Uncomment this section to link PR on other SDKs
+:large_blue_circle: https://github.com/kuzzleio/sdk-c/pull/<id> :arrow_right:
+-->
+
 ### How should this be manually tested?
 
 <!--
