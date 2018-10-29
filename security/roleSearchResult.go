@@ -32,6 +32,18 @@ type RoleSearchResult struct {
 	options      types.QueryOptions
 }
 
+func (sr *RoleSearchResult) Request() *types.KuzzleRequest {
+	return sr.request
+}
+
+func (sr *RoleSearchResult) Response() *types.KuzzleResponse {
+	return sr.response
+}
+
+func (sr *RoleSearchResult) Options() types.QueryOptions {
+	return sr.options
+}
+
 // Next returns the next page of roles
 func (rsr *RoleSearchResult) Next() (*RoleSearchResult, error) {
 	sr, err := types.NewSearchResult(rsr.kuzzle, "scrollRoles", rsr.request, rsr.options, rsr.response)

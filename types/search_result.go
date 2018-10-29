@@ -71,6 +71,26 @@ func NewSearchResult(kuzzle IKuzzle, scrollAction string, request *KuzzleRequest
 	return sr, nil
 }
 
+func (sr *SearchResult) Kuzzle() IKuzzle {
+	return sr.kuzzle
+}
+
+func (sr *SearchResult) Request() *KuzzleRequest {
+	return sr.request
+}
+
+func (sr *SearchResult) Response() *KuzzleResponse {
+	return sr.response
+}
+
+func (sr *SearchResult) Options() QueryOptions {
+	return sr.options
+}
+
+func (sr *SearchResult) ScrollAction() string {
+	return sr.scrollAction
+}
+
 // Next page result
 func (sr *SearchResult) Next() (*SearchResult, error) {
 	if sr.Fetched >= sr.Total {

@@ -30,7 +30,18 @@ type ProfileSearchResult struct {
 	request      *types.KuzzleRequest
 	response     *types.KuzzleResponse
 	options      types.QueryOptions
-	scrollAction string
+}
+
+func (sr *ProfileSearchResult) Request() *types.KuzzleRequest {
+	return sr.request
+}
+
+func (sr *ProfileSearchResult) Response() *types.KuzzleResponse {
+	return sr.response
+}
+
+func (sr *ProfileSearchResult) Options() types.QueryOptions {
+	return sr.options
 }
 
 // Next returns the next page of profiles
