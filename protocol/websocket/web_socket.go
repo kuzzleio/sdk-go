@@ -53,8 +53,8 @@ type WebSocket struct {
 	subscriptions      sync.Map
 	lastUrl            string
 	wasConnected       bool
-	eventListeners     map[int]map[chan<- interface{}]bool
-	eventListenersOnce map[int]map[chan<- interface{}]bool
+	eventListeners     map[int]map[chan<- json.RawMessage]bool
+	eventListenersOnce map[int]map[chan<- json.RawMessage]bool
 
 	retrying              bool
 	nbRetried             int
@@ -80,7 +80,7 @@ type WebSocket struct {
 var defaultQueueFilter protocol.QueueFilter
 
 // NewWebSocket instanciates a new webSocket connection object
-func NewWebSocket(host string, options types.Options) protocol.Protocol {
+func NewWebSocket(host string, options types.Options) *WebSocket {
 	defaultQueueFilter = func([]byte) bool {
 		return true
 	}
@@ -100,8 +100,8 @@ func NewWebSocket(host string, options types.Options) protocol.Protocol {
 		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         sync.Map{},
-		eventListeners:        make(map[int]map[chan<- interface{}]bool),
-		eventListenersOnce:    make(map[int]map[chan<- interface{}]bool),
+		eventListeners:        make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce:    make(map[int]map[chan<- json.RawMessage]bool),
 		requestHistory:        make(map[string]time.Time),
 		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
@@ -275,12 +275,14 @@ func (ws *WebSocket) cleanQueue() {
 		for len(ws.offlineQueue) > ws.queueMaxSize {
 			eventListener := ws.eventListeners[event.OfflineQueuePop]
 			for c := range eventListener {
-				c <- ws.offlineQueue[0]
+				json, _ := json.Marshal(ws.offlineQueue[0])
+				c <- json
 			}
 
 			eventListener = ws.eventListenersOnce[event.OfflineQueuePop]
 			for c := range eventListener {
-				c <- ws.offlineQueue[0]
+				json, _ := json.Marshal(ws.offlineQueue[0])
+				c <- json
 				delete(ws.eventListenersOnce[event.OfflineQueuePop], c)
 			}
 
@@ -372,9 +374,9 @@ func (ws *WebSocket) listen() {
 }
 
 // Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
-func (ws *WebSocket) AddListener(event int, channel chan<- interface{}) {
+func (ws *WebSocket) AddListener(event int, channel chan<- json.RawMessage) {
 	if ws.eventListeners[event] == nil {
-		ws.eventListeners[event] = make(map[chan<- interface{}]bool)
+		ws.eventListeners[event] = make(map[chan<- json.RawMessage]bool)
 	}
 	ws.eventListeners[event][channel] = true
 }
@@ -395,14 +397,14 @@ func (ws *WebSocket) RemoveAllListeners(event int) {
 }
 
 // Removes a listener from an event.
-func (ws *WebSocket) RemoveListener(event int, c chan<- interface{}) {
+func (ws *WebSocket) RemoveListener(event int, c chan<- json.RawMessage) {
 	delete(ws.eventListeners[event], c)
 	delete(ws.eventListenersOnce[event], c)
 }
 
-func (ws *WebSocket) Once(event int, channel chan<- interface{}) {
+func (ws *WebSocket) Once(event int, channel chan<- json.RawMessage) {
 	if ws.eventListenersOnce[event] == nil {
-		ws.eventListenersOnce[event] = make(map[chan<- interface{}]bool)
+		ws.eventListenersOnce[event] = make(map[chan<- json.RawMessage]bool)
 	}
 	ws.eventListenersOnce[event][channel] = true
 }
@@ -414,10 +416,12 @@ func (ws *WebSocket) ListenerCount(event int) int {
 // Emit an event to all registered listeners
 func (ws *WebSocket) EmitEvent(event int, arg interface{}) {
 	for c := range ws.eventListeners[event] {
-		c <- arg
+		json, _ := json.Marshal(arg)
+		c <- json
 	}
 	for c := range ws.eventListenersOnce[event] {
-		c <- arg
+		json, _ := json.Marshal(arg)
+		c <- json
 		close(c)
 		delete(ws.eventListenersOnce[event], c)
 	}

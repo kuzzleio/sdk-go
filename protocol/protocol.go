@@ -23,10 +23,10 @@ import (
 
 // Protocol provides functions to manage many connection type (websocket...)
 type Protocol interface {
-	AddListener(event int, channel chan<- interface{})
-	RemoveListener(event int, channel chan<- interface{})
+	AddListener(event int, channel chan<- json.RawMessage)
+	RemoveListener(event int, channel chan<- json.RawMessage)
 	RemoveAllListeners(event int)
-	Once(event int, channel chan<- interface{})
+	Once(event int, channel chan<- json.RawMessage)
 	ListenerCount(event int) int
 	Connect() (bool, error)
 	Send([]byte, types.QueryOptions, chan<- *types.KuzzleResponse, string) error

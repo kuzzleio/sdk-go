@@ -17,7 +17,6 @@ package realtime
 import (
 	"encoding/json"
 
-	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -75,8 +74,6 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 			go r.k.Query(query, opts, result)
 		}
 	}()
-
-	r.k.AddListener(event.Reconnected, onReconnect)
 
 	return &resSub, nil
 }
