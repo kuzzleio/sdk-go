@@ -15,6 +15,7 @@
 package kuzzle_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/kuzzleio/sdk-go/internal"
@@ -26,13 +27,13 @@ func TestAddListener(t *testing.T) {
 	called := false
 
 	c := &internal.MockedConnection{
-		MockAddListener: func(e int, c chan<- interface{}) {
+		MockAddListener: func(e int, c chan<- json.RawMessage) {
 			called = true
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan interface{})
+	ch := make(chan json.RawMessage)
 
 	k.AddListener(0, ch)
 	assert.Equal(t, true, called)
@@ -42,13 +43,13 @@ func TestRemoveListener(t *testing.T) {
 	called := false
 
 	c := &internal.MockedConnection{
-		MockRemoveListener: func(e int, c chan<- interface{}) {
+		MockRemoveListener: func(e int, c chan<- json.RawMessage) {
 			called = true
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan interface{})
+	ch := make(chan json.RawMessage)
 
 	k.RemoveListener(0, ch)
 	assert.Equal(t, true, called)
@@ -71,13 +72,13 @@ func TestOnce(t *testing.T) {
 	called := false
 
 	c := &internal.MockedConnection{
-		MockOnce: func(e int, c chan<- interface{}) {
+		MockOnce: func(e int, c chan<- json.RawMessage) {
 			called = true
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan interface{})
+	ch := make(chan json.RawMessage)
 
 	k.Once(0, ch)
 	assert.Equal(t, true, called)
@@ -87,13 +88,13 @@ func TestOn(t *testing.T) {
 	called := false
 
 	c := &internal.MockedConnection{
-		MockAddListener: func(e int, c chan<- interface{}) {
+		MockAddListener: func(e int, c chan<- json.RawMessage) {
 			called = true
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
-	ch := make(chan interface{})
+	ch := make(chan json.RawMessage)
 
 	k.On(0, ch)
 	assert.Equal(t, true, called)

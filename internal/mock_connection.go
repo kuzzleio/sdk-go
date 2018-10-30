@@ -29,10 +29,10 @@ type MockedConnection struct {
 	mock.Mock
 	MockSend               func([]byte, types.QueryOptions) *types.KuzzleResponse
 	MockEmitEvent          func(int, interface{})
-	MockAddListener        func(int, chan<- interface{})
+	MockAddListener        func(int, chan<- json.RawMessage)
 	MockRemoveAllListeners func(int)
-	MockRemoveListener     func(int, chan<- interface{})
-	MockOnce               func(int, chan<- interface{})
+	MockRemoveListener     func(int, chan<- json.RawMessage)
+	MockOnce               func(int, chan<- json.RawMessage)
 	MockListenerCount      func(int) int
 
 	state int
@@ -55,13 +55,13 @@ func (c *MockedConnection) Close() error {
 	return nil
 }
 
-func (c *MockedConnection) AddListener(event int, channel chan<- interface{}) {
+func (c *MockedConnection) AddListener(event int, channel chan<- json.RawMessage) {
 	if c.MockAddListener != nil {
 		c.MockAddListener(event, channel)
 	}
 }
 
-func (c *MockedConnection) Once(event int, channel chan<- interface{}) {
+func (c *MockedConnection) Once(event int, channel chan<- json.RawMessage) {
 	if c.MockOnce != nil {
 		c.MockOnce(event, channel)
 	}
@@ -103,7 +103,7 @@ func (c *MockedConnection) StartQueuing() {}
 
 func (c *MockedConnection) StopQueuing() {}
 
-func (c *MockedConnection) RemoveListener(event int, channel chan<- interface{}) {
+func (c *MockedConnection) RemoveListener(event int, channel chan<- json.RawMessage) {
 	if c.MockRemoveListener != nil {
 		c.MockRemoveListener(event, channel)
 	}

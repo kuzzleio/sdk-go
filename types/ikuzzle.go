@@ -24,6 +24,6 @@ type IKuzzle interface {
 	SetJwt(string)
 	RegisterSub(string, string, json.RawMessage, bool, chan<- KuzzleNotification, chan<- interface{})
 	UnregisterSub(string)
-	AddListener(event int, notifChan chan<- interface{})
+	AddListener(event int, notifChan chan<- json.RawMessage)
 	AutoResubscribe() bool
 }

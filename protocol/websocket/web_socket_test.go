@@ -15,6 +15,7 @@
 package websocket
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/kuzzleio/sdk-go/event"
@@ -22,7 +23,7 @@ import (
 )
 
 func TestAddListener(t *testing.T) {
-	c := WebSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
+	c := WebSocket{eventListeners: make(map[int]map[chan<- json.RawMessage]bool)}
 	c.Connect()
 	c.AddListener(event.LoginAttempt, nil)
 	c.AddListener(event.Disconnected, nil)
@@ -30,8 +31,8 @@ func TestAddListener(t *testing.T) {
 }
 
 func TestOnce(t *testing.T) {
-	c := WebSocket{eventListenersOnce: make(map[int]map[chan<- interface{}]bool)}
-	listener := make(chan interface{})
+	c := WebSocket{eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool)}
+	listener := make(chan json.RawMessage)
 	go func() {
 		<-listener
 	}()
@@ -43,8 +44,8 @@ func TestOnce(t *testing.T) {
 
 func TestRemoveAllListeners(t *testing.T) {
 	c := WebSocket{
-		eventListeners:     make(map[int]map[chan<- interface{}]bool),
-		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
+		eventListeners:     make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool),
 	}
 	c.Connect()
 
@@ -66,9 +67,9 @@ func TestRemoveAllListeners(t *testing.T) {
 }
 
 func TestRemoveListener(t *testing.T) {
-	c := WebSocket{eventListeners: make(map[int]map[chan<- interface{}]bool)}
+	c := WebSocket{eventListeners: make(map[int]map[chan<- json.RawMessage]bool)}
 
-	listener := make(chan interface{})
+	listener := make(chan json.RawMessage)
 	c.AddListener(event.LoginAttempt, listener)
 	c.AddListener(event.Disconnected, listener)
 	assert.Equal(t, 1, len(c.eventListeners[event.LoginAttempt]))
@@ -84,12 +85,12 @@ func TestRemoveListener(t *testing.T) {
 
 func TestListenerCount(t *testing.T) {
 	c := WebSocket{
-		eventListeners:     make(map[int]map[chan<- interface{}]bool),
-		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
+		eventListeners:     make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool),
 	}
 	c.Connect()
 
-	ch := make(chan<- interface{})
+	ch := make(chan<- json.RawMessage)
 	c.AddListener(event.LoginAttempt, nil)
 	c.AddListener(event.LoginAttempt, ch)
 
@@ -103,10 +104,10 @@ func TestListenerCount(t *testing.T) {
 
 func TestEmitEvent(t *testing.T) {
 	c := WebSocket{
-		eventListeners:     make(map[int]map[chan<- interface{}]bool),
-		eventListenersOnce: make(map[int]map[chan<- interface{}]bool),
+		eventListeners:     make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool),
 	}
-	listener := make(chan interface{})
+	listener := make(chan json.RawMessage)
 	go func() {
 		for {
 			<-listener
