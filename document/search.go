@@ -45,6 +45,8 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 	}
 	if options != nil {
 		query.IncludeTrash = options.IncludeTrash()
+		query.From = options.From()
+		query.Size = options.Size()
 	}
 
 	go d.Kuzzle.Query(query, options, ch)
@@ -55,7 +57,7 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 		return nil, res.Error
 	}
 
-	sr, err := types.NewSearchResult(collection, body, options, res)
+	sr, err := types.NewSearchResult(d.Kuzzle, "scroll", query, options, res)
 
 	if err != nil {
 		return nil, err

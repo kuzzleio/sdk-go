@@ -91,3 +91,161 @@ func TestSearchDocument(t *testing.T) {
 	assert.Equal(t, 2, response.Fetched)
 	assert.Equal(t, 42, response.Total)
 }
+
+func TestSearchDocumentNextFromSize(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": ["id1", "id2"],
+				"total": 42
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetFrom(0)
+	options.SetSize(2)
+
+	sr, err := k.Document.Search("index", "collection", json.RawMessage(`{}`), options)
+	assert.Nil(t, err)
+	assert.Equal(t, 42, sr.Total)
+	assert.Equal(t, 2, sr.Fetched)
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		parsedQuery := &types.KuzzleRequest{}
+		json.Unmarshal(query, parsedQuery)
+
+		assert.Equal(t, 2, parsedQuery.From)
+		assert.Equal(t, 2, parsedQuery.Size)
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": ["id3"]
+		}`)}
+	}
+
+	nsr, err := sr.Next()
+	assert.Nil(t, err)
+	assert.Equal(t, 3, nsr.Fetched)
+}
+
+func TestSearchDocumentNextEnd(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": ["id1", "id2"],
+				"total": 2
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetFrom(0)
+	options.SetSize(2)
+
+	sr, err := k.Document.Search("index", "collection", json.RawMessage(`{}`), options)
+	assert.Nil(t, err)
+
+	nsr, err := sr.Next()
+
+	assert.Nil(t, err)
+	assert.Nil(t, nsr)
+}
+
+func TestSearchDocumentNextSort(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": [
+					{
+						"_id": "id1",
+						"_source": {
+							"foo": {
+								"bar": 3
+							}
+						}
+					},
+					{
+						"_id": "id2",
+						"_source": {
+							"foo": {
+								"bar": 12
+							}
+						}
+					}
+				],
+				"total": 42
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetSize(2)
+
+	sr, err := k.Document.Search("index", "collection", json.RawMessage(`{
+		"sort":[ 
+			{"_uid": "asc"},
+			{ "foo.bar": "desc" }
+		]
+	}`), options)
+	assert.Nil(t, err)
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		parsedQuery := &types.KuzzleRequest{}
+		json.Unmarshal(query, parsedQuery)
+
+		assert.Equal(t, []interface{}{"id2", float64(12)}, parsedQuery.Body.(map[string]interface{})["search_after"])
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": ["id3", "id4"],
+			"total": 42
+		}`)}
+	}
+
+	nsr, err := sr.Next()
+	assert.Nil(t, err)
+	assert.Equal(t, 4, nsr.Fetched)
+	assert.NotNil(t, nsr)
+}
+
+func TestSearchDocumentNextScroll(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": ["id1", "id2"],
+				"total": 42,
+				"_scroll_id": "scroll_id"
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetScroll("1m")
+
+	sr, err := k.Document.Search("index", "collection", json.RawMessage(`{}`), options)
+	assert.Nil(t, err)
+	assert.Equal(t, "scroll_id", sr.ScrollId)
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		parsedQuery := &types.KuzzleRequest{}
+		json.Unmarshal(query, parsedQuery)
+
+		assert.Equal(t, "1m", options.Scroll())
+		assert.Equal(t, "scroll_id", options.ScrollId())
+		assert.Equal(t, "scroll", parsedQuery.Action)
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": ["id3", "id4"],
+			"total": 42,
+			"_scroll_id": "new_scroll"
+		}`)}
+	}
+
+	nsr, err := sr.Next()
+	assert.Nil(t, err)
+	assert.Equal(t, 4, nsr.Fetched)
+	assert.Equal(t, "new_scroll", nsr.ScrollId)
+}

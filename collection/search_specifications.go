@@ -15,8 +15,6 @@
 package collection
 
 import (
-	"encoding/json"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
@@ -37,8 +35,10 @@ func (dc *Collection) SearchSpecifications(options types.QueryOptions) (*types.S
 		return nil, res.Error
 	}
 
-	specifications := &types.SearchResult{}
-	json.Unmarshal(res.Result, &specifications)
+	sr, err := types.NewSearchResult(dc.Kuzzle, "scrollSpecifications", query, options, res)
+	if err != nil {
+		return nil, err
+	}
 
-	return specifications, nil
+	return sr, nil
 }

@@ -17,25 +17,29 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // SearchResult is a search result representation
 type SearchResult struct {
-	Collection   string
-	Documents    json.RawMessage
+	Aggregations json.RawMessage
+	Hits         json.RawMessage
 	Total        int
 	Fetched      int
-	Aggregations json.RawMessage
-	Options      QueryOptions
-	Filters      json.RawMessage
+	ScrollId     string
+	kuzzle       IKuzzle
+	request      *KuzzleRequest
+	response     *KuzzleResponse
+	options      QueryOptions
+	scrollAction string
 }
 
 // NewSearchResult Search Result constructor
-func NewSearchResult(collection string, filters json.RawMessage, options QueryOptions, raw *KuzzleResponse) (*SearchResult, error) {
+func NewSearchResult(kuzzle IKuzzle, scrollAction string, request *KuzzleRequest, options QueryOptions, raw *KuzzleResponse) (*SearchResult, error) {
 	type ParseSearchResult struct {
-		Documents    json.RawMessage `json:"hits"`
+		Hits         json.RawMessage `json:"hits"`
 		Total        int             `json:"total"`
-		ScrollID     string          `json:"_scroll_id"`
+		ScrollId     string          `json:"_scroll_id"`
 		Aggregations json.RawMessage `json:"aggregations"`
 	}
 
@@ -47,22 +51,198 @@ func NewSearchResult(collection string, filters json.RawMessage, options QueryOp
 	}
 
 	var docs []interface{}
-	json.Unmarshal(parsed.Documents, &docs)
+	json.Unmarshal(parsed.Hits, &docs)
 
 	sr := &SearchResult{
-		Collection:   collection,
-		Filters:      filters,
-		Documents:    parsed.Documents,
-		Total:        parsed.Total,
-		Fetched:      len(docs),
 		Aggregations: parsed.Aggregations,
-		Options:      NewQueryOptions(),
+		Hits:         parsed.Hits,
+		Fetched:      len(docs),
+		Total:        parsed.Total,
+		ScrollId:     parsed.ScrollId,
+		kuzzle:       kuzzle,
+		request:      request,
+		response:     raw,
+		options:      NewQueryOptions(),
+		scrollAction: scrollAction,
 	}
 
-	if options != nil {
-		sr.Options.SetFrom(options.From())
-		sr.Options.SetSize(options.Size())
-	}
+	sr.options = options
 
 	return sr, nil
+}
+
+func (sr *SearchResult) Kuzzle() IKuzzle {
+	return sr.kuzzle
+}
+
+func (sr *SearchResult) Request() *KuzzleRequest {
+	return sr.request
+}
+
+func (sr *SearchResult) Response() *KuzzleResponse {
+	return sr.response
+}
+
+func (sr *SearchResult) Options() QueryOptions {
+	return sr.options
+}
+
+func (sr *SearchResult) ScrollAction() string {
+	return sr.scrollAction
+}
+
+// Next page result
+func (sr *SearchResult) Next() (*SearchResult, error) {
+	if sr.Fetched >= sr.Total {
+		return nil, nil
+	}
+
+	var pb struct {
+		Sort []map[string]string `json:"sort"`
+	}
+	j, _ := json.Marshal(sr.request.Body)
+	json.Unmarshal(j, &pb)
+
+	if sr.ScrollId != "" {
+		// scroll
+
+		query := &KuzzleRequest{
+			Controller: sr.request.Controller,
+			Action:     sr.scrollAction,
+		}
+
+		options := sr.options
+		options.SetScrollId(sr.ScrollId)
+
+		ch := make(chan *KuzzleResponse)
+		go sr.kuzzle.Query(query, sr.options, ch)
+		res := <-ch
+
+		nsr, err := NewSearchResult(sr.kuzzle, sr.scrollAction, query, options, res)
+
+		if err != nil {
+			return nil, err
+		}
+
+		nsr.Fetched += sr.Fetched
+
+		return nsr, nil
+	} else if pb.Sort != nil && sr.request.Size > 0 {
+		// search_after
+
+		query := sr.request
+		query.RequestId = ""
+
+		type Parsed struct {
+			Hits []map[string]interface{} `json:"hits"`
+		}
+		var parsed Parsed
+		json.Unmarshal(sr.response.Result, &parsed)
+
+		last := make(map[string]interface{})
+		if len(parsed.Hits) > 0 {
+			last = parsed.Hits[len(parsed.Hits)-1]
+		}
+
+		searchAfter := make([]interface{}, 0)
+		for _, v := range pb.Sort {
+			for key := range v {
+				searchAfter = append(searchAfter, getDeepField(key, last, 0))
+			}
+		}
+
+		var body map[string]interface{}
+		jbody, ok := sr.request.Body.(json.RawMessage)
+		if ok {
+			json.Unmarshal(jbody, &body)
+			body["search_after"] = searchAfter
+			query.Body = body
+		}
+		mbody, ok := sr.request.Body.(map[string]interface{})
+		if ok {
+			mbody["search_after"] = searchAfter
+			query.Body = mbody
+		}
+		fmt.Println(searchAfter)
+
+		options := sr.options
+
+		ch := make(chan *KuzzleResponse)
+		go sr.kuzzle.Query(query, sr.options, ch)
+		res := <-ch
+
+		nsr, err := NewSearchResult(sr.kuzzle, sr.scrollAction, query, options, res)
+
+		if err != nil {
+			return nil, err
+		}
+
+		nsr.Fetched += sr.Fetched
+
+		return nsr, nil
+	} else if sr.request.Size > 0 {
+		// from/size
+
+		if sr.request.From >= sr.Total {
+			return nil, nil
+		}
+
+		query := sr.request
+		query.RequestId = ""
+		query.From = sr.Fetched
+		options := sr.options
+		options.SetFrom(sr.Fetched)
+
+		ch := make(chan *KuzzleResponse)
+		go sr.kuzzle.Query(query, options, ch)
+		res := <-ch
+
+		nsr, err := NewSearchResult(sr.kuzzle, sr.scrollAction, query, options, res)
+
+		if err != nil {
+			return nil, err
+		}
+
+		nsr.Fetched += sr.Fetched
+
+		return nsr, nil
+	}
+
+	return nil, NewError("Unable to retrieve next results from search: missing scrollId, from/sort, or from/size parameters")
+}
+
+func getDeepField(key string, s map[string]interface{}, depth int) interface{} {
+	if depth == 0 && key == "_uid" {
+		key = "_id"
+	}
+	if depth == 0 && key != "_id" && key != "_score" {
+		key = "_source." + key
+	}
+
+	if s[key] != nil {
+		str, ok := s[key].(string)
+		if ok {
+			return str
+		}
+		i, ok := s[key].(int)
+		if ok {
+			return i
+		}
+		f, ok := s[key].(float64)
+		if ok {
+			return f
+		}
+	}
+
+	keys := strings.Split(key, ".")
+	if len(keys) == 1 {
+		return nil
+	}
+
+	m, ok := s[keys[0]].(map[string]interface{})
+	if ok {
+		return getDeepField(strings.Join(keys[1:], "."), m, depth+1)
+	}
+
+	return nil
 }
