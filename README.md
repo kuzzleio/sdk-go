@@ -30,9 +30,15 @@ go get github.com/kuzzleio/sdk-go
 
 ````go
 func main() {
-    conn := websocket.NewWebSocket("localhost:7512", nil)
+    conn := websocket.NewWebSocket("localhost", nil)
     k, _ := kuzzle.NewKuzzle(conn, nil)
-
+    connectErr := k.Connect()
+	
+    if connectErr != nil {
+		log.Fatal(connectErr)
+		os.Exit(1)
+    }
+    
     res, err := k.GetAllStatistics(nil)
 
     if err != nil {
