@@ -30,7 +30,7 @@ func (r *Realtime) Count(roomID string, options types.QueryOptions) (int, error)
 		Controller: "realtime",
 		Action:     "count",
 		Body: struct {
-			RoomID string `json:"roomID"`
+			RoomID string `json:"roomId"`
 		}{roomID},
 	}
 
