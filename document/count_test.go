@@ -39,13 +39,6 @@ func TestCountCollectionNull(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCountBodyNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-	_, err := d.Count("index", "collection", nil, nil)
-	assert.NotNil(t, err)
-}
-
 func TestCountDocumentError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
