@@ -71,11 +71,12 @@ func TestValidateDocument(t *testing.T) {
 			assert.Equal(t, "index", parsedQuery.Index)
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
-			return &types.KuzzleResponse{Result: []byte(`true`)}
+			return &types.KuzzleResponse{Result: []byte(`{"valid": true}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
 	d := document.NewDocument(k)
-	_, err := d.Validate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
+	response, err := d.Validate("index", "collection", json.RawMessage(`{"foo":"bar"}`), nil)
 	assert.Nil(t, err)
+	assert.True(t, response)
 }
