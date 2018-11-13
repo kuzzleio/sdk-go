@@ -33,7 +33,7 @@ func TestGetStatsQueryError(t *testing.T) {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
-			assert.Equal(t, "getLastStats", request.Action)
+			assert.Equal(t, "getStats", request.Action)
 			return &types.KuzzleResponse{Error: types.KuzzleError{Message: "error"}}
 		},
 	}
@@ -48,7 +48,7 @@ func TestGetStats(t *testing.T) {
 			request := types.KuzzleRequest{}
 			json.Unmarshal(query, &request)
 			assert.Equal(t, "server", request.Controller)
-			assert.Equal(t, "getLastStats", request.Action)
+			assert.Equal(t, "getStats", request.Action)
 
 			return &types.KuzzleResponse{Result: json.RawMessage(`{"foo": "bar"}`)}
 		},
