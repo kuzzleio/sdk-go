@@ -34,10 +34,6 @@ func (d *Document) Count(index string, collection string, body json.RawMessage, 
 		return 0, types.NewError("Document.Count: collection required", 400)
 	}
 
-	if body == nil {
-		return 0, types.NewError("Document.Count: body required", 400)
-	}
-
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
