@@ -30,7 +30,7 @@ func TestSubscribeIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	_, err := nr.Subscribe("", "collection", json.RawMessage(`{"filter": "filter"}`), notifChan, nil)
 
 	assert.NotNil(t, err)
@@ -40,7 +40,7 @@ func TestSubscribeCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nr := realtime.NewRealtime(k)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	_, err := nr.Subscribe("index", "", json.RawMessage(`{"filter": "filter"}`), notifChan, nil)
 
 	assert.NotNil(t, err)
@@ -83,7 +83,7 @@ func TestSubscribeQueryError(t *testing.T) {
 	nr := realtime.NewRealtime(k)
 	c.SetState(state.Connected)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	_, err := nr.Subscribe("index", "collection", json.RawMessage(`{"filter": "filter"}`), notifChan, nil)
 	assert.Equal(t, "ah!", err.Error())
 }
@@ -101,7 +101,7 @@ func TestRenewWithSubscribeToSelf(t *testing.T) {
 	nr := realtime.NewRealtime(k)
 	c.SetState(state.Connected)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	res, err := nr.Subscribe("index", "collection", json.RawMessage(`{"filter": "filter"}`), notifChan, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -121,7 +121,7 @@ func TestRoomSubscribe(t *testing.T) {
 	nr := realtime.NewRealtime(k)
 	c.SetState(state.Connected)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	res, err := nr.Subscribe("index", "collection", json.RawMessage(`{"filter": "filter"}`), notifChan, nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -142,7 +142,7 @@ func TestRoomSubscribeNotConnected(t *testing.T) {
 	nr := realtime.NewRealtime(k)
 	c.SetState(state.Connected)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	_, err := nr.Subscribe("collection", "index", json.RawMessage("{}"), notifChan, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Not Connected", err.Error())
@@ -159,6 +159,6 @@ func ExampleRealtime_Subscribe() {
 	nr := realtime.NewRealtime(k)
 	c.SetState(state.Connected)
 
-	notifChan := make(chan<- types.KuzzleNotification)
+	notifChan := make(chan<- types.NotificationResult)
 	nr.Subscribe("collection", "index", json.RawMessage(""), notifChan, nil)
 }

@@ -20,15 +20,15 @@ type MockedRoom struct {
 	MockedSubscribe func()
 }
 
-func (m MockedRoom) Subscribe(realtimeNotificationChannel chan<- *types.KuzzleNotification) {
+func (m MockedRoom) Subscribe(realtimeNotificationChannel chan<- *types.NotificationResult) {
 	m.MockedSubscribe()
 }
 func (m MockedRoom) Unsubscribe() error {
 	return nil
 }
 
-func (m MockedRoom) GetRealtimeChannel() chan<- *types.KuzzleNotification {
-	return make(chan<- *types.KuzzleNotification)
+func (m MockedRoom) GetRealtimeChannel() chan<- *types.NotificationResult {
+	return make(chan<- *types.NotificationResult)
 }
 
 func (m MockedRoom) GetResponseChannel() chan<- *types.SubscribeResponse {
