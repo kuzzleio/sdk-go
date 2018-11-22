@@ -42,33 +42,33 @@ type (
 		Channel string `json:"channel"`
 	}
 
-	// NotificationResult contains
-	NotificationResult struct {
+	// NotificationContent contains
+	NotificationContent struct {
 		Id      string          `json:"_id"`
 		Meta    *Meta           `json:"_meta"`
 		Content json.RawMessage `json:"_source"`
 		Count   int             `json:"count"`
 	}
 
-	// KuzzleNotification is a notification from Kuzzle
-	KuzzleNotification struct {
-		RequestId  string              `json:"requestId"`
-		Result     *NotificationResult `json:"result"`
-		Volatile   json.RawMessage     `json:"volatile"`
-		Index      string              `json:"index"`
-		Collection string              `json:"collection"`
-		Controller string              `json:"controller"`
-		Action     string              `json:"action"`
-		Protocol   string              `json:"protocol"`
-		Scope      string              `json:"scope"`
-		State      string              `json:"state"`
-		User       string              `json:"user"`
-		Type       string              `json:"type"`
-		RoomId     string              `json:"room"`
-		Channel    string              `json:"channel"`
-		Timestamp  int                 `json:"timestamp"`
-		Status     int                 `json:"status"`
-		Error      KuzzleError         `json:"error"`
+	// NotificationResult is a notification from Kuzzle
+	NotificationResult struct {
+		RequestId  string               `json:"requestId"`
+		Result     *NotificationContent `json:"result"`
+		Volatile   json.RawMessage      `json:"volatile"`
+		Index      string               `json:"index"`
+		Collection string               `json:"collection"`
+		Controller string               `json:"controller"`
+		Action     string               `json:"action"`
+		Protocol   string               `json:"protocol"`
+		Scope      string               `json:"scope"`
+		State      string               `json:"state"`
+		User       string               `json:"user"`
+		Type       string               `json:"type"`
+		RoomId     string               `json:"room"`
+		Channel    string               `json:"channel"`
+		Timestamp  int                  `json:"timestamp"`
+		Status     int                  `json:"status"`
+		Error      KuzzleError          `json:"error"`
 	}
 
 	// KuzzleResponse is a response to a KuzzleRequest

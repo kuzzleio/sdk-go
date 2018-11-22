@@ -24,9 +24,9 @@ type SubscribeResponse struct {
 
 // IRoom provides functions to manage Room
 type IRoom interface {
-	Subscribe(realtimeNotificationChannel chan<- KuzzleNotification)
+	Subscribe(realtimeNotificationChannel chan<- NotificationResult)
 	Unsubscribe() error
-	RealtimeChannel() chan<- KuzzleNotification
+	RealtimeChannel() chan<- NotificationResult
 	ResponseChannel() chan SubscribeResponse
 	RoomId() string
 	Filters() interface{}

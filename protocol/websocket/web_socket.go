@@ -37,7 +37,7 @@ type subscription struct {
 	roomID              string
 	channel             string
 	filters             json.RawMessage
-	notificationChannel chan<- types.KuzzleNotification
+	notificationChannel chan<- types.NotificationResult
 	onReconnectChannel  chan<- interface{}
 	subscribeToSelf     bool
 }
@@ -291,7 +291,7 @@ func (ws *WebSocket) cleanQueue() {
 	}
 }
 
-func (ws *WebSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+func (ws *WebSocket) RegisterSub(channel, roomID string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.NotificationResult, onReconnectChannel chan<- interface{}) {
 	subs, found := ws.subscriptions.Load(channel)
 
 	if !found {
@@ -343,7 +343,7 @@ func (ws *WebSocket) listen() {
 		json.Unmarshal(msg, &message)
 
 		if s, found := ws.subscriptions.Load(message.RoomId); found {
-			var notification types.KuzzleNotification
+			var notification types.NotificationResult
 			_, fromSelf := ws.requestHistory[message.RequestId]
 
 			json.Unmarshal(msg, &notification)

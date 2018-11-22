@@ -21,7 +21,7 @@ import (
 )
 
 // Subscribe permits to join a previously created subscription
-func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.KuzzleNotification, options types.RoomOptions) (*types.SubscribeResult, error) {
+func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.NotificationResult, options types.RoomOptions) (*types.SubscribeResult, error) {
 	if (index == "" || collection == "") || (filters == nil || cb == nil) {
 		return nil, types.NewError("Realtime.Subscribe: index, collection, filters and notificationChannel required", 400)
 	}

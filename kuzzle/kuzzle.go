@@ -139,7 +139,7 @@ func (k *Kuzzle) UnsetJwt() {
 	k.socket.CancelSubs()
 }
 
-func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
+func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.NotificationResult, onReconnectChannel chan<- interface{}) {
 	k.socket.RegisterSub(channel, roomId, filters, subscribeToSelf, notifChan, onReconnectChannel)
 }
 

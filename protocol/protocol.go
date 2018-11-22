@@ -33,7 +33,7 @@ type Protocol interface {
 	Close() error
 	State() int
 	EmitEvent(int, interface{})
-	RegisterSub(string, string, json.RawMessage, bool, chan<- types.KuzzleNotification, chan<- interface{})
+	RegisterSub(string, string, json.RawMessage, bool, chan<- types.NotificationResult, chan<- interface{})
 	UnregisterSub(string)
 	CancelSubs()
 	RequestHistory() map[string]time.Time
