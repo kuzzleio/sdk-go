@@ -314,8 +314,12 @@ func (ws *WebSocket) UnregisterSub(roomID string) {
 	ws.subscriptions.Range(func(k, v interface{}) bool {
 		for k, sub := range v.(map[string]subscription) {
 			if sub.roomID == roomID {
-				close(sub.onReconnectChannel)
-				close(sub.notificationChannel)
+				if sub.onReconnectChannel != nil {
+					close(sub.onReconnectChannel)
+				}
+				if sub.notificationChannel != nil {
+					close(sub.notificationChannel)
+				}
 				delete(v.(map[string]subscription), k)
 			}
 		}
