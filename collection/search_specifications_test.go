@@ -144,7 +144,7 @@ func ExampleCollection_SearchSpecifications() {
 
 	nc := collection.NewCollection(k)
 
-	res, err := nc.SearchSpecifications(json.RawMessage("{}"), nil)
+	res, err := nc.SearchSpecifications(json.RawMessage( `{}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
