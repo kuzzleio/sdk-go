@@ -15,16 +15,27 @@
 package collection
 
 import (
+	"encoding/json"
+
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // SearchSpecifications searches specifications across indexes/collections according to the provided filters.
-func (dc *Collection) SearchSpecifications(options types.QueryOptions) (*types.SearchResult, error) {
+func (dc *Collection) SearchSpecifications(body json.RawMessage, options types.QueryOptions) (*types.SearchResult, error) {
+	if body == nil {
+		return nil, types.NewError("Document.Search: body required", 400)
+	}
+
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "searchSpecifications",
+		Body:       body,
+	}
+	if options != nil {
+		query.From = options.From()
+		query.Size = options.Size()
 	}
 
 	go dc.Kuzzle.Query(query, options, ch)

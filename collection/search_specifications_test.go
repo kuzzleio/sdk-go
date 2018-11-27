@@ -36,7 +36,7 @@ func TestSearchSpecificationsError(t *testing.T) {
 
 	nc := collection.NewCollection(k)
 
-	_, err := nc.SearchSpecifications(nil)
+	_, err := nc.SearchSpecifications(nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -79,7 +79,7 @@ func TestSearchSpecifications(t *testing.T) {
 
 	nc := collection.NewCollection(k)
 
-	res, err := nc.SearchSpecifications(nil)
+	res, err := nc.SearchSpecifications(json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.Equal(t, 1, res.Total)
 	assert.Nil(t, err)
 }
@@ -108,7 +108,7 @@ func TestSearchSpecificationsNext(t *testing.T) {
 	options.SetFrom(0)
 	options.SetSize(2)
 
-	sr, err := k.Security.SearchUsers(json.RawMessage(`{}`), options)
+	sr, err := k.Collection.SearchSpecifications(json.RawMessage(`{}`), options)
 	assert.Nil(t, err)
 	assert.NotNil(t, sr)
 
@@ -144,7 +144,7 @@ func ExampleCollection_SearchSpecifications() {
 
 	nc := collection.NewCollection(k)
 
-	res, err := nc.SearchSpecifications(nil)
+	res, err := nc.SearchSpecifications(json.RawMessage(`{}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
