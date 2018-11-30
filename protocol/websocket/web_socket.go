@@ -330,7 +330,7 @@ func (ws *WebSocket) UnregisterSub(roomID string) {
 func (ws *WebSocket) CancelSubs() {
 	ws.subscriptions.Range(func(roomId, s interface{}) bool {
 		for _, sub := range s.(map[string]subscription) {
-			if sub.notificationChannel != nil {
+			if sub.onReconnectChannel != nil {
 				close(sub.onReconnectChannel)
 			}
 			ws.subscriptions.Delete(roomId)
