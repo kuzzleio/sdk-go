@@ -20,28 +20,45 @@ import (
 
 // AddListener Adds a listener to a Kuzzle global event. When an event is fired, listeners are called in the order of their insertion.
 func (k *Kuzzle) AddListener(event int, channel chan<- json.RawMessage) {
-	k.socket.AddListener(event, channel)
+	if k.eventListeners[event] == nil {
+		k.eventListeners[event] = make(map[chan<- json.RawMessage]bool)
+	}
+	k.eventListeners[event][channel] = true
 }
 
 // On is an alias to the AddListener function
 func (k *Kuzzle) On(event int, channel chan<- json.RawMessage) {
-	k.socket.AddListener(event, channel)
+	k.AddListener(event, channel)
 }
 
 // RemoveAllListeners removes all listener by event type or all listener if event == -1
 func (k *Kuzzle) RemoveAllListeners(event int) {
-	k.socket.RemoveAllListeners(event)
+	for key := range k.eventListeners {
+		if event == key || event == -1 {
+			delete(k.eventListeners, key)
+		}
+	}
+
+	for key := range k.eventListenersOnce {
+		if event == key || event == -1 {
+			delete(k.eventListenersOnce, key)
+		}
+	}
 }
 
 // RemoveListener removes a listener
 func (k *Kuzzle) RemoveListener(event int, channel chan<- json.RawMessage) {
-	k.socket.RemoveListener(event, channel)
+	delete(k.eventListeners[event], channel)
+	delete(k.eventListenersOnce[event], channel)
 }
 
 func (k *Kuzzle) Once(event int, channel chan<- json.RawMessage) {
-	k.socket.Once(event, channel)
+	if k.eventListenersOnce[event] == nil {
+		k.eventListenersOnce[event] = make(map[chan<- json.RawMessage]bool)
+	}
+	k.eventListenersOnce[event][channel] = true
 }
 
 func (k *Kuzzle) ListenerCount(event int) int {
-	return k.socket.ListenerCount(event)
+	return len(k.eventListenersOnce[event]) + len(k.eventListeners[event])
 }

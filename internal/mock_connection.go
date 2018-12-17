@@ -18,12 +18,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/mock"
 )
-
-var offlineQueue []*types.QueryObject
 
 type MockedConnection struct {
 	mock.Mock
@@ -47,7 +44,6 @@ func (c *MockedConnection) Send(query []byte, options types.QueryOptions, respon
 }
 
 func (c *MockedConnection) Connect() (bool, error) {
-	offlineQueue = make([]*types.QueryObject, 1)
 	return false, nil
 }
 
@@ -99,26 +95,16 @@ func (c *MockedConnection) RequestHistory() map[string]time.Time {
 
 func (c *MockedConnection) RenewSubscriptions() {}
 
-func (c *MockedConnection) StartQueuing() {}
-
-func (c *MockedConnection) StopQueuing() {}
-
 func (c *MockedConnection) RemoveListener(event int, channel chan<- json.RawMessage) {
 	if c.MockRemoveListener != nil {
 		c.MockRemoveListener(event, channel)
 	}
 }
 
-func (c *MockedConnection) PlayQueue() {}
-
 func (c *MockedConnection) RemoveAllListeners(event int) {
 	if c.MockRemoveAllListeners != nil {
 		c.MockRemoveAllListeners(event)
 	}
-}
-
-func (c *MockedConnection) ClearQueue() {
-	offlineQueue = nil
 }
 
 func (c *MockedConnection) AutoQueue() bool {
@@ -133,39 +119,15 @@ func (c *MockedConnection) AutoResubscribe() bool {
 	return true
 }
 
-func (c *MockedConnection) AutoReplay() bool {
-	return true
-}
-
 func (c *MockedConnection) Host() string {
 	return ""
 }
 
-func (c *MockedConnection) OfflineQueue() []*types.QueryObject {
-	return offlineQueue
-}
-
-func (c *MockedConnection) OfflineQueueLoader() protocol.OfflineQueueLoader {
-	return nil
+func (c *MockedConnection) IsReady() bool {
+	return true
 }
 
 func (c *MockedConnection) Port() int {
-	return 0
-}
-
-func (c *MockedConnection) QueueFilter() protocol.QueueFilter {
-	return nil
-}
-
-func (c *MockedConnection) QueueMaxSize() int {
-	return 0
-}
-
-func (c *MockedConnection) QueueTTL() time.Duration {
-	return 0
-}
-
-func (c *MockedConnection) ReplayInterval() time.Duration {
 	return 0
 }
 
@@ -177,32 +139,7 @@ func (c *MockedConnection) SslConnection() bool {
 	return false
 }
 
-func (c *MockedConnection) SetAutoQueue(v bool) {
-}
-
-func (c *MockedConnection) SetAutoReplay(v bool) {
-}
-
-func (c *MockedConnection) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
-}
-
-func (c *MockedConnection) SetQueueFilter(v protocol.QueueFilter) {
-}
-
-func (c *MockedConnection) SetQueueMaxSize(v int) {
-}
-
-func (c *MockedConnection) SetQueueTTL(v time.Duration) {
-}
-
-func (c *MockedConnection) SetReplayInterval(v time.Duration) {
-}
-
 // mock specific functions
 func (c *MockedConnection) SetState(value int) {
 	c.state = value
-}
-
-func (c *MockedConnection) AddToOfflineQueue(q *types.QueryObject) {
-	offlineQueue = append(offlineQueue, q)
 }

@@ -61,20 +61,12 @@ type WebSocket struct {
 	stopRetryingToConnect bool
 	requestHistory        map[string]time.Time
 
-	autoQueue          bool
-	autoReconnect      bool
-	autoReplay         bool
-	autoResubscribe    bool
-	host               string
-	offlineQueue       []*types.QueryObject
-	offlineQueueLoader protocol.OfflineQueueLoader
-	port               int
-	queueFilter        protocol.QueueFilter
-	queueMaxSize       int
-	queueTTL           time.Duration
-	reconnectionDelay  time.Duration
-	replayInterval     time.Duration
-	ssl                bool
+	autoReconnect     bool
+	autoResubscribe   bool
+	host              string
+	port              int
+	reconnectionDelay time.Duration
+	ssl               bool
 }
 
 var defaultQueueFilter protocol.QueueFilter
@@ -95,34 +87,25 @@ func NewWebSocket(host string, options types.Options) *WebSocket {
 
 	ws := &WebSocket{
 		mu:                    &sync.Mutex{},
-		queueTTL:              opts.QueueTTL(),
-		offlineQueue:          []*types.QueryObject{},
-		queueMaxSize:          opts.QueueMaxSize(),
 		channelsResult:        sync.Map{},
 		subscriptions:         sync.Map{},
 		eventListeners:        make(map[int]map[chan<- json.RawMessage]bool),
 		eventListenersOnce:    make(map[int]map[chan<- json.RawMessage]bool),
 		requestHistory:        make(map[string]time.Time),
-		autoQueue:             opts.AutoQueue(),
 		autoReconnect:         opts.AutoReconnect(),
-		autoReplay:            opts.AutoReplay(),
 		autoResubscribe:       opts.AutoResubscribe(),
 		reconnectionDelay:     opts.ReconnectionDelay(),
-		replayInterval:        opts.ReplayInterval(),
 		state:                 state.Ready,
 		retrying:              false,
 		nbRetried:             0,
 		stopRetryingToConnect: false,
-		queueFilter:           defaultQueueFilter,
-		port:                  opts.Port(),
-		ssl:                   opts.SslConnection(),
+		port: opts.Port(),
+		ssl:  opts.SslConnection(),
 	}
 	ws.host = host
 
 	if opts.OfflineMode() == types.Auto {
 		ws.autoReconnect = true
-		ws.autoQueue = true
-		ws.autoReplay = true
 		ws.autoResubscribe = true
 	}
 	ws.state = state.Offline
@@ -137,10 +120,6 @@ func (ws *WebSocket) Connect() (bool, error) {
 	}
 
 	ws.state = state.Connecting
-
-	if ws.autoQueue {
-		ws.queuing = true
-	}
 
 	addr := fmt.Sprintf("%s:%d", ws.host, ws.port)
 
@@ -203,38 +182,16 @@ func (ws *WebSocket) Connect() (bool, error) {
 				close(ws.listenChan)
 				ws.ws.Close()
 				ws.state = state.Offline
-				if ws.autoQueue {
-					ws.queuing = true
-				}
 				ws.EmitEvent(event.Disconnected, nil)
 				return
 			}
 		}
 	}()
 
-	ws.PlayQueue()
-
 	return ws.wasConnected, err
 }
 
 func (ws *WebSocket) Send(query []byte, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse, requestId string) error {
-	queuable := options == nil || options.Queuable()
-	queuable = queuable && ws.queueFilter(query)
-
-	if ws.queuing && queuable {
-		ws.cleanQueue()
-		qo := &types.QueryObject{
-			Timestamp: time.Now(),
-			ResChan:   responseChannel,
-			Query:     query,
-			RequestId: requestId,
-			Options:   options,
-		}
-		ws.offlineQueue = append(ws.offlineQueue, qo)
-		ws.EmitEvent(event.OfflineQueuePush, qo)
-		return nil
-	}
-
 	if ws.state == state.Connected {
 		return ws.emitRequest(&types.QueryObject{
 			Query:     query,
@@ -250,44 +207,6 @@ func (ws *WebSocket) Send(query []byte, options types.QueryOptions, responseChan
 func (ws *WebSocket) discardRequest(responseChannel chan<- *types.KuzzleResponse, query []byte) {
 	if responseChannel != nil {
 		responseChannel <- &types.KuzzleResponse{Status: 400, Error: types.NewError("Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: "+string(query), 400)}
-	}
-}
-
-// Clean up the queue, ensuring the queryTTL and queryMaxSize properties are respected
-// Clean up the queue, ensuring the queryTTL and queryMaxSize properties are respected
-func (ws *WebSocket) cleanQueue() {
-	now := time.Now()
-	now = now.Add(-ws.queueTTL * time.Millisecond)
-
-	// Clean queue of timed out query
-	if ws.queueTTL > 0 {
-		var query *types.QueryObject
-		for _, query = range ws.offlineQueue {
-			if query.Timestamp.Before(now) {
-				ws.offlineQueue = ws.offlineQueue[1:]
-			} else {
-				break
-			}
-		}
-	}
-
-	if ws.queueMaxSize > 0 && len(ws.offlineQueue) > ws.queueMaxSize {
-		for len(ws.offlineQueue) > ws.queueMaxSize {
-			eventListener := ws.eventListeners[event.OfflineQueuePop]
-			for c := range eventListener {
-				json, _ := json.Marshal(ws.offlineQueue[0])
-				c <- json
-			}
-
-			eventListener = ws.eventListenersOnce[event.OfflineQueuePop]
-			for c := range eventListener {
-				json, _ := json.Marshal(ws.offlineQueue[0])
-				c <- json
-				delete(ws.eventListenersOnce[event.OfflineQueuePop], c)
-			}
-
-			ws.offlineQueue = ws.offlineQueue[1:]
-		}
 	}
 }
 
@@ -431,79 +350,8 @@ func (ws *WebSocket) EmitEvent(event int, arg interface{}) {
 	}
 }
 
-func (ws *WebSocket) StartQueuing() {
-	if ws.state == state.Offline && !ws.autoQueue {
-		ws.queuing = true
-	}
-}
-
-func (ws *WebSocket) StopQueuing() {
-	if ws.state == state.Offline && !ws.autoQueue {
-		ws.queuing = false
-	}
-}
-
-func (ws *WebSocket) ClearQueue() {
-	ws.offlineQueue = nil
-}
-
-// PlayQueue replays the requests queued during offline mode. Works only if the SDK is not in a disconnected state, and if the autoReplay option is set to false.
-func (ws *WebSocket) PlayQueue() {
-	if ws.state != state.Offline && !ws.autoReplay {
-		ws.cleanQueue()
-		ws.dequeue()
-	}
-}
-
-func (ws *WebSocket) mergeOfflineQueueWithLoader() error {
-	type query struct {
-		requestId  string `json:"requestId"`
-		controller string `json:"controller"`
-		action     string `json:"action"""`
-	}
-
-	additionalOfflineQueue := ws.offlineQueueLoader.Load()
-
-	for _, additionalQuery := range additionalOfflineQueue {
-		for _, offlineQuery := range ws.offlineQueue {
-			q := query{}
-			json.Unmarshal(additionalQuery.Query, &q)
-			if q.requestId != "" || q.action != "" || q.controller != "" {
-				offlineQ := query{}
-				json.Unmarshal(offlineQuery.Query, &offlineQ)
-				if q.requestId != offlineQ.requestId {
-					ws.offlineQueue = append(ws.offlineQueue, additionalQuery)
-				} else {
-					additionalOfflineQueue = additionalOfflineQueue[:1]
-				}
-			} else {
-				return types.NewError("Invalid offline queue request. One or more missing properties: requestId, action, controller.")
-			}
-		}
-	}
-	return nil
-}
-
-func (ws *WebSocket) dequeue() error {
-	if ws.offlineQueueLoader != nil {
-		err := ws.mergeOfflineQueueWithLoader()
-		if err != nil {
-			return err
-		}
-	}
-	// Example from sdk where we have a good use of _
-	if len(ws.offlineQueue) > 0 {
-		for _, query := range ws.offlineQueue {
-			ws.emitRequest(query)
-			ws.offlineQueue = ws.offlineQueue[:1]
-			ws.EmitEvent(event.OfflineQueuePop, query)
-			time.Sleep(ws.replayInterval * time.Millisecond)
-			ws.offlineQueue = ws.offlineQueue[:1]
-		}
-	} else {
-		ws.queuing = false
-	}
-	return nil
+func (ws *WebSocket) IsReady() bool {
+	return ws.state == state.Connected
 }
 
 func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
@@ -554,10 +402,6 @@ func (ws *WebSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
 }
 
-func (ws *WebSocket) AutoQueue() bool {
-	return ws.autoQueue
-}
-
 func (ws *WebSocket) AutoReconnect() bool {
 	return ws.autoReconnect
 }
@@ -566,40 +410,12 @@ func (ws *WebSocket) AutoResubscribe() bool {
 	return ws.autoResubscribe
 }
 
-func (ws *WebSocket) AutoReplay() bool {
-	return ws.autoReplay
-}
-
 func (ws *WebSocket) Host() string {
 	return ws.host
 }
 
-func (ws *WebSocket) OfflineQueue() []*types.QueryObject {
-	return ws.offlineQueue
-}
-
-func (ws *WebSocket) OfflineQueueLoader() protocol.OfflineQueueLoader {
-	return ws.offlineQueueLoader
-}
-
 func (ws *WebSocket) Port() int {
 	return ws.port
-}
-
-func (ws *WebSocket) QueueFilter() protocol.QueueFilter {
-	return ws.queueFilter
-}
-
-func (ws *WebSocket) QueueMaxSize() int {
-	return ws.queueMaxSize
-}
-
-func (ws *WebSocket) QueueTTL() time.Duration {
-	return ws.queueTTL
-}
-
-func (ws *WebSocket) ReplayInterval() time.Duration {
-	return ws.replayInterval
 }
 
 func (ws *WebSocket) ReconnectionDelay() time.Duration {
@@ -608,36 +424,4 @@ func (ws *WebSocket) ReconnectionDelay() time.Duration {
 
 func (ws *WebSocket) SslConnection() bool {
 	return ws.ssl
-}
-
-func (ws *WebSocket) SetAutoQueue(v bool) {
-	ws.autoQueue = v
-}
-
-func (ws *WebSocket) SetAutoReplay(v bool) {
-	ws.autoReplay = v
-}
-
-func (ws *WebSocket) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
-	ws.offlineQueueLoader = v
-}
-
-func (ws *WebSocket) SetQueueFilter(v protocol.QueueFilter) {
-	if v == nil {
-		ws.queueFilter = defaultQueueFilter
-	} else {
-		ws.queueFilter = v
-	}
-}
-
-func (ws *WebSocket) SetQueueMaxSize(v int) {
-	ws.queueMaxSize = v
-}
-
-func (ws *WebSocket) SetQueueTTL(v time.Duration) {
-	ws.queueTTL = v
-}
-
-func (ws *WebSocket) SetReplayInterval(v time.Duration) {
-	ws.replayInterval = v
 }

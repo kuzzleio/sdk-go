@@ -37,35 +37,15 @@ type Protocol interface {
 	UnregisterSub(string)
 	CancelSubs()
 	RequestHistory() map[string]time.Time
-	StartQueuing()
-	StopQueuing()
-	PlayQueue()
-	ClearQueue()
+	IsReady() bool
 
 	// property getters
-	AutoQueue() bool
 	AutoReconnect() bool
 	AutoResubscribe() bool
-	AutoReplay() bool
 	Host() string
-	OfflineQueue() []*types.QueryObject
-	OfflineQueueLoader() OfflineQueueLoader
 	Port() int
-	QueueFilter() QueueFilter
-	QueueMaxSize() int
-	QueueTTL() time.Duration
-	ReplayInterval() time.Duration
 	ReconnectionDelay() time.Duration
 	SslConnection() bool
-
-	// property setters
-	SetAutoQueue(bool)
-	SetAutoReplay(bool)
-	SetOfflineQueueLoader(OfflineQueueLoader)
-	SetQueueFilter(QueueFilter)
-	SetQueueMaxSize(int)
-	SetQueueTTL(time.Duration)
-	SetReplayInterval(time.Duration)
 }
 
 type OfflineQueueLoader interface {
