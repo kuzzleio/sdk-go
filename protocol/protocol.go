@@ -40,11 +40,8 @@ type Protocol interface {
 	IsReady() bool
 
 	// property getters
-	AutoReconnect() bool
-	AutoResubscribe() bool
 	Host() string
 	Port() int
-	ReconnectionDelay() time.Duration
 	SslConnection() bool
 }
 

@@ -29,7 +29,7 @@ func (k *Kuzzle) FlushQueue() {
 
 // PlayQueue replays the requests queued during offline mode.
 func (k *Kuzzle) PlayQueue() {
-	if k.socket.IsReady() {
+	if k.protocol.IsReady() {
 		k.cleanQueue()
 		k.dequeue()
 	}
@@ -121,7 +121,7 @@ func (k *Kuzzle) dequeue() error {
 	// Example from sdk where we have a good use of _
 	if len(k.offlineQueue) > 0 {
 		for _, query := range k.offlineQueue {
-			k.socket.Send(query.Query, query.Options, query.ResChan, query.RequestId)
+			k.protocol.Send(query.Query, query.Options, query.ResChan, query.RequestId)
 			k.offlineQueue = k.offlineQueue[:1]
 			k.EmitEvent(event.OfflineQueuePop, query)
 			time.Sleep(k.replayInterval * time.Millisecond)

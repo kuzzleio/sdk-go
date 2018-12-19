@@ -29,8 +29,7 @@ import (
 )
 
 const (
-	MAX_EMIT_TIMEOUT  = 10
-	MAX_CONNECT_RETRY = 10
+	MAX_EMIT_TIMEOUT = 10
 )
 
 type subscription struct {
@@ -56,17 +55,11 @@ type WebSocket struct {
 	eventListeners     map[int]map[chan<- json.RawMessage]bool
 	eventListenersOnce map[int]map[chan<- json.RawMessage]bool
 
-	retrying              bool
-	nbRetried             int
-	stopRetryingToConnect bool
-	requestHistory        map[string]time.Time
+	requestHistory map[string]time.Time
 
-	autoReconnect     bool
-	autoResubscribe   bool
-	host              string
-	port              int
-	reconnectionDelay time.Duration
-	ssl               bool
+	host string
+	port int
+	ssl  bool
 }
 
 var defaultQueueFilter protocol.QueueFilter
@@ -86,28 +79,19 @@ func NewWebSocket(host string, options types.Options) *WebSocket {
 	}
 
 	ws := &WebSocket{
-		mu:                    &sync.Mutex{},
-		channelsResult:        sync.Map{},
-		subscriptions:         sync.Map{},
-		eventListeners:        make(map[int]map[chan<- json.RawMessage]bool),
-		eventListenersOnce:    make(map[int]map[chan<- json.RawMessage]bool),
-		requestHistory:        make(map[string]time.Time),
-		autoReconnect:         opts.AutoReconnect(),
-		autoResubscribe:       opts.AutoResubscribe(),
-		reconnectionDelay:     opts.ReconnectionDelay(),
-		state:                 state.Ready,
-		retrying:              false,
-		nbRetried:             0,
-		stopRetryingToConnect: false,
-		port: opts.Port(),
-		ssl:  opts.SslConnection(),
+		mu:                 &sync.Mutex{},
+		channelsResult:     sync.Map{},
+		subscriptions:      sync.Map{},
+		eventListeners:     make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool),
+		requestHistory:     make(map[string]time.Time),
+		state:              state.Ready,
+		host:               host,
+		port:               opts.Port(),
+		ssl:                opts.SslConnection(),
 	}
 	ws.host = host
 
-	if opts.OfflineMode() == types.Auto {
-		ws.autoReconnect = true
-		ws.autoResubscribe = true
-	}
 	ws.state = state.Offline
 
 	return ws
@@ -143,22 +127,11 @@ func (ws *WebSocket) Connect() (bool, error) {
 		ws.state = state.Offline
 		ws.EmitEvent(event.NetworkError, err)
 
-		if ws.autoReconnect && !ws.retrying && !ws.stopRetryingToConnect && ws.nbRetried < MAX_CONNECT_RETRY {
-			ws.retrying = true
-			time.Sleep(ws.reconnectionDelay)
-			ws.retrying = false
-			ws.nbRetried++
-			ws.Connect()
-		} else {
-			ws.EmitEvent(event.Disconnected, nil)
-		}
-
 		return false, err
 	}
 
 	ws.ws = socket
 	ws.state = state.Connected
-	ws.stopRetryingToConnect = false
 	ws.queuing = false
 
 	if ws.wasConnected {
@@ -379,7 +352,6 @@ func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
 }
 
 func (ws *WebSocket) Close() error {
-	ws.stopRetryingToConnect = true
 	ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	ws.state = state.Disconnected
 
@@ -402,24 +374,12 @@ func (ws *WebSocket) RequestHistory() map[string]time.Time {
 	return ws.requestHistory
 }
 
-func (ws *WebSocket) AutoReconnect() bool {
-	return ws.autoReconnect
-}
-
-func (ws *WebSocket) AutoResubscribe() bool {
-	return ws.autoResubscribe
-}
-
 func (ws *WebSocket) Host() string {
 	return ws.host
 }
 
 func (ws *WebSocket) Port() int {
 	return ws.port
-}
-
-func (ws *WebSocket) ReconnectionDelay() time.Duration {
-	return ws.reconnectionDelay
 }
 
 func (ws *WebSocket) SslConnection() bool {

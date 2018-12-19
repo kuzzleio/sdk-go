@@ -20,18 +20,12 @@ import (
 	"time"
 
 	"github.com/kuzzleio/sdk-go/event"
-	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	if k.State() == state.Disconnected || k.State() == state.Offline || k.State() == state.Ready {
-		responseChannel <- &types.KuzzleResponse{Error: types.NewError("This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?", 400)}
-		return
-	}
-
 	u, _ := uuid.NewV4()
 	requestId := u.String()
 
@@ -138,7 +132,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		return
 	}
 
-	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
+	err = k.protocol.Send(finalRequest, options, responseChannel, requestId)
 
 	if err != nil {
 		if responseChannel != nil {

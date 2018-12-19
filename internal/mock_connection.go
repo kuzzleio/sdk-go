@@ -107,14 +107,6 @@ func (c *MockedConnection) RemoveAllListeners(event int) {
 	}
 }
 
-func (c *MockedConnection) AutoQueue() bool {
-	return true
-}
-
-func (c *MockedConnection) AutoReconnect() bool {
-	return true
-}
-
 func (c *MockedConnection) AutoResubscribe() bool {
 	return true
 }
