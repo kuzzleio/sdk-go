@@ -15,6 +15,7 @@
 package types
 
 import (
+	"net/http"
 	"time"
 )
 
@@ -49,6 +50,8 @@ type Options interface {
 	SetPort(int) *options
 	SslConnection() bool
 	SetSslConnection(bool) *options
+	Headers() *http.Header
+	SetHeaders(*http.Header) *options
 }
 
 type options struct {
@@ -65,6 +68,7 @@ type options struct {
 	refresh           string
 	port              int
 	sslConnection     bool
+	headers           *http.Header
 }
 
 func (o options) QueueTTL() time.Duration {
@@ -175,6 +179,15 @@ func (o *options) SetSslConnection(v bool) *options {
 	return o
 }
 
+func (o *options) Headers() *http.Header {
+	return o.headers
+}
+
+func (o *options) SetHeaders(h *http.Header) *options {
+	o.headers = h
+	return o
+}
+
 // NewOptions instanciates new Options with default values
 func NewOptions() *options {
 	return &options{
@@ -189,5 +202,6 @@ func NewOptions() *options {
 		replayInterval:    10,
 		port:              7512,
 		sslConnection:     false,
+		headers:           nil,
 	}
 }

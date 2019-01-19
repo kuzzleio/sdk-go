@@ -17,15 +17,15 @@ package websocket
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"sync"
-	"time"
-
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
+	"net/http"
+	"net/url"
+	"sync"
+	"time"
 )
 
 const (
@@ -75,6 +75,7 @@ type WebSocket struct {
 	reconnectionDelay  time.Duration
 	replayInterval     time.Duration
 	ssl                bool
+	headers            *http.Header
 }
 
 var defaultQueueFilter protocol.QueueFilter
@@ -116,6 +117,7 @@ func NewWebSocket(host string, options types.Options) *WebSocket {
 		queueFilter:           defaultQueueFilter,
 		port:                  opts.Port(),
 		ssl:                   opts.SslConnection(),
+		headers:               opts.Headers(),
 	}
 	ws.host = host
 
@@ -158,7 +160,7 @@ func (ws *WebSocket) Connect() (bool, error) {
 	}
 
 	u := url.URL{Scheme: scheme, Host: addr}
-	socket, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	socket, _, err := websocket.DefaultDialer.Dial(u.String(), *ws.headers)
 
 	if err != nil {
 		ws.state = state.Offline
