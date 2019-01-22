@@ -160,7 +160,14 @@ func (ws *WebSocket) Connect() (bool, error) {
 	}
 
 	u := url.URL{Scheme: scheme, Host: addr}
-	socket, _, err := websocket.DefaultDialer.Dial(u.String(), *ws.headers)
+
+	var headers http.Header
+
+	if ws.headers != nil {
+		headers = *ws.headers
+	}
+
+	socket, _, err := websocket.DefaultDialer.Dial(u.String(), headers)
 
 	if err != nil {
 		ws.state = state.Offline
