@@ -44,8 +44,6 @@ type Options interface {
 	SetReconnectionDelay(time.Duration) *options
 	ReplayInterval() time.Duration
 	SetReplayInterval(time.Duration) *options
-	Refresh() string
-	SetRefresh(string) *options
 	Port() int
 	SetPort(int) *options
 	SslConnection() bool
@@ -65,7 +63,6 @@ type options struct {
 	reconnectionDelay time.Duration
 	replayInterval    time.Duration
 	connect           int
-	refresh           string
 	port              int
 	sslConnection     bool
 	headers           *http.Header
@@ -149,15 +146,6 @@ func (o options) ReplayInterval() time.Duration {
 
 func (o *options) SetReplayInterval(replayInterval time.Duration) *options {
 	o.replayInterval = replayInterval
-	return o
-}
-
-func (o options) Refresh() string {
-	return o.refresh
-}
-
-func (o *options) SetRefresh(refresh string) *options {
-	o.refresh = refresh
 	return o
 }
 
