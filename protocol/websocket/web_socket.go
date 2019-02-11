@@ -349,9 +349,7 @@ func (ws *WebSocket) CancelSubs() {
 }
 
 func (ws *WebSocket) listen() {
-	for {
-		msg := <-ws.listenChan
-
+	for msg := range ws.listenChan {
 		var message types.KuzzleResponse
 		json.Unmarshal(msg, &message)
 
@@ -539,12 +537,10 @@ func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
 	return nil
 }
 
-func (ws *WebSocket) Close() error {
+func (ws *WebSocket) Close() {
 	ws.stopRetryingToConnect = true
 	ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	ws.state = state.Disconnected
-
-	return ws.ws.Close()
 }
 
 func (ws *WebSocket) isValidState() bool {
