@@ -537,10 +537,12 @@ func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
 	return nil
 }
 
-func (ws *WebSocket) Close() {
+func (ws *WebSocket) Close() error {
 	ws.stopRetryingToConnect = true
 	ws.ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	ws.state = state.Disconnected
+
+	return ws.ws.Close()
 }
 
 func (ws *WebSocket) isValidState() bool {
