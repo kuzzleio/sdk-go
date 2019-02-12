@@ -349,9 +349,7 @@ func (ws *WebSocket) CancelSubs() {
 }
 
 func (ws *WebSocket) listen() {
-	for {
-		msg := <-ws.listenChan
-
+	for msg := range ws.listenChan {
 		var message types.KuzzleResponse
 		json.Unmarshal(msg, &message)
 
