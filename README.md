@@ -18,7 +18,7 @@ You can access the Kuzzle repository on [Github](https://github.com/kuzzleio/kuz
 
 ## SDK Documentation
 
-The complete SDK documentation is available [here](https://docs-v2.kuzzle.io/sdk-reference/go/1/getting-started/)
+The complete SDK documentation is available [here](https://docs-v2.kuzzle.io/sdk-reference)
 
 ## Installation
 
