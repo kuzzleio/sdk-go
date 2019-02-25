@@ -44,9 +44,3 @@ type Protocol interface {
 	Port() int
 	SslConnection() bool
 }
-
-type OfflineQueueLoader interface {
-	Load() []*types.QueryObject
-}
-
-type QueueFilter func([]byte) bool

@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/event"
-	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
 	"net/http"
@@ -57,20 +56,14 @@ type WebSocket struct {
 
 	requestHistory map[string]time.Time
 
-	host string
-	port int
-	ssl  bool
-	headers            *http.Header
+	host    string
+	port    int
+	ssl     bool
+	headers *http.Header
 }
-
-var defaultQueueFilter protocol.QueueFilter
 
 // NewWebSocket instanciates a new webSocket connection object
 func NewWebSocket(host string, options types.Options) *WebSocket {
-	defaultQueueFilter = func([]byte) bool {
-		return true
-	}
-
 	var opts types.Options
 
 	if options == nil {

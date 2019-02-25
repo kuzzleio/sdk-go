@@ -37,6 +37,12 @@ const (
 	MAX_CONNECT_RETRY = 10
 )
 
+type OfflineQueueLoader interface {
+	Load() []*types.QueryObject
+}
+
+type QueueFilter func([]byte) bool
+
 type Kuzzle struct {
 	protocol protocol.Protocol
 
@@ -57,8 +63,8 @@ type Kuzzle struct {
 	autoReplay            bool
 	autoResubscribe       bool
 	offlineQueue          []*types.QueryObject
-	offlineQueueLoader    protocol.OfflineQueueLoader
-	queueFilter           protocol.QueueFilter
+	offlineQueueLoader    OfflineQueueLoader
+	queueFilter           QueueFilter
 	queueMaxSize          int
 	queueTTL              time.Duration
 	reconnectionDelay     time.Duration
@@ -188,12 +194,7 @@ func (k *Kuzzle) Connect() error {
 	// on network error
 	ee := make(chan json.RawMessage)
 	go func() {
-		for {
-			err, ok := <-ee
-			if ok == false {
-				break
-			}
-
+		for err := range <-ee {
 			if k.autoQueue {
 				k.queuing = true
 			}
@@ -260,12 +261,12 @@ func (k *Kuzzle) OfflineQueue() []*types.QueryObject {
 }
 
 // OfflineQueueLoader returns the Kuzzle socket OfflineQueueLoader field value
-func (k *Kuzzle) OfflineQueueLoader() protocol.OfflineQueueLoader {
+func (k *Kuzzle) OfflineQueueLoader() OfflineQueueLoader {
 	return k.offlineQueueLoader
 }
 
 // QueueFilter returns the Kuzzle socket QueueFilter field value
-func (k *Kuzzle) QueueFilter() protocol.QueueFilter {
+func (k *Kuzzle) QueueFilter() QueueFilter {
 	return k.queueFilter
 }
 
@@ -305,12 +306,12 @@ func (k *Kuzzle) SetAutoReplay(v bool) {
 }
 
 // SetOfflineQueueLoader sets the Kuzzle socket OfflineQueueLoader field with given value
-func (k *Kuzzle) SetOfflineQueueLoader(v protocol.OfflineQueueLoader) {
+func (k *Kuzzle) SetOfflineQueueLoader(v OfflineQueueLoader) {
 	k.offlineQueueLoader = v
 }
 
 // SetQueueFilter sets the Kuzzle socket QueueFilter field with given value
-func (k *Kuzzle) SetQueueFilter(v protocol.QueueFilter) {
+func (k *Kuzzle) SetQueueFilter(v QueueFilter) {
 	k.queueFilter = v
 }
 
