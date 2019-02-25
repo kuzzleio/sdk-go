@@ -17,15 +17,15 @@ package websocket
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"sync"
-	"time"
-
 	"github.com/gorilla/websocket"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/state"
 	"github.com/kuzzleio/sdk-go/types"
+	"net/http"
+	"net/url"
+	"sync"
+	"time"
 )
 
 const (
@@ -60,6 +60,7 @@ type WebSocket struct {
 	host string
 	port int
 	ssl  bool
+	headers            *http.Header
 }
 
 var defaultQueueFilter protocol.QueueFilter
@@ -89,6 +90,7 @@ func NewWebSocket(host string, options types.Options) *WebSocket {
 		host:               host,
 		port:               opts.Port(),
 		ssl:                opts.SslConnection(),
+		headers:            opts.Headers(),
 	}
 	ws.host = host
 
@@ -121,7 +123,14 @@ func (ws *WebSocket) Connect() (bool, error) {
 	}
 
 	u := url.URL{Scheme: scheme, Host: addr}
-	socket, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+
+	var headers http.Header
+
+	if ws.headers != nil {
+		headers = *ws.headers
+	}
+
+	socket, _, err := websocket.DefaultDialer.Dial(u.String(), headers)
 
 	if err != nil {
 		ws.state = state.Offline
@@ -232,9 +241,7 @@ func (ws *WebSocket) CancelSubs() {
 }
 
 func (ws *WebSocket) listen() {
-	for {
-		msg := <-ws.listenChan
-
+	for msg := range ws.listenChan {
 		var message types.KuzzleResponse
 		json.Unmarshal(msg, &message)
 
