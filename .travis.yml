@@ -14,18 +14,15 @@ jobs:
 
       env:
         - GOOS=linux 
-        - GOOS=amd64
+        - GOARCH=amd64
 
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
-      before_script:
-        - go get -u ./...
-
       script:
-        - ./test.sh
+        - go test ./...
 
     - name: "Linux AMD64 - Go 1.10"
       os: linux
@@ -38,18 +35,15 @@ jobs:
 
       env:
         - GOOS=linux 
-        - GOOS=amd64
+        - GOARCH=amd64
 
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
-      before_script:
-        - go get -u ./...
-
       script:
-        - ./test.sh
+        - go test ./...
 
     - name: "Linux AMD64 - Go 1.11"
       os: linux
@@ -62,18 +56,15 @@ jobs:
 
       env:
         - GOOS=linux 
-        - GOOS=amd64
+        - GOARCH=amd64
 
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
-      before_script:
-        - go get -u ./...
-
       script:
-        - ./test.sh
+        - go test ./...
 
     - name: "Linux AMD64 - Go 1.12"
       os: linux
@@ -86,16 +77,13 @@ jobs:
 
       env:
         - GOOS=linux 
-        - GOOS=amd64
+        - GOARCH=amd64
 
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
-      before_script:
-        - go get -u ./...
-
       script:
         - ./test.sh
 
@@ -114,19 +102,15 @@ jobs:
 
       env:
         - GOOS=linux 
-        - GOOS=386
+        - GOARCH=386
 
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
-      before_script:
-        - go get -u ./...
-
       script:
-        - ./test.sh
-
+        - go test ./...
 
     - name: "MacOS amd64 - Go 1.12"
       os: osx
@@ -141,13 +125,10 @@ jobs:
           - $HOME/gopath/pkg
       env:
         - GOOS=darwin
-        - GOOS=amd64
-
-      before_script:
-        - go get -u ./...
+        - GOARCH=amd64
 
       script:
-        - ./test.sh
+        - go test ./...
 
     - name: "Windows amd64 - Go 1.12"
       os: windows
@@ -158,10 +139,7 @@ jobs:
 
       env:
         - GOOS=windows
-        - GOOS=amd64
-
-      before_script:
-        - go get -u ./...
+        - GOARCH=amd64
 
       script:
-        - ./test.sh
+        - go test ./...
