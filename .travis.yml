@@ -3,77 +3,13 @@ jobs:
 # ---------------------------------------------
 # Linux Builds
 # ---------------------------------------------
-    - name: "Linux AMD64 - Go 1.9"
+    - name: "Linux AMD64 - Go latest"
       os: linux
       dist: xenial
       sudo: true
 
       language: go
-      go: 
-        - "1.9.x"
-
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
-      cache:
-        directories:
-          - $HOME/.cache/go-build
-          - $HOME/gopath/pkg
-      
-      script:
-        - go test ./...
-
-    - name: "Linux AMD64 - Go 1.10"
-      os: linux
-      dist: xenial
-      sudo: true
-
-      language: go
-      go: 
-        - "1.10.x"
-
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
-      cache:
-        directories:
-          - $HOME/.cache/go-build
-          - $HOME/gopath/pkg
-      
-      script:
-        - go test ./...
-
-    - name: "Linux AMD64 - Go 1.11"
-      os: linux
-      dist: xenial
-      sudo: true
-
-      language: go
-      go: 
-        - "1.11.x"
-
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
-      cache:
-        directories:
-          - $HOME/.cache/go-build
-          - $HOME/gopath/pkg
-      
-      script:
-        - go test ./...
-
-    - name: "Linux AMD64 - Go 1.12"
-      os: linux
-      dist: xenial
-      sudo: true
-
-      language: go
-      go: 
-        - "1.12.x"
+      go: "master"
 
       env:
         - GOOS=linux 
@@ -90,15 +26,73 @@ jobs:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-
-    - name: "Linux i386 - Go 1.12"
+    - name: "Linux AMD64 - Go 1.11.x"
       os: linux
       dist: xenial
       sudo: true
 
       language: go
-      go: 
-        - "1.12.x"
+      go: "1.11.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=amd64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "Linux AMD64 - Go 1.10.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "1.10.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=amd64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "Linux AMD64 - Go 1.9.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "1.9.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=amd64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "Linux i386 - Go latest"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "master"
 
       env:
         - GOOS=linux 
@@ -110,14 +104,73 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - go test ./...
+        - ./test.sh
 
-    - name: "MacOS amd64 - Go 1.12"
+    - name: "Linux i386 - Go 1.11.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "1.11.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=386
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "Linux i386 - Go 1.10.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "1.10.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=386
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "Linux i386 - Go 1.9.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: "1.9.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=386
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - ./test.sh
+
+    - name: "MacOS amd64 - Go latest"
       os: osx
 
       language: go
-      go: 
-        - "1.12.x"
+      go: "master"
 
       cache:
         directories:
@@ -128,18 +181,47 @@ jobs:
         - GOARCH=amd64
 
       script:
-        - go test ./...
+        - ./test.sh
 
-    - name: "Windows amd64 - Go 1.12"
+    - name: "MacOS amd64 - Go 1.11.x"
+      os: osx
+
+      language: go
+      go: "1.11.x"
+
+      cache:
+        directories:
+          - $HOME/Library/Caches/go-build
+          - $HOME/gopath/pkg
+      env:
+        - GOOS=darwin
+        - GOARCH=amd64
+
+      script:
+        - ./test.sh
+
+    - name: "Windows amd64 - Go latest"
       os: windows
 
       language: go
-      go: 
-        - "1.12.x"
+      go: "1.12.x"
 
       env:
         - GOOS=windows
         - GOARCH=amd64
 
       script:
-        - go test ./...
+        - go test -v ./...
+
+    - name: "Windows amd64 - Go 1.11.x"
+      os: windows
+
+      language: go
+      go: "1.11.x"
+
+      env:
+        - GOOS=windows
+        - GOARCH=amd64
+
+      script:
+        - go test -v ./...
