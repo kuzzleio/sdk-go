@@ -1,55 +1,89 @@
-os: linux
-dist: trusty
-
-language: minimal
-sudo: required
-
-services:
-  - docker
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-matrix:
+jobs:
   include:
 # ---------------------------------------------
-# AMD64: Build and Test
+# Linux AMD64: Build and Test
 # ---------------------------------------------
-    - env:
-        - ARCH="amd64"
+    - name: "Linux AMD64 - Go 1.9"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: 
+        - "1.9.x"
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      before_script:
+        - go get -u ./...
 
       script:
-        # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang ./.ci/setup_and_test.sh
+        - ./test.sh
 
-# ---------------------------------------------
-# I386: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="i386"
+    - name: "Linux AMD64 - Go 1.10"
+      os: linux
+      dist: xenial
+      sudo: true
 
-      script:
-        # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang-i386 ./.ci/setup_and_test.sh
+      language: go
+      go: 
+        - "1.10.x"
 
-# ---------------------------------------------
-# ARMV7: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="armhf"
-
-      script:
-        # Build
-        - docker run --rm --privileged multiarch/qemu-user-static:register
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:armhf-golang-runner taskset -c 1 ./.ci/setup_and_test.sh
-
-# ---------------------------------------------
-# ARMV8: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="aarch64"
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      before_script:
+        - go get -u ./...
 
       script:
-        # Build
-        - docker run --rm --privileged multiarch/qemu-user-static:register
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:aarch64-golang-runner taskset -c 1 ./.ci/setup_and_test.sh
+        - ./test.sh
+
+    - name: "Linux AMD64 - Go 1.11"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: 
+        - "1.11.x"
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      before_script:
+        - go get -u ./...
+
+      script:
+        - ./test.sh
+
+    - name: "Linux AMD64 - Go 1.12"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: 
+        - "1.12.x"
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      before_script:
+        - go get -u ./...
+
+      script:
+        - ./test.sh
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+
