@@ -135,8 +135,29 @@ jobs:
       go: 
         - "1.12.x"
 
+      cache:
+        directories:
+          - $HOME/Library/Caches/go-build
+          - $HOME/gopath/pkg
       env:
         - GOOS=darwin
+        - GOOS=amd64
+
+      before_script:
+        - go get -u ./...
+
+      script:
+        - ./test.sh
+
+    - name: "Windows amd64 - Go 1.12"
+      os: windows
+
+      language: go
+      go: 
+        - "1.12.x"
+
+      env:
+        - GOOS=windows
         - GOOS=amd64
 
       before_script:
