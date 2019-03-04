@@ -1,7 +1,7 @@
 jobs:
   include:
 # ---------------------------------------------
-# Linux AMD64: Build and Test
+# Linux Builds
 # ---------------------------------------------
     - name: "Linux AMD64 - Go 1.9"
       os: linux
@@ -11,6 +11,10 @@ jobs:
       language: go
       go: 
         - "1.9.x"
+
+      env:
+        - GOOS=linux 
+        - GOOS=amd64
 
       cache:
         directories:
@@ -32,6 +36,10 @@ jobs:
       go: 
         - "1.10.x"
 
+      env:
+        - GOOS=linux 
+        - GOOS=amd64
+
       cache:
         directories:
           - $HOME/.cache/go-build
@@ -51,6 +59,10 @@ jobs:
       language: go
       go: 
         - "1.11.x"
+
+      env:
+        - GOOS=linux 
+        - GOOS=amd64
 
       cache:
         directories:
@@ -72,6 +84,10 @@ jobs:
       go: 
         - "1.12.x"
 
+      env:
+        - GOOS=linux 
+        - GOOS=amd64
+
       cache:
         directories:
           - $HOME/.cache/go-build
@@ -87,3 +103,44 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
 
 
+    - name: "Linux i386 - Go 1.12"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      language: go
+      go: 
+        - "1.12.x"
+
+      env:
+        - GOOS=linux 
+        - GOOS=386
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      before_script:
+        - go get -u ./...
+
+      script:
+        - ./test.sh
+
+
+    - name: "MacOS amd64 - Go 1.12"
+      os: osx
+
+      language: go
+      go: 
+        - "1.12.x"
+
+      env:
+        - GOOS=darwin
+        - GOOS=amd64
+
+      before_script:
+        - go get -u ./...
+
+      script:
+        - ./test.sh
