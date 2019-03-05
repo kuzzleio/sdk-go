@@ -66,31 +66,6 @@ jobs:
       script:
         - ./test.sh
 
-    - name: "Linux arm64 - Go latest"
-      os: linux
-      dist: xenial
-      sudo: true
-
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-
-      language: go
-      go: "master"
-
-      env:
-        - GOOS=linux 
-        - GOARCH=arm64
-
-      cache:
-        directories:
-          - $HOME/.cache/go-build
-          - $HOME/gopath/pkg
-      
-      script:
-        - qemu-aarch64-static ./test.sh
-
     - name: "Linux i386 - Go latest"
       os: linux
       dist: xenial
@@ -150,6 +125,159 @@ jobs:
       
       script:
         - ./test.sh
+
+    - name: "Linux arm64 - Go latest"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "master"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-aarch64-static ./test.sh
+
+    - name: "Linux arm64 - Go 1.11.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "1.11.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-aarch64-static ./test.sh
+
+    - name: "Linux arm64 - Go 1.10.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "1.10.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm64
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-aarch64-static ./test.sh
+
+    - name: "Linux armhf - Go latest"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "master"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm
+        - GOARM=7
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-arm-static ./test.sh
+
+    - name: "Linux armhf - Go 1.11.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "1.11.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm
+        - GOARM=7
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-arm-static ./test.sh
+
+    - name: "Linux armhf - Go 1.10.x"
+      os: linux
+      dist: xenial
+      sudo: true
+
+      addons:
+        apt:
+          packages:
+          - qemu-user-static
+
+      language: go
+      go: "1.10.x"
+
+      env:
+        - GOOS=linux 
+        - GOARCH=arm
+        - GOARM=7
+
+      cache:
+        directories:
+          - $HOME/.cache/go-build
+          - $HOME/gopath/pkg
+      
+      script:
+        - qemu-arm-static ./test.sh
 
     - name: "MacOS amd64 - Go latest"
       os: osx
