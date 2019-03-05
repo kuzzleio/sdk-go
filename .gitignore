@@ -1,4 +1,5 @@
 .cover
+.compiled_test
 .idea
 .vscode
 main.go

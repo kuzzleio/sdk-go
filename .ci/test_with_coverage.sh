@@ -1,23 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workdir=$dir/.cover
-profile="$workdir/cover.out"
+cover_dir="$(pwd)/.cover"
+profile="$cover_dir/cover.out"
 mode=count
-dirs=(kuzzle protocol/websocket collection security ms realtime index server auth document)
 timeout=${TIMEOUT:=1m}
 
 generate_cover_data() {
-    rm -rf "$workdir"
-    mkdir "$workdir"
-
-    for pkg in ${dirs[@]}; do
-        go test -timeout "$timeout" -covermode="$mode" -coverprofile="$workdir/$(basename $pkg).cover" "./$pkg"
-    done
-
-    echo "mode: $mode" >"$profile"
-    grep -h -v "^mode:" "$workdir"/*.cover >>"$profile"
+    rm -rf "$cover_dir"
+    mkdir "$cover_dir"
+    go test -timeout "$timeout" -covermode="$mode" -coverprofile="$profile" ./...
 }
 
 show_cover_report() {
@@ -33,8 +25,6 @@ linter_check() {
         exit 1
     fi
 }
-
-cd "$dir"
 
 linter_check .
 generate_cover_data

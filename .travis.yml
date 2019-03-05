@@ -3,7 +3,7 @@ jobs:
 # ---------------------------------------------
 # Linux Builds
 # ---------------------------------------------
-    - name: "Linux amd64 - Go latest"
+    - name: "Linux amd64 - Go latest (with coverage)"
       os: linux
       dist: xenial
       sudo: true
@@ -21,7 +21,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - ./.ci/test_with_coverage.sh
 
       after_success:
         - bash <(curl -s https://codecov.io/bash)
@@ -44,7 +44,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "Linux amd64 - Go 1.10.x"
       os: linux
@@ -64,7 +64,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "Linux i386 - Go latest"
       os: linux
@@ -84,7 +84,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "Linux i386 - Go 1.11.x"
       os: linux
@@ -104,7 +104,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "Linux i386 - Go 1.10.x"
       os: linux
@@ -124,7 +124,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "Linux arm64 - Go latest"
       os: linux
@@ -149,7 +149,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-aarch64-static ./test.sh
+        - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux arm64 - Go 1.11.x"
       os: linux
@@ -174,7 +174,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-aarch64-static ./test.sh
+        - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux arm64 - Go 1.10.x"
       os: linux
@@ -199,7 +199,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-aarch64-static ./test.sh
+        - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux armhf - Go latest"
       os: linux
@@ -225,7 +225,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-arm-static ./test.sh
+        - go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.11.x"
       os: linux
@@ -251,7 +251,7 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-arm-static ./test.sh
+        - go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.10.x"
       os: linux
@@ -277,8 +277,11 @@ jobs:
           - $HOME/gopath/pkg
       
       script:
-        - qemu-arm-static ./test.sh
+        - go test -v -exec "qemu-arm-static" ./...
 
+# ---------------------------------------------
+# MacOS Builds
+# ---------------------------------------------
     - name: "MacOS amd64 - Go latest"
       os: osx
 
@@ -294,7 +297,7 @@ jobs:
         - GOARCH=amd64
 
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.11.x"
       os: osx
@@ -311,7 +314,7 @@ jobs:
         - GOARCH=amd64
 
       script:
-        - ./test.sh
+        - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.10.x"
       os: osx
@@ -328,8 +331,11 @@ jobs:
         - GOARCH=amd64
 
       script:
-        - ./test.sh
+        - go test -v ./...
 
+# ---------------------------------------------
+# Windows Builds
+# ---------------------------------------------
     - name: "Windows amd64 - Go latest"
       os: windows
 
