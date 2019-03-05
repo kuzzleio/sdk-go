@@ -166,20 +166,14 @@ func (k *Kuzzle) Connect() error {
 			go func() {
 				res, err := k.Auth.CheckToken(k.jwt)
 
-				if err != nil {
-					k.jwt = ""
-					k.protocol.EmitEvent(event.TokenExpired, nil)
-					return
-				}
-
-				if !res.Valid {
+				if err != nil || !res.Valid {
 					k.jwt = ""
 					k.protocol.EmitEvent(event.TokenExpired, nil)
 				}
+				k.EmitEvent(event.Reconnected, nil)
 			}()
 		}
 
-		k.EmitEvent(event.Reconnected, nil)
 	} else {
 		k.EmitEvent(event.Connected, nil)
 	}
@@ -339,12 +333,11 @@ func (k *Kuzzle) SetVolatile(v types.VolatileData) {
 }
 
 func (k *Kuzzle) EmitEvent(e int, arg interface{}) {
+	json, _ := json.Marshal(arg)
 	for c := range k.eventListeners[e] {
-		json, _ := json.Marshal(arg)
 		c <- json
 	}
 	for c := range k.eventListenersOnce[e] {
-		json, _ := json.Marshal(arg)
 		c <- json
 		close(c)
 		delete(k.eventListenersOnce[e], c)
