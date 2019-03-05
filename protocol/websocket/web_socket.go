@@ -352,8 +352,6 @@ func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
 }
 
 func (ws *WebSocket) Close() error {
-	ws.stopRetryingToConnect = true
-
 	if ws.ws == nil {
 		return nil
 	}
