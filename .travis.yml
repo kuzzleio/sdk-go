@@ -25,6 +25,7 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
 
     - name: "Linux amd64 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -43,6 +44,7 @@ jobs:
         - go test -v ./...
 
     - name: "Linux amd64 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -79,6 +81,7 @@ jobs:
         - go test -v ./...
 
     - name: "Linux i386 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -97,6 +100,7 @@ jobs:
         - go test -v ./...
 
     - name: "Linux i386 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -138,6 +142,7 @@ jobs:
         - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux arm64 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -185,6 +190,7 @@ jobs:
         - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: linux
       dist: xenial
       sudo: true
@@ -209,6 +215,7 @@ jobs:
         - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.10.x" 
+      if: type = cron OR (branch = master AND type != pull_request)
       # Only performed on armhf because QEMU static not already 
       # stabilized for Go 1.10.x and arm64 but behavior should be the same
       os: linux
@@ -238,6 +245,7 @@ jobs:
 # MacOS Builds
 # ---------------------------------------------
     - name: "MacOS amd64 - Go latest"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -254,6 +262,7 @@ jobs:
         - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -270,6 +279,7 @@ jobs:
         - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -286,6 +296,7 @@ jobs:
         - go test -v ./...
 
     - name: "MacOS i386 - Go latest"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -302,6 +313,7 @@ jobs:
         - go test -v ./...
 
     - name: "MacOS i386 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -318,6 +330,7 @@ jobs:
         - go test -v ./...
 
     - name: "MacOS i386 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
@@ -337,6 +350,7 @@ jobs:
 # Windows Builds
 # ---------------------------------------------
     - name: "Windows amd64 - Go latest"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
@@ -348,6 +362,7 @@ jobs:
         - go test -v ./...
 
     - name: "Windows amd64 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
@@ -359,6 +374,7 @@ jobs:
         - go test -v ./...
 
     - name: "Windows amd64 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
@@ -370,6 +386,7 @@ jobs:
         - go test -v ./...
 
     - name: "Windows i386 - Go latest"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
@@ -381,6 +398,7 @@ jobs:
         - go test -v ./...
 
     - name: "Windows i386 - Go 1.11.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
@@ -392,6 +410,7 @@ jobs:
         - go test -v ./...
 
     - name: "Windows i386 - Go 1.10.x"
+      if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
       language: go
