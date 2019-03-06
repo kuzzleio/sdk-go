@@ -3,13 +3,13 @@ jobs:
 # ---------------------------------------------
 # Linux Builds
 # ---------------------------------------------
-    - name: "Linux amd64 - Go latest (with coverage)"
+    - name: "Linux amd64 - Go 1.12.x (with coverage)"
       os: linux
       dist: xenial
       sudo: true
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -62,13 +62,13 @@ jobs:
         - export GOARCH=amd64
         - go test -v ./...
 
-    - name: "Linux i386 - Go latest"
+    - name: "Linux i386 - Go 1.12.x"
       os: linux
       dist: xenial
       sudo: true
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -118,7 +118,7 @@ jobs:
         - export GOARCH=386
         - go test -v ./...
 
-    - name: "Linux arm64 - Go latest"
+    - name: "Linux arm64 - Go 1.12.x"
       os: linux
       dist: xenial
       sudo: true
@@ -129,7 +129,7 @@ jobs:
           - qemu-user-static
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -165,7 +165,7 @@ jobs:
         - export GOARCH=arm64
         - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-    - name: "Linux armhf - Go latest"
+    - name: "Linux armhf - Go 1.12.x"
       os: linux
       dist: xenial
       sudo: true
@@ -176,7 +176,7 @@ jobs:
           - qemu-user-static
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -244,12 +244,12 @@ jobs:
 # ---------------------------------------------
 # MacOS Builds
 # ---------------------------------------------
-    - name: "MacOS amd64 - Go latest"
+    - name: "MacOS amd64 - Go 1.12.x"
       if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -295,12 +295,12 @@ jobs:
         - export GOARCH=amd64
         - go test -v ./...
 
-    - name: "MacOS i386 - Go latest"
+    - name: "MacOS i386 - Go 1.12.x"
       if: type = cron OR (branch = master AND type != pull_request)
       os: osx
 
       language: go
-      go: "master"
+      go: "1.12.x"
 
       cache:
         directories:
@@ -349,7 +349,7 @@ jobs:
 # ---------------------------------------------
 # Windows Builds
 # ---------------------------------------------
-    - name: "Windows amd64 - Go latest"
+    - name: "Windows amd64 - Go 1.12.x"
       if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
@@ -385,7 +385,7 @@ jobs:
         - GOARCH=amd64
         - go test -v ./...
 
-    - name: "Windows i386 - Go latest"
+    - name: "Windows i386 - Go 1.12.x"
       if: type = cron OR (branch = master AND type != pull_request)
       os: windows
 
