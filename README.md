@@ -25,20 +25,21 @@
 ### Kuzzle Go
 
 This is the official Go SDK for the free and open-source backend Kuzzle. It provides a way to dial with a Kuzzle server from Go applications.
-Currently, the SDK provides __WebSocket__ support. You can add your own by implementing the Protocol interface.
+The SDK provides a native __WebSocket__ support. You can add your own network protocol by implementing the Protocol interface.
 
 <p align="center">
-  :books: <b><a href="https://docs-v2.kuzzle.io/sdk-references/go/1/">Documentation</a></b>
+  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/1">Documentation</a></b>
 </p>
 
 ### Kuzzle
 
-Kuzzle is an open-source backend that includes a scalable server, a multiprotocol API,
-an administration console and a set of plugins that provide advanced functionalities like real-time pub/sub, blazing fast search and geofencing.
+Kuzzle is a ready-to-use, **on-premises and scalable backend** that enables you to manage your persistent data and be notified in real-time on whatever happens to it. 
+It also provides you with a flexible and powerful user-management system.
 
+* :watch: __[Kuzzle in 5 minutes](https://kuzzle.io/company/about-us/kuzzle-in-5-minutes/)__
 * :octocat: __[Github](https://github.com/kuzzleio/kuzzle)__
 * :earth_africa: __[Website](https://kuzzle.io)__
-* :books: __[Documentation](https://docs-v2.kuzzle.io)__
+* :books: __[Documentation](https://docs.kuzzle.io)__
 * :email: __[Gitter](https://gitter.im/kuzzleio/kuzzle)__
 
 ## Usage
