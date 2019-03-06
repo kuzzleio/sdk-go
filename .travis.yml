@@ -11,16 +11,14 @@ jobs:
       language: go
       go: "master"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=amd64
         - ./.ci/test_with_coverage.sh
 
       after_success:
@@ -34,16 +32,14 @@ jobs:
       language: go
       go: "1.11.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=amd64
         - go test -v ./...
 
     - name: "Linux amd64 - Go 1.10.x"
@@ -54,16 +50,14 @@ jobs:
       language: go
       go: "1.10.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=amd64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=amd64
         - go test -v ./...
 
     - name: "Linux i386 - Go latest"
@@ -74,16 +68,14 @@ jobs:
       language: go
       go: "master"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=386
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=386
         - go test -v ./...
 
     - name: "Linux i386 - Go 1.11.x"
@@ -94,16 +86,14 @@ jobs:
       language: go
       go: "1.11.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=386
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=386
         - go test -v ./...
 
     - name: "Linux i386 - Go 1.10.x"
@@ -114,16 +104,14 @@ jobs:
       language: go
       go: "1.10.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=386
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=386
         - go test -v ./...
 
     - name: "Linux arm64 - Go latest"
@@ -139,16 +127,14 @@ jobs:
       language: go
       go: "master"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm64
         - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux arm64 - Go 1.11.x"
@@ -164,16 +150,14 @@ jobs:
       language: go
       go: "1.11.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm64
         - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux arm64 - Go 1.10.x"
@@ -189,16 +173,14 @@ jobs:
       language: go
       go: "1.10.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm64
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm64
         - go test -v -exec "qemu-aarch64-static" ./...
 
     - name: "Linux armhf - Go latest"
@@ -214,17 +196,15 @@ jobs:
       language: go
       go: "master"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm
-        - GOARM=7
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm
+        - export GOARM=7
         - go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.11.x"
@@ -240,17 +220,15 @@ jobs:
       language: go
       go: "1.11.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm
-        - GOARM=7
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm
+        - export GOARM=7
         - go test -v -exec "qemu-arm-static" ./...
 
     - name: "Linux armhf - Go 1.10.x"
@@ -266,17 +244,15 @@ jobs:
       language: go
       go: "1.10.x"
 
-      env:
-        - GOOS=linux 
-        - GOARCH=arm
-        - GOARM=7
-
       cache:
         directories:
           - $HOME/.cache/go-build
           - $HOME/gopath/pkg
       
       script:
+        - export GOOS=linux 
+        - export GOARCH=arm
+        - export GOARM=7
         - go test -v -exec "qemu-arm-static" ./...
 
 # ---------------------------------------------
@@ -292,11 +268,10 @@ jobs:
         directories:
           - $HOME/Library/Caches/go-build
           - $HOME/gopath/pkg
-      env:
-        - GOOS=darwin
-        - GOARCH=amd64
 
       script:
+        - export GOOS=darwin
+        - export GOARCH=amd64
         - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.11.x"
@@ -309,11 +284,10 @@ jobs:
         directories:
           - $HOME/Library/Caches/go-build
           - $HOME/gopath/pkg
-      env:
-        - GOOS=darwin
-        - GOARCH=amd64
 
       script:
+        - export GOOS=darwin
+        - export GOARCH=amd64
         - go test -v ./...
 
     - name: "MacOS amd64 - Go 1.10.x"
@@ -326,11 +300,58 @@ jobs:
         directories:
           - $HOME/Library/Caches/go-build
           - $HOME/gopath/pkg
-      env:
-        - GOOS=darwin
-        - GOARCH=amd64
 
       script:
+        - export GOOS=darwin
+        - export GOARCH=amd64
+        - go test -v ./...
+
+    - name: "MacOS i386 - Go latest"
+      os: osx
+
+      language: go
+      go: "master"
+
+      cache:
+        directories:
+          - $HOME/Library/Caches/go-build
+          - $HOME/gopath/pkg
+
+      script:
+        - export GOOS=darwin
+        - export GOARCH=386
+        - go test -v ./...
+
+    - name: "MacOS i386 - Go 1.11.x"
+      os: osx
+
+      language: go
+      go: "1.11.x"
+
+      cache:
+        directories:
+          - $HOME/Library/Caches/go-build
+          - $HOME/gopath/pkg
+
+      script:
+        - export GOOS=darwin
+        - export GOARCH=386
+        - go test -v ./...
+
+    - name: "MacOS i386 - Go 1.10.x"
+      os: osx
+
+      language: go
+      go: "1.10.x"
+
+      cache:
+        directories:
+          - $HOME/Library/Caches/go-build
+          - $HOME/gopath/pkg
+
+      script:
+        - export GOOS=darwin
+        - export GOARCH=386
         - go test -v ./...
 
 # ---------------------------------------------
@@ -342,11 +363,9 @@ jobs:
       language: go
       go: "master"
 
-      env:
+      script:
         - GOOS=windows
         - GOARCH=amd64
-
-      script:
         - go test -v ./...
 
     - name: "Windows amd64 - Go 1.11.x"
@@ -355,11 +374,9 @@ jobs:
       language: go
       go: "1.11.x"
 
-      env:
+      script:
         - GOOS=windows
         - GOARCH=amd64
-
-      script:
         - go test -v ./...
 
     - name: "Windows amd64 - Go 1.10.x"
@@ -368,9 +385,41 @@ jobs:
       language: go
       go: "1.10.x"
 
-      env:
+      script:
         - GOOS=windows
         - GOARCH=amd64
+        - go test -v ./...
+
+    - name: "Windows i386 - Go latest"
+      os: windows
+
+      language: go
+      go: "master"
 
       script:
+        - GOOS=windows
+        - GOARCH=386
         - go test -v ./...
+
+    - name: "Windows i386 - Go 1.11.x"
+      os: windows
+
+      language: go
+      go: "1.11.x"
+
+      script:
+        - GOOS=windows
+        - GOARCH=386
+        - go test -v ./...
+
+    - name: "Windows i386 - Go 1.10.x"
+      os: windows
+
+      language: go
+      go: "1.10.x"
+
+      script:
+        - GOOS=windows
+        - GOARCH=386
+        - go test -v ./...
+
