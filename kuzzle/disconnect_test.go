@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package kuzzle_test
+package kuzzle
 
 import (
 	"fmt"
-	"github.com/kuzzleio/sdk-go/kuzzle"
+
 	"github.com/kuzzleio/sdk-go/protocol/websocket"
 )
 
 func ExampleKuzzle_Disconnect() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(conn, nil)
+	k, _ := NewKuzzle(conn, nil)
 
 	err := k.Disconnect()
 	if err != nil {
