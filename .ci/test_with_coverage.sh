@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-cover_dir="$(pwd)/.cover"
+cover_dir=".cover"
 profile="$cover_dir/cover.out"
 mode=count
 timeout=${TIMEOUT:=1m}
