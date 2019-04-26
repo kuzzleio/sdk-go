@@ -102,10 +102,8 @@ func (ws *WebSocket) Connect() (bool, error) {
 
 	addr := fmt.Sprintf("%s:%d", ws.host, ws.port)
 
-	if ws.lastUrl != addr {
-		ws.wasConnected = false
-		ws.lastUrl = addr
-	}
+	ws.wasConnected = ws.lastUrl == addr
+	ws.lastUrl = addr
 
 	var scheme string
 
@@ -139,7 +137,6 @@ func (ws *WebSocket) Connect() (bool, error) {
 	if ws.wasConnected {
 		ws.EmitEvent(event.Reconnected, nil)
 	} else {
-		ws.wasConnected = true
 		ws.EmitEvent(event.Connected, nil)
 	}
 
@@ -324,7 +321,7 @@ func (ws *WebSocket) EmitEvent(event int, arg interface{}) {
 }
 
 func (ws *WebSocket) IsReady() bool {
-	return ws.state == state.Connected
+	return ws != nil && ws.state == state.Connected
 }
 
 func (ws *WebSocket) emitRequest(query *types.QueryObject) error {
