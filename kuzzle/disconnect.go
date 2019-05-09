@@ -14,7 +14,10 @@
 
 package kuzzle
 
-import "github.com/kuzzleio/sdk-go/types"
+import (
+	"github.com/kuzzleio/sdk-go/event"
+	"github.com/kuzzleio/sdk-go/types"
+)
 
 // Disconnect from Kuzzle and invalidate this instance.
 // Does not fire a disconnected event.
@@ -26,6 +29,7 @@ func (k *Kuzzle) Disconnect() error {
 		return types.NewError(err.Error())
 	}
 	k.wasConnected = false
+	k.EmitEvent(event.Disconnected, nil)
 
 	return nil
 }

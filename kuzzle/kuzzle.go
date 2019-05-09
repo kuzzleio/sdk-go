@@ -172,8 +172,9 @@ func (k *Kuzzle) Connect() error {
 				}
 				k.EmitEvent(event.Reconnected, nil)
 			}()
+		} else {
+			k.EmitEvent(event.Reconnected, nil)
 		}
-
 	} else {
 		k.EmitEvent(event.Connected, nil)
 	}
