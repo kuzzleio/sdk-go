@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	version           = "1.0.0"
+	version           = "2.0.0"
 	MAX_CONNECT_RETRY = 10
 )
 
