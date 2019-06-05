@@ -19,9 +19,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/security"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -93,7 +95,7 @@ func TestSearchProfileWithScroll(t *testing.T) {
 				"hits": [
 					{"_id": "profile42", "_source": {"policies": [{"roleId": "admin"}]}}
 				],
-				"scrollId": "f00b4r"
+				"_scroll_id": "f00b4r"
 			}`)}
 		},
 	}
@@ -110,6 +112,45 @@ func TestSearchProfileWithScroll(t *testing.T) {
 	assert.Equal(t, []*types.Policy{
 		{RoleId: "admin"},
 	}, res.Hits[0].Policies)
-	assert.Equal(t, "f00b4r", res.ScrollId)
 	assert.Equal(t, "profile42", res.Hits[0].Id)
+	assert.Equal(t, "f00b4r", res.ScrollId)
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		parsedQuery := &types.KuzzleRequest{}
+		json.Unmarshal(query, parsedQuery)
+
+		assert.Equal(t, "1m", options.Scroll())
+		assert.Equal(t, "f00b4r", options.ScrollId())
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": [
+				{
+					"_id": "id3", 
+					"_source": {
+						"policies": [
+							{"roleId": "admin"}
+						]
+					}
+				},
+				{
+					"_id": "id4", 
+					"_source": {
+						"policies": [
+							{"roleId": "demo"}
+						]
+					}
+				}
+			],
+			"_scroll_id": "new_scroll"
+		}`)}
+	}
+
+	nsr, err := res.Next()
+	assert.Nil(t, err)
+	assert.NotNil(t, nsr)
+	assert.Equal(t, 3, nsr.Fetched)
+
+	p := security.NewProfile("id", nil)
+	assert.IsType(t, p, nsr.Hits[0])
+	assert.Equal(t, 2, len(nsr.Hits))
 }

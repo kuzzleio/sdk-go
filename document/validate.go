@@ -52,8 +52,10 @@ func (d *Document) Validate(index string, collection string, body json.RawMessag
 		return false, res.Error
 	}
 
-	var valid bool
+	var valid struct {
+		Valid bool `json:"valid"`
+	}
 	json.Unmarshal(res.Result, &valid)
 
-	return valid, nil
+	return valid.Valid, nil
 }

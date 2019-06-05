@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kuzzleio/sdk-go/connection/websocket"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -93,7 +93,7 @@ func TestQueryWithOptions(t *testing.T) {
 
 func TestQueryWithVolatile(t *testing.T) {
 	var k *kuzzle.Kuzzle
-	var volatileData = types.VolatileData(`{"modifiedBy":"awesome me","reason":"it needed to be modified","sdkVersion":"1.0.0"}`)
+	var volatileData = types.VolatileData(`{"modifiedBy":"awesome me","reason":"it needed to be modified","sdkVersion":"2.0.0"}`)
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {

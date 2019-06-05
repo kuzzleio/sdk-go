@@ -1,55 +1,374 @@
-os: linux
-dist: trusty
-
-language: minimal
-sudo: required
-
-services:
-  - docker
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-matrix:
+jobs:
   include:
-# ---------------------------------------------
-# AMD64: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="amd64"
+# -----------------------------------------------
+# Linux amd64
+# -----------------------------------------------
 
-      script:
-        # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang ./.ci/setup_and_test.sh
+  - name: Linux amd64 - Go 1.12.x (with coverage)
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=amd64
+    - "./.ci/test_with_coverage.sh"
+    after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
-# ---------------------------------------------
-# I386: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="i386"
+  - name: Linux amd64 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=amd64
+    - go test -v ./...
 
-      script:
-        # Build
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:golang-i386 ./.ci/setup_and_test.sh
+  - name: Linux amd64 - Go 1.10.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.10.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=amd64
+    - go test -v ./...
 
-# ---------------------------------------------
-# ARMV7: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="armhf"
+# -----------------------------------------------
+# Linux i386
+# -----------------------------------------------
 
-      script:
-        # Build
-        - docker run --rm --privileged multiarch/qemu-user-static:register
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:armhf-golang-runner taskset -c 1 ./.ci/setup_and_test.sh
+  - name: Linux i386 - Go 1.12.x
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=386
+    - go test -v ./...
 
-# ---------------------------------------------
-# ARMV8: Build and Test
-# ---------------------------------------------
-    - env:
-        - ARCH="aarch64"
+  - name: Linux i386 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=386
+    - go test -v ./...
 
-      script:
-        # Build
-        - docker run --rm --privileged multiarch/qemu-user-static:register
-        - docker run --rm -it -v "$(pwd)":/mnt kuzzleio/sdk-cross:aarch64-golang-runner taskset -c 1 ./.ci/setup_and_test.sh
+  - name: Linux i386 - Go 1.10.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    language: go
+    go: 1.10.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=386
+    - go test -v ./...
+
+# -----------------------------------------------
+# Linux arm64
+# -----------------------------------------------
+
+  - name: Linux arm64 - Go 1.12.x
+    os: linux
+    dist: xenial
+    sudo: true
+    addons:
+      apt:
+        packages:
+        - qemu-user-static
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=arm64
+    - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+
+  - name: Linux arm64 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    addons:
+      apt:
+        packages:
+        - qemu-user-static
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=arm64
+    - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+
+# -----------------------------------------------
+# Linux armhf
+# -----------------------------------------------
+
+  - name: Linux armhf - Go 1.12.x
+    os: linux
+    dist: xenial
+    sudo: true
+    addons:
+      apt:
+        packages:
+        - qemu-user-static
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=arm
+    - export GOARM=7
+    - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+  - name: Linux armhf - Go 1.11.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    addons:
+      apt:
+        packages:
+        - qemu-user-static
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=arm
+    - export GOARM=7
+    - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+  - name: Linux armhf - Go 1.10.x
+    # Go 1.10.x run is only run for armhf build
+    # not for arm64 one. Since ARM64 QEMU static 
+    # crash when used with Go 1.10.x
+    if: type = cron OR branch = master
+    os: linux
+    dist: xenial
+    sudo: true
+    addons:
+      apt:
+        packages:
+        - qemu-user-static
+    language: go
+    go: 1.10.x
+    cache:
+      directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=linux
+    - export GOARCH=arm
+    - export GOARM=7
+    - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+# -----------------------------------------------
+# MacOS amd64
+# -----------------------------------------------
+
+  - name: MacOS amd64 - Go 1.12.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=amd64
+    - go test -v ./...
+
+  - name: MacOS amd64 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=amd64
+    - go test -v ./...
+
+  - name: MacOS amd64 - Go 1.10.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.10.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=amd64
+    - go test -v ./...
+
+# -----------------------------------------------
+# MacOS i386
+# -----------------------------------------------
+
+  - name: MacOS i386 - Go 1.12.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.12.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=386
+    - go test -v ./...
+
+  - name: MacOS i386 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.11.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=386
+    - go test -v ./...
+
+  - name: MacOS i386 - Go 1.10.x
+    if: type = cron OR branch = master
+    os: osx
+    language: go
+    go: 1.10.x
+    cache:
+      directories:
+      - "$HOME/Library/Caches/go-build"
+      - "$HOME/gopath/pkg"
+    script:
+    - export GOOS=darwin
+    - export GOARCH=386
+    - go test -v ./...
+
+# -----------------------------------------------
+# Windows amd64
+# -----------------------------------------------
+
+  - name: Windows amd64 - Go 1.12.x
+    if: type = cron OR branch = master
+    os: windows
+    language: go
+    go: 1.12.x
+    script:
+    - GOOS=windows
+    - GOARCH=amd64
+    - go test -v ./...
+  - name: Windows amd64 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: windows
+    language: go
+    go: 1.11.x
+    script:
+    - GOOS=windows
+    - GOARCH=amd64
+    - go test -v ./...
+
+# -----------------------------------------------
+# Windows i386
+# -----------------------------------------------
+
+  - name: Windows i386 - Go 1.12.x
+    if: type = cron OR branch = master
+    os: windows
+    language: go
+    go: 1.12.x
+    script:
+    - GOOS=windows
+    - GOARCH=386
+    - go test -v ./...
+
+  - name: Windows i386 - Go 1.11.x
+    if: type = cron OR branch = master
+    os: windows
+    language: go
+    go: 1.11.x
+    script:
+    - GOOS=windows
+    - GOARCH=386
+    - go test -v ./...
+
+  - name: Windows i386 - Go 1.10.x
+    if: type = cron OR branch = master
+    os: windows
+    language: go
+    go: 1.10.x
+    script:
+    - GOOS=windows
+    - GOARCH=386
+    - go test -v ./...
+
+notifications:
+  slack:
+    rooms:
+    - secure: "5yW4WxRGTgzTYN081dnnuZugsMFhR/QBYvEtt6DoZknYDIL6owP23EcnErZA9TpNgzLSFBIxSKBRByBN9HKYM22d7QyJG2UWGGggE+05vYhP+WjiQOVV2/xQvUFDEImJKt9VcILtiUFG3eHG6ud4QU1COzgo7SiB4TNPKtHw+uXwkfTxyeOFSB8cmMw4ksLajfDzCxFrayCG4ebZ3HxQb/xvO97JdxyGcRSyWopA/9OS0GcVJdQ5itRF36yyDJcQa3d2J3/cx7ril4lDq7mv0hvvM2sbnLEKytnIOLUuPsmKQkQj+S3GY7499NudKLBEmhLF7z+zTYiWpUeQBeqpY8xdFrq/wsSebRyPsbeSTBofGZZTIQvT0j4/l7WiuhifMrLsA2sqeGCOKEdFO/AsSRa2tOVZZfhsUR9bATkm2qgCfW2UWyAAUtlRT5A7wJ73r0JUgQjAw/RkW20DJPFvJv0wmEMZqo2AJLwrIbY3eu+NvT9mNP17V5nWe8lC61/vhg7tUAubOMq6pd5SlGJOZ8LhOwR5N4w638lFeu4nHyL/XF+tF4qR7bFk5jWFUWgUrA41zoDeUrURmqA9eRm6n+anHTe8bFVTBl7pXcTq8ZXrXw3PQYhkaBbuXTfS12mcWLg/Z3iKTm8hVfJasLtSEQWlA73fUz7fNLxGBXK4X6w="
+    on_success: change
+    on_failure: always
+

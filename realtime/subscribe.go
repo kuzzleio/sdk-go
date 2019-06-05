@@ -17,12 +17,11 @@ package realtime
 import (
 	"encoding/json"
 
-	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
 // Subscribe permits to join a previously created subscription
-func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.KuzzleNotification, options types.RoomOptions) (*types.SubscribeResult, error) {
+func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, cb chan<- types.NotificationResult, options types.RoomOptions) (*types.SubscribeResult, error) {
 	if (index == "" || collection == "") || (filters == nil || cb == nil) {
 		return nil, types.NewError("Realtime.Subscribe: index, collection, filters and notificationChannel required", 400)
 	}
@@ -75,8 +74,6 @@ func (r *Realtime) Subscribe(index, collection string, filters json.RawMessage, 
 			go r.k.Query(query, opts, result)
 		}
 	}()
-
-	r.k.AddListener(event.Reconnected, onReconnect)
 
 	return &resSub, nil
 }

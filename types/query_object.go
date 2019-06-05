@@ -23,7 +23,7 @@ type QueryObject struct {
 	Query     []byte
 	Options   QueryOptions
 	ResChan   chan<- *KuzzleResponse
-	NotifChan chan<- *KuzzleNotification
+	NotifChan chan<- *NotificationResult
 	Timestamp time.Time
 	RequestId string
 }

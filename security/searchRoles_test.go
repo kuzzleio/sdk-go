@@ -19,9 +19,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"github.com/kuzzleio/sdk-go/security"
+
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -115,4 +117,82 @@ func TestSearchWithOptions(t *testing.T) {
 	assert.Equal(t, res.Hits[0].Id, "role42")
 	assert.Equal(t, 1, len(res.Hits))
 	assert.Equal(t, res.Hits[0].Controllers["*"].Actions["*"], true)
+}
+
+func TestSearchRolesNext(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": [
+					{
+						"_id": "admin",
+						"_source": {
+							"controllers": {
+								"*": {
+									"actions": {
+										"*": true
+									}
+								}
+							}
+						}
+					},
+					{
+						"_id": "administrator",
+						"_source": {
+							"controllers": {
+								"*": {
+									"actions": {
+										"*": true
+									}
+								}
+							}
+						}
+					}
+
+				],
+				"total": 42
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetFrom(0)
+	options.SetSize(2)
+
+	sr, err := k.Security.SearchRoles(json.RawMessage(`{}`), options)
+	assert.Nil(t, err)
+	assert.NotNil(t, sr)
+	assert.Equal(t, 2, len(sr.Hits))
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		assert.Equal(t, 2, options.From())
+		assert.Equal(t, 2, options.Size())
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": [
+				{
+					"_id": "none",
+					"_source": {
+						"controllers": {
+							"*": {
+								"actions": {
+									"*": false
+								}
+							}
+						}
+					}
+				}
+			],
+			"total": 42
+		}`)}
+	}
+
+	nsr, err := sr.Next()
+	assert.Nil(t, err)
+	assert.NotNil(t, nsr)
+
+	assert.Equal(t, 1, len(nsr.Hits))
+	r := security.NewRole("id", nil)
+	assert.IsType(t, r, nsr.Hits[0])
 }

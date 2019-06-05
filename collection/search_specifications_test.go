@@ -36,7 +36,7 @@ func TestSearchSpecificationsError(t *testing.T) {
 
 	nc := collection.NewCollection(k)
 
-	_, err := nc.SearchSpecifications(nil)
+	_, err := nc.SearchSpecifications(nil, nil)
 	assert.NotNil(t, err)
 }
 
@@ -79,9 +79,63 @@ func TestSearchSpecifications(t *testing.T) {
 
 	nc := collection.NewCollection(k)
 
-	res, err := nc.SearchSpecifications(nil)
+	res, err := nc.SearchSpecifications(json.RawMessage(`{"foo": "bar"}`), nil)
 	assert.Equal(t, 1, res.Total)
 	assert.Nil(t, err)
+}
+
+func TestSearchSpecificationsNext(t *testing.T) {
+	c := &internal.MockedConnection{
+		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+			return &types.KuzzleResponse{Result: json.RawMessage(`{
+				"hits": [
+					{
+						"_id": "id1",
+						"_source": "specification1"
+					},
+					{
+						"_id": "id1",
+						"_source": "specification1"
+					}
+				],
+				"total": 42
+			}`)}
+		},
+	}
+	k, _ := kuzzle.NewKuzzle(c, nil)
+
+	options := types.NewQueryOptions()
+	options.SetFrom(0)
+	options.SetSize(2)
+
+	sr, err := k.Collection.SearchSpecifications(json.RawMessage(`{}`), options)
+	assert.Nil(t, err)
+	assert.NotNil(t, sr)
+
+	c.MockSend = func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
+		assert.Equal(t, 2, options.From())
+		assert.Equal(t, 2, options.Size())
+
+		return &types.KuzzleResponse{Result: json.RawMessage(`{
+			"hits": [
+				{
+					"_id": "id3",
+					"_source": "specification3"
+				},
+				{
+					"_id": "id4",
+					"_source": "specification4"
+				}
+			],
+			"total": 42
+		}`)}
+	}
+
+	nsr, err := sr.Next()
+	assert.Nil(t, err)
+	assert.NotNil(t, nsr)
+	assert.Equal(t, 42, nsr.Total)
+	assert.Equal(t, 4, nsr.Fetched)
 }
 
 func ExampleCollection_SearchSpecifications() {
@@ -90,7 +144,7 @@ func ExampleCollection_SearchSpecifications() {
 
 	nc := collection.NewCollection(k)
 
-	res, err := nc.SearchSpecifications(nil)
+	res, err := nc.SearchSpecifications(json.RawMessage(`{}`), nil)
 
 	if err != nil {
 		fmt.Println(err.Error())

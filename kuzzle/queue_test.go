@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package kuzzle_test
+package kuzzle
 
 import (
-	"github.com/kuzzleio/sdk-go/connection/websocket"
+	"testing"
+
 	"github.com/kuzzleio/sdk-go/internal"
-	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestFlushQueue(t *testing.T) {
 	c := &internal.MockedConnection{}
-	k, _ := kuzzle.NewKuzzle(c, nil)
+	k, _ := NewKuzzle(c, nil)
 
-	c.AddToOfflineQueue(&types.QueryObject{RequestId: "test"})
+	k.offlineQueue = append(k.offlineQueue, &types.QueryObject{RequestId: "test"})
 	assert.NotEmpty(t, k.OfflineQueue())
 
 	k.FlushQueue()
@@ -36,7 +36,7 @@ func TestFlushQueue(t *testing.T) {
 
 func ExampleKuzzle_FlushQueue() {
 	conn := websocket.NewWebSocket("localhost:7512", nil)
-	k, _ := kuzzle.NewKuzzle(conn, nil)
+	k, _ := NewKuzzle(conn, nil)
 
 	k.FlushQueue()
 }

@@ -17,19 +17,15 @@ package kuzzle
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
-	"github.com/kuzzleio/sdk-go/state"
+	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/satori/go.uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	if k.State() == state.Disconnected || k.State() == state.Offline || k.State() == state.Ready {
-		responseChannel <- &types.KuzzleResponse{Error: types.NewError("This Kuzzle object has been invalidated. Did you try to access it after a disconnect call?", 400)}
-		return
-	}
-
 	u, _ := uuid.NewV4()
 	requestId := u.String()
 
@@ -111,7 +107,32 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		return
 	}
 
-	err = k.socket.Send(finalRequest, options, responseChannel, requestId)
+	queuable := options == nil || options.Queuable()
+	queuable = queuable && k.queueFilter(finalRequest)
+
+	if k.queuing {
+		if queuable {
+			k.cleanQueue()
+			qo := &types.QueryObject{
+				Timestamp: time.Now(),
+				ResChan:   responseChannel,
+				Query:     finalRequest,
+				RequestId: requestId,
+				Options:   options,
+			}
+			k.offlineQueue = append(k.offlineQueue, qo)
+			k.EmitEvent(event.OfflineQueuePush, qo)
+			return
+		}
+
+		k.EmitEvent(event.Discarded, finalRequest)
+		if responseChannel != nil {
+			responseChannel <- &types.KuzzleResponse{Status: 400, Error: types.NewError("Unable to execute request: not connected to a Kuzzle server.\nDiscarded request: "+string(finalRequest), 400)}
+		}
+		return
+	}
+
+	err = k.protocol.Send(finalRequest, options, responseChannel, requestId)
 
 	if err != nil {
 		if responseChannel != nil {

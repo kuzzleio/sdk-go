@@ -22,37 +22,50 @@ import (
 )
 
 // ValidateSpecifications validates the provided specifications.
-func (dc *Collection) ValidateSpecifications(body json.RawMessage, options types.QueryOptions) (bool, error) {
-	if body == nil {
-		return false, types.NewError("Collection.ValidateSpecifications: body required", 400)
+func (dc *Collection) ValidateSpecifications(index string, collection string, specifications json.RawMessage, options types.QueryOptions) (*types.ValidationResponse, error) {
+	if index == "" {
+		return nil, types.NewError("Collection.ValidateSpecifications: index required", 400)
+	}
+
+	if collection == "" {
+		return nil, types.NewError("Collection.ValidateSpecifications: collection required", 400)
+	}
+
+	if specifications == nil {
+		return nil, types.NewError("Collection.ValidateSpecifications: specifications required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
 
+	body := make(map[string]map[string]json.RawMessage)
+	body[index] = make(map[string]json.RawMessage)
+	body[index][collection] = specifications
+
+	jsonBody, err := json.Marshal(body)
+
+	if err != nil {
+		return nil, types.NewError(fmt.Sprintf("Unable to construct body: %s\n", err.Error()), 500)
+	}
+
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "validateSpecifications",
-		Body:       body,
+		Body:       json.RawMessage(jsonBody),
 	}
+
 	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return false, res.Error
+		return nil, res.Error
 	}
 
-	var validationRes struct {
-		Valid       bool
-		Details     []string
-		Descritpion string
-	}
-
-	err := json.Unmarshal(res.Result, &validationRes)
+	vr, err := types.NewValidationResponse(res.Result)
 
 	if err != nil {
-		return false, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
+		return nil, err
 	}
 
-	return validationRes.Valid, nil
+	return vr, nil
 }

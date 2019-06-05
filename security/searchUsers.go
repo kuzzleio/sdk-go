@@ -20,6 +20,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
+// SearchUsers retrieves the users matching the given query
 func (s *Security) SearchUsers(body json.RawMessage, options types.QueryOptions) (*UserSearchResult, error) {
 	ch := make(chan *types.KuzzleResponse)
 
@@ -50,9 +51,21 @@ func (s *Security) SearchUsers(body json.RawMessage, options types.QueryOptions)
 	jsonSearchResult := &jsonUserSearchResult{}
 	json.Unmarshal(res.Result, jsonSearchResult)
 
+	sr, err := types.NewSearchResult(s.Kuzzle, "scrollUsers", query, options, res)
+
+	if err != nil {
+		return nil, err
+	}
+
 	searchResult := &UserSearchResult{
-		Total:    jsonSearchResult.Total,
-		ScrollId: jsonSearchResult.ScrollId,
+		Aggregations: sr.Aggregations,
+		Total:        sr.Total,
+		Fetched:      sr.Fetched,
+		ScrollId:     sr.ScrollId,
+		kuzzle:       s.Kuzzle,
+		request:      query,
+		response:     res,
+		options:      options,
 	}
 
 	for _, j := range jsonSearchResult.Hits {

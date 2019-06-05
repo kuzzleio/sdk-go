@@ -1,176 +1,103 @@
-[![Build Status](https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master)](https://travis-ci.org/kuzzleio/sdk-go) [![codecov.io](http://codecov.io/github/kuzzleio/sdk-php/coverage.svg?branch=master)](http://codecov.io/github/kuzzleio/sdk-go?branch=master) [![GoDoc](https://godoc.org/github.com/kuzzleio/sdk-go?status.svg)](https://godoc.org/github.com/kuzzleio/sdk-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/kuzzleio/sdk-go)](https://goreportcard.com/report/github.com/kuzzleio/sdk-go)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/7868838/53850936-31e57180-3fbd-11e9-8392-8f3e26bf2aa8.png"/>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/tested%20on-linux%20%7C%20osx%20%7C%20windows-blue.svg">
+  <a href="https://travis-ci.org/kuzzleio/sdk-go">
+    <img src="https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master"/>
+  </a>
+  <a href="https://codecov.io/gh/kuzzleio/sdk-go">
+    <img src="https://codecov.io/gh/kuzzleio/sdk-go/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://goreportcard.com/report/github.com/kuzzleio/sdk-go">
+    <img src="https://goreportcard.com/badge/github.com/kuzzleio/sdk-go" />
+  </a>
+  <a href="https://godoc.org/github.com/kuzzleio/sdk-go">
+    <img src="https://godoc.org/github.com/kuzzleio/sdk-go?status.svg"/>
+  </a>
+  <a href="https://github.com/kuzzleio/sdk-go/blob/master/LICENSE">
+    <img alt="undefined" src="https://img.shields.io/github/license/kuzzleio/sdk-go.svg?style=flat">
+  </a>
+</p>
 
-Official Kuzzle GO SDK with wrappers for C++ and JAVA SDK
-======
+## About
 
-## About Kuzzle
+### Kuzzle Go
 
-A backend software, self-hostable and ready to use to power modern apps.
+This is the official Go SDK for the free and open-source backend Kuzzle. It provides a way to dial with a Kuzzle server from Go applications.
+The SDK provides a native __WebSocket__ support. You can add your own network protocol by implementing the Protocol interface.
 
-You can access the Kuzzle repository on [Github](https://github.com/kuzzleio/kuzzle)
+<p align="center">
+  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/1">Documentation</a></b>
+</p>
 
-* [SDK Documentation](https://godoc.org/github.com/kuzzleio/sdk-go)
-* [Installation](#installation)
-* [Basic usage](#basic-usage)
-* [Running tests](#tests)
-* [License](#license)
+### Kuzzle
 
-## SDK Documentation
+Kuzzle is a ready-to-use, **on-premises and scalable backend** that enables you to manage your persistent data and be notified in real-time on whatever happens to it. 
+It also provides you with a flexible and powerful user-management system.
 
-The complete SDK documentation is available [here](http://docs.kuzzle.io/sdk-reference/)
+* :watch: __[Kuzzle in 5 minutes](https://kuzzle.io/company/about-us/kuzzle-in-5-minutes/)__
+* :octocat: __[Github](https://github.com/kuzzleio/kuzzle)__
+* :earth_africa: __[Website](https://kuzzle.io)__
+* :books: __[Documentation](https://docs.kuzzle.io)__
+* :email: __[Gitter](https://gitter.im/kuzzleio/kuzzle)__
 
-## Installation
+## Usage
 
-````sh
+### Installation
+
+Simply download the SDK to your `GOPATH`.
+
+```go
 go get github.com/kuzzleio/sdk-go
-````
+```
 
-## Basic usage
+### Example
 
-````go
+The SDK supports different protocols. When instantiating, 
+you must choose the protocol to use and fill in the different options needed to connect to Kuzzle.  
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
+)
+
 func main() {
-    conn := websocket.NewWebSocket("localhost:7512", nil)
-    k, _ := kuzzle.NewKuzzle(conn, nil)
+	conn := websocket.NewWebSocket("localhost", nil)
+	k, _ := kuzzle.NewKuzzle(conn, nil)
+	k.Connect()
 
-    res, err := k.GetAllStatistics(nil)
+	timestamp, err := k.Server.Now(nil)
 
-    if err != nil {
-        fmt.Println(err.Error())
-        return
-    }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-    for _, stat := range res {
-        fmt.Println(stat.Timestamp, stat.FailedRequests, stat.Connections, stat.CompletedRequests, stat.OngoingRequests)
-    }
+	fmt.Println(timestamp)
 }
-
-
-````
-
-## <a name="tests"></a> Running Tests
-
-### Unit tests
-
-To run the tests you can simply execute the coverage.sh script
-```sh
-./test.sh
 ```
 
-You can also get html coverage by running
-```sh
-./test.sh --html
-```
-### e2e tests
+## Contributing
 
-#### JAVA
+First of all, thank you to take the time to contribute to this SDK. To help us validating your future pull request,
+please make sure your work pass linting and unit tests.
 
-```sh
-cd internal/wrappers
-make java
-cd features/java
-gradle cucumber
+```bash 
+$ bash .ci/test_with_coverage.sh 
 ```
 
-#### C++
+If you want to see current coverage run the script with this argument.
 
-```sh
-make cpp
-cd internal/wrappers
-./build_cpp_tests.sh̀
-./_build_cpp_tests/KuzzleSDKStepDefs > /dev/null &
-cucumber
+```bash 
+$ bash .ci/test_with_coverage.sh  --html
 ```
 
+This should open a new tab in your favorite web browser and allow you to see the lines of code covered by the unit tests.
 
 
-## Wrappers
-
-### Dependencies
-
-Before generating the wrappers you will need to install:
-
-- You will need a g++ compatible C++11
-- [swig](www.swig.org)
-- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (don't forget to set your JAVA_HOME environment variable)
-- Python You will need to install python-dev to compile the python SDK
-
-### Generate
-
-## JAVA
-
-```sh
-make java
-```
-
-You will find the final jars files in `internal/wrappers/build/java/build/libs`
-
-## CPP
-
-```sh
-make cpp
-```
-You will find the final .so file in `internal/wrappers/build/cpp`
-
-## Python
-```sh
-make python
-```
-You will find the final .so file in `internal/wrappers/build/python`
-
-## CSHARP
-
-### Build on Windows
-
-#### Prerequisites
-- Visual Studio 2017
-- Windows SDK
-- Go - https://golang.org/doc/install
-- Mono (x64) - https://www.mono-project.com/download/stable/
-- Make (GNU - Windows) - http://gnuwin32.sourceforge.net/packages/make.htm
-- MinGW (x64 - Posix) - https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/
-
-#### Compiling Csharp
-- Add Go/Mono/Make/MinGW intallation directory to PATH
-- Run Visual Studio developper command line tool
-- Execute `make csharp`
-
-## All at once
-
-You can generate all sdk's at once by typing
-
-```sh
-make all
-```
-
-## Generate wrappers and launch e2e tests using Docker
-
-You can use Docker to simplify wrappers generation and testing
-
-### Build
-
-In project root, use:
-
-```bash
-$ docker run --rm -it -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /build.sh
-```
-
-This command will build all wrappers using our Docker Image
-
-### Testing
-
-E2E tests need a running Kuzzle instance so run the script:
-
-```bash
-$ sh .codepipeline/start_kuzzle.sh
-```
-
-Now run tests using Docker:
-
-```bash
-$ docker run --rm -it --network codepipeline_default --link kuzzle -v "$(pwd)":/go/src/github.com/kuzzleio/sdk-go kuzzleio/sdk-cross:amd64 /test.sh
-```
-
-## License
-
-[Apache 2](LICENSE.md)

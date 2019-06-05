@@ -32,6 +32,8 @@ type QueryOptions interface {
 	SetRefresh(string) *queryOptions
 	IfExist() string
 	SetIfExist(string) *queryOptions
+	IncludeTrash() bool
+	SetIncludeTrash(bool) *queryOptions
 	RetryOnConflict() int
 	SetRetryOnConflict(int) *queryOptions
 	Start() int
@@ -91,6 +93,7 @@ type queryOptions struct {
 	volatile        VolatileData
 	refresh         string
 	ifExist         string
+	includeTrash    bool
 	retryOnConflict int
 	start           int
 	end             int
@@ -187,6 +190,15 @@ func (qo queryOptions) IfExist() string {
 
 func (qo *queryOptions) SetIfExist(ifExist string) *queryOptions {
 	qo.ifExist = ifExist
+	return qo
+}
+
+func (qo *queryOptions) IncludeTrash() bool {
+	return qo.includeTrash
+}
+
+func (qo *queryOptions) SetIncludeTrash(includeTrash bool) *queryOptions {
+	qo.includeTrash = includeTrash
 	return qo
 }
 

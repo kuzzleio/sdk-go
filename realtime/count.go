@@ -21,18 +21,16 @@ import (
 )
 
 // Count returns the number of other subscriptions on that room.
-func (r *Realtime) Count(index, collection, roomID string, options types.QueryOptions) (int, error) {
-	if index == "" || collection == "" || roomID == "" {
-		return -1, types.NewError("Realtime.Count: index, collection and roomID required", 400)
+func (r *Realtime) Count(roomID string, options types.QueryOptions) (int, error) {
+	if roomID == "" {
+		return -1, types.NewError("Realtime.Count: roomID required", 400)
 	}
 
 	query := &types.KuzzleRequest{
 		Controller: "realtime",
 		Action:     "count",
-		Index:      index,
-		Collection: collection,
 		Body: struct {
-			RoomID string `json:"roomID"`
+			RoomID string `json:"roomId"`
 		}{roomID},
 	}
 

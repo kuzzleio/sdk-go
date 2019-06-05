@@ -40,7 +40,7 @@ func (s *Server) GetStats(startTime *time.Time, stopTime *time.Time, options typ
 
 	query := &types.KuzzleRequest{
 		Controller: "server",
-		Action:     "getLastStats",
+		Action:     "getStats",
 		Body:       d,
 	}
 

@@ -21,21 +21,30 @@ import (
 
 	"github.com/kuzzleio/sdk-go/auth"
 	"github.com/kuzzleio/sdk-go/collection"
-	"github.com/kuzzleio/sdk-go/connection"
 	"github.com/kuzzleio/sdk-go/document"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/index"
 	"github.com/kuzzleio/sdk-go/ms"
+	"github.com/kuzzleio/sdk-go/protocol"
 	"github.com/kuzzleio/sdk-go/realtime"
 	"github.com/kuzzleio/sdk-go/security"
 	"github.com/kuzzleio/sdk-go/server"
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-const version = "1.0.0"
+const (
+	version           = "2.0.0"
+	MAX_CONNECT_RETRY = 10
+)
+
+type OfflineQueueLoader interface {
+	Load() []*types.QueryObject
+}
+
+type QueueFilter func([]byte) bool
 
 type Kuzzle struct {
-	socket connection.Connection
+	protocol protocol.Protocol
 
 	wasConnected   bool
 	lastUrl        string
@@ -45,6 +54,25 @@ type Kuzzle struct {
 	version        string
 	RequestHistory map[string]time.Time
 	volatile       types.VolatileData
+
+	eventListeners     map[int]map[chan<- json.RawMessage]bool
+	eventListenersOnce map[int]map[chan<- json.RawMessage]bool
+
+	autoReconnect         bool
+	autoQueue             bool
+	autoReplay            bool
+	autoResubscribe       bool
+	offlineQueue          []*types.QueryObject
+	offlineQueueLoader    OfflineQueueLoader
+	queueFilter           QueueFilter
+	queueMaxSize          int
+	queueTTL              time.Duration
+	reconnectionDelay     time.Duration
+	replayInterval        time.Duration
+	retryingToConnect     bool
+	stopRetryingToConnect bool
+	queuing               bool
+	nbConnectionRetried   int
 
 	MemoryStorage *ms.Ms
 	Security      *security.Security
@@ -57,7 +85,7 @@ type Kuzzle struct {
 }
 
 // NewKuzzle is the Kuzzle constructor
-func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) {
+func NewKuzzle(c protocol.Protocol, options types.Options) (*Kuzzle, error) {
 	if c == nil {
 		return nil, types.NewError("Connection is nil")
 	}
@@ -67,17 +95,34 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	}
 
 	k := &Kuzzle{
-		socket:  c,
-		version: version,
+		protocol:           c,
+		version:            version,
+		eventListeners:     make(map[int]map[chan<- json.RawMessage]bool),
+		eventListenersOnce: make(map[int]map[chan<- json.RawMessage]bool),
+		autoQueue:          options.AutoQueue(),
+		autoReplay:         options.AutoReplay(),
+		autoReconnect:      options.AutoReconnect(),
+		autoResubscribe:    options.AutoResubscribe(),
+		offlineQueue:       []*types.QueryObject{},
+		queueMaxSize:       options.QueueMaxSize(),
+		queueTTL:           options.QueueTTL(),
+		reconnectionDelay:  options.ReconnectionDelay(),
+		replayInterval:     options.ReplayInterval(),
+		queuing:            false,
 	}
 
-	k.RequestHistory = k.socket.RequestHistory()
+	if options.OfflineMode() == types.Auto {
+		k.autoQueue = true
+		k.autoReplay = true
+		k.autoReconnect = true
+		k.autoResubscribe = true
+	}
+
+	k.RequestHistory = k.protocol.RequestHistory()
 	k.MemoryStorage = &ms.Ms{k}
 	k.Security = security.NewSecurity(k)
 	k.Auth = auth.NewAuth(k)
 	k.Realtime = realtime.NewRealtime(k)
-
-	k.RequestHistory = k.socket.RequestHistory()
 
 	k.Server = server.NewServer(k)
 	k.Collection = collection.NewCollection(k)
@@ -87,36 +132,74 @@ func NewKuzzle(c connection.Connection, options types.Options) (*Kuzzle, error) 
 	return k, nil
 }
 
-// Connect connects to a Kuzzle instance using the provided host and port.
+// Connect connects to a Kuzzle instance.
 func (k *Kuzzle) Connect() error {
-	wasConnected, err := k.socket.Connect()
-	if err == nil {
-		if k.lastUrl != k.socket.Host() {
-			k.wasConnected = false
-			k.lastUrl = k.socket.Host()
-		}
-
-		if wasConnected {
-			if k.jwt != "" {
-				go func() {
-					res, err := k.Auth.CheckToken(k.jwt)
-
-					if err != nil {
-						k.jwt = ""
-						k.socket.EmitEvent(event.TokenExpired, nil)
-						return
-					}
-
-					if !res.Valid {
-						k.jwt = ""
-						k.socket.EmitEvent(event.TokenExpired, nil)
-					}
-				}()
-			}
-		}
-		return nil
+	if k.autoQueue {
+		k.queuing = true
 	}
-	return types.NewError(err.Error())
+
+	wasConnected, err := k.protocol.Connect()
+
+	if err != nil {
+		if k.autoReconnect && !k.retryingToConnect && !k.stopRetryingToConnect && k.nbConnectionRetried < MAX_CONNECT_RETRY {
+			k.retryingToConnect = true
+			time.Sleep(k.reconnectionDelay * time.Millisecond)
+			k.retryingToConnect = false
+			k.nbConnectionRetried++
+			return k.Connect()
+		}
+
+		return types.NewError(err.Error())
+	}
+
+	k.nbConnectionRetried = 0
+	k.stopRetryingToConnect = false
+	k.queuing = false
+
+	if k.lastUrl != k.protocol.Host() {
+		k.wasConnected = false
+		k.lastUrl = k.protocol.Host()
+	}
+
+	if wasConnected {
+		if k.jwt != "" {
+			go func() {
+				res, err := k.Auth.CheckToken(k.jwt)
+
+				if err != nil || !res.Valid {
+					k.jwt = ""
+					k.protocol.EmitEvent(event.TokenExpired, nil)
+				}
+				k.EmitEvent(event.Reconnected, nil)
+			}()
+		} else {
+			k.EmitEvent(event.Reconnected, nil)
+		}
+	} else {
+		k.EmitEvent(event.Connected, nil)
+	}
+
+	if k.autoQueue {
+		k.queuing = false
+	}
+	if k.autoReplay {
+		k.PlayQueue()
+	}
+
+	// on network error
+	ee := make(chan json.RawMessage)
+	go func() {
+		for err := range <-ee {
+			if k.autoQueue {
+				k.queuing = true
+			}
+
+			k.EmitEvent(event.NetworkError, err)
+		}
+	}()
+	k.protocol.AddListener(event.NetworkError, ee)
+
+	return nil
 }
 
 // Jwt get internal jwtToken used to request kuzzle.
@@ -128,7 +211,7 @@ func (k *Kuzzle) SetJwt(token string) {
 	k.jwt = token
 
 	if token != "" {
-		k.socket.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
+		k.protocol.EmitEvent(event.LoginAttempt, &types.LoginAttempt{Success: true})
 	}
 }
 
@@ -136,125 +219,110 @@ func (k *Kuzzle) SetJwt(token string) {
 func (k *Kuzzle) UnsetJwt() {
 	k.jwt = ""
 
-	k.socket.CancelSubs()
+	k.protocol.CancelSubs()
 }
 
-func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.KuzzleNotification, onReconnectChannel chan<- interface{}) {
-	k.socket.RegisterSub(channel, roomId, filters, subscribeToSelf, notifChan, onReconnectChannel)
+func (k *Kuzzle) RegisterSub(channel, roomId string, filters json.RawMessage, subscribeToSelf bool, notifChan chan<- types.NotificationResult, onReconnectChannel chan<- interface{}) {
+	k.protocol.RegisterSub(channel, roomId, filters, subscribeToSelf, notifChan, onReconnectChannel)
 }
 
 func (k *Kuzzle) UnregisterSub(roomId string) {
-	k.socket.UnregisterSub(roomId)
-}
-
-// State returns the Kuzzle socket state
-func (k *Kuzzle) State() int {
-	return k.socket.State()
+	k.protocol.UnregisterSub(roomId)
 }
 
 // AutoQueue returns the Kuzzle socket AutoQueue field value
 func (k *Kuzzle) AutoQueue() bool {
-	return k.socket.AutoQueue()
+	return k.autoQueue
 }
 
 // AutoReconnect returns the Kuzzle socket AutoReconnect field value
 func (k *Kuzzle) AutoReconnect() bool {
-	return k.socket.AutoReconnect()
+	return k.autoReconnect
 }
 
 // AutoResubscribe returns the Kuzzle socket AutoQueue field value
 func (k *Kuzzle) AutoResubscribe() bool {
-	return k.socket.AutoResubscribe()
+	return k.autoResubscribe
 }
 
 // AutoReplay returns the Kuzzle socket AutoReplay field value
 func (k *Kuzzle) AutoReplay() bool {
-	return k.socket.AutoReplay()
-}
-
-// Host returns the Kuzzle socket Host field value
-func (k *Kuzzle) Host() string {
-	return k.socket.Host()
+	return k.autoReplay
 }
 
 // OfflineQueue returns the Kuzzle socket OfflineQueue field value
 func (k *Kuzzle) OfflineQueue() []*types.QueryObject {
-	return k.socket.OfflineQueue()
+	return k.offlineQueue
 }
 
 // OfflineQueueLoader returns the Kuzzle socket OfflineQueueLoader field value
-func (k *Kuzzle) OfflineQueueLoader() connection.OfflineQueueLoader {
-	return k.socket.OfflineQueueLoader()
-}
-
-// Port returns the Kuzzle socket Port field value
-func (k *Kuzzle) Port() int {
-	return k.socket.Port()
+func (k *Kuzzle) OfflineQueueLoader() OfflineQueueLoader {
+	return k.offlineQueueLoader
 }
 
 // QueueFilter returns the Kuzzle socket QueueFilter field value
-func (k *Kuzzle) QueueFilter() connection.QueueFilter {
-	return k.socket.QueueFilter()
+func (k *Kuzzle) QueueFilter() QueueFilter {
+	return k.queueFilter
 }
 
 // QueueMaxSize returns the Kuzzle socket QueueMaxSize field value
 func (k *Kuzzle) QueueMaxSize() int {
-	return k.socket.QueueMaxSize()
+	return k.queueMaxSize
 }
 
 // QueueTTL returns the Kuzzle socket QueueTTL field value
 func (k *Kuzzle) QueueTTL() time.Duration {
-	return k.socket.QueueTTL()
+	return k.queueTTL
 }
 
 // ReplayInterval returns the Kuzzle socket ReplayInterval field value
 func (k *Kuzzle) ReplayInterval() time.Duration {
-	return k.socket.ReplayInterval()
+	return k.replayInterval
 }
 
 // ReconnectionDelay returns the Kuzzle socket ReconnectionDelay field value
 func (k *Kuzzle) ReconnectionDelay() time.Duration {
-	return k.socket.ReconnectionDelay()
+	return k.reconnectionDelay
 }
 
 // SslConnection returns the Kuzzle socket SslConnection field value
 func (k *Kuzzle) SslConnection() bool {
-	return k.socket.SslConnection()
+	return k.protocol.SslConnection()
 }
 
 // SetAutoQueue sets the Kuzzle socket AutoQueue field with the given value
 func (k *Kuzzle) SetAutoQueue(v bool) {
-	k.socket.SetAutoQueue(v)
+	k.autoQueue = v
 }
 
 // SetAutoReplay sets the Kuzzle socket AutoReplay field with the given value
 func (k *Kuzzle) SetAutoReplay(v bool) {
-	k.socket.SetAutoReplay(v)
+	k.autoReplay = v
 }
 
 // SetOfflineQueueLoader sets the Kuzzle socket OfflineQueueLoader field with given value
-func (k *Kuzzle) SetOfflineQueueLoader(v connection.OfflineQueueLoader) {
-	k.socket.SetOfflineQueueLoader(v)
+func (k *Kuzzle) SetOfflineQueueLoader(v OfflineQueueLoader) {
+	k.offlineQueueLoader = v
 }
 
 // SetQueueFilter sets the Kuzzle socket QueueFilter field with given value
-func (k *Kuzzle) SetQueueFilter(v connection.QueueFilter) {
-	k.socket.SetQueueFilter(v)
+func (k *Kuzzle) SetQueueFilter(v QueueFilter) {
+	k.queueFilter = v
 }
 
 // SetQueueMaxSize sets the Kuzzle socket QueueMaxSize field with the given value
 func (k *Kuzzle) SetQueueMaxSize(v int) {
-	k.socket.SetQueueMaxSize(v)
+	k.queueMaxSize = v
 }
 
 // SetQueueTTL sets the Kuzzle socket QueueTTL field with the given value
 func (k *Kuzzle) SetQueueTTL(v time.Duration) {
-	k.socket.SetQueueTTL(v)
+	k.queueTTL = v
 }
 
 // SetReplayInterval sets the Kuzzle socket ReplayInterval field with the given value
 func (k *Kuzzle) SetReplayInterval(v time.Duration) {
-	k.socket.SetReplayInterval(v)
+	k.replayInterval = v
 }
 
 func (k *Kuzzle) Volatile() types.VolatileData {
@@ -266,5 +334,13 @@ func (k *Kuzzle) SetVolatile(v types.VolatileData) {
 }
 
 func (k *Kuzzle) EmitEvent(e int, arg interface{}) {
-	k.socket.EmitEvent(e, arg)
+	json, _ := json.Marshal(arg)
+	for c := range k.eventListeners[e] {
+		c <- json
+	}
+	for c := range k.eventListenersOnce[e] {
+		c <- json
+		close(c)
+		delete(k.eventListenersOnce[e], c)
+	}
 }

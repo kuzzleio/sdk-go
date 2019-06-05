@@ -23,12 +23,6 @@ type Profile struct {
 	Policies []*types.Policy
 }
 
-type ProfileSearchResult struct {
-	Hits     []*Profile
-	Total    int    `json:"total"`
-	ScrollId string `json:"scrollId"`
-}
-
 func NewProfile(id string, policies []*types.Policy) *Profile {
 	return &Profile{
 		Id:       id,
