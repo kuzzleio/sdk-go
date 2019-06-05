@@ -331,16 +331,6 @@ jobs:
     - GOARCH=amd64
     - go test -v ./...
 
-  - name: Windows amd64 - Go 1.10.x
-    if: type = cron OR branch = master
-    os: windows
-    language: go
-    go: 1.10.x
-    script:
-    - GOOS=windows
-    - GOARCH=amd64
-    - go test -v ./...
-
 # -----------------------------------------------
 # Windows i386
 # -----------------------------------------------
