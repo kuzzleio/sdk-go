@@ -62,14 +62,14 @@ type KuzzleRequest struct {
 	Match        string                 `json:"match,omitempty"`
 	Reset        bool                   `json:"reset,omitempty"`
 	IncludeTrash bool                   `json:"includeTrash,omitempty"`
-	CustomFields map[string]interface{} `json:"-"`
+	CustomArgs   map[string]interface{} `json:"-"`
 }
 
-func (kr *KuzzleRequest) AddCustomField(k string, v interface{}) {
-	if kr.CustomFields == nil {
-		kr.CustomFields = make(map[string]interface{})
+func (kr *KuzzleRequest) AddCustomArg(k string, v interface{}) {
+	if kr.CustomArgs == nil {
+		kr.CustomArgs = make(map[string]interface{})
 	}
-	kr.CustomFields[k] = v
+	kr.CustomArgs[k] = v
 }
 
 type SubscribeQuery struct {

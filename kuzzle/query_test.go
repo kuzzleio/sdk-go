@@ -87,8 +87,8 @@ func TestQueryWithOptions(t *testing.T) {
 	options.SetRefresh("wait_for")
 	options.SetRetryOnConflict(7)
 	query := types.KuzzleRequest{}
-	query.AddCustomField("cert", "cert")
-	query.AddCustomField("foo", "bar")
+	query.AddCustomArg("cert", "cert")
+	query.AddCustomArg("foo", "bar")
 
 	go k.Query(&query, options, ch)
 	<-ch
