@@ -17,51 +17,59 @@ package types
 import "encoding/json"
 
 type KuzzleRequest struct {
-	RequestId    string        `json:"requestId,omitempty"`
-	Controller   string        `json:"controller,omitempty"`
-	Action       string        `json:"action,omitempty"`
-	Index        string        `json:"index,omitempty"`
-	Collection   string        `json:"collection,omitempty"`
-	Body         interface{}   `json:"body"`
-	Id           string        `json:"_id,omitempty"`
-	From         int           `json:"from"`
-	Size         int           `json:"size"`
-	Scroll       string        `json:"scroll,omitempty"`
-	ScrollId     string        `json:"scrollId,omitempty"`
-	Strategy     string        `json:"strategy,omitempty"`
-	ExpiresIn    int           `json:"expiresIn,omitempty"`
-	Volatile     VolatileData  `json:"volatile"`
-	Scope        string        `json:"scope"`
-	State        string        `json:"state"`
-	Users        string        `json:"users"`
-	Start        int           `json:"start,omitempty"`
-	Stop         int           `json:"stop,omitempty"`
-	End          int           `json:"end,omitempty"`
-	Bit          int           `json:"bit,omitempty"`
-	Member       string        `json:"member,omitempty"`
-	Member1      string        `json:"member1,omitempty"`
-	Member2      string        `json:"member2,omitempty"`
-	Members      []string      `json:"members,omitempty"`
-	Lon          float64       `json:"lon,omitempty"`
-	Lat          float64       `json:"lat,omitempty"`
-	Distance     float64       `json:"distance,omitempty"`
-	Unit         string        `json:"unit,omitempty"`
-	Options      []interface{} `json:"options,omitempty"`
-	Keys         []string      `json:"keys,omitempty"`
-	Cursor       int           `json:"cursor,omitempty"`
-	Offset       int           `json:"offset,omitempty"`
-	Field        string        `json:"field,omitempty"`
-	Fields       []string      `json:"fields,omitempty"`
-	Subcommand   string        `json:"subcommand,omitempty"`
-	Pattern      string        `json:"pattern,omitempty"`
-	Idx          int           `json:"idx, omitempty"`
-	Min          string        `json:"min,omitempty"`
-	Max          string        `json:"max,omitempty"`
-	Limit        string        `json:"limit,omitempty"`
-	Count        int           `json:"count,omitempty"`
-	Match        string        `json:"match,omitempty"`
-	Reset        bool          `json:"reset,omitempty"`
-	IncludeTrash bool          `json:"includeTrash,omitempty"`
+	RequestId    string                 `json:"requestId,omitempty"`
+	Controller   string                 `json:"controller,omitempty"`
+	Action       string                 `json:"action,omitempty"`
+	Index        string                 `json:"index,omitempty"`
+	Collection   string                 `json:"collection,omitempty"`
+	Body         interface{}            `json:"body"`
+	Id           string                 `json:"_id,omitempty"`
+	From         int                    `json:"from"`
+	Size         int                    `json:"size"`
+	Scroll       string                 `json:"scroll,omitempty"`
+	ScrollId     string                 `json:"scrollId,omitempty"`
+	Strategy     string                 `json:"strategy,omitempty"`
+	ExpiresIn    int                    `json:"expiresIn,omitempty"`
+	Volatile     VolatileData           `json:"volatile"`
+	Scope        string                 `json:"scope"`
+	State        string                 `json:"state"`
+	Users        string                 `json:"users"`
+	Start        int                    `json:"start,omitempty"`
+	Stop         int                    `json:"stop,omitempty"`
+	End          int                    `json:"end,omitempty"`
+	Bit          int                    `json:"bit,omitempty"`
+	Member       string                 `json:"member,omitempty"`
+	Member1      string                 `json:"member1,omitempty"`
+	Member2      string                 `json:"member2,omitempty"`
+	Members      []string               `json:"members,omitempty"`
+	Lon          float64                `json:"lon,omitempty"`
+	Lat          float64                `json:"lat,omitempty"`
+	Distance     float64                `json:"distance,omitempty"`
+	Unit         string                 `json:"unit,omitempty"`
+	Options      []interface{}          `json:"options,omitempty"`
+	Keys         []string               `json:"keys,omitempty"`
+	Cursor       int                    `json:"cursor,omitempty"`
+	Offset       int                    `json:"offset,omitempty"`
+	Field        string                 `json:"field,omitempty"`
+	Fields       []string               `json:"fields,omitempty"`
+	Subcommand   string                 `json:"subcommand,omitempty"`
+	Pattern      string                 `json:"pattern,omitempty"`
+	Idx          int                    `json:"idx, omitempty"`
+	Min          string                 `json:"min,omitempty"`
+	Max          string                 `json:"max,omitempty"`
+	Limit        string                 `json:"limit,omitempty"`
+	Count        int                    `json:"count,omitempty"`
+	Match        string                 `json:"match,omitempty"`
+	Reset        bool                   `json:"reset,omitempty"`
+	IncludeTrash bool                   `json:"includeTrash,omitempty"`
+	CustomArgs   map[string]interface{} `json:"-"`
+}
+
+func (kr *KuzzleRequest) AddCustomArg(k string, v interface{}) {
+	if kr.CustomArgs == nil {
+		kr.CustomArgs = make(map[string]interface{})
+	}
+	kr.CustomArgs[k] = v
 }
 
 type SubscribeQuery struct {

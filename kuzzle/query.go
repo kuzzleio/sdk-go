@@ -98,6 +98,12 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		out["jwt"] = jwt
 	}
 
+	if len(query.CustomArgs) != 0 {
+		for k, v := range query.CustomArgs {
+			out[k] = v
+		}
+	}
+
 	finalRequest, err := json.Marshal(out)
 
 	if err != nil {
