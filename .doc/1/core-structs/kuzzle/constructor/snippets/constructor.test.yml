@@ -1,0 +1,11 @@
+---
+name: kuzzle#constructor
+description: Create a new Kuzzle instance connected to Kuzzle
+hooks:
+  before: 
+  after: 
+template: blank
+expected: Everything is ok
+
+sdk: go
+version: 1

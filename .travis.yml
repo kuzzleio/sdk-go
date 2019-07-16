@@ -1,5 +1,10 @@
 jobs:
   include:
+  - name: Documentation test
+    language: go
+    go: 1.12.x
+    script: 
+      - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 # -----------------------------------------------
 # Linux amd64
 # -----------------------------------------------
