@@ -1,0 +1,11 @@
+---
+name: index#mDelete
+description: Delete multiple indexes
+hooks:
+  before: curl -X POST kuzzle:7512/nyc-open-data/_create ; curl -X POST kuzzle:7512/mtp-open-data/_create
+  after: 
+template: default
+expected: Successfully deleted 2 indexes
+
+sdk: go
+version: 1

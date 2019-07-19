@@ -1,0 +1,9 @@
+name: kuzzleEventEmitter#remove-all-listeners
+description: Removes all channels for the given event
+hooks:
+  before:
+  after:
+template: before-connect
+expected: Stopped listening
+sdk: go
+version: 1
