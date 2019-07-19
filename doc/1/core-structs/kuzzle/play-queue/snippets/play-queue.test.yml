@@ -1,0 +1,11 @@
+---
+name: kuzzle#playQueue
+description: Play the requests queued
+hooks:
+  before: 
+  after: 
+template: without-connect
+expected: Success
+
+sdk: go
+version: 1
