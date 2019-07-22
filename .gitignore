@@ -17,3 +17,5 @@ internal/wrappers/kcore_wrap\.o
 *.o
 *.so
 *.a
+
+.doc/framework

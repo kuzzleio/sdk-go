@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "doc-prepare": "cd .doc && bash prepare-doc.sh",
+    "doc-dev": "npm --prefix .doc/framework run dev",
+    "doc-build": "npm --prefix .doc/framework run build"
+  }
+}
