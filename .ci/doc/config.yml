@@ -1,0 +1,21 @@
+---
+
+snippets:
+  mount: /mnt
+  path: '.doc/**/*.test.yml'
+  templates: /mnt/.ci/doc/templates
+
+runners:
+  default: go
+
+  go:
+    service: doc-runner-go
+    path: /var/snippets/go
+    lint:
+       global: true
+       cmd: golint -set_exit_status {{ snippet.dir }}
+       before: timeout 600 ash -c 'until stat /tmp/runner_ready_to_lint; do sleep 1; done'; /mnt/.ci/doc/formatAllSnippets.sh
+    run:
+      cmd: go run {{ snippet.source }}
+      before: timeout 600 ash -c 'until stat /tmp/runner_is_ready && curl -f -s -o /dev/null http://kuzzle:7512/_now; do sleep 1; done'
+

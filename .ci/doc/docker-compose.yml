@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  kuzzle:
+    image: kuzzleio/kuzzle
+    ports:
+      - '7512:7512'
+      - '1883:1883'
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - redis
+      - elasticsearch
+    container_name: kuzzle
+    environment:
+      - kuzzle_services__db__client__host=http://elasticsearch:9200
+      - kuzzle_services__internalCache__node__host=redis
+      - kuzzle_services__memoryStorage__node__host=redis
+      - NODE_END=production
+
+  redis:
+    image: redis:3.2
+
+  elasticsearch:
+    image: kuzzleio/elasticsearch:5.6.10
+    ulimits:
+      nofile: 65536
+    environment:
+      - cluster.name=kuzzle
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+
+  doc-tests:
+    image: kuzzleio/snippets-tests
+    privileged: true
+    ports:
+      - '9229:9229'
+    depends_on:
+      - kuzzle
+      - doc-runner-go
+    volumes:
+      - ../..:/mnt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - snippets:/var/snippets
+    environment:
+      - CONFIG_FILE=/mnt/.ci/doc/config.yml
+
+  doc-runner-go:
+    image: golang:alpine
+    volumes:
+      - ../..:/mnt
+      - snippets:/var/snippets
+    command: >
+      ash -c '
+        mkdir -p /var/snippets/go;
+        chmod +x formatAllSnippets.sh;
+        apk add --no-cache curl;
+        apk add --no-cache git;
+        go get github.com/satori/go.uuid \
+         github.com/gorilla/websocket \
+         golang.org/x/tools/cmd/goimports \
+         golang.org/x/lint/golint;
+        go get github.com/kuzzleio/sdk-go;
+        touch /tmp/runner_ready_to_lint;
+        touch /tmp/runner_is_ready;
+        tail -f /dev/null
+        '
+
+volumes:
+  snippets:
