@@ -17,7 +17,7 @@ show_cover_report() {
 }
 
 linter_check() {
-    invalid_files=$(gofmt -l "$1")
+    invalid_files=$(gofmt -l "$1"/**/*.go)
 
     if [ -n "${invalid_files}" ]; then
         echo "Lint errors on the following files:"
