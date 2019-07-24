@@ -20,7 +20,7 @@ jobs:
         - npm run --prefix .doc/framework clone-repos
       script:
         - gem install typhoeus
-        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix doc/framework dead-links
+        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix .doc/framework dead-links
 
     - stage: Tests
       name: Documentation test
