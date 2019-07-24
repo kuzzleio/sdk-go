@@ -103,7 +103,8 @@ jobs:
 # Linux amd64
 # -----------------------------------------------
 
-    - name: Linux amd64 - Go 1.12.x (with coverage)
+    - stage: Build
+      name: Linux amd64 - Go 1.12.x (with coverage)
       os: linux
       dist: xenial
       sudo: true
@@ -120,7 +121,8 @@ jobs:
       after_success:
       - bash <(curl -s https://codecov.io/bash)
 
-    - name: Linux amd64 - Go 1.11.x
+    - stage: Build
+      name: Linux amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -136,7 +138,8 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - name: Linux amd64 - Go 1.10.x
+    - stage: Build
+      name: Linux amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -156,7 +159,8 @@ jobs:
 # Linux i386
 # -----------------------------------------------
 
-    - name: Linux i386 - Go 1.12.x
+    - stage: Build
+      name: Linux i386 - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -171,7 +175,8 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - name: Linux i386 - Go 1.11.x
+    - stage: Build
+      name: Linux i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -187,7 +192,8 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - name: Linux i386 - Go 1.10.x
+    - stage: Build
+      name: Linux i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -207,7 +213,8 @@ jobs:
 # Linux arm64
 # -----------------------------------------------
 
-    - name: Linux arm64 - Go 1.12.x
+    - stage: Build
+      name: Linux arm64 - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -226,7 +233,8 @@ jobs:
       - export GOARCH=arm64
       - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-    - name: Linux arm64 - Go 1.11.x
+    - stage: Build
+      name: Linux arm64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -250,7 +258,8 @@ jobs:
 # Linux armhf
 # -----------------------------------------------
 
-    - name: Linux armhf - Go 1.12.x
+    - stage: Build
+      name: Linux armhf - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -270,7 +279,8 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - name: Linux armhf - Go 1.11.x
+    - stage: Build
+      name: Linux armhf - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -291,7 +301,8 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - name: Linux armhf - Go 1.10.x
+    - stage: Build
+      name: Linux armhf - Go 1.10.x
       # Go 1.10.x run is only run for armhf build
       # not for arm64 one. Since ARM64 QEMU static
       # crash when used with Go 1.10.x
@@ -319,7 +330,8 @@ jobs:
 # MacOS amd64
 # -----------------------------------------------
 
-    - name: MacOS amd64 - Go 1.12.x
+    - stage: Build
+      name: MacOS amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -333,7 +345,8 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - name: MacOS amd64 - Go 1.11.x
+    - stage: Build
+      name: MacOS amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -347,7 +360,8 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - name: MacOS amd64 - Go 1.10.x
+    - stage: Build
+      name: MacOS amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -365,7 +379,8 @@ jobs:
 # MacOS i386
 # -----------------------------------------------
 
-    - name: MacOS i386 - Go 1.12.x
+    - stage: Build
+      name: MacOS i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -379,7 +394,8 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - name: MacOS i386 - Go 1.11.x
+    - stage: Build
+      name: MacOS i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -393,7 +409,8 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - name: MacOS i386 - Go 1.10.x
+    - stage: Build
+      name: MacOS i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -411,7 +428,8 @@ jobs:
 # Windows amd64
 # -----------------------------------------------
 
-    - name: Windows amd64 - Go 1.12.x
+    - stage: Build
+      name: Windows amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -420,7 +438,9 @@ jobs:
       - GOOS=windows
       - GOARCH=amd64
       - go test -v ./...
-    - name: Windows amd64 - Go 1.11.x
+
+    - stage: Build
+      name: Windows amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -434,7 +454,8 @@ jobs:
 # Windows i386
 # -----------------------------------------------
 
-    - name: Windows i386 - Go 1.12.x
+    - stage: Build
+      name: Windows i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -444,7 +465,8 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - name: Windows i386 - Go 1.11.x
+    - stage: Build
+      name: Windows i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -454,7 +476,8 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - name: Windows i386 - Go 1.10.x
+    - stage: Build
+      name: Windows i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: windows
       language: go
