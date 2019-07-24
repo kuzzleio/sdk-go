@@ -1,10 +1,104 @@
+env:
+  global:
+    - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
+
 jobs:
   include:
-  - name: Documentation test
-    language: go
-    go: 1.12.x
-    script:
-      - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
+# -----------------------------------------------
+# Documentation
+# -----------------------------------------------
+    - stage: Tests
+      name: Dead link check
+      if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
+      language: node_js
+      node_js: 10
+
+      before_script:
+        - npm run doc-prepare
+        - npm run --prefix doc/framework clone-repos
+      script:
+        - gem install typhoeus
+        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix doc/framework dead-links
+
+    - stage: Tests
+      name: Documentation test
+      language: go
+      go: 1.12.x
+      script:
+        - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
+
+    - stage: Deployment Doc Dev
+      name: Deploy next-docs.kuzzle.io
+      if: branch = 2-dev
+      language: node_js
+      node_js: 10
+      env:
+        - NODE_ENV=production
+        - S3_BUCKET=docs-next.kuzzle.io
+        - CLOUDFRONT_DISTRIBUTION_ID=E2ZCCEK9GRB49U
+        - AWS_DEFAULT_REGION=us-west-2
+
+      addons:
+        apt:
+          packages:
+            - python
+            - python-pip
+
+      install:
+        - pip install awscli --upgrade --user
+
+      script:
+        - npm run doc-prepare
+        - npm run doc-build
+
+      deploy:
+        provider: script
+        script:
+          - npm run doc-upload
+        skip_cleanup: true
+        on:
+          branch: 2-dev
+
+      after_deploy:
+        - npm run doc-cloudfront
+
+    - stage: Deployment Doc Prod
+      name: Deploy docs.kuzzle.io
+      if: branch = master
+      language: node_js
+      node_js: 10
+      env:
+        - NODE_ENV=production
+        - S3_BUCKET=docs.kuzzle.io
+        - CLOUDFRONT_DISTRIBUTION_ID=E3D6RP0POLCJMM
+        - AWS_DEFAULT_REGION=us-west-2
+
+      addons:
+        apt:
+          packages:
+            - python
+            - python-pip
+
+      install:
+        - pip install awscli --upgrade --user
+
+      script:
+        - npm run doc-prepare
+        - npm run doc-build
+
+      deploy:
+        provider: script
+        script:
+          - npm run doc-upload
+        skip_cleanup: true
+        on:
+          branch: master
+
+      after_deploy:
+        - npm run doc-cloudfront
+
 # -----------------------------------------------
 # Linux amd64
 # -----------------------------------------------
@@ -199,7 +293,7 @@ jobs:
 
   - name: Linux armhf - Go 1.10.x
     # Go 1.10.x run is only run for armhf build
-    # not for arm64 one. Since ARM64 QEMU static 
+    # not for arm64 one. Since ARM64 QEMU static
     # crash when used with Go 1.10.x
     if: type = cron OR branch = master
     os: linux
@@ -376,4 +470,3 @@ notifications:
     - secure: "5yW4WxRGTgzTYN081dnnuZugsMFhR/QBYvEtt6DoZknYDIL6owP23EcnErZA9TpNgzLSFBIxSKBRByBN9HKYM22d7QyJG2UWGGggE+05vYhP+WjiQOVV2/xQvUFDEImJKt9VcILtiUFG3eHG6ud4QU1COzgo7SiB4TNPKtHw+uXwkfTxyeOFSB8cmMw4ksLajfDzCxFrayCG4ebZ3HxQb/xvO97JdxyGcRSyWopA/9OS0GcVJdQ5itRF36yyDJcQa3d2J3/cx7ril4lDq7mv0hvvM2sbnLEKytnIOLUuPsmKQkQj+S3GY7499NudKLBEmhLF7z+zTYiWpUeQBeqpY8xdFrq/wsSebRyPsbeSTBofGZZTIQvT0j4/l7WiuhifMrLsA2sqeGCOKEdFO/AsSRa2tOVZZfhsUR9bATkm2qgCfW2UWyAAUtlRT5A7wJ73r0JUgQjAw/RkW20DJPFvJv0wmEMZqo2AJLwrIbY3eu+NvT9mNP17V5nWe8lC61/vhg7tUAubOMq6pd5SlGJOZ8LhOwR5N4w638lFeu4nHyL/XF+tF4qR7bFk5jWFUWgUrA41zoDeUrURmqA9eRm6n+anHTe8bFVTBl7pXcTq8ZXrXw3PQYhkaBbuXTfS12mcWLg/Z3iKTm8hVfJasLtSEQWlA73fUz7fNLxGBXK4X6w="
     on_success: change
     on_failure: always
-
