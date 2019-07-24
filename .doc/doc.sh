@@ -44,7 +44,7 @@ case $1 in
   ;;
 
   cloudfront)
-    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*'
+    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "$DOC_PATH/*"
   ;;
 
   *)

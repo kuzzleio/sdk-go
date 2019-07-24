@@ -1,14 +1,13 @@
 env:
   global:
-    - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
-    # AWS_SECRET_ACCESS_KEY
-    - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
 
 jobs:
   include:
+
 # -----------------------------------------------
 # Documentation
 # -----------------------------------------------
+
     - stage: Tests
       name: Dead link check
       if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
@@ -29,81 +28,11 @@ jobs:
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
-    - stage: Deployment Doc Dev
-      name: Deploy next-docs.kuzzle.io
-      if: branch = 2-dev
-      language: node_js
-      node_js: 10
-      env:
-        - NODE_ENV=production
-        - S3_BUCKET=docs-next.kuzzle.io
-        - CLOUDFRONT_DISTRIBUTION_ID=E2ZCCEK9GRB49U
-        - AWS_DEFAULT_REGION=us-west-2
-
-      addons:
-        apt:
-          packages:
-            - python
-            - python-pip
-
-      install:
-        - pip install awscli --upgrade --user
-
-      script:
-        - npm run doc-prepare
-        - npm run doc-build
-
-      deploy:
-        provider: script
-        script:
-          - npm run doc-upload
-        skip_cleanup: true
-        on:
-          branch: 2-dev
-
-      after_deploy:
-        - npm run doc-cloudfront
-
-    - stage: Deployment Doc Prod
-      name: Deploy docs.kuzzle.io
-      if: branch = master
-      language: node_js
-      node_js: 10
-      env:
-        - NODE_ENV=production
-        - S3_BUCKET=docs.kuzzle.io
-        - CLOUDFRONT_DISTRIBUTION_ID=E3D6RP0POLCJMM
-        - AWS_DEFAULT_REGION=us-west-2
-
-      addons:
-        apt:
-          packages:
-            - python
-            - python-pip
-
-      install:
-        - pip install awscli --upgrade --user
-
-      script:
-        - npm run doc-prepare
-        - npm run doc-build
-
-      deploy:
-        provider: script
-        script:
-          - npm run doc-upload
-        skip_cleanup: true
-        on:
-          branch: master
-
-      after_deploy:
-        - npm run doc-cloudfront
-
 # -----------------------------------------------
 # Linux amd64
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Linux amd64 - Go 1.12.x (with coverage)
       os: linux
       dist: xenial
@@ -121,7 +50,7 @@ jobs:
       after_success:
       - bash <(curl -s https://codecov.io/bash)
 
-    - stage: Build
+    - stage: Tests
       name: Linux amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
@@ -138,7 +67,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
@@ -159,7 +88,7 @@ jobs:
 # Linux i386
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Linux i386 - Go 1.12.x
       os: linux
       dist: xenial
@@ -175,7 +104,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
@@ -192,7 +121,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
@@ -213,7 +142,7 @@ jobs:
 # Linux arm64
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Linux arm64 - Go 1.12.x
       os: linux
       dist: xenial
@@ -233,7 +162,7 @@ jobs:
       - export GOARCH=arm64
       - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux arm64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
@@ -258,7 +187,7 @@ jobs:
 # Linux armhf
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Linux armhf - Go 1.12.x
       os: linux
       dist: xenial
@@ -279,7 +208,7 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux armhf - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
@@ -301,7 +230,7 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - stage: Build
+    - stage: Tests
       name: Linux armhf - Go 1.10.x
       # Go 1.10.x run is only run for armhf build
       # not for arm64 one. Since ARM64 QEMU static
@@ -330,7 +259,7 @@ jobs:
 # MacOS amd64
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: MacOS amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
@@ -345,7 +274,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: MacOS amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
@@ -360,7 +289,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: MacOS amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
@@ -379,7 +308,7 @@ jobs:
 # MacOS i386
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: MacOS i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
@@ -394,7 +323,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: MacOS i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
@@ -409,7 +338,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: MacOS i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
@@ -428,7 +357,7 @@ jobs:
 # Windows amd64
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Windows amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
@@ -439,7 +368,7 @@ jobs:
       - GOARCH=amd64
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Windows amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
@@ -454,7 +383,7 @@ jobs:
 # Windows i386
 # -----------------------------------------------
 
-    - stage: Build
+    - stage: Tests
       name: Windows i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
@@ -465,7 +394,7 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Windows i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
@@ -476,7 +405,7 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - stage: Build
+    - stage: Tests
       name: Windows i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: windows
@@ -486,6 +415,75 @@ jobs:
       - GOOS=windows
       - GOARCH=386
       - go test -v ./...
+
+# -----------------------------------------------
+# Deployments
+# -----------------------------------------------
+
+    - stage: Deployments
+      name: Deploy next-docs.kuzzle.io
+      if: branch = 2-dev
+      language: node_js
+      node_js: 10
+      env:
+        - NODE_ENV=production
+        - S3_BUCKET=docs-next.kuzzle.io
+        - CLOUDFRONT_DISTRIBUTION_ID=E2ZCCEK9GRB49U
+        - AWS_DEFAULT_REGION=us-west-2
+        - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
+        # AWS_SECRET_ACCESS_KEY
+        - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
+      addons:
+        apt:
+          packages:
+            - python
+            - python-pip
+      install:
+        - pip install awscli --upgrade --user
+      script:
+        - npm run doc-prepare
+        - npm run doc-build
+      deploy:
+        provider: script
+        script: npm run doc-upload
+        skip_cleanup: true
+        on:
+          branch: 2-dev
+      after_deploy:
+        - npm run doc-cloudfront
+
+    - stage: Deployments
+      name: Deploy docs.kuzzle.io
+      if: branch = master
+      language: node_js
+      node_js: 10
+      env:
+        - NODE_ENV=production
+        - S3_BUCKET=docs.kuzzle.io
+        - CLOUDFRONT_DISTRIBUTION_ID=E3D6RP0POLCJMM
+        - AWS_DEFAULT_REGION=us-west-2
+        - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
+        # AWS_SECRET_ACCESS_KEY
+        - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
+      addons:
+        apt:
+          packages:
+            - python
+            - python-pip
+      install:
+        - pip install awscli --upgrade --user
+      script:
+        - npm run doc-prepare
+        - npm run doc-build
+      deploy:
+        provider: script
+        script: npm run doc-upload
+        skip_cleanup: true
+        on:
+          branch: master
+      after_deploy:
+        - npm run doc-cloudfront
+
 
 notifications:
   slack:
