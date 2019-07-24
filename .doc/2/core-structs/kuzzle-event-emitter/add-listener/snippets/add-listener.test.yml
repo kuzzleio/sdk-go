@@ -1,9 +1,0 @@
-name: kuzzleEventEmitter#add-listener
-description: Adds new listener for the given event
-hooks:
-  before:
-  after:
-template: before-connect
-expected: "Connected to Kuzzle"
-sdk: go
-version: 1
