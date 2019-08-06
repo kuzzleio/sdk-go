@@ -2,13 +2,8 @@
 
 set -eu
 
-<<<<<<< HEAD
 DOC_VERSION=2
 DOC_PATH=/sdk/go/2
-=======
-DOC_VERSION=1
-DOC_PATH=/sdk/go/1
->>>>>>> 1-dev
 
 # Used by vuepress
 export DOC_DIR=$DOC_VERSION
