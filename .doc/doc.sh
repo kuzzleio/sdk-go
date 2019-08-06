@@ -2,8 +2,13 @@
 
 set -eu
 
+<<<<<<< HEAD
 DOC_VERSION=2
 DOC_PATH=/sdk/go/2
+=======
+DOC_VERSION=1
+DOC_PATH=/sdk/go/1
+>>>>>>> 1-dev
 
 # Used by vuepress
 export DOC_DIR=$DOC_VERSION
@@ -50,7 +55,7 @@ case $1 in
   ;;
 
   cloudfront)
-    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths $SITE_BASE
+    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "$SITE_BASE*"
   ;;
 
   *)

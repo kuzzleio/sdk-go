@@ -6,13 +6,17 @@ env:
 
 jobs:
   include:
+  - name: Documentation test
+    language: go
+    go: 1.12.x
+    script:
+      - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
 # -----------------------------------------------
 # Linux amd64
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Linux amd64 - Go 1.12.x (with coverage)
+    - name: Linux amd64 - Go 1.12.x (with coverage)
       os: linux
       dist: xenial
       sudo: true
@@ -29,8 +33,7 @@ jobs:
       after_success:
       - bash <(curl -s https://codecov.io/bash)
 
-    - stage: Tests
-      name: Linux amd64 - Go 1.11.x
+    - name: Linux amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -46,8 +49,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Tests
-      name: Linux amd64 - Go 1.10.x
+    - name: Linux amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -67,8 +69,7 @@ jobs:
 # Linux i386
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Linux i386 - Go 1.12.x
+    - name: Linux i386 - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -83,8 +84,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: Linux i386 - Go 1.11.x
+    - name: Linux i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -100,8 +100,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: Linux i386 - Go 1.10.x
+    - name: Linux i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -121,8 +120,7 @@ jobs:
 # Linux arm64
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Linux arm64 - Go 1.12.x
+    - name: Linux arm64 - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -141,8 +139,7 @@ jobs:
       - export GOARCH=arm64
       - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-    - stage: Tests
-      name: Linux arm64 - Go 1.11.x
+    - name: Linux arm64 - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -166,8 +163,7 @@ jobs:
 # Linux armhf
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Linux armhf - Go 1.12.x
+    - name: Linux armhf - Go 1.12.x
       os: linux
       dist: xenial
       sudo: true
@@ -187,8 +183,7 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - stage: Tests
-      name: Linux armhf - Go 1.11.x
+    - name: Linux armhf - Go 1.11.x
       if: type = cron OR branch = master
       os: linux
       dist: xenial
@@ -209,8 +204,7 @@ jobs:
       - export GOARM=7
       - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-    - stage: Tests
-      name: Linux armhf - Go 1.10.x
+    - name: Linux armhf - Go 1.10.x
       # Go 1.10.x run is only run for armhf build
       # not for arm64 one. Since ARM64 QEMU static
       # crash when used with Go 1.10.x
@@ -238,8 +232,7 @@ jobs:
 # MacOS amd64
 # -----------------------------------------------
 
-    - stage: Tests
-      name: MacOS amd64 - Go 1.12.x
+    - name: MacOS amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -253,8 +246,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Tests
-      name: MacOS amd64 - Go 1.11.x
+    - name: MacOS amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -268,8 +260,7 @@ jobs:
       - export GOARCH=amd64
       - go test -v ./...
 
-    - stage: Tests
-      name: MacOS amd64 - Go 1.10.x
+    - name: MacOS amd64 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -287,8 +278,7 @@ jobs:
 # MacOS i386
 # -----------------------------------------------
 
-    - stage: Tests
-      name: MacOS i386 - Go 1.12.x
+    - name: MacOS i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -302,8 +292,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: MacOS i386 - Go 1.11.x
+    - name: MacOS i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -317,8 +306,7 @@ jobs:
       - export GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: MacOS i386 - Go 1.10.x
+    - name: MacOS i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: osx
       language: go
@@ -336,8 +324,7 @@ jobs:
 # Windows amd64
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Windows amd64 - Go 1.12.x
+    - name: Windows amd64 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -346,9 +333,7 @@ jobs:
       - GOOS=windows
       - GOARCH=amd64
       - go test -v ./...
-
-    - stage: Tests
-      name: Windows amd64 - Go 1.11.x
+    - name: Windows amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -362,8 +347,7 @@ jobs:
 # Windows i386
 # -----------------------------------------------
 
-    - stage: Tests
-      name: Windows i386 - Go 1.12.x
+    - name: Windows i386 - Go 1.12.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -373,8 +357,7 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: Windows i386 - Go 1.11.x
+    - name: Windows i386 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -384,8 +367,7 @@ jobs:
       - GOARCH=386
       - go test -v ./...
 
-    - stage: Tests
-      name: Windows i386 - Go 1.10.x
+    - name: Windows i386 - Go 1.10.x
       if: type = cron OR branch = master
       os: windows
       language: go
@@ -486,10 +468,9 @@ jobs:
       after_deploy:
         - npm run doc-cloudfront
 
-
 notifications:
   slack:
     rooms:
-    - secure: "5yW4WxRGTgzTYN081dnnuZugsMFhR/QBYvEtt6DoZknYDIL6owP23EcnErZA9TpNgzLSFBIxSKBRByBN9HKYM22d7QyJG2UWGGggE+05vYhP+WjiQOVV2/xQvUFDEImJKt9VcILtiUFG3eHG6ud4QU1COzgo7SiB4TNPKtHw+uXwkfTxyeOFSB8cmMw4ksLajfDzCxFrayCG4ebZ3HxQb/xvO97JdxyGcRSyWopA/9OS0GcVJdQ5itRF36yyDJcQa3d2J3/cx7ril4lDq7mv0hvvM2sbnLEKytnIOLUuPsmKQkQj+S3GY7499NudKLBEmhLF7z+zTYiWpUeQBeqpY8xdFrq/wsSebRyPsbeSTBofGZZTIQvT0j4/l7WiuhifMrLsA2sqeGCOKEdFO/AsSRa2tOVZZfhsUR9bATkm2qgCfW2UWyAAUtlRT5A7wJ73r0JUgQjAw/RkW20DJPFvJv0wmEMZqo2AJLwrIbY3eu+NvT9mNP17V5nWe8lC61/vhg7tUAubOMq6pd5SlGJOZ8LhOwR5N4w638lFeu4nHyL/XF+tF4qR7bFk5jWFUWgUrA41zoDeUrURmqA9eRm6n+anHTe8bFVTBl7pXcTq8ZXrXw3PQYhkaBbuXTfS12mcWLg/Z3iKTm8hVfJasLtSEQWlA73fUz7fNLxGBXK4X6w="
+    - secure: "th1UK1PSRYsPG0TrrWFP0fRm/ClTQP/oxG52QxryaZHx3QnWiexrzgs+llv5I0wNcegFxPRgndcqMNFelodgxRWGIproiTQDfftCYXdNdJKTYtWYc6gzlPtqQkk36PH96Tq3tMPA/S0rhiGHQyUrh+R14vkVZJrD3W1fWzN/BqIJkWlXNIoDg98pD3l0nUoOY1s+3vWW7BZdzzMfvNEjF7Q+7DARd+F/pxsqiaUDrNV+EGG10y42/XxEpo4CfkNPqu2ArQRSW7BRoWdpNKVb+f7+nrhfVLr12LA9fcSYyXG0LWQ8vsZZaq8QHU4zImcydTElgryfliaWAFNTQ9KKQN+wjLPEhXyp6dRIET/ThqBxWCuL8pdJqNTqBfsYKp60VKt/jTa/BGwPBuWFwCSYP+/daTsoSK5qPF3A05K0xtSMAPJbylxahtZnqon6gFeuRJeeMtbGHfxNfdCRZXvBtv5txQn+szXDnZtNU2eYZ6uY47cc2VqQ/nx82u9a2vch6M9Hu6x05seYjVJZ50Nyh8kV4KFVpR82rXUb+ZDZ01bXV2MDm1Elo7NiVIByZ4PaI9tlkrlBcs6IRXULvE0+syxa/lwgHSO0NysyUjHPy46+c3VKtNVnu54oBkmEug1GEt+sq0TItqZG7d3COoolOvu+zQjROCzue/0p+1B7mu8="
     on_success: change
     on_failure: always

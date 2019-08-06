@@ -1,0 +1,11 @@
+---
+name: index#list
+description: list indexes handled by Kuzzle
+hooks:
+  before: curl -X POST kuzzle:7512/admin/_resetDatabase && curl -X POST kuzzle:7512/nyc-open-data/_create
+  after: 
+template: default
+expected: Kuzzle contains 1 indexes
+
+sdk: go
+version: 1
