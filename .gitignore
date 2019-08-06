@@ -19,3 +19,4 @@ internal/wrappers/kcore_wrap\.o
 *.a
 
 .doc/framework
+node_modules/
