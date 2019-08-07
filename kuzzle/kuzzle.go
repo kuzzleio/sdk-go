@@ -196,9 +196,8 @@ func (k *Kuzzle) Connect() error {
 
 			k.EmitEvent(event.NetworkError, err)
 		}
-		k.protocol.RemoveListener(event.NetworkError, ee)
 	}()
-	k.protocol.AddListener(event.NetworkError, ee)
+	k.protocol.Once(event.NetworkError, ee)
 
 	return nil
 }
