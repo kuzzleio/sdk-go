@@ -96,7 +96,7 @@ func TestQueryWithOptions(t *testing.T) {
 
 func TestQueryWithVolatile(t *testing.T) {
 	var k *kuzzle.Kuzzle
-	var volatileData = types.VolatileData(`{"modifiedBy":"awesome me","reason":"it needed to be modified","sdkVersion":"2.0.0"}`)
+	var volatileData = types.VolatileData(`{"modifiedBy":"awesome me","reason":"it needed to be modified","sdkVersion":"2.0.1"}`)
 
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
