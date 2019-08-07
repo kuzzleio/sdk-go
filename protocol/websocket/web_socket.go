@@ -94,7 +94,7 @@ func NewWebSocket(host string, options types.Options) *WebSocket {
 
 //Connect connects to a kuzzle instance
 func (ws *WebSocket) Connect() (bool, error) {
-	if ws.state != state.Offline {
+	if ws.state != state.Offline && ws.state != state.Disconnected && ws.state != state.Error {
 		return false, nil
 	}
 
