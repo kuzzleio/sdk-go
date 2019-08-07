@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	version           = "2.0.1"
+	version           = "2.0.2"
 	MAX_CONNECT_RETRY = 10
 )
 
@@ -196,6 +196,7 @@ func (k *Kuzzle) Connect() error {
 
 			k.EmitEvent(event.NetworkError, err)
 		}
+		k.protocol.RemoveListener(event.NetworkError, ee)
 	}()
 	k.protocol.AddListener(event.NetworkError, ee)
 
