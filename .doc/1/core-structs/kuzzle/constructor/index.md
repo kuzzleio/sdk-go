@@ -25,7 +25,7 @@ NewKuzzle(protocol connection.Connection) (*Kuzzle, error)
 
 ### **protocol**
 
-A [Protocol](/sdk/go/1/protocols/) is a structure implementing the `connection.Connection` interface.
+A [Protocol](/sdk/go/1/protocols) is a structure implementing the `connection.Connection` interface.
 The available protocols are:
 
 - `websocket.Websocket`
