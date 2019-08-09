@@ -36,7 +36,7 @@ The SDK provides a native __WebSocket__ support. You can add your own network pr
 Kuzzle is a ready-to-use, **on-premises and scalable backend** that enables you to manage your persistent data and be notified in real-time on whatever happens to it. 
 It also provides you with a flexible and powerful user-management system.
 
-* :watch: __[Kuzzle in 5 minutes](https://kuzzle.io/company/about-us/kuzzle-in-5-minutes/)__
+* :watch: __[Kuzzle in 5 minutes](https://kuzzle.io/company/about-us/kuzzle-in-5-minutes)__
 * :octocat: __[Github](https://github.com/kuzzleio/kuzzle)__
 * :earth_africa: __[Website](https://kuzzle.io)__
 * :books: __[Documentation](https://docs.kuzzle.io)__
