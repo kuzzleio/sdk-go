@@ -93,15 +93,10 @@ jobs:
       go: 1.12.x
       cache:
         directories:
-          - "$HOME/docker"
           - "$HOME/.cache/go-build"
           - "$HOME/gopath/pkg"
-      before_script:
-        - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
-      before_cache:
-        - docker save library/redis library/golang kuzzleio/kuzzle kuzzleio/elasticsearch | gzip -2 > "$HOME/docker/docker_images.tar.gz"
 
     # -----------------------------------------------
     # Cross-platform tests
