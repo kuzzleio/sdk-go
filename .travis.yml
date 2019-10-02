@@ -1,392 +1,85 @@
-env:
-  global:
+---
+
+# -----------------
+# YAML Templates
+# -----------------
+# Cross-plateform
+_cross_tests: &cross_tests
+  stage: Cross-platform tests
+  language: go
+  go: 1.12.x
+  cache:
+    directories:
+      - "$HOME/.cache/go-build"
+      - "$HOME/gopath/pkg"
+  script:
+    - go test ./...
+
+# Documentation deployment
+_doc-deploy: &doc-deploy
+  stage: Deployments
+  language: node_js
+  node_js: 10
+  env: &doc-deploy-env
+    - NODE_ENV=production
+    - AWS_DEFAULT_REGION=us-west-2
     - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
     # AWS_SECRET_ACCESS_KEY
-    - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
+    - secure: qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg=
+  cache:
+    npm: true
+    directories:
+      - $HOME/.cache/pip
+  addons:
+    apt:
+      packages:
+        - python
+        - python-pip
+  install:
+    - pip install awscli --upgrade --user
+  script:
+    - npm run doc-prepare
+    - npm run doc-build
+  deploy:
+    provider: script
+    script:
+      - npm run doc-upload
+    skip_cleanup: true
+  after_deploy:
+    - npm run doc-cloudfront
 
+# ------------------------
+# Jobs configuration
+# ------------------------
 jobs:
   include:
-    - name: Documentation test
-      language: go
-      go: 1.12.x
-      script:
-        - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
-
-# -----------------------------------------------
-# Linux amd64
-# -----------------------------------------------
-
-    - name: Linux amd64 - Go 1.12.x (with coverage)
-      os: linux
-      dist: xenial
-      sudo: true
+    # ---------------------------------------
+    # Unit Tests & Linters
+    # ---------------------------------------
+    - name: Linux amd64 (with coverage)
+      stage: Unit Tests & Linters
       language: go
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
+      env:
+        - GOOS=linux
+        - GOARCH=amd64
       script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - "./.ci/test_with_coverage.sh"
+        - bash .ci/test_with_coverage.sh
       after_success:
-      - bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash)
 
-    - name: Linux amd64 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
-
-    - name: Linux amd64 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
-
-# -----------------------------------------------
-# Linux i386
-# -----------------------------------------------
-
-    - name: Linux i386 - Go 1.12.x
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.12.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
-
-    - name: Linux i386 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
-
-    - name: Linux i386 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
-
-# -----------------------------------------------
-# Linux arm64
-# -----------------------------------------------
-
-    - name: Linux arm64 - Go 1.12.x
-      os: linux
-      dist: xenial
-      sudo: true
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-      language: go
-      go: 1.12.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
-
-    - name: Linux arm64 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
-
-# -----------------------------------------------
-# Linux armhf
-# -----------------------------------------------
-
-    - name: Linux armhf - Go 1.12.x
-      os: linux
-      dist: xenial
-      sudo: true
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-      language: go
-      go: 1.12.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
-
-    - name: Linux armhf - Go 1.11.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
-
-    - name: Linux armhf - Go 1.10.x
-      # Go 1.10.x run is only run for armhf build
-      # not for arm64 one. Since ARM64 QEMU static
-      # crash when used with Go 1.10.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      addons:
-        apt:
-          packages:
-          - qemu-user-static
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
-
-# -----------------------------------------------
-# MacOS amd64
-# -----------------------------------------------
-
-    - name: MacOS amd64 - Go 1.12.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.12.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
-
-    - name: MacOS amd64 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
-
-    - name: MacOS amd64 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
-
-# -----------------------------------------------
-# MacOS i386
-# -----------------------------------------------
-
-    - name: MacOS i386 - Go 1.12.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.12.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
-
-    - name: MacOS i386 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
-
-    - name: MacOS i386 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: osx
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
-
-# -----------------------------------------------
-# Windows amd64
-# -----------------------------------------------
-
-    - name: Windows amd64 - Go 1.12.x
-      if: type = cron OR branch = master
-      os: windows
-      language: go
-      go: 1.12.x
-      script:
-      - GOOS=windows
-      - GOARCH=amd64
-      - go test -v ./...
-    - name: Windows amd64 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: windows
-      language: go
-      go: 1.11.x
-      script:
-      - GOOS=windows
-      - GOARCH=amd64
-      - go test -v ./...
-
-# -----------------------------------------------
-# Windows i386
-# -----------------------------------------------
-
-    - name: Windows i386 - Go 1.12.x
-      if: type = cron OR branch = master
-      os: windows
-      language: go
-      go: 1.12.x
-      script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
-
-    - name: Windows i386 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: windows
-      language: go
-      go: 1.11.x
-      script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
-
-    - name: Windows i386 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: windows
-      language: go
-      go: 1.10.x
-      script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
-
-# -----------------------------------------------
-# Documentation
-# -----------------------------------------------
-
-    - stage: Tests
-      name: Dead link check
-      if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
+    - name: Dead link check
+      stage: Unit Tests & Linters
       language: node_js
       node_js: 10
-
+      cache:
+        directories:
+          - "$HOME/.gem/specs"
+          - ".doc/framework/node_modules"
       before_script:
         - npm run doc-prepare
         - npm run --prefix .doc/framework clone-repos
@@ -394,83 +87,110 @@ jobs:
         - gem install typhoeus
         - HYDRA_MAX_CONCURRENCY=20 npm run --prefix .doc/framework dead-links
 
-    - stage: Tests
-      name: Documentation test
+    - name: Documentation test
+      stage: Unit Tests & Linters
       language: go
       go: 1.12.x
+      cache:
+        directories:
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
-
-    - stage: Deployment Doc Dev
-      name: Deploy next-docs.kuzzle.io
-      if: type = push AND branch =~ .*-dev
-      language: node_js
-      node_js: 10
+    # -----------------------------------------------
+    # Cross-platform tests
+    # -----------------------------------------------
+    - <<: *cross_tests
+      name: Linux i386
+      os: linux
       env:
-        - NODE_ENV=production
+        - GOOS=linux
+        - GOARCH=386
+
+    - <<: *cross_tests
+      name: Linux arm64
+      addons:
+        apt:
+          packages:
+            - qemu-user-static
+      env:
+        - GOOS=linux
+        - GOARCH=arm64
+      script:
+        - taskset -c 1 go test -exec "qemu-aarch64-static" ./...
+
+    - <<: *cross_tests
+      name: Linux armhf
+      addons:
+        apt:
+          packages:
+            - qemu-user-static
+      env:
+        - GOOS=linux
+        - GOARCH=arm
+        - GOARM=7
+      script:
+        - taskset -c 1 go test -exec "qemu-arm-static" ./...
+
+    - <<: *cross_tests
+      name: MacOS amd64
+      os: osx
+      cache:
+        directories:
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
+      env:
+        - GOOS=darwin
+        - GOARCH=amd64
+
+    - <<: *cross_tests
+      name: Windows amd64
+      os: windows
+      cache:
+        directories:
+          - "$HOME/Library/Caches/go-build"
+          - "/c/Users/travis/gopath/pkg"
+      env:
+        - GOOS=windows
+        - GOARCH=amd64
+
+    # -----------------------------------------------
+    # Deployments
+    # -----------------------------------------------
+    - <<: *doc-deploy
+      name: Documentation to next-docs.kuzzle.io
+      if: branch =~ /^[0-9]+-dev$/
+      env:
+        - *doc-deploy-env
         - S3_BUCKET=docs-next.kuzzle.io
         - CLOUDFRONT_DISTRIBUTION_ID=E2ZCCEK9GRB49U
-        - AWS_DEFAULT_REGION=us-west-2
 
-      addons:
-        apt:
-          packages:
-            - python
-            - python-pip
-
-      install:
-        - pip install awscli --upgrade --user
-
-      script:
-        - npm run doc-prepare
-        - npm run doc-build
-
-      deploy:
-        provider: script
-        script:
-          - npm run doc-upload
-        skip_cleanup: true
-
-      after_deploy:
-        - npm run doc-cloudfront
-
-    - stage: Deployment Doc Prod
+    - <<: *doc-deploy
       name: Deploy docs.kuzzle.io
-      if: type = push AND branch =~ /^master|[0-9]+-stable$/
-      language: node_js
-      node_js: 10
+      if: branch =~ /^master|[0-9]+-stable$/
       env:
-        - NODE_ENV=production
+        - *doc-deploy-env
         - S3_BUCKET=docs.kuzzle.io
         - CLOUDFRONT_DISTRIBUTION_ID=E3D6RP0POLCJMM
-        - AWS_DEFAULT_REGION=us-west-2
 
-      addons:
-        apt:
-          packages:
-            - python
-            - python-pip
+# ------------------------
+# Stages configuration
+# ------------------------
+stages:
+  - name: Unit Tests & Linters
+    if: type =~ /(cron|push|pull_request)/ AND branch =~ /^master|[0-9]+-(dev|stable)$/
+  - name: Cross-platform tests
+    if: type = cron
+  - name: Deployments
+    if: type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/
 
-      install:
-        - pip install awscli --upgrade --user
-
-      script:
-        - npm run doc-prepare
-        - npm run doc-build
-
-      deploy:
-        provider: script
-        script:
-          - npm run doc-upload
-        skip_cleanup: true
-
-      after_deploy:
-        - npm run doc-cloudfront
-
+# ---------------------------------------
+# Notifications
+# ---------------------------------------
 notifications:
   slack:
     rooms:
-    - secure: "th1UK1PSRYsPG0TrrWFP0fRm/ClTQP/oxG52QxryaZHx3QnWiexrzgs+llv5I0wNcegFxPRgndcqMNFelodgxRWGIproiTQDfftCYXdNdJKTYtWYc6gzlPtqQkk36PH96Tq3tMPA/S0rhiGHQyUrh+R14vkVZJrD3W1fWzN/BqIJkWlXNIoDg98pD3l0nUoOY1s+3vWW7BZdzzMfvNEjF7Q+7DARd+F/pxsqiaUDrNV+EGG10y42/XxEpo4CfkNPqu2ArQRSW7BRoWdpNKVb+f7+nrhfVLr12LA9fcSYyXG0LWQ8vsZZaq8QHU4zImcydTElgryfliaWAFNTQ9KKQN+wjLPEhXyp6dRIET/ThqBxWCuL8pdJqNTqBfsYKp60VKt/jTa/BGwPBuWFwCSYP+/daTsoSK5qPF3A05K0xtSMAPJbylxahtZnqon6gFeuRJeeMtbGHfxNfdCRZXvBtv5txQn+szXDnZtNU2eYZ6uY47cc2VqQ/nx82u9a2vch6M9Hu6x05seYjVJZ50Nyh8kV4KFVpR82rXUb+ZDZ01bXV2MDm1Elo7NiVIByZ4PaI9tlkrlBcs6IRXULvE0+syxa/lwgHSO0NysyUjHPy46+c3VKtNVnu54oBkmEug1GEt+sq0TItqZG7d3COoolOvu+zQjROCzue/0p+1B7mu8="
-    on_success: change
+      - secure: "th1UK1PSRYsPG0TrrWFP0fRm/ClTQP/oxG52QxryaZHx3QnWiexrzgs+llv5I0wNcegFxPRgndcqMNFelodgxRWGIproiTQDfftCYXdNdJKTYtWYc6gzlPtqQkk36PH96Tq3tMPA/S0rhiGHQyUrh+R14vkVZJrD3W1fWzN/BqIJkWlXNIoDg98pD3l0nUoOY1s+3vWW7BZdzzMfvNEjF7Q+7DARd+F/pxsqiaUDrNV+EGG10y42/XxEpo4CfkNPqu2ArQRSW7BRoWdpNKVb+f7+nrhfVLr12LA9fcSYyXG0LWQ8vsZZaq8QHU4zImcydTElgryfliaWAFNTQ9KKQN+wjLPEhXyp6dRIET/ThqBxWCuL8pdJqNTqBfsYKp60VKt/jTa/BGwPBuWFwCSYP+/daTsoSK5qPF3A05K0xtSMAPJbylxahtZnqon6gFeuRJeeMtbGHfxNfdCRZXvBtv5txQn+szXDnZtNU2eYZ6uY47cc2VqQ/nx82u9a2vch6M9Hu6x05seYjVJZ50Nyh8kV4KFVpR82rXUb+ZDZ01bXV2MDm1Elo7NiVIByZ4PaI9tlkrlBcs6IRXULvE0+syxa/lwgHSO0NysyUjHPy46+c3VKtNVnu54oBkmEug1GEt+sq0TItqZG7d3COoolOvu+zQjROCzue/0p+1B7mu8="
+    on_success: never
     on_failure: always
