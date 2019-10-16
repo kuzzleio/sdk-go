@@ -26,7 +26,7 @@ import (
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	u := uuid.NewV4()
+	u, _ := uuid.NewV4()
 	requestId := u.String()
 
 	if query.RequestId == "" {

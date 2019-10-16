@@ -1,5 +1,6 @@
 env:
   global:
+    - GO111MODULE=on
     - AWS_ACCESS_KEY_ID=AKIAIYAXFUAHXOWP2MJA
     # AWS_SECRET_ACCESS_KEY
     - secure: "qzj0owa1ZC74eg3BBox1FWCBtDs7Xald1sfCjR52tV4/mpFu1sv5sSemzSzBfI0GYn5jAbPpm7DacmR8Y5mTxaIUXGi7mT041stjEEW3snubnsOLWxkGWpFpEZa2b8qlIxl/hzhv4wJ2rxxYCAwA9khOAc6uYunilL4yV0KCPoBD3fRYOktCNxaEbGCaFmlSphPBQYh867izCjSGNpn3kxst3+VuLE3RCikbZCuJvAZMSra4WxBcFqs6WytC5zykdkipb6O5US8koljqSdJgD1MOc0p4VrDmXum9IzBiK0omXbep3BPsorQBEvPCuHQQDk1HqJ+psKgLdwGX/nbaXHQ93smAMhUQOfF7rriYe7VeSrbHlVx/j/U7FMBoYG02efXOHH1jwO4njhQRNvbEAQnmky6my87NlCGnIUzkYeXogt+9/+MvkTDvfhYI6tVXEvoM/GSH7f12kr9gG4LSsI6PzJr8FPnp5+n+ZhqvqyEAJ3LUd/pTxAzNM+w405YeR29aeUdMkuhXHlM/lMfUR9RlnM216EM+fZH7lB2ueZV3m6AqDlIh29DRao9g6M3dkeWdtzFzZgVSrWtwhwZhmHTx6RXbz+SPDrwjQcEPuwMq8RIu9L+9/DW52vXv2u5VKHbszDWoelYza7EUbKcQ4y7NXaJV1+GfrJrpotQEScg="
@@ -47,7 +48,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: Linux amd64 - Go 1.10.x
       if: type = cron OR branch = master
@@ -63,7 +64,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # Linux i386
@@ -82,7 +83,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: Linux i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -98,7 +99,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: Linux i386 - Go 1.10.x
       if: type = cron OR branch = master
@@ -114,7 +115,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # Linux arm64
@@ -137,7 +138,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+      - taskset -c 1 go test -mod=vendor -v -exec "qemu-aarch64-static" ./...
 
     - name: Linux arm64 - Go 1.11.x
       if: type = cron OR branch = master
@@ -157,7 +158,7 @@ jobs:
       script:
       - export GOOS=linux
       - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+      - taskset -c 1 go test -mod=vendor -v -exec "qemu-aarch64-static" ./...
 
 # -----------------------------------------------
 # Linux armhf
@@ -181,7 +182,7 @@ jobs:
       - export GOOS=linux
       - export GOARCH=arm
       - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+      - taskset -c 1 go test -mod=vendor -v -exec "qemu-arm-static" ./...
 
     - name: Linux armhf - Go 1.11.x
       if: type = cron OR branch = master
@@ -202,7 +203,7 @@ jobs:
       - export GOOS=linux
       - export GOARCH=arm
       - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+      - taskset -c 1 go test -mod=vendor -v -exec "qemu-arm-static" ./...
 
     - name: Linux armhf - Go 1.10.x
       # Go 1.10.x run is only run for armhf build
@@ -226,7 +227,7 @@ jobs:
       - export GOOS=linux
       - export GOARCH=arm
       - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+      - taskset -c 1 go test -mod=vendor -v -exec "qemu-arm-static" ./...
 
 # -----------------------------------------------
 # MacOS amd64
@@ -244,7 +245,7 @@ jobs:
       script:
       - export GOOS=darwin
       - export GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: MacOS amd64 - Go 1.11.x
       if: type = cron OR branch = master
@@ -258,7 +259,7 @@ jobs:
       script:
       - export GOOS=darwin
       - export GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: MacOS amd64 - Go 1.10.x
       if: type = cron OR branch = master
@@ -272,7 +273,7 @@ jobs:
       script:
       - export GOOS=darwin
       - export GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # MacOS i386
@@ -290,7 +291,7 @@ jobs:
       script:
       - export GOOS=darwin
       - export GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: MacOS i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -318,7 +319,7 @@ jobs:
       script:
       - export GOOS=darwin
       - export GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # Windows amd64
@@ -332,7 +333,7 @@ jobs:
       script:
       - GOOS=windows
       - GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
     - name: Windows amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
@@ -341,7 +342,7 @@ jobs:
       script:
       - GOOS=windows
       - GOARCH=amd64
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # Windows i386
@@ -355,7 +356,7 @@ jobs:
       script:
       - GOOS=windows
       - GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: Windows i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -365,7 +366,7 @@ jobs:
       script:
       - GOOS=windows
       - GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
     - name: Windows i386 - Go 1.10.x
       if: type = cron OR branch = master
@@ -375,7 +376,7 @@ jobs:
       script:
       - GOOS=windows
       - GOARCH=386
-      - go test -v ./...
+      - go test -mod=vendor -v ./...
 
 # -----------------------------------------------
 # Documentation
