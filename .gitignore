@@ -3,6 +3,7 @@
 .idea
 .vscode
 main.go
+vendor
 
 # Custom test file
 test.go

@@ -1,5 +1,3 @@
----
-
 # -----------------
 # YAML Templates
 # -----------------
@@ -8,12 +6,14 @@ _cross_tests: &cross_tests
   stage: Cross-platform tests
   language: go
   go: 1.12.x
+  env:
+    - GO111MODULE=on
   cache:
     directories:
       - "$HOME/.cache/go-build"
       - "$HOME/gopath/pkg"
   script:
-    - go test ./...
+    - go test -mod=vendor -v ./...
 
 # Documentation deployment
 _doc-deploy: &doc-deploy
@@ -118,7 +118,7 @@ jobs:
         - GOOS=linux
         - GOARCH=arm64
       script:
-        - taskset -c 1 go test -exec "qemu-aarch64-static" ./...
+        - taskset -c 1 go test -mod=vendor -exec "qemu-aarch64-static" ./...
 
     - <<: *cross_tests
       name: Linux armhf
@@ -131,7 +131,7 @@ jobs:
         - GOARCH=arm
         - GOARM=7
       script:
-        - taskset -c 1 go test -exec "qemu-arm-static" ./...
+        - taskset -c 1 go test -mod=vendor -exec "qemu-arm-static" ./...
 
     - <<: *cross_tests
       name: MacOS amd64
