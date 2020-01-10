@@ -81,6 +81,7 @@ jobs:
           - "$HOME/.gem/specs"
           - ".doc/framework/node_modules"
       before_script:
+        - npm ci
         - npm run doc-prepare
         - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
         - $(npm bin)/kuzdoc framework:link -d /sdk/go/2/ -v 2 -b .doc/
