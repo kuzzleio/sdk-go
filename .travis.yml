@@ -79,13 +79,14 @@ jobs:
       cache:
         directories:
           - "$HOME/.gem/specs"
-          - ".doc/framework/node_modules"
       before_script:
+        - npm ci
         - npm run doc-prepare
-        - npm run --prefix .doc/framework clone-repos
+        - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
+        - $(npm bin)/kuzdoc framework:link -d /sdk/go/2/ -v 2 -b .doc/
       script:
         - gem install typhoeus
-        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix .doc/framework dead-links
+        - cd .doc/framework/ && HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/sdk/go/2/
 
     - name: Documentation test
       stage: Unit Tests & Linters
