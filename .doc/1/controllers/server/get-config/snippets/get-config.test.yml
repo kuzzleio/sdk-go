@@ -4,7 +4,7 @@ hooks:
   before:
   after:
 template: default
-expected: ^(Kuzzle Server configuration as JSON string:) {("dump":{.*}),("limits":{.*}),("plugins":{.*}),("queues":{.*}),("repositories":{.*}),("server":{.*}),("services":{.*}),("stats":{.*}),("validation":{.*}),("_":.*),("internal":{.*}),("version":"[0-9]\.[0-9]\.[0-9]")}$
+expected: ^(Kuzzle Server configuration as JSON string:)
 
 sdk: go
 version: 1

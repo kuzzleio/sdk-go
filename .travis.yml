@@ -12,9 +12,9 @@ jobs:
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
-# -----------------------------------------------
-# Linux amd64
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Linux amd64
+    # -----------------------------------------------
 
     - name: Linux amd64 - Go 1.12.x (with coverage)
       os: linux
@@ -24,14 +24,14 @@ jobs:
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - "./.ci/test_with_coverage.sh"
+        - export GOOS=linux
+        - export GOARCH=amd64
+        - "./.ci/test_with_coverage.sh"
       after_success:
-      - bash <(curl -s https://codecov.io/bash)
+        - bash <(curl -s https://codecov.io/bash)
 
     - name: Linux amd64 - Go 1.11.x
       if: type = cron OR branch = master
@@ -42,12 +42,12 @@ jobs:
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
+        - export GOOS=linux
+        - export GOARCH=amd64
+        - go test -v ./...
 
     - name: Linux amd64 - Go 1.10.x
       if: type = cron OR branch = master
@@ -58,16 +58,16 @@ jobs:
       go: 1.10.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
+        - export GOOS=linux
+        - export GOARCH=amd64
+        - go test -v ./...
 
-# -----------------------------------------------
-# Linux i386
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Linux i386
+    # -----------------------------------------------
 
     - name: Linux i386 - Go 1.12.x
       os: linux
@@ -77,12 +77,12 @@ jobs:
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=linux
+        - export GOARCH=386
+        - go test -v ./...
 
     - name: Linux i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -93,12 +93,12 @@ jobs:
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=linux
+        - export GOARCH=386
+        - go test -v ./...
 
     - name: Linux i386 - Go 1.10.x
       if: type = cron OR branch = master
@@ -109,16 +109,16 @@ jobs:
       go: 1.10.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=linux
+        - export GOARCH=386
+        - go test -v ./...
 
-# -----------------------------------------------
-# Linux arm64
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Linux arm64
+    # -----------------------------------------------
 
     - name: Linux arm64 - Go 1.12.x
       os: linux
@@ -127,17 +127,17 @@ jobs:
       addons:
         apt:
           packages:
-          - qemu-user-static
+            - qemu-user-static
       language: go
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+        - export GOOS=linux
+        - export GOARCH=arm64
+        - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
     - name: Linux arm64 - Go 1.11.x
       if: type = cron OR branch = master
@@ -147,21 +147,21 @@ jobs:
       addons:
         apt:
           packages:
-          - qemu-user-static
+            - qemu-user-static
       language: go
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=arm64
-      - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+        - export GOOS=linux
+        - export GOARCH=arm64
+        - taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-# -----------------------------------------------
-# Linux armhf
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Linux armhf
+    # -----------------------------------------------
 
     - name: Linux armhf - Go 1.12.x
       os: linux
@@ -170,18 +170,18 @@ jobs:
       addons:
         apt:
           packages:
-          - qemu-user-static
+            - qemu-user-static
       language: go
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+        - export GOOS=linux
+        - export GOARCH=arm
+        - export GOARM=7
+        - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
     - name: Linux armhf - Go 1.11.x
       if: type = cron OR branch = master
@@ -191,18 +191,18 @@ jobs:
       addons:
         apt:
           packages:
-          - qemu-user-static
+            - qemu-user-static
       language: go
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+        - export GOOS=linux
+        - export GOARCH=arm
+        - export GOARM=7
+        - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
     - name: Linux armhf - Go 1.10.x
       # Go 1.10.x run is only run for armhf build
@@ -215,22 +215,22 @@ jobs:
       addons:
         apt:
           packages:
-          - qemu-user-static
+            - qemu-user-static
       language: go
       go: 1.10.x
       cache:
         directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/.cache/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=linux
-      - export GOARCH=arm
-      - export GOARM=7
-      - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+        - export GOOS=linux
+        - export GOARCH=arm
+        - export GOARM=7
+        - taskset -c 1 go test -v -exec "qemu-arm-static" ./...
 
-# -----------------------------------------------
-# MacOS amd64
-# -----------------------------------------------
+    # -----------------------------------------------
+    # MacOS amd64
+    # -----------------------------------------------
 
     - name: MacOS amd64 - Go 1.12.x
       if: type = cron OR branch = master
@@ -239,12 +239,12 @@ jobs:
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=amd64
+        - go test -v ./...
 
     - name: MacOS amd64 - Go 1.11.x
       if: type = cron OR branch = master
@@ -253,12 +253,12 @@ jobs:
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=amd64
+        - go test -v ./...
 
     - name: MacOS amd64 - Go 1.10.x
       if: type = cron OR branch = master
@@ -267,16 +267,16 @@ jobs:
       go: 1.10.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=amd64
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=amd64
+        - go test -v ./...
 
-# -----------------------------------------------
-# MacOS i386
-# -----------------------------------------------
+    # -----------------------------------------------
+    # MacOS i386
+    # -----------------------------------------------
 
     - name: MacOS i386 - Go 1.12.x
       if: type = cron OR branch = master
@@ -285,12 +285,12 @@ jobs:
       go: 1.12.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=386
+        - go test -v ./...
 
     - name: MacOS i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -299,12 +299,12 @@ jobs:
       go: 1.11.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=386
+        - go test -v ./...
 
     - name: MacOS i386 - Go 1.10.x
       if: type = cron OR branch = master
@@ -313,16 +313,16 @@ jobs:
       go: 1.10.x
       cache:
         directories:
-        - "$HOME/Library/Caches/go-build"
-        - "$HOME/gopath/pkg"
+          - "$HOME/Library/Caches/go-build"
+          - "$HOME/gopath/pkg"
       script:
-      - export GOOS=darwin
-      - export GOARCH=386
-      - go test -v ./...
+        - export GOOS=darwin
+        - export GOARCH=386
+        - go test -v ./...
 
-# -----------------------------------------------
-# Windows amd64
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Windows amd64
+    # -----------------------------------------------
 
     - name: Windows amd64 - Go 1.12.x
       if: type = cron OR branch = master
@@ -330,22 +330,22 @@ jobs:
       language: go
       go: 1.12.x
       script:
-      - GOOS=windows
-      - GOARCH=amd64
-      - go test -v ./...
+        - GOOS=windows
+        - GOARCH=amd64
+        - go test -v ./...
     - name: Windows amd64 - Go 1.11.x
       if: type = cron OR branch = master
       os: windows
       language: go
       go: 1.11.x
       script:
-      - GOOS=windows
-      - GOARCH=amd64
-      - go test -v ./...
+        - GOOS=windows
+        - GOARCH=amd64
+        - go test -v ./...
 
-# -----------------------------------------------
-# Windows i386
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Windows i386
+    # -----------------------------------------------
 
     - name: Windows i386 - Go 1.12.x
       if: type = cron OR branch = master
@@ -353,9 +353,9 @@ jobs:
       language: go
       go: 1.12.x
       script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
+        - GOOS=windows
+        - GOARCH=386
+        - go test -v ./...
 
     - name: Windows i386 - Go 1.11.x
       if: type = cron OR branch = master
@@ -363,9 +363,9 @@ jobs:
       language: go
       go: 1.11.x
       script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
+        - GOOS=windows
+        - GOARCH=386
+        - go test -v ./...
 
     - name: Windows i386 - Go 1.10.x
       if: type = cron OR branch = master
@@ -373,13 +373,13 @@ jobs:
       language: go
       go: 1.10.x
       script:
-      - GOOS=windows
-      - GOARCH=386
-      - go test -v ./...
+        - GOOS=windows
+        - GOARCH=386
+        - go test -v ./...
 
-# -----------------------------------------------
-# Documentation
-# -----------------------------------------------
+    # -----------------------------------------------
+    # Documentation
+    # -----------------------------------------------
 
     - stage: Tests
       name: Dead link check
@@ -389,10 +389,11 @@ jobs:
 
       before_script:
         - npm run doc-prepare
-        - npm run --prefix .doc/framework clone-repos
+        - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
+        - $(npm bin)/kuzdoc framework:link -d /sdk/go/1/ -v 1 -b .doc/
       script:
         - gem install typhoeus
-        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix .doc/framework dead-links
+        - cd .doc/framework/ && HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/sdk/go/1/
 
     - stage: Tests
       name: Documentation test
@@ -400,7 +401,6 @@ jobs:
       go: 1.12.x
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
-
 
     - stage: Deployment Doc Dev
       name: Deploy next-docs.kuzzle.io
@@ -471,6 +471,6 @@ jobs:
 notifications:
   slack:
     rooms:
-    - secure: "th1UK1PSRYsPG0TrrWFP0fRm/ClTQP/oxG52QxryaZHx3QnWiexrzgs+llv5I0wNcegFxPRgndcqMNFelodgxRWGIproiTQDfftCYXdNdJKTYtWYc6gzlPtqQkk36PH96Tq3tMPA/S0rhiGHQyUrh+R14vkVZJrD3W1fWzN/BqIJkWlXNIoDg98pD3l0nUoOY1s+3vWW7BZdzzMfvNEjF7Q+7DARd+F/pxsqiaUDrNV+EGG10y42/XxEpo4CfkNPqu2ArQRSW7BRoWdpNKVb+f7+nrhfVLr12LA9fcSYyXG0LWQ8vsZZaq8QHU4zImcydTElgryfliaWAFNTQ9KKQN+wjLPEhXyp6dRIET/ThqBxWCuL8pdJqNTqBfsYKp60VKt/jTa/BGwPBuWFwCSYP+/daTsoSK5qPF3A05K0xtSMAPJbylxahtZnqon6gFeuRJeeMtbGHfxNfdCRZXvBtv5txQn+szXDnZtNU2eYZ6uY47cc2VqQ/nx82u9a2vch6M9Hu6x05seYjVJZ50Nyh8kV4KFVpR82rXUb+ZDZ01bXV2MDm1Elo7NiVIByZ4PaI9tlkrlBcs6IRXULvE0+syxa/lwgHSO0NysyUjHPy46+c3VKtNVnu54oBkmEug1GEt+sq0TItqZG7d3COoolOvu+zQjROCzue/0p+1B7mu8="
+      - secure: "th1UK1PSRYsPG0TrrWFP0fRm/ClTQP/oxG52QxryaZHx3QnWiexrzgs+llv5I0wNcegFxPRgndcqMNFelodgxRWGIproiTQDfftCYXdNdJKTYtWYc6gzlPtqQkk36PH96Tq3tMPA/S0rhiGHQyUrh+R14vkVZJrD3W1fWzN/BqIJkWlXNIoDg98pD3l0nUoOY1s+3vWW7BZdzzMfvNEjF7Q+7DARd+F/pxsqiaUDrNV+EGG10y42/XxEpo4CfkNPqu2ArQRSW7BRoWdpNKVb+f7+nrhfVLr12LA9fcSYyXG0LWQ8vsZZaq8QHU4zImcydTElgryfliaWAFNTQ9KKQN+wjLPEhXyp6dRIET/ThqBxWCuL8pdJqNTqBfsYKp60VKt/jTa/BGwPBuWFwCSYP+/daTsoSK5qPF3A05K0xtSMAPJbylxahtZnqon6gFeuRJeeMtbGHfxNfdCRZXvBtv5txQn+szXDnZtNU2eYZ6uY47cc2VqQ/nx82u9a2vch6M9Hu6x05seYjVJZ50Nyh8kV4KFVpR82rXUb+ZDZ01bXV2MDm1Elo7NiVIByZ4PaI9tlkrlBcs6IRXULvE0+syxa/lwgHSO0NysyUjHPy46+c3VKtNVnu54oBkmEug1GEt+sq0TItqZG7d3COoolOvu+zQjROCzue/0p+1B7mu8="
     on_success: change
     on_failure: always
