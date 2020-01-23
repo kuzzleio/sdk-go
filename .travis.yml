@@ -37,6 +37,7 @@ _doc-deploy: &doc-deploy
         - python-pip
   install:
     - pip install awscli --upgrade --user
+    - npm ci
   script:
     - npm run doc-prepare
     - npm run doc-build
@@ -45,6 +46,8 @@ _doc-deploy: &doc-deploy
     script:
       - npm run doc-upload
     skip_cleanup: true
+    on:
+      all_branches: true
   after_deploy:
     - npm run doc-cloudfront
 
