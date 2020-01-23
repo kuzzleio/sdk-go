@@ -421,6 +421,7 @@ jobs:
 
       install:
         - pip install awscli --upgrade --user
+        - npm ci
 
       script:
         - npm run doc-prepare
@@ -454,6 +455,7 @@ jobs:
 
       install:
         - pip install awscli --upgrade --user
+        - npm ci
 
       script:
         - npm run doc-prepare
