@@ -9,7 +9,7 @@ description: Update the collection mapping
 
 Update the collection mapping.
 Mapping allow you to exploit the full capabilities of our
-persistent data storage layer, [ElasticSearch](https://www.elastic.co/products/elasticsearch) (check here the [mapping capabilities of ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/5.4/mapping.html)).
+persistent data storage layer, [ElasticSearch](ttps://www.elastic.co/elastic-stack) (check here the [mapping capabilities of ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/5.4/mapping.html)).
 
 ## Arguments
 
