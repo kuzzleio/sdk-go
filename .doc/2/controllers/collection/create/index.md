@@ -9,7 +9,7 @@ description: Creates a new collection
 
 Creates a new [collection](/core/1/guides/essentials/store-access-data) in the provided `index`.
 You can also provide an optional data mapping that allow you to exploit the full capabilities of our
-persistent data storage layer, [ElasticSearch](https://www.elastic.co/products/elasticsearch) (check here the [mapping capabilities of ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/5.4/mapping.html)).
+persistent data storage layer, [ElasticSearch](ttps://www.elastic.co/elastic-stack) (check here the [mapping capabilities of ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/5.4/mapping.html)).
 
 This method will only update the mapping if the collection already exists.
 
