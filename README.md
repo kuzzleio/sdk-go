@@ -40,7 +40,7 @@ It also provides you with a flexible and powerful user-management system.
 * :octocat: __[Github](https://github.com/kuzzleio/kuzzle)__
 * :earth_africa: __[Website](https://kuzzle.io)__
 * :books: __[Documentation](https://docs.kuzzle.io)__
-* :email: __[Gitter](https://gitter.im/kuzzleio/kuzzle)__
+* :email: __[Discord](http://join.discord.kuzzle.io)__
 
 ### Get trained by the creators of Kuzzle :zap:
 
