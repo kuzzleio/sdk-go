@@ -8,7 +8,7 @@ go func() {
 
   if notification.Type == "user" {
     fmt.Printf("Volatile data: %s\n", notification.Volatile)
-    // Volatile data: {"sdkVersion":"1.0.0","username":"nina vkote"}
+    // Volatile data: {"sdkName":"go@1.0.0","username":"nina vkote"}
     fmt.Printf("Currently %d users in the room\n", notification.Result.Count)
   }
 }()
