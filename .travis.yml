@@ -70,6 +70,7 @@ jobs:
       env:
         - GOOS=linux
         - GOARCH=amd64
+        - GO111MODULE=on
       script:
         - bash .ci/test_with_coverage.sh
       after_success:
@@ -111,6 +112,7 @@ jobs:
       env:
         - GOOS=linux
         - GOARCH=386
+        - GO111MODULE=on
 
     - <<: *cross_tests
       name: Linux arm64
@@ -134,6 +136,7 @@ jobs:
         - GOOS=linux
         - GOARCH=arm
         - GOARM=7
+        - GO111MODULE=on
       script:
         - taskset -c 1 go test -mod=vendor -exec "qemu-arm-static" ./...
 
@@ -147,6 +150,7 @@ jobs:
       env:
         - GOOS=darwin
         - GOARCH=amd64
+        - GO111MODULE=on
 
     - <<: *cross_tests
       name: Windows amd64
@@ -158,6 +162,7 @@ jobs:
       env:
         - GOOS=windows
         - GOARCH=amd64
+        - GO111MODULE=on
 
     # -----------------------------------------------
     # Deployments
