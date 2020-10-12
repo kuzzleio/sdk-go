@@ -2,15 +2,15 @@
 
 set -eu
 
-DOC_VERSION=2
-DOC_PATH=/sdk/go/2
+DOC_VERSION=3
+DOC_PATH=/sdk/go/3
 
 # Used by vuepress
 export DOC_DIR=$DOC_VERSION
 export SITE_BASE=$DOC_PATH/
 
 # Used to specify --no-cache for example
-ARGS=${2:-""}
+ARGS=${3:-""}
 
 if [ ! -d "./$DOC_DIR" ]
 then

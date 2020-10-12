@@ -28,7 +28,7 @@ This is the official Go SDK for the free and open-source backend Kuzzle. It prov
 The SDK provides a native __WebSocket__ support. You can add your own network protocol by implementing the Protocol interface.
 
 <p align="center">
-  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/1">Documentation</a></b>
+  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/3">Documentation</a></b>
 </p>
 
 ### Kuzzle
