@@ -21,12 +21,12 @@ import (
 
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	u := uuid.NewV4()
+	u := uuid.New()
 	requestId := u.String()
 
 	if query.RequestId == "" {

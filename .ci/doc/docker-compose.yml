@@ -55,7 +55,7 @@ services:
         chmod +x formatAllSnippets.sh;
         apk add --no-cache curl;
         apk add --no-cache git;
-        go get github.com/satori/go.uuid \
+        go get github.com/google/uuid \
          github.com/gorilla/websocket \
          golang.org/x/tools/cmd/goimports \
          golang.org/x/lint/golint;
