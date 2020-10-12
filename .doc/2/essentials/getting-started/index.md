@@ -19,7 +19,7 @@ Before proceeding, please make sure your system meets the following requirements
   :::
 
 ::: info
-Having trouble? Get in touch with us on [Gitter](https://gitter.im/kuzzleio/kuzzle)!
+Having trouble? Get in touch with us on [Discord](http://join.discord.kuzzle.io)!
 :::
 
 ## Installation
