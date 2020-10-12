@@ -21,12 +21,12 @@ import (
 
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	u, _ := uuid.NewV4()
+	u := uuid.NewV4()
 	requestId := u.String()
 
 	if query.RequestId == "" {
@@ -49,12 +49,12 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		mapped := make(map[string]interface{})
 		json.Unmarshal(query.Volatile, &mapped)
 
-		mapped["sdkVersion"] = version
+		mapped["sdkName"] = version
 
 		query.Volatile, _ = json.Marshal(mapped)
 
 	} else {
-		vol := fmt.Sprintf(`{"sdkVersion": "%s"}`, version)
+		vol := fmt.Sprintf(`{"sdkName": "%s"}`, version)
 		query.Volatile = types.VolatileData(vol)
 	}
 
