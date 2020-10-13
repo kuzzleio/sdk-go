@@ -19,14 +19,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"github.com/satori/go.uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	u, _ := uuid.NewV4()
+	u := uuid.New()
 	requestId := u.String()
 
 	if query.RequestId == "" {
