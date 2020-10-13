@@ -79,7 +79,7 @@ jobs:
     - name: Dead link check
       stage: Unit Tests & Linters
       language: node_js
-      node_js: 10
+      node_js: 12
       cache:
         directories:
           - "$HOME/.gem/specs"
@@ -96,6 +96,8 @@ jobs:
       stage: Unit Tests & Linters
       language: go
       go: 1.12.x
+      env:
+        - GO111MODULE=on
       cache:
         directories:
           - "$HOME/.cache/go-build"
