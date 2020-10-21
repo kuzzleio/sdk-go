@@ -356,7 +356,7 @@ jobs:
       node_js: 12
       install:
         - gem install typhoeus
-        - npm install -g kuzdoc
+        - npm install kuzdoc
       before_script:
         - npm run doc-prepare
         - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
