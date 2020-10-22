@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "doc-prepare": "cd .doc && bash doc.sh prepare",
-    "doc-dev": "cd .doc && bash doc.sh dev",
-    "doc-build": "cd .doc && bash doc.sh build",
-    "doc-upload": "cd .doc && bash doc.sh upload",
-    "doc-cloudfront": "cd .doc && bash doc.sh cloudfront",
+    "doc-prepare": "kuzdoc framework:install -d .doc/",
+    "doc-dev": "kuzdoc repo:dev -d /sdk/go/3/ -v 3",
+    "doc-build": "kuzdoc repo:build -d /sdk/go/3/ -v 3",
+    "doc-upload": "kuzdoc repo:deploy -d /sdk/go/3/ -v 3",
+    "doc-cloudfront": "kuzdoc repo:cloudfront -d /sdk/go/3/*",
     "doc-deploy": "npm run doc-upload && npm run doc-cloudfront",
-    "doc-netlify": "npm run doc-prepare && cd .doc && bash doc.sh build-netlify"
+    "doc-netlify": "npm install -g kuzdoc && npm run doc-prepare && kuzdoc repo:build -d / -v 3"
   }
 }

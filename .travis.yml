@@ -8,7 +8,7 @@ jobs:
   include:
     - name: Documentation test
       language: go
-      go: 1.12.x
+      go: 1.14.x
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
@@ -16,12 +16,12 @@ jobs:
 # Linux amd64
 # -----------------------------------------------
 
-    - name: Linux amd64 - Go 1.12.x (with coverage)
+    - name: Linux amd64 - Go 1.14.x (with coverage)
       os: linux
       dist: xenial
       sudo: true
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/.cache/go-build"
@@ -33,48 +33,16 @@ jobs:
       after_success:
       - bash <(curl -s https://codecov.io/bash)
 
-    - name: Linux amd64 - Go 1.11.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.11.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
-
-    - name: Linux amd64 - Go 1.10.x
-      if: type = cron OR branch = master
-      os: linux
-      dist: xenial
-      sudo: true
-      language: go
-      go: 1.10.x
-      cache:
-        directories:
-        - "$HOME/.cache/go-build"
-        - "$HOME/gopath/pkg"
-      script:
-      - export GOOS=linux
-      - export GOARCH=amd64
-      - go test -v ./...
-
 # -----------------------------------------------
 # Linux i386
 # -----------------------------------------------
 
-    - name: Linux i386 - Go 1.12.x
+    - name: Linux i386 - Go 1.14.x
       os: linux
       dist: xenial
       sudo: true
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/.cache/go-build"
@@ -120,7 +88,7 @@ jobs:
 # Linux arm64
 # -----------------------------------------------
 
-    - name: Linux arm64 - Go 1.12.x
+    - name: Linux arm64 - Go 1.14.x
       os: linux
       dist: xenial
       sudo: true
@@ -129,7 +97,7 @@ jobs:
           packages:
           - qemu-user-static
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/.cache/go-build"
@@ -163,7 +131,7 @@ jobs:
 # Linux armhf
 # -----------------------------------------------
 
-    - name: Linux armhf - Go 1.12.x
+    - name: Linux armhf - Go 1.14.x
       os: linux
       dist: xenial
       sudo: true
@@ -172,7 +140,7 @@ jobs:
           packages:
           - qemu-user-static
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/.cache/go-build"
@@ -232,11 +200,11 @@ jobs:
 # MacOS amd64
 # -----------------------------------------------
 
-    - name: MacOS amd64 - Go 1.12.x
+    - name: MacOS amd64 - Go 1.14.x
       if: type = cron OR branch = master
       os: osx
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/Library/Caches/go-build"
@@ -278,11 +246,11 @@ jobs:
 # MacOS i386
 # -----------------------------------------------
 
-    - name: MacOS i386 - Go 1.12.x
+    - name: MacOS i386 - Go 1.14.x
       if: type = cron OR branch = master
       os: osx
       language: go
-      go: 1.12.x
+      go: 1.14.x
       cache:
         directories:
         - "$HOME/Library/Caches/go-build"
@@ -324,11 +292,11 @@ jobs:
 # Windows amd64
 # -----------------------------------------------
 
-    - name: Windows amd64 - Go 1.12.x
+    - name: Windows amd64 - Go 1.14.x
       if: type = cron OR branch = master
       os: windows
       language: go
-      go: 1.12.x
+      go: 1.14.x
       script:
       - GOOS=windows
       - GOARCH=amd64
@@ -347,11 +315,11 @@ jobs:
 # Windows i386
 # -----------------------------------------------
 
-    - name: Windows i386 - Go 1.12.x
+    - name: Windows i386 - Go 1.14.x
       if: type = cron OR branch = master
       os: windows
       language: go
-      go: 1.12.x
+      go: 1.14.x
       script:
       - GOOS=windows
       - GOARCH=386
@@ -385,19 +353,22 @@ jobs:
       name: Dead link check
       if: type = pull_request OR type = push AND branch =~ /^master|[0-9]+-(dev|stable)$/ OR type = cron
       language: node_js
-      node_js: 10
-
+      node_js: 12
+      install:
+        - gem install typhoeus
+        - npm install kuzdoc
       before_script:
         - npm run doc-prepare
-        - npm run --prefix .doc/framework clone-repos
+        - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
+        - $(npm bin)/kuzdoc framework:link -d /sdk/go/3 -v 3 --base_root .doc/
       script:
-        - gem install typhoeus
-        - HYDRA_MAX_CONCURRENCY=20 npm run --prefix .doc/framework dead-links
+        - cd .doc/framework/
+        - HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/sdk/go/3
 
     - stage: Tests
       name: Documentation test
       language: go
-      go: 1.12.x
+      go: 1.14.x
       script:
         - docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
