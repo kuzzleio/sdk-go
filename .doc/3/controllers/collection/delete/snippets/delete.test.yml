@@ -1,5 +1,5 @@
-name: collection#truncate
-description: Remove all documents from collection
+name: collection#delete
+description: Delete a collection
 hooks:
   before: curl -X POST kuzzle:7512/nyc-open-data/_create && curl -X PUT kuzzle:7512/nyc-open-data/yellow-taxi
   after:
