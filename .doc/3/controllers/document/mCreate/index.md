@@ -41,7 +41,21 @@ Additional query options
 
 ## Return
 
-Returns an json.RawMessage containing the created documents.
+Returns a json.RawMessage containing two arrays, successes and errors.
+
+Each created document is an object of the `successes` array with the following properties:
+| Name       | Type                       | Description                                            |
+| ---------- | -------------------------- | ------------------------------------------------------ |
+| `_id`      | <pre>string</pre>          | Document ID                                            |
+| `_version` | <pre>int</pre>             | Version of the document in the persistent data storage |
+| `_source`  | <pre>json.RawMessage</pre> | Document content                                       |
+
+Each errored document is an object of the `errors` array with the following properties:
+| Name       | Type                       | Description                   |
+| ---------- | -------------------------- | ----------------------------- |
+| `document` | <pre>json.RawMessage</pre> | Document that cause the error |
+| `status`   | <pre>int</pre>             | HTTP error status             |
+| `reason`   | <pre>string</pre>          | Human readable reason         |
 
 ## Usage
 
