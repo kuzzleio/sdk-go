@@ -54,7 +54,7 @@ Each created or replaced document is an object of the `successes` array with the
 Each errored document is an object of the `errors` array with the following properties:
 | Name       | Type                       | Description                   |
 | ---------- | -------------------------- | ----------------------------- |
-| `document` | <pre>json.RawMessage</pre> | Document that cause the error |
+| `document` | <pre>json.RawMessage</pre> | Document that caused the error |
 | `status`   | <pre>int</pre>             | HTTP error status             |
 | `reason`   | <pre>string</pre>          | Human readable reason         |
 
