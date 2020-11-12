@@ -85,7 +85,7 @@ func TestMDeleteDocument(t *testing.T) {
 			return &types.KuzzleResponse{Result: []byte(`
 			{
 				"successes": ["id1", "id2"],
-				errors: []
+				"errors": []
 			}`),
 			}
 		},
