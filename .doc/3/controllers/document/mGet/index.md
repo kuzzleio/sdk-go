@@ -40,7 +40,18 @@ Additional query options
 
 ## Return
 
-Returns a json.RawMessage containing the retrieved documents.
+Returns a json.RawMessage containing two arrays, successes and errors.
+
+The `successes` array contain the list of retrieved documents.
+
+Each document have the the following properties:
+| Name       | Type                       | Description                                            |
+| ---------- | -------------------------- | ------------------------------------------------------ |
+| `_id`      | <pre>string</pre>          | Document ID                                            |
+| `_version` | <pre>int</pre>             | Version of the document in the persistent data storage |
+| `_source`  | <pre>json.RawMessage</pre> | Document content                                       |
+
+The `errors` array contain the IDs of not found documents.
 
 ## Usage
 

@@ -43,7 +43,16 @@ Additional query options
 
 ## Return
 
-Returns an array of strings containing the ids of the deleted documents.
+Returns a json.RawMessage containing two arrays, successes and errors.
+
+The `successes` array contain the successfuly deleted document IDs.
+
+Each deletion error is an object of the `errors` array with the following properties:
+| Name     | Type              | Description           |
+| -------- | ----------------- | --------------------- |
+| `_id`    | <pre>string</pre> | Document ID           |
+| `reason` | <pre>string</pre> | Human readable reason |
+
 
 ## Usage
 
