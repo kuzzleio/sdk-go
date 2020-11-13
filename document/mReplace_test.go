@@ -77,7 +77,7 @@ func TestMReplaceDocument(t *testing.T) {
 
 			return &types.KuzzleResponse{Result: []byte(`
 			{
-				"hits": [
+				"successes": [
 					{
 						"_id": "id1",
 						"_index": "index",
@@ -103,7 +103,7 @@ func TestMReplaceDocument(t *testing.T) {
 						"result": "created"
 					}
 				],
-				"total": "1"
+				"errors": []
 			}`),
 			}
 		},

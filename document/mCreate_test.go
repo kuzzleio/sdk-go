@@ -76,7 +76,7 @@ func TestMCreateDocument(t *testing.T) {
 			assert.Equal(t, "collection", parsedQuery.Collection)
 
 			return &types.KuzzleResponse{Result: []byte(`{
-				"hits": [
+				"successes": [
 					{
 						"_id": "id1",
 						"_index": "index",
@@ -102,7 +102,7 @@ func TestMCreateDocument(t *testing.T) {
 						"result": "created"
 					}
 				],
-				"total": "1"
+				"errors": []
 			}`),
 			}
 		},
