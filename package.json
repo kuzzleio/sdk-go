@@ -2,10 +2,13 @@
   "scripts": {
     "doc-prepare": "kuzdoc framework:install -d .doc/",
     "doc-dev": "kuzdoc repo:dev -d /sdk/go/3/ -v 3",
-    "doc-build": "kuzdoc repo:build -d /sdk/go/3/ -v 3",
+    "doc-build": "kuzdoc repo:build -b .doc/ -d /sdk/go/3/ -v 3",
     "doc-upload": "kuzdoc repo:deploy -d /sdk/go/3/ -v 3",
     "doc-cloudfront": "kuzdoc repo:cloudfront -d /sdk/go/3/*",
     "doc-deploy": "npm run doc-upload && npm run doc-cloudfront",
-    "doc-netlify": "npm install -g kuzdoc && npm run doc-prepare && kuzdoc repo:build -d / -v 3"
+    "doc-netlify": "npm run doc-prepare && kuzdoc repo:build -b .doc/ -d / -v 3"
+  },
+  "devDependencies": {
+    "kuzdoc": "^1.4.1"
   }
 }
