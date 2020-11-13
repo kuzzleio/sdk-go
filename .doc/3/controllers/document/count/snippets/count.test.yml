@@ -19,4 +19,4 @@ template: default
 expected: Found 5 documents matching licence:valid
 
 sdk: go
-version: 1
+version: 3

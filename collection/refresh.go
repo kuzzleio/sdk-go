@@ -15,33 +15,26 @@
 package collection
 
 import (
-	"encoding/json"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// ValidateSpecifications validates the provided specifications.
-func (dc *Collection) ValidateSpecifications(index string, collection string, specifications json.RawMessage, options types.QueryOptions) (*types.ValidationResponse, error) {
+// Create creates a new empty data collection
+func (dc *Collection) Refresh(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
-		return nil, types.NewError("Collection.ValidateSpecifications: index required", 400)
+		return types.NewError("Collection.Create: index required", 400)
 	}
 
 	if collection == "" {
-		return nil, types.NewError("Collection.ValidateSpecifications: collection required", 400)
-	}
-
-	if specifications == nil {
-		return nil, types.NewError("Collection.ValidateSpecifications: specifications required", 400)
+		return types.NewError("Collection.Create: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
-		Controller: "collection",
-		Action:     "validateSpecifications",
-		Index:      index,
 		Collection: collection,
-		Body:       specifications,
+		Index:      index,
+		Controller: "collection",
+		Action:     "refresh",
 	}
 
 	go dc.Kuzzle.Query(query, options, ch)
@@ -49,14 +42,8 @@ func (dc *Collection) ValidateSpecifications(index string, collection string, sp
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return nil, res.Error
+		return res.Error
 	}
 
-	vr, err := types.NewValidationResponse(res.Result)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return vr, nil
+	return nil
 }

@@ -6,4 +6,4 @@ hooks:
 template: before-connect
 expected: Stopped listening
 sdk: go
-version: 1
+version: 3

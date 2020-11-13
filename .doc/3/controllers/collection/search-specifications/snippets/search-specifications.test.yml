@@ -21,4 +21,4 @@ hooks:
 template: default
 expected: Successfully retrieved 1 specifications
 sdk: go
-version: 1
+version: 3

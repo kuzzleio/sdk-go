@@ -1,4 +1,4 @@
-_, err := kuzzle.Server.GetAllStats(nil)
+err := kuzzle.Collection.Refresh("nyc-open-data", "yellow-taxi", nil)
 
 if err != nil {
   log.Fatal(err)
