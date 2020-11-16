@@ -1,10 +1,12 @@
 name: essentials#errorHandling
 description: How to handle SDK errors
 hooks:
-  before: curl -X POST kuzzle:7512/nyc-open-data/_create
+  before: |
+    curl -X DELETE kuzzle:7512/nyc-open-data
+    curl -X POST kuzzle:7512/nyc-open-data/_create
   after:
 template: default
 expected: Try with another name!
 
 sdk: go
-version: 1
+version: 3

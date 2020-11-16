@@ -47,9 +47,11 @@ func (i *Index) MDelete(indexes []string, options types.QueryOptions) ([]string,
 	}
 
 	var deletedIndexes struct {
-		Deleted []string
+		Deleted []string `json:"deleted"`
 	}
-
+	data, _ := json.Marshal(&body{indexes})
+	fmt.Printf("|%s|\n", data)
+	fmt.Printf("|%s|\n", res.Result)
 	err := json.Unmarshal(res.Result, &deletedIndexes)
 	if err != nil {
 		return nil, types.NewError(fmt.Sprintf("Unable to parse response: %s\n%s", err.Error(), res.Result), 500)
