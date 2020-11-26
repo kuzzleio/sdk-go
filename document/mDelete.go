@@ -21,7 +21,7 @@ import (
 )
 
 // MDelete deletes multiple documents at once
-func (d *Document) MDelete(index string, collection string, ids []string, options types.QueryOptions) ([]string, error) {
+func (d *Document) MDelete(index string, collection string, ids []string, options types.QueryOptions) (json.RawMessage, error) {
 	if index == "" {
 		return nil, types.NewError("Document.MDelete: index required", 400)
 	}
@@ -56,8 +56,5 @@ func (d *Document) MDelete(index string, collection string, ids []string, option
 		return nil, res.Error
 	}
 
-	var mDeleted []string
-	json.Unmarshal(res.Result, &mDeleted)
-
-	return mDeleted, nil
+	return res.Result, nil
 }

@@ -4,7 +4,7 @@ hooks:
   before:
   after:
 template: default
-expected: ^(All Kuzzle Stats as JSON string:) {"hits":\[({"connections":{.*},"ongoingRequests":{.*},"completedRequests":{.*},"failedRequests":{.*},"timestamp":[0-9]{13}}(,)*\]),"total":[0-9]+}$
+expected: Success
 
 sdk: go
 version: 3

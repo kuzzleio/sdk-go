@@ -12,89 +12,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package document_test
+package collection_test
 
 import (
-	"encoding/json"
 	"testing"
 
-	"github.com/kuzzleio/sdk-go/document"
+	"github.com/kuzzleio/sdk-go/collection"
 	"github.com/kuzzleio/sdk-go/internal"
 	"github.com/kuzzleio/sdk-go/kuzzle"
 	"github.com/kuzzleio/sdk-go/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMDeleteIndexNull(t *testing.T) {
+func TestRefreshIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-
-	var ids []string
-	ids = append(ids, "id1")
-	_, err := d.MDelete("", "collection", ids, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Refresh("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
-func TestMDeleteCollectionNull(t *testing.T) {
+func TestRefreshCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-
-	var ids []string
-	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "", ids, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Refresh("index", "", nil)
 	assert.NotNil(t, err)
 }
-
-func TestMDeleteIdsNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	d := document.NewDocument(k)
-
-	var ids []string
-	_, err := d.MDelete("index", "collection", ids, nil)
-	assert.NotNil(t, err)
-}
-
-func TestMDeleteDocumentError(t *testing.T) {
+func TestRefreshError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
 			return &types.KuzzleResponse{Error: types.NewError("Unit test error")}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	d := document.NewDocument(k)
 
-	var ids []string
-	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "collection", ids, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Refresh("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
 
-func TestMDeleteDocument(t *testing.T) {
-
+func TestRefresh(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			parsedQuery := &types.KuzzleRequest{}
-			json.Unmarshal(query, parsedQuery)
-
-			assert.Equal(t, "document", parsedQuery.Controller)
-			assert.Equal(t, "mDelete", parsedQuery.Action)
-			assert.Equal(t, "index", parsedQuery.Index)
-			assert.Equal(t, "collection", parsedQuery.Collection)
-
-			return &types.KuzzleResponse{Result: []byte(`
-			{
-				"successes": ["id1", "id2"],
-				"errors": []
-			}`),
-			}
+			return &types.KuzzleResponse{Result: []byte(`{
+				"status":200,
+				"error": null,
+				"index": "index",
+				"collection": "collection",
+				"action": "refresh",
+				"result": null
+			}`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
-	d := document.NewDocument(k)
 
-	var ids []string
-	ids = append(ids, "id1")
-	_, err := d.MDelete("index", "collection", ids, nil)
+	nc := collection.NewCollection(k)
+	err := nc.Refresh("index", "collection", nil)
 	assert.Nil(t, err)
 }

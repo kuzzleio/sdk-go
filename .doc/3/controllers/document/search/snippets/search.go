@@ -8,7 +8,7 @@ for i := 5; i < 15; i++ {
     "category": "limousine"
   }`), nil)
 }
-kuzzle.Index.Refresh("nyc-open-data", nil)
+kuzzle.Collection.Refresh("nyc-open-data", "yellow-taxi", nil)
 
 options := types.NewQueryOptions()
 options.SetFrom(0)

@@ -23,7 +23,7 @@ import (
 // Update updates a document in Kuzzle.
 func (d *Document) Update(index string, collection string, id string, body json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
 	if id == "" {
-		return nil, types.NewError("Document.update: id required", 400)
+		return nil, types.NewError("Document.Update: id required", 400)
 	}
 
 	if index == "" {

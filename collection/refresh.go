@@ -12,49 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package document
+package collection
 
 import (
-	"encoding/json"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// MReplace replaces multiple documents at once.
-func (d *Document) MReplace(index string, collection string, documents json.RawMessage, options types.QueryOptions) (json.RawMessage, error) {
+// Create creates a new empty data collection
+func (dc *Collection) Refresh(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
-		return nil, types.NewError("Document.MReplace: index required", 400)
+		return types.NewError("Collection.Create: index required", 400)
 	}
 
 	if collection == "" {
-		return nil, types.NewError("Document.MReplace: collection required", 400)
-	}
-
-	if documents == nil {
-		return nil, types.NewError("Document.MReplace: body required", 400)
+		return types.NewError("Collection.Create: collection required", 400)
 	}
 
 	ch := make(chan *types.KuzzleResponse)
 
-	type body struct {
-		Documents json.RawMessage `json:"documents"`
-	}
-
 	query := &types.KuzzleRequest{
 		Collection: collection,
 		Index:      index,
-		Controller: "document",
-		Action:     "mReplace",
-		Body:       &body{documents},
+		Controller: "collection",
+		Action:     "refresh",
 	}
 
-	go d.Kuzzle.Query(query, options, ch)
+	go dc.Kuzzle.Query(query, options, ch)
 
 	res := <-ch
 
 	if res.Error.Error() != "" {
-		return nil, res.Error
+		return res.Error
 	}
 
-	return res.Result, nil
+	return nil
 }

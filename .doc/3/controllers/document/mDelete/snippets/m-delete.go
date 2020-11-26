@@ -14,10 +14,17 @@ kuzzle.Document.Create(
 	json.RawMessage(`{}`),
 	nil)
 
-deleted, err := kuzzle.Document.MDelete("nyc-open-data", "yellow-taxi", ids, nil)
+	
+deletedJSON, err := kuzzle.Document.MDelete("nyc-open-data", "yellow-taxi", ids, nil)
 
 if err != nil {
   log.Fatal(err)
 } else {
-  fmt.Printf("Successfully deleted %d documents", len(deleted))
+	type deletedResult struct {
+		Successes []json.RawMessage `json:"successes"`
+		Errors 	  []json.RawMessage `json:"errors"`
+	}
+	var deleted deletedResult
+	json.Unmarshal(deletedJSON, &deleted)
+  	fmt.Printf("Successfully deleted %d documents", len(deleted.Successes))
 }

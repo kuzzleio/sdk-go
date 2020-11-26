@@ -16,7 +16,6 @@ package collection
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/kuzzleio/sdk-go/types"
 )
@@ -37,20 +36,12 @@ func (dc *Collection) ValidateSpecifications(index string, collection string, sp
 
 	ch := make(chan *types.KuzzleResponse)
 
-	body := make(map[string]map[string]json.RawMessage)
-	body[index] = make(map[string]json.RawMessage)
-	body[index][collection] = specifications
-
-	jsonBody, err := json.Marshal(body)
-
-	if err != nil {
-		return nil, types.NewError(fmt.Sprintf("Unable to construct body: %s\n", err.Error()), 500)
-	}
-
 	query := &types.KuzzleRequest{
 		Controller: "collection",
 		Action:     "validateSpecifications",
-		Body:       json.RawMessage(jsonBody),
+		Index:      index,
+		Collection: collection,
+		Body:       specifications,
 	}
 
 	go dc.Kuzzle.Query(query, options, ch)

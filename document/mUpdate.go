@@ -56,11 +56,5 @@ func (d *Document) MUpdate(index string, collection string, documents json.RawMe
 		return nil, res.Error
 	}
 
-	type r struct {
-		Hits json.RawMessage `json:"hits"`
-	}
-	var docs r
-	json.Unmarshal(res.Result, &docs)
-
-	return docs.Hits, nil
+	return res.Result, nil
 }
