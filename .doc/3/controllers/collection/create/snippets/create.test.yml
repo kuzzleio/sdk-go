@@ -1,7 +1,7 @@
 name: collection#create
-description: Create a collection
+description: Create a new collection
 hooks:
-  before: curl -X POST kuzzle:7512/nyc-open-data/_create && curl -X PUT kuzzle:7512/nyc-open-data/yellow-taxi
+  before: curl -X POST kuzzle:7512/nyc-open-data/_create
   after:
 template: default
 expected: Success
