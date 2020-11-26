@@ -15,19 +15,17 @@
 package collection
 
 import (
-	"encoding/json"
-
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// List retrieves the list of known data collections contained in a specified index.
-func (dc *Collection) Delete(index string, collection string, options types.QueryOptions) (json.RawMessage, error) {
+// Delete a collection
+func (dc *Collection) Delete(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
-		return nil, types.NewError("Collection.Delete: index required", 400)
+		return types.NewError("Collection.Delete: index required", 400)
 	}
 
 	if collection == "" {
-		return nil, types.NewError("Collection.Delete: collection required", 400)
+		return types.NewError("Collection.Delete: collection required", 400)
 	}
 
 	result := make(chan *types.KuzzleResponse)
@@ -44,8 +42,8 @@ func (dc *Collection) Delete(index string, collection string, options types.Quer
 	res := <-result
 
 	if res.Error.Error() != "" {
-		return nil, res.Error
+		return res.Error
 	}
 
-	return res.Result, nil
+	return nil
 }

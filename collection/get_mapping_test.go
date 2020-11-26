@@ -67,16 +67,10 @@ func TestGetMapping(t *testing.T) {
 
 			res := types.KuzzleResponse{Result: []byte(`
 				{
-					"index":{
-						"mappings":{
-							"collection":{
-								"properties":{
-									"foo":{
-										"type":"text",
-										"ignore_above":255
-									}
-								}
-							}
+					"properties":{
+						"foo":{
+							"type":"text",
+							"ignore_above":255
 						}
 					}
 				}`),

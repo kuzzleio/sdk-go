@@ -63,7 +63,7 @@ func TestUpdateSpecificationsError(t *testing.T) {
 func TestUpdateSpecifications(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
-			return &types.KuzzleResponse{Result: []byte(`{ "myindex": { "mycollection": { "strict": false, "fields": {} } }}`)}
+			return &types.KuzzleResponse{Result: []byte(`{ "strict": false, "fields": {} }`)}
 		},
 	}
 	k, _ := kuzzle.NewKuzzle(c, nil)
