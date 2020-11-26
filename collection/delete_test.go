@@ -28,14 +28,14 @@ import (
 func TestDeleteIndexNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.Delete("", "collection", nil)
+	err := nc.Delete("", "collection", nil)
 	assert.NotNil(t, err)
 }
 
 func TestDeleteCollectionNull(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
 	nc := collection.NewCollection(k)
-	_, err := nc.Delete("index", "", nil)
+	err := nc.Delete("index", "", nil)
 	assert.NotNil(t, err)
 }
 
@@ -48,7 +48,7 @@ func TestDeleteError(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.Delete("index", "collection", nil)
+	err := nc.Delete("index", "collection", nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, "Unit test error", err.(types.KuzzleError).Message)
 }
@@ -62,9 +62,8 @@ func TestDelete(t *testing.T) {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	res, err := nc.Delete("index", "collection", nil)
+	err := nc.Delete("index", "collection", nil)
 	assert.Nil(t, err)
-	assert.NotNil(t, res)
 }
 
 func ExampleCollection_Delete() {
@@ -72,7 +71,7 @@ func ExampleCollection_Delete() {
 	k, _ := kuzzle.NewKuzzle(c, nil)
 
 	nc := collection.NewCollection(k)
-	_, err := nc.Delete("index", "collection", nil)
+	err := nc.Delete("index", "collection", nil)
 
 	if err != nil {
 		fmt.Println(err.Error())
