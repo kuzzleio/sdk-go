@@ -19,21 +19,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kuzzleio/sdk-go/event"
 	"github.com/kuzzleio/sdk-go/types"
-	"github.com/satori/go.uuid"
 )
 
 // Query this is a low-level method, exposed to allow advanced SDK users to bypass high-level methods.
 func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, responseChannel chan<- *types.KuzzleResponse) {
-	u, _ := uuid.NewV4()
+	u := uuid.New()
 	requestId := u.String()
 
 	if query.RequestId == "" {
 		query.RequestId = requestId
 	}
-
-	type body struct{}
 
 	if query.Body == nil {
 		query.Body = json.RawMessage("{}")
@@ -47,7 +45,7 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		query.Volatile = options.Volatile()
 
 		mapped := make(map[string]interface{})
-		json.Unmarshal(query.Volatile, &mapped)
+		_ = json.Unmarshal(query.Volatile, &mapped)
 
 		mapped["sdkVersion"] = version
 
@@ -113,11 +111,11 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		return
 	}
 
-	queuable := options == nil || options.Queuable()
-	queuable = queuable && k.queueFilter(finalRequest)
+	queueable := options == nil || options.Queuable()
+	queueable = queueable && k.queueFilter(finalRequest)
 
 	if k.queuing {
-		if queuable {
+		if queueable {
 			k.cleanQueue()
 			qo := &types.QueryObject{
 				Timestamp: time.Now(),
