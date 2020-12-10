@@ -1,0 +1,304 @@
+name: Run tests
+
+on: [pull_request]
+
+jobs:
+  docs-linux-amd64-go-1-15-x:
+    name: Linux amd64 go 1.15.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: amd64
+          command: ./.ci/test_with_coverage.sh && <(curl -s https://codecov.io/bash)
+
+  docs-linux-i386-go1-15-x:
+    name: Linux i386 go 1.15.x
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: 386
+          command: go test -v ./...
+
+  docs-linux-i386-go1-11-x:
+    name: Linux i386 go 1.11.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: 386
+          command: go test -v ./...
+
+  docs-linux-arm64-go1-15-x:
+    name: Linux arm64 go 1.15.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: arm64
+          command: taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+
+  docs-linux-arm64-go1-11-x:
+    name: Linux arm64 go 1.11.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: arm64
+          command: taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+
+  docs-linux-armhf-go1-15-x:
+    name: Linux armhf go 1.15.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: arm64
+          goarm: 7
+          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+  docs-linux-armhf-go1-11-x:
+    name: Linux armhf go 1.11.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: arm64
+          goarm: 7
+          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+  docs-linux-armhf-go1-10-x:
+    name: Linux armhf go 1.10.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.10.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: linux
+          arch: arm64
+          goarm: 7
+          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+
+  docs-macos-amd64-go1-15-x:
+    name: macos amd64 go 1.15.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: amd64
+          command: go test -v ./...
+
+  docs-macos-amd64-go1-11-x:
+    name: macos amd64 go 1.11.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: amd64
+          command: go test -v ./...
+
+  docs-macos-amd64-go1-10-x:
+    name: macos amd64 go 1.10.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.10.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: amd64
+          command: go test -v ./...
+
+  docs-macos-i386-go1-15-x:
+    name: macos amd64 go 1.15.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: 386
+          command: go test -v ./...
+
+  docs-macos-i386-go1-11-x:
+    name: macos amd64 go 1.11.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: 386
+          command: go test -v ./...
+
+  docs-macos-i386-go1-10-x:
+    name: macos amd64 go 1.10.X
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.10.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: darwin
+          arch: 386
+          command: go test -v ./...
+
+  docs-windows-amd64-go1-15-x:
+    name: macos amd64 go 1.15.X
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: windows
+          arch: amd64
+          command: go test -v ./...
+
+  docs-windows-amd64-go1-11-x:
+    name: macos amd64 go 1.11.X
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: windows
+          arch: amd64
+          command: go test -v ./...
+
+  docs-windows-i386-go1-15-x:
+    name: macos amd64 go 1.15.X
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: windows
+          arch: 386
+          command: go test -v ./...
+
+  docs-windows-i386-go1-11-x:
+    name: macos amd64 go 1.11.X
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.11.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: windows
+          arch: 386
+          command: go test -v ./...
+
+  docs-windows-i386-go1-10-x:
+    name: macos amd64 go 1.10.X
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.10.x"
+      - uses: ./.github/actions/docs
+        with:
+          os: windows
+          arch: 386
+          command: go test -v ./...
+
+  dead-links:
+     name: Dead links
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v2
+       - name: Cache node modules
+         uses: actions/cache@v2
+         env:
+           cache-name: cache-node-modules
+         with:
+           path: ~/.npm
+           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+           restore-keys: |
+             ${{ runner.os }}-build-${{ env.cache-name }}-
+             ${{ runner.os }}-build-
+             ${{ runner.os }}-
+       - uses: actions/setup-node@v1
+         with:
+           node-version: "12"
+       - uses: ./.github/actions/dead-links
+
+  docs-tests:
+    name: Linux go 1.15.X
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index

@@ -1,0 +1,15 @@
+name: Build
+description: Run Build
+runs:
+  using: "composite"
+  steps:
+    - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
+      shell: bash
+    - run: export GOOS=${{ inputs.os }}
+      shell: bash
+    - run: export GOARCH=${{ inputs.arch }}
+      shell: bash
+    - run: GOARM=${{ inputs.goarm }}
+      shell: bash
+    - run:  ${{ inputs.command }}
+      shell: bash
