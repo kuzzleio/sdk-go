@@ -3,11 +3,11 @@ description: Run Build
 runs:
   using: "composite"
   steps:
-    - run: export GOOS=${{ inputs.os }}
+    - run: sudo export GOOS=${{ inputs.os }}
       shell: bash
-    - run: export GOARCH=${{ inputs.arch }}
+    - run: sudo export GOARCH=${{ inputs.arch }}
       shell: bash
-    - run: export GOARM=${{ inputs.goarm }}
+    - run: sudo export GOARM=${{ inputs.goarm }}
       shell: bash
-    - run:  ${{ inputs.command }}
+    - run:  sudo ${{ inputs.command }}
       shell: bash
