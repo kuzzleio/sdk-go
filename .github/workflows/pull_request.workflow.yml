@@ -161,7 +161,7 @@ jobs:
           command: go test -v ./...
 
   docs-macos-i386-go1-15-x:
-    name: macos amd64 go 1.15.X
+    name: macos i386 go 1.15.X
     runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
@@ -175,7 +175,7 @@ jobs:
           command: go test -v ./...
 
   docs-macos-i386-go1-11-x:
-    name: macos amd64 go 1.11.X
+    name: macos i386 go 1.11.X
     runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
@@ -189,7 +189,7 @@ jobs:
           command: go test -v ./...
 
   docs-macos-i386-go1-10-x:
-    name: macos amd64 go 1.10.X
+    name: macos i386 go 1.10.X
     runs-on: macos-11.0
     steps:
       - uses: actions/checkout@v2
@@ -203,7 +203,7 @@ jobs:
           command: go test -v ./...
 
   docs-windows-amd64-go1-15-x:
-    name: macos amd64 go 1.15.X
+    name: windows amd64 go 1.15.X
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -217,7 +217,7 @@ jobs:
           command: go test -v ./...
 
   docs-windows-amd64-go1-11-x:
-    name: macos amd64 go 1.11.X
+    name: windows amd64 go 1.11.X
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -231,7 +231,7 @@ jobs:
           command: go test -v ./...
 
   docs-windows-i386-go1-15-x:
-    name: macos amd64 go 1.15.X
+    name: windows i386 go 1.15.X
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -245,7 +245,7 @@ jobs:
           command: go test -v ./...
 
   docs-windows-i386-go1-11-x:
-    name: macos amd64 go 1.11.X
+    name: windows i386 go 1.11.X
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -259,7 +259,7 @@ jobs:
           command: go test -v ./...
 
   docs-windows-i386-go1-10-x:
-    name: macos amd64 go 1.10.X
+    name: windows i386 go 1.10.X
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -273,7 +273,7 @@ jobs:
           command: go test -v ./...
 
   dead-links:
-     name: Dead links
+     name: Dead Links
      runs-on: ubuntu-latest
      steps:
        - uses: actions/checkout@v2
@@ -294,7 +294,7 @@ jobs:
        - uses: ./.github/actions/dead-links
 
   docs-tests:
-    name: Linux go 1.15.X
+    name: Docs Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

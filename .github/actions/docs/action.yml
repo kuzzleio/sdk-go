@@ -9,7 +9,7 @@ runs:
       shell: bash
     - run: export GOARCH=${{ inputs.arch }}
       shell: bash
-    - run: GOARM=${{ inputs.goarm }}
+    - run: export GOARM=${{ inputs.goarm }}
       shell: bash
     - run:  ${{ inputs.command }}
       shell: bash
