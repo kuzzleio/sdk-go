@@ -3,6 +3,16 @@ name: Run tests
 on: [pull_request]
 
 jobs:
+  docs:
+    name: Documentation Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
+      - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
+
   docs-linux-amd64-go-1-15-x:
     name: Linux amd64 go 1.15.X
     runs-on: ubuntu-latest
