@@ -14,7 +14,7 @@ jobs:
       - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
 
-  docs-linux-amd64-go-1-15-x:
+  tests-linux-amd64-go-1-15-x:
     name: Linux go ${{ matrix.go-version }} on ${{ matrix.arch }}
     runs-on: ubuntu-latest
     strategy:
@@ -26,13 +26,13 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: ./.github/actions/docs
+      - uses: ./.github/actions/tests
         with:
           os: linux
           arch: ${{ matrix.arch }}
           command: ./.ci/test_with_coverage.sh
 
-  docs-linux-i386:
+  tests-linux-i386:
     name: Linux go ${{ matrix.go-version }} on ${{ matrix.arch }}
     runs-on: ubuntu-latest
     strategy:
@@ -44,19 +44,19 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: ./.github/actions/docs
+      - uses: ./.github/actions/tests
         with:
           os: linux
           arch: ${{ matrix.arch }}
           command: sudo go test -v ./...
 
-  docs-linux-arm64:
+  tests-linux-arm64:
     name: Linux go ${{ matrix.go-version }} on ${{ matrix.arch }} 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [arm64]
-        go-version: [1.15.x, 1.11.x]
+    # strategy:
+    #   matrix:
+    #     arch: [arm64]
+    #     go-version: [1.15.x, 1.11.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
@@ -64,13 +64,12 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - run: sudo apt update
       - run: sudo apt install qemu-user-static
-      - uses: ./.github/actions/docs
-        with:
-          os: linux
-          arch: ${{ matrix.arch }}
-          command: sudo taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
+      - run: export GOOS=linux
+      - run: export GOARCH=arm64
+      - run: export GOARM=${{ inputs.goarm }}
+      - run:  sudo taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-  docs-linux-armhf:
+  tests-linux-armhf:
     name: Linux go ${{ matrix.go-version }} on ${{ matrix.arch }} 
     runs-on: ubuntu-latest
     strategy:
@@ -84,14 +83,14 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - run: sudo apt update
       - run: sudo apt install qemu-user-static
-      - uses: ./.github/actions/docs
+      - uses: ./.github/actions/tests
         with:
           os: linux
           arch: ${{ matrix.arch }}
           goarm: 7
           command: sudo taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-  docs-macos:
+  tests-macos:
     name: MacOS go ${{ matrix.go-version }} on ${{ matrix.arch }}
     runs-on: macos-latest
     strategy:
@@ -103,14 +102,14 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: ./.github/actions/docs
+      - uses: ./.github/actions/tests
         with:
           os: darwin
           arch: ${{ matrix.arch }}
           command: go test -v ./...
 
 
-  docs-windows:
+  tests-windows:
     name: Windows go ${{ matrix.go-version }} on ${{ matrix.arch }}
     runs-on: windows-latest
     strategy:
@@ -122,7 +121,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: ./.github/actions/docs
+      - uses: ./.github/actions/tests
         with:
           os: windows
           arch: ${{ matrix.arch }}
@@ -149,7 +148,7 @@ jobs:
            node-version: "12"
        - uses: ./.github/actions/dead-links
 
-  docs-tests:
+  tests-tests:
     name: Docs Tests
     runs-on: ubuntu-latest
     steps:
