@@ -62,10 +62,8 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: docker/setup-qemu-action@v1
-        with:
-          image: tonistiigi/binfmt:latest
-          platforms: all
+      - run: sudo apt update
+      - run: sudo apt install qemu-user-static
       - uses: ./.github/actions/docs
         with:
           os: linux
@@ -84,10 +82,8 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: docker/setup-qemu-action@v1
-        with:
-          image: tonistiigi/binfmt:latest
-          platforms: all
+      - run: sudo apt update
+      - run: sudo apt install qemu-user-static
       - uses: ./.github/actions/docs
         with:
           os: linux
