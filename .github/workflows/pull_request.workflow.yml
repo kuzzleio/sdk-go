@@ -70,7 +70,7 @@ jobs:
         with:
           os: linux
           arch: ${{ matrix.arch }}
-          command: sudo taskset -c 1 go test -v -exec "qemu-aarch64" ./...
+          command: sudo taskset -c 1 go test -v -exec "/usr/bin/qemu-aarch64-static" ./...
 
   docs-linux-armhf:
     name: Linux go ${{ matrix.go-version }} on ${{ matrix.arch }} 
@@ -93,7 +93,7 @@ jobs:
           os: linux
           arch: ${{ matrix.arch }}
           goarm: 7
-          command: sudo taskset -c 1 go test -v -exec "qemu-aarch64" ./...
+          command: sudo taskset -c 1 go test -v -exec "/usr/bin/qemu-aarch64-static" ./...
 
   docs-macos:
     name: MacOS go ${{ matrix.go-version }} on ${{ matrix.arch }}
@@ -101,7 +101,7 @@ jobs:
     strategy:
       matrix:
         arch: [amd64, 386]
-        go-version: [1.15.x, 1.11.x, 1.10.x]
+        go-version: [1.15.x, 1.11.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
