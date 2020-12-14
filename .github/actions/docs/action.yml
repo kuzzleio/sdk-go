@@ -3,7 +3,7 @@ description: Run Build
 runs:
   using: "composite"
   steps:
-    - run: apt install qemu-user-static -y
+    - run: sudo apt install qemu-user-static -y
       shell: bash
     - run: export GOOS=${{ inputs.os }}
       shell: bash
