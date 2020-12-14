@@ -58,6 +58,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
+      - run: sudo apt install qemu-user-static -y
       - uses: ./.github/actions/docs
         with:
           os: linux
@@ -76,6 +77,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
+      - run: sudo apt install qemu-user-static -y
       - uses: ./.github/actions/docs
         with:
           os: linux

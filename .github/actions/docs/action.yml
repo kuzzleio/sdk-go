@@ -3,8 +3,6 @@ description: Run Build
 runs:
   using: "composite"
   steps:
-    - run: sudo apt install qemu-user-static -y
-      shell: bash
     - run: export GOOS=${{ inputs.os }}
       shell: bash
     - run: export GOARCH=${{ inputs.arch }}
