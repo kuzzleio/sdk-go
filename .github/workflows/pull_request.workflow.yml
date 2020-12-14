@@ -13,6 +13,7 @@ jobs:
           go-version: "1.15.x"
       - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
+
   docs-linux-amd64-go-1-15-x:
     name: Linux amd64 go 1.15.X
     runs-on: ubuntu-latest
@@ -25,261 +26,98 @@ jobs:
         with:
           os: linux
           arch: amd64
-          command: ./.ci/test_with_coverage.sh && <(curl -s https://codecov.io/bash)
+          command: ./.ci/test_with_coverage.sh
 
-  docs-linux-i386-go1-15-x:
-    name: Linux i386 go 1.15.x
+  docs-linux-i386:
+    name: Go ${{ matrix.go-version }} on ${{ matrix.arch }} 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [386]
+        go-version: [1.15.x, 1.11.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "1.15.x"
+          go-version: ${{ matrix.go-version }}
       - uses: ./.github/actions/docs
         with:
           os: linux
-          arch: 386
-          command: go test -v ./...
+          arch: ${{ matrix.arch }}
+          command: sudo go test -v ./...
 
-  docs-linux-i386-go1-11-x:
-    name: Linux i386 go 1.11.X
+  docs-linux-arm64:
+    name: Go ${{ matrix.go-version }} on ${{ matrix.arch }} 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm64]
+        go-version: [1.15.x, 1.11.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "1.11.x"
+          go-version: ${{ matrix.go-version }}
       - uses: ./.github/actions/docs
         with:
           os: linux
-          arch: 386
-          command: go test -v ./...
+          arch: ${{ matrix.arch }}
+          command: sudo taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-  docs-linux-arm64-go1-15-x:
-    name: Linux arm64 go 1.15.X
+  docs-linux-armhf:
+    name: Go ${{ matrix.go-version }} on ${{ matrix.arch }} 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm]
+        go-version: [1.15.x, 1.11.x, 1.10.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "1.15.x"
+          go-version: ${{ matrix.go-version }}
       - uses: ./.github/actions/docs
         with:
           os: linux
-          arch: arm64
-          command: taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
-
-  docs-linux-arm64-go1-11-x:
-    name: Linux arm64 go 1.11.X
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: linux
-          arch: arm64
-          command: taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
-
-  docs-linux-armhf-go1-15-x:
-    name: Linux armhf go 1.15.X
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.15.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: linux
-          arch: arm64
+          arch: ${{ matrix.arch }}
           goarm: 7
-          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
+          command: sudo taskset -c 1 go test -v -exec "qemu-aarch64-static" ./...
 
-  docs-linux-armhf-go1-11-x:
-    name: Linux armhf go 1.11.X
-    runs-on: ubuntu-latest
+  docs-macos:
+    name: Go ${{ matrix.go-version }} on ${{ matrix.arch }} 
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [amd64, 386]
+        go-version: [1.15.x, 1.11.x, 1.10.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: linux
-          arch: arm64
-          goarm: 7
-          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
-
-  docs-linux-armhf-go1-10-x:
-    name: Linux armhf go 1.10.X
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.10.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: linux
-          arch: arm64
-          goarm: 7
-          command: taskset -c 1 go test -v -exec "qemu-arm-static" ./...
-
-  docs-macos-amd64-go1-15-x:
-    name: macos amd64 go 1.15.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.15.x"
+          go-version: ${{ matrix.go-version }}
       - uses: ./.github/actions/docs
         with:
           os: darwin
-          arch: amd64
+          arch: ${{ matrix.arch }}
           command: go test -v ./...
 
-  docs-macos-amd64-go1-11-x:
-    name: macos amd64 go 1.11.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: darwin
-          arch: amd64
-          command: go test -v ./...
 
-  docs-macos-amd64-go1-10-x:
-    name: macos amd64 go 1.10.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.10.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: darwin
-          arch: amd64
-          command: go test -v ./...
-
-  docs-macos-i386-go1-15-x:
-    name: macos i386 go 1.15.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.15.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: darwin
-          arch: 386
-          command: go test -v ./...
-
-  docs-macos-i386-go1-11-x:
-    name: macos i386 go 1.11.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: darwin
-          arch: 386
-          command: go test -v ./...
-
-  docs-macos-i386-go1-10-x:
-    name: macos i386 go 1.10.X
-    runs-on: macos-11.0
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.10.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: darwin
-          arch: 386
-          command: go test -v ./...
-
-  docs-windows-amd64-go1-15-x:
+  docs-windows-amd64:
     name: windows amd64 go 1.15.X
     runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [amd64, 386]
+        go-version: [1.15.x, 1.11.x, 1.10.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: "1.15.x"
+          go-version: ${{ matrix.go-version }}
       - uses: ./.github/actions/docs
         with:
           os: windows
-          arch: amd64
-          command: go test -v ./...
-
-  docs-windows-amd64-go1-11-x:
-    name: windows amd64 go 1.11.X
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: windows
-          arch: amd64
-          command: go test -v ./...
-
-  docs-windows-i386-go1-15-x:
-    name: windows i386 go 1.15.X
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.15.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: windows
-          arch: 386
-          command: go test -v ./...
-
-  docs-windows-i386-go1-11-x:
-    name: windows i386 go 1.11.X
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.11.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: windows
-          arch: 386
-          command: go test -v ./...
-
-  docs-windows-i386-go1-10-x:
-    name: windows i386 go 1.10.X
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "1.10.x"
-      - uses: ./.github/actions/docs
-        with:
-          os: windows
-          arch: 386
+          arch: ${{ matrix.arch }}
           command: go test -v ./...
 
   dead-links:
