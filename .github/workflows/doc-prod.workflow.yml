@@ -33,3 +33,5 @@ jobs:
           S3_BUCKET: docs.kuzzle.io
           CLOUDFRONT_DISTRIBUTION_ID: E3D6RP0POLCJMM
           AWS_DEFAULT_REGION: us-west-2
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
