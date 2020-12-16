@@ -20,6 +20,8 @@ type QueryOptions interface {
 	SetQueuable(bool) *queryOptions
 	From() int
 	SetFrom(int) *queryOptions
+	Lang() string
+	SetLang(string) *queryOptions
 	Size() int
 	SetSize(int) *queryOptions
 	Scroll() string
@@ -90,6 +92,7 @@ type queryOptions struct {
 	size            int
 	scroll          string
 	scrollId        string
+	lang						string
 	volatile        VolatileData
 	refresh         string
 	ifExist         string
@@ -136,6 +139,15 @@ func (qo queryOptions) From() int {
 
 func (qo *queryOptions) SetFrom(from int) *queryOptions {
 	qo.from = from
+	return qo
+}
+
+func (qo queryOptions) Lang() string {
+	return qo.lang
+}
+
+func (qo *queryOptions) SetLang(lang string) *queryOptions {
+	qo.lang = lang
 	return qo
 }
 

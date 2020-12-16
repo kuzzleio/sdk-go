@@ -47,6 +47,11 @@ func (d *Document) Search(index string, collection string, body json.RawMessage,
 		query.IncludeTrash = options.IncludeTrash()
 		query.From = options.From()
 		query.Size = options.Size()
+
+		lang := options.Lang()
+		if lang != "" {
+			query.Lang = lang
+		}
 	}
 
 	go d.Kuzzle.Query(query, options, ch)

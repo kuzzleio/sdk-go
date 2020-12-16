@@ -38,6 +38,11 @@ func (s *Security) SearchUsers(body json.RawMessage, options types.QueryOptions)
 		if scroll != "" {
 			query.Scroll = scroll
 		}
+		lang := options.Lang()
+		if lang != "" {
+			query.Lang = lang
+		}
+
 	}
 
 	go s.Kuzzle.Query(query, options, ch)
