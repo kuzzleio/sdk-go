@@ -3,15 +3,15 @@ description: Run Dead Links Tests
 runs:
   using: "composite"
   steps:
-    - run: npm ci
+    - name: Prepare kuzdoc
+      run: |
+        npm ci
+        npm run doc-prepare
+        $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
+        $(npm bin)/kuzdoc framework:link -d /sdk/go/3 -v 3 --base_root .doc/
       shell: bash
-    - run: npm run doc-prepare
-      shell: bash
-    - run: $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
-      shell: bash
-    - run: $(npm bin)/kuzdoc framework:link -d /sdk/go/3 -v 3 --base_root .doc/
-      shell: bash
-    - run: sudo gem install typhoeus
-      shell: bash
-    - run: cd .doc/framework/ && HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/sdk/go/3
+    - name: Run Dead Links
+      run: |
+        sudo gem install typhoeus
+        cd .doc/framework/ && HYDRA_MAX_CONCURRENCY=20 ruby .ci/dead-links.rb -p src/sdk/go/3
       shell: bash

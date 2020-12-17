@@ -1,13 +1,27 @@
 name: Build
 description: Run Build
+inputs:
+   os:
+     description: OS
+     required: true
+   arch:
+     description: ARCH
+     required: true
+   goarm:
+     description: GOARM
+     required: false
+   command:
+     description: COMMAND to Run
+     required: true
 runs:
   using: "composite"
   steps:
-    - run: export GOOS=${{ inputs.os }}
+    - name: Export Env var
+      run: |
+        export GOOS=${{ inputs.os }}
+        export GOARCH=${{ inputs.arch }}
+        export GOARM=${{ inputs.goarm }}
       shell: bash
-    - run: export GOARCH=${{ inputs.arch }}
-      shell: bash
-    - run: export GOARM=${{ inputs.goarm }}
-      shell: bash
-    - run:  ${{ inputs.command }}
+    - name: Run command
+      run:  ${{ inputs.command }}
       shell: bash
