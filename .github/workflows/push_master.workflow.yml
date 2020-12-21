@@ -1,6 +1,11 @@
-name: Run tests
+name: Deployment Doc Prod
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - master
+      - 1-stable
+      - 2-stable
 
 jobs:
   docs:
@@ -87,23 +92,31 @@ jobs:
           arch: ${{ matrix.arch }}
           command: go test -v ./...
 
-  dead-links:
-     name: Dead Links
-     runs-on: ubuntu-18.04
-     steps:
-       - uses: actions/checkout@v2
-       - name: Cache node modules
-         uses: actions/cache@v2
-         env:
-           cache-name: cache-node-modules
-         with:
-           path: ~/.npm
-           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-           restore-keys: |
-             ${{ runner.os }}-build-${{ env.cache-name }}-
-             ${{ runner.os }}-build-
-             ${{ runner.os }}-
-       - uses: actions/setup-node@v1
-         with:
-           node-version: "12"
-       - uses: ./.github/actions/dead-links
+  doc-prod:
+    name: Deploy docs.kuzzle.io
+    runs-on: ubuntu-18.04
+    needs: [docs, tests-linux-amd64-go-1-15-x, tests-linux-i386, tests-macos, tests-windows]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "10"
+      - uses: ./.github/actions/doc-deploy
+        with:
+          NODE_ENV: production
+          S3_BUCKET: docs.kuzzle.io
+          CLOUDFRONT_DISTRIBUTION_ID: E3D6RP0POLCJMM
+          AWS_DEFAULT_REGION: us-west-2
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
