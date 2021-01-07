@@ -10,6 +10,3 @@ hooks:
     curl -XDELETE kuzzle:7512/nyc-open-data
 template: default
 expected: Success
-
-sdk: go
-version: 3

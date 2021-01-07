@@ -20,14 +20,6 @@ import (
 
 // Delete a collection
 func (dc *Collection) Delete(index string, collection string, options types.QueryOptions) error {
-	if index == "" {
-		return types.NewError("Collection.Delete: index required", 400)
-	}
-
-	if collection == "" {
-		return types.NewError("Collection.Delete: collection required", 400)
-	}
-
 	result := make(chan *types.KuzzleResponse)
 
 	query := &types.KuzzleRequest{
