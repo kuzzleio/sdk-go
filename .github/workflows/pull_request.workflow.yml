@@ -50,9 +50,9 @@ jobs:
           go version
           go get -u golang.org/x/lint/golint
       - name: Run Vet
-        run: go vet .
+        run: go vet ./...
       - name: Run Lint
-        run: golint .
+        run: golint ./...
       - name: Run Fmt (format also documentation snippets)
         run: gofmt -l ./**/*.go
 
