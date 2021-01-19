@@ -49,10 +49,11 @@ jobs:
         run: |
           go version
           go get -u golang.org/x/lint/golint
-      - name: Run Vet
-        run: go vet ./...
-      - name: Run Lint
-        run: golint ./...
+      # Uncomment following lines when https://github.com/kuzzleio/sdk-go/issues/288 is fixed
+      # - name: Run Vet
+      #   run: go vet ./...
+      # - name: Run Lint
+      #   run: golint ./...
       - name: Run Fmt (format also documentation snippets)
         run: gofmt -l ./**/*.go
 
