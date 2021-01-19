@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"log"
+	"os"
 
-	"github.com/kuzzleio/sdk-go/protocol/websocket"
 	"github.com/kuzzleio/sdk-go/kuzzle"
+	"github.com/kuzzleio/sdk-go/protocol/websocket"
 )
 
-func main()	{
+func main() {
 	// Creates a WebSocket connection.
 	// Replace "kuzzle" with
 	// your Kuzzle hostname like "localhost"
@@ -33,7 +33,7 @@ func main()	{
 	}
 	fmt.Println("Index nyc-open-data created!")
 
-	// Creates a collection 
+	// Creates a collection
 	if err := kuzzle.Collection.Create(
 		"nyc-open-data",
 		"yellow-taxi",
