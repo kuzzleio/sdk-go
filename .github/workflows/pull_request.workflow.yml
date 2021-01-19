@@ -80,7 +80,7 @@ jobs:
           go-version: ${{ matrix.goVersion }}
       - name: Build
         run: go build -v ./...
-  
+
   coverage:
     name: Tests on latest Go version with coverage
     runs-on: ubuntu-latest
