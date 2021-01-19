@@ -11,52 +11,49 @@ jobs:
       - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
 
   documentation-dead-links:
-     name: Documentation - Dead Links check
-     runs-on: ubuntu-18.04
-     steps:
-       - uses: actions/checkout@v2
-       - name: Cache node modules
-         uses: actions/cache@v2
-         env:
-           cache-name: cache-node-modules
-         with:
-           path: ~/.npm
-           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-           restore-keys: |
-             ${{ runner.os }}-build-${{ env.cache-name }}-
-       - uses: actions/setup-node@v1
-         with:
-           node-version: "12"
-       - uses: ./.github/actions/dead-links
+    name: Documentation - Dead Links check
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      - uses: ./.github/actions/dead-links
 
   lint:
     name: Linters
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-    - name: Install dependencies
-      run: |
-        go version
-        go get -u golang.org/x/lint/golint
-    - name: Run Vet
-      run: |
-        go vet .
-    - name: Run Lint
-      run: |
-        golint .
-    - name: Run Fmt (format also documentation snippets)
-      run: |
-        gofmt -l ./**/*.go
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Install dependencies
+        run: |
+          go version
+          go get -u golang.org/x/lint/golint
+      - name: Run Vet
+        run: go vet .
+      - name: Run Lint
+        run: golint .
+      - name: Run Fmt (format also documentation snippets)
+        run: gofmt -l ./**/*.go
 
   build:
     name: Build with ${{ matrix.goVersion }} on ${{ matrix.os }}
@@ -67,41 +64,41 @@ jobs:
         goVersion: [1.12.x, 1.13.x, 1.14.x, 1.15.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache Go modules
-    - uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.goVersion }}
-    - name: Build
-      run: go build -v ./...
+      - uses: actions/checkout@v2
+      - name: Cache Go modules
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.goVersion }}
+      - name: Build
+        run: go build -v ./...
   
   coverage:
     name: Tests on latest Go version with coverage
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-    - name: Test With Coverage
-      run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Test With Coverage
+        run: go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
 
   test:
     name: Test with ${{ matrix.goVersion }} on ${{ matrix.os }}
@@ -112,16 +109,16 @@ jobs:
         goVersion: [1.12.x, 1.13.x, 1.14.x, 1.15.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.goVersion }}
-    - name: Test
-      run: go test -v ./...
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.goVersion }}
+      - name: Test
+        run: go test -v ./...
