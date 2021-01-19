@@ -3,9 +3,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/tested%20on-linux%20%7C%20osx%20%7C%20windows-blue.svg">
-  <a href="https://travis-ci.org/kuzzleio/sdk-go">
-    <img src="https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master"/>
-  </a>
+  <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/kuzzleio/sdk-go/master">
   <a href="https://codecov.io/gh/kuzzleio/sdk-go">
     <img src="https://codecov.io/gh/kuzzleio/sdk-go/branch/master/graph/badge.svg" />
   </a>
