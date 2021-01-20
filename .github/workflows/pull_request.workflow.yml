@@ -33,7 +33,8 @@ jobs:
 
   lint:
     name: Linters
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
       - name: Cache Go modules
@@ -62,11 +63,12 @@ jobs:
   build:
     name: Build with ${{ matrix.goVersion }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     needs: [lint]
     strategy:
       matrix:
         goVersion: [1.12.x, 1.13.x, 1.14.x, 1.15.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Cache Go modules
@@ -85,7 +87,8 @@ jobs:
 
   coverage:
     name: Tests on latest Go version with coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
     needs: [build]
     steps:
       - uses: actions/checkout@v2
@@ -108,11 +111,12 @@ jobs:
   test:
     name: Test with ${{ matrix.goVersion }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     needs: [build]
     strategy:
       matrix:
         goVersion: [1.12.x, 1.13.x, 1.14.x, 1.15.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Cache Go modules
