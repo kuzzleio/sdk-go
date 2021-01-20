@@ -10,6 +10,7 @@ jobs:
   documentation-snippet-tests:
     name: Documentation - Snippet Tests
     runs-on: ubuntu-18.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
       - run: docker-compose -f .ci/doc/docker-compose.yml run doc-tests node index
@@ -17,6 +18,7 @@ jobs:
   documentation-dead-links:
     name: Documentation - Dead Links check
     runs-on: ubuntu-18.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
@@ -134,6 +136,7 @@ jobs:
   documentation-production:
     name: Documentation - Deploy to production
     runs-on: ubuntu-18.04
+    timeout-minutes: 30
     needs:
       [documentation-dead-links, documentation-snippet-tests, test, coverage]
     steps:
