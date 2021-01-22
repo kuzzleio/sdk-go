@@ -18,7 +18,7 @@ import (
 	"github.com/kuzzleio/sdk-go/types"
 )
 
-// Create creates a new empty data collection
+// Refresh force an immediate reindexation of the provided collection
 func (dc *Collection) Refresh(index string, collection string, options types.QueryOptions) error {
 	if index == "" {
 		return types.NewError("Collection.Create: index required", 400)
