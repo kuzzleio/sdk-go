@@ -25,20 +25,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteIndexNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nc := collection.NewCollection(k)
-	err := nc.Delete("", "collection", nil)
-	assert.NotNil(t, err)
-}
-
-func TestDeleteCollectionNull(t *testing.T) {
-	k, _ := kuzzle.NewKuzzle(&internal.MockedConnection{}, nil)
-	nc := collection.NewCollection(k)
-	err := nc.Delete("index", "", nil)
-	assert.NotNil(t, err)
-}
-
 func TestDeleteError(t *testing.T) {
 	c := &internal.MockedConnection{
 		MockSend: func(query []byte, options types.QueryOptions) *types.KuzzleResponse {
