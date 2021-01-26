@@ -157,7 +157,7 @@ jobs:
             ${{ runner.os }}-
       - uses: actions/setup-node@v1
         with:
-          node-version: "10"
+          node-version: "12"
       - uses: ./.github/actions/doc-deploy
         with:
           REGION: us-west-2
