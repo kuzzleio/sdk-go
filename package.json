@@ -9,6 +9,6 @@
     "doc-netlify": "npm run doc-prepare && kuzdoc repo:build -b .doc/ -d / -v 3"
   },
   "devDependencies": {
-    "kuzdoc": "^1.4.4"
+    "kuzdoc": "^1.4.5"
   }
 }
