@@ -37,7 +37,7 @@ Additional query options
 
 ## Return
 
-Returns all stored internal statistic snapshots as a `json.RawMessage` or a `KuzzleError`. See how to [handle error](/sdk/go/1/essentials/error-handling).
+Returns all stored internal statistic snapshots as a `json.RawMessage` or a `KuzzleError`. See how to [handle error](/sdk/go/3/essentials/error-handling).
 
 ## Usage
 

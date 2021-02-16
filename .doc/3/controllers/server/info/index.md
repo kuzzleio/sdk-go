@@ -29,7 +29,7 @@ Additional query options
 
 ## Return
 
-Returns server informations as a `json.RawMessage` or a `KuzzleError`. See how to [handle error](/sdk/go/1/essentials/error-handling).
+Returns server informations as a `json.RawMessage` or a `KuzzleError`. See how to [handle error](/sdk/go/3/essentials/error-handling).
 
 ## Usage
 

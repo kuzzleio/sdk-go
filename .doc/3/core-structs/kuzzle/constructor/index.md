@@ -11,7 +11,7 @@ order: 100
 This is the main entry point to communicate with Kuzzle.
 Each instance represents a connection to Kuzzle with specific options.
 
-This interface implements the [KuzzleEventEmitter](/sdk/go/1/core-structs/kuzzle-event-emitter) interface
+This interface implements the [KuzzleEventEmitter](/sdk/go/3/core-structs/kuzzle-event-emitter) interface
 
 ## Arguments
 
@@ -25,7 +25,7 @@ NewKuzzle(protocol protocol.Protocol) (*Kuzzle, error)
 
 ### **protocol**
 
-A [Protocol](/sdk/go/1/protocols) is a structure implementing the `protocol.Protocol` interface.
+A [Protocol](/sdk/go/3/protocols) is a structure implementing the `protocol.Protocol` interface.
 The available protocols are:
 
 - `websocket.Websocket`
@@ -83,7 +83,7 @@ For example, you can read the `volatile` property via `getVolatile()` and set it
 **Notes:**
 
 - multiple methods allow passing specific `volatile` data. These `volatile` data will be merged with the global Kuzzle `volatile` object when sending the request, with the request specific `volatile` taking priority over the global ones.
-- the `queueFilter` property is a function taking a `QueryObject` as an argument. This object is the request sent to Kuzzle, following the [Kuzzle API](/core/1/api/essentials/query-syntax) format
+- the `queueFilter` property is a function taking a `QueryObject` as an argument. This object is the request sent to Kuzzle, following the [Kuzzle API](/core/2/guides/main-concepts/querying) format
 - if `queueTTL` is set to `0`, requests are kept indefinitely
 - The offline buffer acts like a first-in first-out (FIFO) queue, meaning that if the `queueMaxSize` limit is reached, older requests are discarded to make room for new requests
 - if `queueMaxSize` is set to `0`, an unlimited number of requests is kept until the buffer is flushed
@@ -92,7 +92,7 @@ For example, you can read the `volatile` property via `getVolatile()` and set it
 
 ## Return
 
-A `Kuzzle` struct and an [error struct](/sdk/go/1/essentials/error-handling).
+A `Kuzzle` struct and an [error struct](/sdk/go/3/essentials/error-handling).
 The `error` struct is nil if everything was ok.
 
 ## Usage

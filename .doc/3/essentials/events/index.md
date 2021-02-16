@@ -8,9 +8,9 @@ order: 100
 
 # Events
 
-An event system allows to be notified when the SDK status changes. These events are issued by the [Kuzzle](/sdk/go/1/core-structs/kuzzle) interface.
+An event system allows to be notified when the SDK status changes. These events are issued by the [Kuzzle](/sdk/go/3/core-structs/kuzzle) interface.
 
-The API for interacting with events is described by our [KuzzleEventEmitter](/sdk/go/1/core-structs/kuzzle-event-emitter) interface documentation.
+The API for interacting with events is described by our [KuzzleEventEmitter](/sdk/go/3/core-structs/kuzzle-event-emitter) interface documentation.
 
 # Emitted Events
 

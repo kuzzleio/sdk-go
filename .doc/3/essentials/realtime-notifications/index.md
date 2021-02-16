@@ -8,11 +8,11 @@ order: 100
 
 # Notifications
 
-The [Realtime.Subscribe](/sdk/go/1/controllers/realtime/subscribe) method takes a channel for `types.NotificationResult` objects, whose content depend on the type of notification received.
+The [Realtime.Subscribe](/sdk/go/3/controllers/realtime/subscribe) method takes a channel for `types.NotificationResult` objects, whose content depend on the type of notification received.
 
 ## Document & messages
 
-These notifications represent [documents changes & messages](/core/1/api/essentials/notifications#documents-changes-messages).
+These notifications represent [documents changes & messages](/core/2/api/payloads/notifications#document-notification).
 
 | Property     | Type                       | Description                                                                                           |
 | ------------ | -------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -26,7 +26,7 @@ These notifications represent [documents changes & messages](/core/1/api/essenti
 | `Scope`      | string                     | `in`: document enters (or stays) in the scope<br/>`out`: document leaves the scope                    |
 | `Timestamp`  | int                        | Timestamp of the event, in Epoch-millis format                                                        |
 | `Type`       | string                     | `document`: the notification type                                                                     |
-| `Volatile`   | json.RawMessage            | Request [volatile data](/core/1/api/essentials/volatile-data)                                        |
+| `Volatile`   | json.RawMessage            | Request [volatile data](/core/2/guides/main-concepts/api#volatile-data)                                        |
 
 The `Result` property has the following structure for document notifications & messages:
 
@@ -37,7 +37,7 @@ The `Result` property has the following structure for document notifications & m
 
 ## User
 
-These notifications represent [user events](/core/1/api/essentials/notifications#user-notification).
+These notifications represent [user events](/core/2/api/payloads/notifications#user-notification).
 
 | Property     | Type                       | Description                                                                                           |
 | ------------ | -------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -51,7 +51,7 @@ These notifications represent [user events](/core/1/api/essentials/notifications
 | `Timestamp`  | int                        | Timestamp of the event, in Epoch-millis format                                                        |
 | `Type`       | string                     | `user`: the notification type                                                                         |
 | `User`       | string                     | `in`: a new user has subscribed to the same filters<br/>`out`: a user cancelled a shared subscription |
-| `Volatile`   | json.RawMessage            | Request [volatile data](/core/1/api/essentials/volatile-data)                                        |
+| `Volatile`   | json.RawMessage            | Request [volatile data](/core/2/guides/main-concepts/api#volatile-data)                                        |
 
 The `Result` property has the following structure for user events:
 

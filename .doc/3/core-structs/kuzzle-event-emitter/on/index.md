@@ -7,4 +7,4 @@ description: Alias for addListener
 
 # On
 
-Alias for [AddListener](/sdk/go/1/core-structs/kuzzle-event-emitter/add-listener).
+Alias for [AddListener](/sdk/go/3/core-structs/kuzzle-event-emitter/add-listener).

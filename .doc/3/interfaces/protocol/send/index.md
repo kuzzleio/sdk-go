@@ -7,7 +7,7 @@ description: Sends a query to the Kuzzle API
 
 # Send
 
-Sends a query to the [Kuzzle API](/core/1/api).
+Sends a query to the [Kuzzle API](/core/2/api).
 
 ## Signature
 
@@ -56,4 +56,4 @@ This channel will receive a [KuzzleResponse](https://github.com/kuzzleio/sdk-go/
 
 ## Return
 
-Return a [Kuzzle error](/sdk/go/1/essentials/error-handling) if the SDK can not connect to Kuzzle.
+Return a [Kuzzle error](/sdk/go/3/essentials/error-handling) if the SDK can not connect to Kuzzle.

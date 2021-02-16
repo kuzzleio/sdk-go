@@ -33,7 +33,7 @@ func (r *Realtime) Subscribe(
 
 ### listener
 
-A channel for [types.NotificationResult](/sdk/go/1/essentials/realtime-notifications) objects.
+A channel for [types.NotificationResult](/sdk/go/3/essentials/realtime-notifications) objects.
 The channel will receive an object each time a new notifications is received.
 
 ### options

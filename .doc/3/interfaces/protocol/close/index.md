@@ -17,4 +17,4 @@ Close() error
 
 ## Return
 
-Return a [Kuzzle error](/sdk/go/1/essentials/error-handling) if the SDK can not connect to Kuzzle.
+Return a [Kuzzle error](/sdk/go/3/essentials/error-handling) if the SDK can not connect to Kuzzle.

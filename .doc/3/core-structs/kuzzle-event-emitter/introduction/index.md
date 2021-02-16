@@ -10,4 +10,4 @@ order: 0
 
 An interface standardizing the listening of events.
 
-The [Kuzzle](/sdk/go/1/core-structs/kuzzle) class implements the `KuzzleEventEmitter` interface.
+The [Kuzzle](/sdk/go/3/core-structs/kuzzle) class implements the `KuzzleEventEmitter` interface.

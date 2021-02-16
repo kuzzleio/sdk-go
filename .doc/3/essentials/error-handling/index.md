@@ -18,7 +18,7 @@ The `KuzzleError` type implements the standard `error` interface, and adds the f
 | `Status` | int    | Status following [HTTP Standards](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) |
 | `Stack`  | string | Error stacktrace (Only in development mode)                                                |
 
-You can find a detailed list of possible errors messages and statuses in the [documentation API](/core/1/api/essentials/errors).
+You can find a detailed list of possible errors messages and statuses in the [documentation API](/core/2/api/errors/types).
 
 #### Example
 

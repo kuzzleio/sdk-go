@@ -15,7 +15,7 @@ This page shows examples of scripts that **store** documents in Kuzzle, and of s
 Before proceeding, please make sure your system meets the following requirements:
 
 - **Go** version 1.9 or higher ([Go installation instructions](https://golang.org/doc/install))</li>
-- A running Kuzzle server ([Kuzzle installation guide](/core/1/guides/essentials/installing-kuzzle))</li>
+- A running Kuzzle server ([Kuzzle installation guide](core/2/guides/getting-started/run-kuzzle))</li>
   :::
 
 ::: info
@@ -78,8 +78,8 @@ Connected!
 New document added to yellow-taxi collection!
 ```
 
-You can perform other actions such as [delete](/sdk/go/1/controllers/document/delete),
-[replace](/sdk/go/1/controllers/document/replace) or [search](/sdk/go/1/controllers/document/search) documents. There are also other ways to interact with Kuzzle like our [Admin Console](/core/1/guides/essentials/admin-console), the [Kuzzle HTTP API](/core/1/api/essentials/connecting-to-kuzzle) or by using your [own protocol](/core/1/protocols/essentials/getting-started).
+You can perform other actions such as [delete](/sdk/go/3/controllers/document/delete),
+[replace](/sdk/go/3/controllers/document/replace) or [search](/sdk/go/3/controllers/document/search) documents. There are also other ways to interact with Kuzzle like our [Admin Console](http://console.kuzzle.io), the [Kuzzle HTTP API](/core/2/api/protocols/http) or by using your [own protocol](/core/2/guides/write-protocols/start-writing-protocols).
 
 Now you know how to:
 
@@ -112,6 +112,6 @@ Now, you know how to:
 Now that you're more familiar with the Go SDK, you can dive even deeper to learn how to leverage its full capabilities:
 
 - discover what this SDK has to offer by browsing other sections of this documentation
-- learn how to use [Koncorde](/core/1/guides/cookbooks/realtime-api) to create incredibly fine-grained and blazing-fast subscriptions
-- follow our guide to learn how to perform [basic authentication](/core/1/guides/essentials/user-authentication#local-strategy)
-- follow our guide to learn how to [manage users and how to set up fine-grained access control](/core/1/guides/essentials/security)
+- learn how to use [Koncorde](/core/2/api/koncorde-filters-syntax) to create incredibly fine-grained and blazing-fast subscriptions
+- follow our guide to learn how to perform [basic authentication](/core/2/guides/main-concepts/authentication#local-strategy)
+- follow our guide to learn how to [manage users and how to set up fine-grained access control](/core/2/guides/main-concepts/permissions)

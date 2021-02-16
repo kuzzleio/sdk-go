@@ -9,7 +9,7 @@ description: Authenticates a user
 
 Authenticates a user.
 
-If this action is successful, all further requests emitted by this SDK instance will be in the name of the authenticated user, until either the authenticated token expires, the [logout](/sdk/go/1/controllers/auth/logout) action is called, or the `jwt` property is manually unset.
+If this action is successful, all further requests emitted by this SDK instance will be in the name of the authenticated user, until either the authenticated token expires, the [logout](/sdk/go/3/controllers/auth/logout) action is called, or the `jwt` property is manually unset.
 
 ## Arguments
 
