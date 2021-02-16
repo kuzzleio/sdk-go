@@ -10,5 +10,6 @@
   },
   "devDependencies": {
     "kuzdoc": "^1.4.5"
-  }
+  },
+  "version": "3.0.0"
 }
