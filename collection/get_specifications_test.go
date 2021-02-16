@@ -70,7 +70,7 @@ func TestGetSpecifications(t *testing.T) {
 					"collection": "collection",
 					"index": "index",
 					"validation": {
-						"fields": {
+						"properties": {
 							"myField": {
 								"defaultValue": 42,
 								"mandatory": true,

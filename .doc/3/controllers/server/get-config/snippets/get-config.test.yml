@@ -1,0 +1,9 @@
+name: server#getConfig
+description: Returns the current Kuzzle configuration.
+hooks:
+  before:
+  after:
+template: default
+expected: ^(Kuzzle Server configuration as JSON string:) .*$
+sdk: go
+version: 3

@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	version           = "2.0.3"
+	version           = "go@3.0.0"
 	MAX_CONNECT_RETRY = 10
 )
 

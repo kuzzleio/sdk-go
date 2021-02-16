@@ -80,7 +80,7 @@ func TestMGetDocument(t *testing.T) {
 
 			return &types.KuzzleResponse{Result: []byte(`
 			{
-				"hits": [
+				"successes": [
 					{
 						"_id": "id1",
 						"_index": "index",
@@ -106,7 +106,7 @@ func TestMGetDocument(t *testing.T) {
 						"result": "created"
 					}
 				],
-				"total": "1"
+				"errors": []
 			}`),
 			}
 		},

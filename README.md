@@ -3,9 +3,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/tested%20on-linux%20%7C%20osx%20%7C%20windows-blue.svg">
-  <a href="https://travis-ci.org/kuzzleio/sdk-go">
-    <img src="https://travis-ci.org/kuzzleio/sdk-go.svg?branch=master"/>
-  </a>
+  <img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/kuzzleio/sdk-go/master">
   <a href="https://codecov.io/gh/kuzzleio/sdk-go">
     <img src="https://codecov.io/gh/kuzzleio/sdk-go/branch/master/graph/badge.svg" />
   </a>
@@ -28,7 +26,7 @@ This is the official Go SDK for the free and open-source backend Kuzzle. It prov
 The SDK provides a native __WebSocket__ support. You can add your own network protocol by implementing the Protocol interface.
 
 <p align="center">
-  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/2">Documentation</a></b>
+  :books: <b><a href="https://docs.kuzzle.io/sdk-reference/go/3">Documentation</a></b>
 </p>
 
 ### Kuzzle

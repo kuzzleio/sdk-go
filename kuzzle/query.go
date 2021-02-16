@@ -47,12 +47,12 @@ func (k *Kuzzle) Query(query *types.KuzzleRequest, options types.QueryOptions, r
 		mapped := make(map[string]interface{})
 		_ = json.Unmarshal(query.Volatile, &mapped)
 
-		mapped["sdkVersion"] = version
+		mapped["sdkName"] = version
 
 		query.Volatile, _ = json.Marshal(mapped)
 
 	} else {
-		vol := fmt.Sprintf(`{"sdkVersion": "%s"}`, version)
+		vol := fmt.Sprintf(`{"sdkName": "%s"}`, version)
 		query.Volatile = types.VolatileData(vol)
 	}
 
