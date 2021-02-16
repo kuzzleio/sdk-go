@@ -28,7 +28,7 @@ ValidateSpecifications(index string, collection string, specifications json.RawM
 
 A JSON representation of the specifications.
 
-The JSON must follow the [Specification Structure](/core/1/guides/cookbooks/datavalidation):
+The JSON must follow the [Specification Structure](/core/2/guides/advanced/data-validation):
 
 ```json
 {

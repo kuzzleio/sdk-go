@@ -7,7 +7,7 @@ description: Creates a new collection
 
 # Create
 
-Creates a new [collection](/core/1/guides/essentials/store-access-data) in the provided `index`.
+Creates a new [collection](/core/2/guides/main-concepts/data-storage) in the provided `index`.
 You can also provide an optional data mapping that allow you to exploit the full capabilities of our
 persistent data storage layer, [ElasticSearch](ttps://www.elastic.co/elastic-stack) (check here the [mapping capabilities of ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/5.4/mapping.html)).
 
@@ -45,7 +45,7 @@ The mapping must have a root field `properties` that contain the mapping definit
 }
 ```
 
-More informations about database mappings [here](/core/1/guides/essentials/database-mappings).
+More informations about database mappings [here](/core/2/guides/main-concepts/data-storage).
 
 ### **options**
 
