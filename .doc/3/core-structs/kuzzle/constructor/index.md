@@ -25,7 +25,7 @@ NewKuzzle(protocol protocol.Protocol) (*Kuzzle, error)
 
 ### **protocol**
 
-A [Protocol](/sdk/go/3/protocols) is a structure implementing the `protocol.Protocol` interface.
+A [Protocol](/sdk/go/3/interfaces/protocol/add-listener) is a structure implementing the `protocol.Protocol` interface.
 The available protocols are:
 
 - `websocket.Websocket`
