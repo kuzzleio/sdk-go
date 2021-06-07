@@ -6,6 +6,7 @@ runs:
     - name: Prepare kuzdoc
       run: |
         npm ci
+        npm install --save-dev kuzdoc
         npm run doc-prepare
         $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
         $(npm bin)/kuzdoc framework:link -d /sdk/go/3 -v 3 --base_root .doc/
