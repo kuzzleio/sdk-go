@@ -42,7 +42,7 @@ services:
       - CONFIG_FILE=/mnt/.ci/doc/config.yml
 
   doc-runner-go:
-    image: golang:alpine
+    image: golang:1.14-alpine3.13
     volumes:
       - ../..:/mnt
       - ../..:/go/src/github.com/kuzzleio/sdk-go
