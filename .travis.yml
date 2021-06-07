@@ -38,6 +38,7 @@ _doc-deploy: &doc-deploy
   install:
     - pip install awscli --upgrade --user
     - npm ci
+    - npm i --save-dev kuzdoc
   script:
     - npm run doc-prepare
     - npm run doc-build
@@ -85,6 +86,7 @@ jobs:
           - "$HOME/.gem/specs"
       before_script:
         - npm ci
+        - npm i --save-dev kuzdoc
         - npm run doc-prepare
         - $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
         - $(npm bin)/kuzdoc framework:link -d /sdk/go/2/ -v 2 -b .doc/

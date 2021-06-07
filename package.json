@@ -8,7 +8,8 @@
     "doc-deploy": "npm run doc-upload && npm run doc-cloudfront",
     "doc-netlify": "npm run doc-prepare && kuzdoc repo:build -b .doc/ -d / -v 2"
   },
-  "dependencies": {
-    "kuzdoc": "^1.2.2"
+  "dependencies": {},
+  "devDependencies": {
+    "kuzdoc": "^1.4.5"
   }
 }
