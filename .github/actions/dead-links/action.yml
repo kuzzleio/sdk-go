@@ -5,12 +5,14 @@ runs:
   steps:
     - name: Prepare kuzdoc
       run: |
-        npm ci
+        npm ci --production=false
         npm i --save-dev kuzdoc
         npm run doc-prepare
         $(npm bin)/kuzdoc iterate-repos:install --repos_path .doc/framework/.repos/
         $(npm bin)/kuzdoc framework:link -d /sdk/go/3 -v 3 --base_root .doc/
       shell: bash
+      env:
+        ACCESS_TOKEN_CI: ${{ secrets.ACCESS_TOKEN_CI }}
     - name: Run Dead Links
       run: |
         sudo gem install typhoeus
