@@ -33,9 +33,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
+      - uses: actions/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
       - uses: ./.github/actions/dead-links
-        env:
-          ACCESS_TOKEN_CI: ${{ secrets.ACCESS_TOKEN_CI }}
 
   lint:
     name: Linters
