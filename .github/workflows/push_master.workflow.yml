@@ -34,6 +34,8 @@ jobs:
         with:
           node-version: "12"
       - uses: ./.github/actions/dead-links
+        env:
+          ACCESS_TOKEN_CI: ${{ secrets.ACCESS_TOKEN_CI }}
 
   lint:
     name: Linters
