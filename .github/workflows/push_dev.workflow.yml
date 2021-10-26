@@ -119,8 +119,7 @@ jobs:
   doc-deploy:
     name: Deploy Doc to NEXT
     runs-on: ubuntu-latest
-    needs:
-      [documentation-dead-links, documentation-snippet-tests, test, coverage]
+    needs: [documentation-snippet-tests, test, coverage]
     steps:
       - uses: actions/checkout@v2
         with:
