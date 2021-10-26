@@ -120,8 +120,7 @@ jobs:
   doc-deploy:
     name: Deployment Doc Prod
     runs-on: ubuntu-latest
-    needs:
-      [documentation-snippet-tests, test, coverage]
+    needs: [documentation-snippet-tests, test, coverage]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -133,11 +132,11 @@ jobs:
           echo "::set-output name=version::$(git describe --abbrev=0 --tags | cut -d. -f 1)"
           echo "::set-output name=repo::$(echo $GITHUB_REPOSITORY | cut -d/ -f 2)"
           echo "::set-output name=branch::$(echo $GITHUB_REF | cut -d/ -f 3)"
-     - uses: convictional/trigger-workflow-and-wait@v1.3.0
+      - uses: convictional/trigger-workflow-and-wait@v1.3.0
         with:
           owner: kuzzleio
           repo: documentation
           github_token: ${{ secrets.ACCESS_TOKEN_CI }}
           workflow_file_name: child_repo.workflow.yml
           ref: master
-          inputs: '{"repo_name": "${{ steps.extract-refs.outputs.repo }}", "branch": "${{ steps.extract-refs.outputs.repo }}", "version": "${{ steps.extract-refs.outputs.version }}"}'
+          inputs: '{"repo_name": "${{ steps.extract-refs.outputs.repo }}", "branch": "${{ steps.extract-refs.outputs.branch }}", "version": "${{ steps.extract-refs.outputs.version }}"}'
