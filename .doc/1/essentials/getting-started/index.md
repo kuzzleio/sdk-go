@@ -14,8 +14,8 @@ This page shows examples of scripts that **store** documents in Kuzzle, and of s
 ::: success
 Before proceeding, please make sure your system meets the following requirements:
 
-- **Go** version 1.9 or higher ([Go installation instructions](https://golang.org/doc/install))</li>
-- A running Kuzzle server ([Kuzzle installation guide](/core/1/guides/essentials/installing-kuzzle))</li>
+- **Go** version 1.9 or higher ([Go installation instructions](https://golang.org/doc/install))
+- A running Kuzzle server ([Kuzzle installation guide](/core/1/guides/essentials/installing-kuzzle))
   :::
 
 ::: info
